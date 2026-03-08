@@ -56,7 +56,7 @@ export default function Register() {
           </div>
         </div>
         <nav style={{ display: 'flex', gap: 8 }}>
-          {[['/', 'שירותים'], ['/register', 'הרשמת שירות'], ['/admin', 'ניהול']].map(([href, label]) => (
+          {[['/', 'שירותים'], ['/map', '🗺️ מפה'], ['/register', 'הרשמת שירות'], ['/admin', 'ניהול']].map(([href, label]) => (
             <a key={href} href={href} style={{ color: 'white', background: 'rgba(255,255,255,0.12)', borderRadius: 20, padding: '7px 18px', fontWeight: 600, fontSize: 13, border: '1.5px solid rgba(255,255,255,0.25)', textDecoration: 'none' }}>{label}</a>
           ))}
         </nav>
