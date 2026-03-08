@@ -48,21 +48,16 @@ export default function Admin() {
       headers: { 'Content-Type': 'application/json', adminkey: adminKey },
       body: JSON.stringify({ id, status }),
     })
-
     if (status === 'approved') {
       const service = pending.find(s => s.id === id)
       if (service && service.email) {
         await fetch('/api/admin/approve-email', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', adminkey: adminKey },
-          body: JSON.stringify({
-            serviceName: service.name,
-            serviceEmail: service.email,
-          }),
+          body: JSON.stringify({ serviceName: service.name, serviceEmail: service.email }),
         })
       }
     }
-
     fetchAll(adminKey)
   }
 
@@ -104,7 +99,7 @@ export default function Admin() {
           </div>
         </div>
         <nav style={{ display: 'flex', gap: 8 }}>
-          {[['/', 'שירותים'], ['/register', 'הרשמת שירות'], ['/admin', 'ניהול']].map(([href, label]) => (
+          {[['/', 'שירותים'], ['/map', '🗺️ מפה'], ['/register', 'הרשמת שירות'], ['/admin', 'ניהול']].map(([href, label]) => (
             <a key={href} href={href} style={{ color: 'white', background: 'rgba(255,255,255,0.12)', borderRadius: 20, padding: '7px 18px', fontWeight: 600, fontSize: 13, border: '1.5px solid rgba(255,255,255,0.25)', textDecoration: 'none' }}>{label}</a>
           ))}
         </nav>
@@ -217,7 +212,6 @@ export default function Admin() {
                 <h2 style={{ margin: 0, fontSize: 20, fontWeight: 800, color: '#1A3A5C' }}>✏️ עריכת שירות</h2>
                 <button onClick={() => setEditingService(null)} style={{ background: 'none', border: 'none', fontSize: 22, cursor: 'pointer', color: '#aaa' }}>✕</button>
               </div>
-
               {[
                 ['name', 'שם השירות', 'text'],
                 ['city', 'עיר', 'text'],
@@ -231,26 +225,22 @@ export default function Admin() {
                   <input type={type} value={editForm[key] || ''} onChange={e => setEditForm(f => ({ ...f, [key]: e.target.value }))} style={inp} />
                 </div>
               ))}
-
               <div style={{ marginBottom: 14 }}>
                 <label style={lbl}>מחוז</label>
                 <select value={editForm.district || ''} onChange={e => setEditForm(f => ({ ...f, district: e.target.value }))} style={inp}>
                   {DISTRICTS.map(d => <option key={d}>{d}</option>)}
                 </select>
               </div>
-
               <div style={{ marginBottom: 14 }}>
                 <label style={lbl}>סוג שירות</label>
                 <select value={editForm.type || ''} onChange={e => setEditForm(f => ({ ...f, type: e.target.value }))} style={inp}>
                   {SERVICE_TYPES.map(t => <option key={t}>{t}</option>)}
                 </select>
               </div>
-
               <div style={{ marginBottom: 22 }}>
                 <label style={lbl}>תיאור</label>
                 <textarea value={editForm.description || ''} onChange={e => setEditForm(f => ({ ...f, description: e.target.value }))} rows={4} style={{ ...inp, resize: 'vertical', borderRadius: 12 }} />
               </div>
-
               <div style={{ display: 'flex', gap: 10 }}>
                 <button onClick={saveEdit} disabled={saving} style={{ flex: 1, background: '#F47B20', color: 'white', border: 'none', borderRadius: 20, padding: '12px 0', fontWeight: 700, fontSize: 15, cursor: saving ? 'not-allowed' : 'pointer' }}>
                   {saving ? 'שומר...' : '💾 שמור שינויים'}
