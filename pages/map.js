@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef } from 'react'
+import Head from 'next/head'
 import { CATEGORIES, CATEGORY_NAMES, getCategoryColor } from '../lib/categories'
 
 const DISTRICTS = ['הכל', 'צפון', 'חיפה', 'מרכז', 'תל אביב', 'ירושלים', 'דרום', 'יהודה ושומרון']
@@ -71,59 +72,64 @@ export default function MapPage() {
   const sel = { padding: '9px 14px', borderRadius: 20, border: '1.5px solid #FFD4B0', fontSize: 14, background: '#FFF8F3', cursor: 'pointer', outline: 'none' }
 
   return (
-    <div dir="rtl" style={{ fontFamily: 'Arial, sans-serif', minHeight: '100vh', background: '#FFF8F3' }}>
-      <header style={{ background: '#1A3A5C', color: 'white', padding: '0 32px', height: 70, display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxShadow: '0 2px 12px rgba(0,0,0,0.15)' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-          <div style={{ width: 44, height: 44, borderRadius: '50%', background: '#F47B20', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22, fontWeight: 800, color: 'white' }}>♿</div>
-          <div>
-            <div style={{ fontWeight: 800, fontSize: 19 }}>סל שיקום</div>
-            <div style={{ fontSize: 11, opacity: 0.75 }}>מאגר שירותי שיקום בקהילה</div>
-          </div>
-        </div>
-        <nav style={{ display: 'flex', gap: 8 }}>
-          {[['/', 'שירותים'], ['/map', '🗺️ מפה'], ['/register', 'הרשמת שירות'], ['/admin', 'ניהול']].map(([href, label]) => (
-            <a key={href} href={href} style={{ color: 'white', background: 'rgba(255,255,255,0.12)', borderRadius: 20, padding: '7px 18px', fontWeight: 600, fontSize: 13, border: '1.5px solid rgba(255,255,255,0.25)', textDecoration: 'none' }}>{label}</a>
-          ))}
-        </nav>
-      </header>
-
-      <div style={{ background: 'linear-gradient(135deg, #1A3A5C, #2A5298)', color: 'white', padding: '24px 32px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 16 }}>
-          <div>
-            <h1 style={{ fontSize: 22, fontWeight: 800, margin: '0 0 4px' }}>🗺️ מפת שירותים</h1>
-            <p style={{ fontSize: 13, opacity: 0.85, margin: 0 }}>{filtered.length} שירותים מוצגים</p>
-          </div>
-          <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-            <select value={district} onChange={e => setDistrict(e.target.value)} style={sel}>
-              {DISTRICTS.map(d => <option key={d}>{d}</option>)}
-            </select>
-            <select value={category} onChange={e => { setCategory(e.target.value); setSubcategory('הכל') }} style={sel}>
-              <option value="הכל">כל הקטגוריות</option>
-              {CATEGORY_NAMES.map(c => <option key={c}>{c}</option>)}
-            </select>
-            {category !== 'הכל' && (
-              <select value={subcategory} onChange={e => setSubcategory(e.target.value)} style={sel}>
-                {subcategories.map(s => <option key={s}>{s}</option>)}
-              </select>
-            )}
-          </div>
-        </div>
-
-        <div style={{ display: 'flex', gap: 14, marginTop: 14, flexWrap: 'wrap' }}>
-          {Object.entries(CATEGORIES).map(([cat, val]) => (
-            <div key={cat} style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12 }}>
-              <div style={{ width: 12, height: 12, borderRadius: '50%', background: val.color }} />
-              <span>{cat}</span>
+    <>
+      <Head>
+        <title>מפת שירותים | סל שיקום</title>
+        <meta name="description" content="מפת שירותי סל שיקום בישראל לפי אזור וקטגוריה" />
+      </Head>
+      <div dir="rtl" style={{ fontFamily: 'Arial, sans-serif', minHeight: '100vh', background: '#FFF8F3' }}>
+        <header style={{ background: '#1A3A5C', color: 'white', padding: '0 32px', height: 70, display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxShadow: '0 2px 12px rgba(0,0,0,0.15)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+            <div style={{ width: 44, height: 44, borderRadius: '50%', background: '#F47B20', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22, fontWeight: 800, color: 'white' }}>♿</div>
+            <div>
+              <div style={{ fontWeight: 800, fontSize: 19 }}>סל שיקום</div>
+              <div style={{ fontSize: 11, opacity: 0.75 }}>מאגר שירותי שיקום בקהילה</div>
             </div>
-          ))}
+          </div>
+          <nav style={{ display: 'flex', gap: 8 }}>
+            {[['/', 'שירותים'], ['/map', '🗺️ מפה'], ['/register', 'הרשמת שירות'], ['/about', 'אודות'], ['/admin', 'ניהול']].map(([href, label]) => (
+              <a key={href} href={href} style={{ color: 'white', background: 'rgba(255,255,255,0.12)', borderRadius: 20, padding: '7px 18px', fontWeight: 600, fontSize: 13, border: '1.5px solid rgba(255,255,255,0.25)', textDecoration: 'none' }}>{label}</a>
+            ))}
+          </nav>
+        </header>
+
+        <div style={{ background: 'linear-gradient(135deg, #1A3A5C, #2A5298)', color: 'white', padding: '24px 32px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 16 }}>
+            <div>
+              <h1 style={{ fontSize: 22, fontWeight: 800, margin: '0 0 4px' }}>🗺️ מפת שירותים</h1>
+              <p style={{ fontSize: 13, opacity: 0.85, margin: 0 }}>{filtered.length} שירותים מוצגים</p>
+            </div>
+            <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+              <select value={district} onChange={e => setDistrict(e.target.value)} style={sel}>
+                {DISTRICTS.map(d => <option key={d}>{d}</option>)}
+              </select>
+              <select value={category} onChange={e => { setCategory(e.target.value); setSubcategory('הכל') }} style={sel}>
+                <option value="הכל">כל הקטגוריות</option>
+                {CATEGORY_NAMES.map(c => <option key={c}>{c}</option>)}
+              </select>
+              {category !== 'הכל' && (
+                <select value={subcategory} onChange={e => setSubcategory(e.target.value)} style={sel}>
+                  {subcategories.map(s => <option key={s}>{s}</option>)}
+                </select>
+              )}
+            </div>
+          </div>
+          <div style={{ display: 'flex', gap: 14, marginTop: 14, flexWrap: 'wrap' }}>
+            {Object.entries(CATEGORIES).map(([cat, val]) => (
+              <div key={cat} style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12 }}>
+                <div style={{ width: 12, height: 12, borderRadius: '50%', background: val.color }} />
+                <span>{cat}</span>
+              </div>
+            ))}
+          </div>
         </div>
+
+        <div id="map" style={{ height: 'calc(100vh - 240px)', width: '100%' }} />
+
+        <footer style={{ background: '#1A3A5C', color: 'rgba(255,255,255,0.7)', textAlign: 'center', padding: '24px', fontSize: 13 }}>
+          מאגר שירותי סל שיקום © {new Date().getFullYear()}
+        </footer>
       </div>
-
-      <div id="map" style={{ height: 'calc(100vh - 240px)', width: '100%' }} />
-
-      <footer style={{ background: '#1A3A5C', color: 'rgba(255,255,255,0.7)', textAlign: 'center', padding: '24px', fontSize: 13 }}>
-        מאגר שירותי סל שיקום © {new Date().getFullYear()}
-      </footer>
-    </div>
+    </>
   )
 }
