@@ -1,57 +1,34 @@
-export default function ServiceCard({ service, typeColors, onClick }) {
-  const color = typeColors[service.type] || '#F47B20'
+import { getCategoryColor } from '../lib/categories'
+
+export default function ServiceCard({ service, onClick }) {
+  const color = getCategoryColor(service.category, service.subcategory)
 
   return (
-    <div
-      onClick={() => onClick(service)}
-      style={{
-        background: 'white',
-        borderRadius: 16,
-        boxShadow: '0 4px 16px rgba(0,0,0,0.08)',
-        overflow: 'hidden',
-        cursor: 'pointer',
-        transition: 'transform .2s, box-shadow .2s',
-        border: '1.5px solid #FFE8D6',
-      }}
-      onMouseEnter={e => {
-        e.currentTarget.style.transform = 'translateY(-4px)'
-        e.currentTarget.style.boxShadow = '0 12px 32px rgba(244,123,32,0.18)'
-      }}
-      onMouseLeave={e => {
-        e.currentTarget.style.transform = ''
-        e.currentTarget.style.boxShadow = '0 4px 16px rgba(0,0,0,0.08)'
-      }}
-    >
-      <div style={{ height: 7, background: color }} />
-      <div style={{ padding: '18px 20px 16px' }}>
-        <h3 style={{ margin: '0 0 10px', fontSize: 16, fontWeight: 700, color: '#1A3A5C', lineHeight: 1.3 }}>
-          {service.name}
-        </h3>
-        <div style={{ display: 'flex', gap: 7, marginBottom: 10, flexWrap: 'wrap' }}>
-          <span style={{ background: color + '20', color, borderRadius: 20, padding: '3px 12px', fontSize: 12, fontWeight: 700 }}>
-            {service.type}
-          </span>
-          <span style={{ background: '#EEF2FF', color: '#1A3A5C', borderRadius: 20, padding: '3px 12px', fontSize: 12, fontWeight: 500 }}>
-            📍 {service.city}{service.district ? `, ${service.district}` : ''}
-          </span>
-        </div>
-        <p style={{ margin: '0 0 14px', fontSize: 13.5, color: '#556', lineHeight: 1.6, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
-          {service.description || 'אין תיאור'}
-        </p>
-        <div style={{ display: 'flex', gap: 8 }}>
-          {service.phone && (
-            <a href={`tel:${service.phone}`} onClick={e => e.stopPropagation()}
-              style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5, background: '#F47B20', color: 'white', borderRadius: 20, padding: '9px 0', fontSize: 13, fontWeight: 700, textDecoration: 'none' }}>
-              📞 {service.phone}
-            </a>
-          )}
-          {service.email && (
-            <a href={`mailto:${service.email}`} onClick={e => e.stopPropagation()}
-              style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5, background: '#EEF2FF', color: '#1A3A5C', borderRadius: 20, padding: '9px 0', fontSize: 13, fontWeight: 700, textDecoration: 'none', border: '1.5px solid #C5D0F0' }}>
-              ✉️ מייל
-            </a>
+    <div onClick={() => onClick(service)} style={{ background: 'white', borderRadius: 16, padding: '20px 22px', cursor: 'pointer', boxShadow: '0 4px 16px rgba(0,0,0,0.07)', border: '1.5px solid #FFE8D6', borderTop: `4px solid ${color}`, transition: 'transform 0.15s, box-shadow 0.15s' }}
+      onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 8px 24px rgba(0,0,0,0.12)' }}
+      onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 4px 16px rgba(0,0,0,0.07)' }}>
+
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 10 }}>
+        <div style={{ fontWeight: 700, fontSize: 16, color: '#1A3A5C', lineHeight: 1.3, flex: 1 }}>{service.name}</div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 4, alignItems: 'flex-end' }}>
+          <span style={{ background: color, color: 'white', borderRadius: 20, padding: '3px 10px', fontSize: 11, fontWeight: 700, whiteSpace: 'nowrap' }}>{service.category}</span>
+          {service.subcategory && service.subcategory !== service.category && (
+            <span style={{ background: `${color}22`, color, borderRadius: 20, padding: '2px 8px', fontSize: 10, fontWeight: 600, whiteSpace: 'nowrap' }}>{service.subcategory}</span>
           )}
         </div>
+      </div>
+
+      <div style={{ fontSize: 13, color: '#888', marginBottom: 8 }}>📍 {service.city}{service.district ? `, ${service.district}` : ''}</div>
+
+      {service.description && (
+        <div style={{ fontSize: 13.5, color: '#445', lineHeight: 1.55, marginBottom: 12, display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+          {service.description}
+        </div>
+      )}
+
+      <div style={{ display: 'flex', gap: 12, fontSize: 13, color, flexWrap: 'wrap' }}>
+        {service.phone && <span>📞 {service.phone}</span>}
+        {service.email && <span>✉️ {service.email}</span>}
       </div>
     </div>
   )
