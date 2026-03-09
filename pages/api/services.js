@@ -8,19 +8,20 @@ const supabase = createClient(
 export default async function handler(req, res) {
   if (req.method !== 'GET') return res.status(405).end()
 
-  const { district, type, search } = req.query
+  const { district, category, subcategory, search } = req.query
 
   let query = supabase
     .from('services')
     .select('*')
     .eq('status', 'approved')
-    .order('created_at', { ascending: false })
 
-  if (district && district !== 'הכל') query = query.eq('district', district)
-  if (type && type !== 'הכל') query = query.eq('type', type)
+  if (district) query = query.eq('district', district)
+  if (category) query = query.eq('category', category)
+  if (subcategory) query = query.eq('subcategory', subcategory)
   if (search) query = query.or(`name.ilike.%${search}%,city.ilike.%${search}%,description.ilike.%${search}%`)
 
-  const { data, error } = await query
+  const { data, error } = await query.order('created_at', { ascending: false })
+
   if (error) return res.status(500).json({ error: error.message })
-  res.status(200).json(data)
+  res.status(200).json(data || [])
 }
