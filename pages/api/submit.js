@@ -22,9 +22,9 @@ async function geocode(city, address) {
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).end()
 
-  const { name, district, city, type, description, phone, email, website, address } = req.body
+  const { name, district, city, category, subcategory, description, phone, email, website, address } = req.body
 
-  if (!name || !district || !city || !type || !phone || !email) {
+  if (!name || !district || !city || !category || !phone || !email) {
     return res.status(400).json({ error: 'Missing required fields' })
   }
 
@@ -32,7 +32,7 @@ export default async function handler(req, res) {
 
   const { data, error } = await supabase
     .from('services')
-    .insert([{ name, district, city, type, description, phone, email, website, address, status: 'pending', lat, lng }])
+    .insert([{ name, district, city, category, subcategory, description, phone, email, website, address, status: 'pending', lat, lng }])
     .select()
     .single()
 
