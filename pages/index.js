@@ -56,24 +56,24 @@ export default function Home() {
         <meta property="og:url" content="https://rehabdirectoryil.vercel.app/" />
       </Head>
       <div dir="rtl" style={{ fontFamily: 'Arial, sans-serif', minHeight: '100vh', background: '#FFF8F3' }}>
-        <header style={{ background: '#1A3A5C', color: 'white', padding: '0 16px', height: 'auto', minHeight: 70, display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxShadow: '0 2px 12px rgba(0,0,0,0.15)', flexWrap: 'wrap', gap: 8, paddingTop: 10, paddingBottom: 10 }}>
-  <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-    <div style={{ width: 44, height: 44, borderRadius: '50%', background: '#F47B20', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22, fontWeight: 800, color: 'white' }}>♿</div>
-    <div>
-      <div style={{ fontWeight: 800, fontSize: 19 }}>סל שיקום</div>
-      <div style={{ fontSize: 11, opacity: 0.75 }}>מאגר שירותי שיקום בקהילה</div>
-    </div>
-  </div>
-  <nav style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-    {[['/', 'שירותים'], ['/map', '🗺️ מפה'], ['/register', 'הרשמת שירות'], ['/about', 'אודות'], ['/admin', 'ניהול']].map(([href, label]) => (
-      <a key={href} href={href} style={{ color: 'white', background: 'rgba(255,255,255,0.12)', borderRadius: 20, padding: '6px 12px', fontWeight: 600, fontSize: 12, border: '1.5px solid rgba(255,255,255,0.25)', textDecoration: 'none' }}>{label}</a>
-    ))}
-  </nav>
-</header>
+        <header style={{ background: '#1A3A5C', color: 'white', padding: '10px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxShadow: '0 2px 12px rgba(0,0,0,0.15)', flexWrap: 'wrap', gap: 8 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+            <div style={{ width: 44, height: 44, borderRadius: '50%', background: '#F47B20', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22, fontWeight: 800, color: 'white' }}>♿</div>
+            <div>
+              <div style={{ fontWeight: 800, fontSize: 19 }}>סל שיקום</div>
+              <div style={{ fontSize: 11, opacity: 0.75 }}>מאגר שירותי שיקום בקהילה</div>
+            </div>
+          </div>
+          <nav style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+            {[['/', 'שירותים'], ['/map', '🗺️ מפה'], ['/register', 'הרשמת שירות'], ['/about', 'אודות'], ['/admin', 'ניהול']].map(([href, label]) => (
+              <a key={href} href={href} style={{ color: 'white', background: 'rgba(255,255,255,0.12)', borderRadius: 20, padding: '6px 12px', fontWeight: 600, fontSize: 12, border: '1.5px solid rgba(255,255,255,0.25)', textDecoration: 'none' }}>{label}</a>
+            ))}
+          </nav>
+        </header>
 
-        <div style={{ background: 'linear-gradient(135deg, #1A3A5C, #2A5298)', color: 'white', padding: '48px 32px', textAlign: 'center' }}>
-          <h1 style={{ fontSize: 32, fontWeight: 800, margin: '0 0 10px' }}>מאגר שירותי סל שיקום</h1>
-          <p style={{ fontSize: 16, opacity: 0.85, margin: '0 0 28px' }}>מצאו שירותי שיקום בקהילה לפי אזור וקטגוריה</p>
+        <div style={{ background: 'linear-gradient(135deg, #1A3A5C, #2A5298)', color: 'white', padding: '36px 20px', textAlign: 'center' }}>
+          <h1 style={{ fontSize: 26, fontWeight: 800, margin: '0 0 10px' }}>מאגר שירותי סל שיקום</h1>
+          <p style={{ fontSize: 15, opacity: 0.85, margin: '0 0 24px' }}>מצאו שירותי שיקום בקהילה לפי אזור וקטגוריה</p>
           <div style={{ maxWidth: 480, margin: '0 auto' }}>
             <input
               type="text"
@@ -85,7 +85,7 @@ export default function Home() {
           </div>
         </div>
 
-        <div style={{ background: 'white', borderBottom: '1px solid #FFE8D6', padding: '16px 32px', display: 'flex', gap: 12, flexWrap: 'wrap', alignItems: 'center' }}>
+        <div style={{ background: 'white', borderBottom: '1px solid #FFE8D6', padding: '12px 16px', display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'center' }}>
           <select value={district} onChange={e => setDistrict(e.target.value)} style={sel}>
             {DISTRICTS.map(d => <option key={d}>{d}</option>)}
           </select>
@@ -103,7 +103,7 @@ export default function Home() {
           </div>
         </div>
 
-        <main style={{ maxWidth: 1100, margin: '0 auto', padding: '32px 24px' }}>
+        <main style={{ maxWidth: 1100, margin: '0 auto', padding: '24px 16px' }}>
           {loading ? (
             <div style={{ textAlign: 'center', padding: 64, color: '#F47B20' }}>טוען שירותים...</div>
           ) : services.length === 0 ? (
@@ -112,7 +112,7 @@ export default function Home() {
               <div style={{ fontWeight: 600, fontSize: 18 }}>לא נמצאו שירותים</div>
             </div>
           ) : (
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: 20, alignItems: 'stretch' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 16, alignItems: 'stretch' }}>
               {services.map(s => (
                 <div key={s.id} onClick={() => router.push(`/service/${s.id}`)} style={{ cursor: 'pointer', height: '100%' }}>
                   <ServiceCard service={s} />
