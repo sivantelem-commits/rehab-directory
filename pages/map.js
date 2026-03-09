@@ -1,14 +1,14 @@
 import { useEffect, useState, useRef } from 'react'
+import { CATEGORIES, CATEGORY_NAMES, getCategoryColor } from '../lib/categories'
 
-const TYPE_COLORS = { 'שיקום תעסוקתי': '#F47B20', 'בית מאזן': '#1A3A5C', 'דיור מוגן': '#E85D9A' }
 const DISTRICTS = ['הכל', 'צפון', 'חיפה', 'מרכז', 'תל אביב', 'ירושלים', 'דרום', 'יהודה ושומרון']
-const SERVICE_TYPES = ['הכל', 'שיקום תעסוקתי', 'בית מאזן', 'דיור מוגן']
 
 export default function MapPage() {
   const [allServices, setAllServices] = useState([])
   const [mounted, setMounted] = useState(false)
   const [district, setDistrict] = useState('הכל')
-  const [type, setType] = useState('הכל')
+  const [category, setCategory] = useState('הכל')
+  const [subcategory, setSubcategory] = useState('הכל')
   const mapRef = useRef(null)
   const markersRef = useRef([])
 
@@ -44,12 +44,13 @@ export default function MapPage() {
 
     const filtered = allServices.filter(s => {
       if (district !== 'הכל' && s.district !== district) return false
-      if (type !== 'הכל' && s.type !== type) return false
+      if (category !== 'הכל' && s.category !== category) return false
+      if (subcategory !== 'הכל' && s.subcategory !== subcategory) return false
       return true
     })
 
     filtered.forEach(s => {
-      const color = TYPE_COLORS[s.type] || '#F47B20'
+      const color = getCategoryColor(s.category, s.subcategory)
       const icon = L.divIcon({
         html: `<div style="background:${color};width:14px;height:14px;border-radius:50%;border:2px solid white;box-shadow:0 2px 6px rgba(0,0,0,0.3)"></div>`,
         className: '',
@@ -57,16 +58,19 @@ export default function MapPage() {
       })
       const marker = L.marker([s.lat, s.lng], { icon })
         .addTo(mapRef.current)
-        .bindPopup(`<div dir="rtl"><strong>${s.name}</strong><br/>${s.city}<br/><span style="color:${color}">${s.type}</span>${s.phone ? `<br/>📞 ${s.phone}` : ''}</div>`)
+        .bindPopup(`<div dir="rtl"><strong>${s.name}</strong><br/>${s.city}<br/><span style="color:${color}">${s.category}${s.subcategory ? ` › ${s.subcategory}` : ''}</span>${s.phone ? `<br/>📞 ${s.phone}` : ''}</div>`)
       markersRef.current.push(marker)
     })
-  }, [allServices, district, type])
+  }, [allServices, district, category, subcategory])
 
   const filtered = allServices.filter(s => {
     if (district !== 'הכל' && s.district !== district) return false
-    if (type !== 'הכל' && s.type !== type) return false
+    if (category !== 'הכל' && s.category !== category) return false
+    if (subcategory !== 'הכל' && s.subcategory !== subcategory) return false
     return true
   })
+
+  const subcategories = category !== 'הכל' ? ['הכל', ...CATEGORIES[category].subcategories] : []
 
   if (!mounted) return null
 
@@ -99,23 +103,29 @@ export default function MapPage() {
             <select value={district} onChange={e => setDistrict(e.target.value)} style={sel}>
               {DISTRICTS.map(d => <option key={d}>{d}</option>)}
             </select>
-            <select value={type} onChange={e => setType(e.target.value)} style={sel}>
-              {SERVICE_TYPES.map(t => <option key={t}>{t}</option>)}
+            <select value={category} onChange={e => { setCategory(e.target.value); setSubcategory('הכל') }} style={sel}>
+              <option value="הכל">כל הקטגוריות</option>
+              {CATEGORY_NAMES.map(c => <option key={c}>{c}</option>)}
             </select>
+            {category !== 'הכל' && (
+              <select value={subcategory} onChange={e => setSubcategory(e.target.value)} style={sel}>
+                {subcategories.map(s => <option key={s}>{s}</option>)}
+              </select>
+            )}
           </div>
         </div>
 
-        <div style={{ display: 'flex', gap: 16, marginTop: 14, flexWrap: 'wrap' }}>
-          {Object.entries(TYPE_COLORS).map(([t, color]) => (
-            <div key={t} style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13 }}>
-              <div style={{ width: 12, height: 12, borderRadius: '50%', background: color }} />
-              <span>{t}</span>
+        <div style={{ display: 'flex', gap: 14, marginTop: 14, flexWrap: 'wrap' }}>
+          {Object.entries(CATEGORIES).map(([cat, val]) => (
+            <div key={cat} style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12 }}>
+              <div style={{ width: 12, height: 12, borderRadius: '50%', background: val.color }} />
+              <span>{cat}</span>
             </div>
           ))}
         </div>
       </div>
 
-      <div id="map" style={{ height: 'calc(100vh - 220px)', width: '100%' }} />
+      <div id="map" style={{ height: 'calc(100vh - 240px)', width: '100%' }} />
 
       <footer style={{ background: '#1A3A5C', color: 'rgba(255,255,255,0.7)', textAlign: 'center', padding: '24px', fontSize: 13 }}>
         מאגר שירותי סל שיקום © {new Date().getFullYear()}
