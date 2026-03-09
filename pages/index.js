@@ -21,7 +21,7 @@ export default function Home() {
   useEffect(() => { setMounted(true) }, [])
 
   useEffect(() => {
-    const handleScroll = () => setShowTop(window.scrollY > 400)
+    const handleScroll = () => setShowTop(window.scrollY > 200)
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
