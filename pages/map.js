@@ -23,32 +23,26 @@ export default function MapPage() {
   useEffect(() => {
     if (!mounted || typeof window === 'undefined') return
     if (mapRef.current) return
-
     const L = require('leaflet')
     require('leaflet/dist/leaflet.css')
-
     const map = L.map('map').setView([31.5, 34.8], 8)
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '© OpenStreetMap'
     }).addTo(map)
-
     mapRef.current = map
   }, [mounted])
 
   useEffect(() => {
     if (!mapRef.current || typeof window === 'undefined') return
     const L = require('leaflet')
-
     markersRef.current.forEach(m => m.remove())
     markersRef.current = []
-
     const filtered = allServices.filter(s => {
       if (district !== 'הכל' && s.district !== district) return false
       if (category !== 'הכל' && s.category !== category) return false
       if (subcategory !== 'הכל' && s.subcategory !== subcategory) return false
       return true
     })
-
     filtered.forEach(s => {
       const color = getCategoryColor(s.category, s.subcategory)
       const icon = L.divIcon({
