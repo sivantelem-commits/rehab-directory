@@ -3,6 +3,7 @@ import Head from 'next/head'
 import { CATEGORIES, CATEGORY_NAMES, getCategoryColor } from '../lib/categories'
 
 const DISTRICTS = ['צפון', 'חיפה', 'מרכז', 'תל אביב', 'ירושלים', 'דרום', 'יהודה ושומרון']
+const ALL_DISTRICTS = ['הכל', ...DISTRICTS]
 
 export default function Admin() {
   const [authed, setAuthed] = useState(false)
@@ -18,6 +19,9 @@ export default function Admin() {
   const [saving, setSaving] = useState(false)
   const [locationService, setLocationService] = useState(null)
   const [mounted, setMounted] = useState(false)
+  const [showExport, setShowExport] = useState(false)
+  const [exportFilters, setExportFilters] = useState({ status: 'approved', district: '', category: '', subcategory: '' })
+  const [exporting, setExporting] = useState(false)
 
   useEffect(() => { setMounted(true) }, [])
 
@@ -99,9 +103,53 @@ export default function Admin() {
     fetchAll(adminKey)
   }
 
+  const exportToExcel = async () => {
+    setExporting(true)
+    try {
+      const params = new URLSearchParams()
+      if (exportFilters.status) params.set('status', exportFilters.status)
+      if (exportFilters.district) params.set('district', exportFilters.district)
+      if (exportFilters.category) params.set('category', exportFilters.category)
+      if (exportFilters.subcategory) params.set('subcategory', exportFilters.subcategory)
+
+      const res = await fetch(`/api/admin/export?${params}`, { headers: { adminkey: adminKey } })
+      const data = await res.json()
+
+      const XLSX = await import('xlsx')
+      const rows = data.map(s => ({
+        'שם השירות': s.name,
+        'קטגוריה': s.category,
+        'תת קטגוריה': s.subcategory || '',
+        'מחוז': s.district,
+        'עיר': s.city,
+        'כתובת': s.address || '',
+        'טלפון': s.phone || '',
+        'מייל': s.email || '',
+        'אתר': s.website || '',
+        'תיאור': s.description || '',
+        'סטטוס': s.status === 'approved' ? 'פעיל' : s.status === 'pending' ? 'ממתין' : 'נדחה',
+        'תאריך הוספה': new Date(s.created_at).toLocaleDateString('he-IL'),
+      }))
+
+      const ws = XLSX.utils.json_to_sheet(rows, { origin: 'A1' })
+      const wb = XLSX.utils.book_new()
+      XLSX.utils.book_append_sheet(wb, ws, 'שירותים')
+
+      // רוחב עמודות אוטומטי
+      const colWidths = Object.keys(rows[0] || {}).map(key => ({
+        wch: Math.max(key.length, ...rows.map(r => String(r[key] || '').length)) + 2
+      }))
+      ws['!cols'] = colWidths
+
+      XLSX.writeFile(wb, `סל-שיקום-${new Date().toLocaleDateString('he-IL').replace(/\//g, '-')}.xlsx`)
+      setShowExport(false)
+    } finally { setExporting(false) }
+  }
+
   const inp = { width: '100%', padding: '10px 14px', borderRadius: 12, border: '1.5px solid #FFD4B0', fontSize: 14, background: '#FFF8F3', outline: 'none', boxSizing: 'border-box', fontFamily: 'inherit' }
   const lbl = { display: 'block', fontSize: 13, fontWeight: 700, color: '#1A3A5C', marginBottom: 5 }
   const editSubcategories = editForm.category ? CATEGORIES[editForm.category]?.subcategories || [] : []
+  const exportSubcategories = exportFilters.category ? CATEGORIES[exportFilters.category]?.subcategories || [] : []
 
   if (!mounted) return null
 
@@ -160,12 +208,17 @@ export default function Admin() {
                 ))}
               </div>
 
-              <div style={{ display: 'flex', gap: 8, marginBottom: 24, flexWrap: 'wrap' }}>
-                {[['pending', `⏳ ממתינים (${pending.length})`], ['approved', `✅ פעילים (${approved.length})`]].map(([id, label]) => (
-                  <button key={id} onClick={() => setTab(id)} style={{ padding: '9px 18px', borderRadius: 20, fontWeight: 700, fontSize: 13, background: tab === id ? '#F47B20' : 'white', color: tab === id ? 'white' : '#1A3A5C', border: tab === id ? 'none' : '1.5px solid #FFD4B0', cursor: 'pointer' }}>
-                    {label}
-                  </button>
-                ))}
+              <div style={{ display: 'flex', gap: 8, marginBottom: 24, flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                  {[['pending', `⏳ ממתינים (${pending.length})`], ['approved', `✅ פעילים (${approved.length})`]].map(([id, label]) => (
+                    <button key={id} onClick={() => setTab(id)} style={{ padding: '9px 18px', borderRadius: 20, fontWeight: 700, fontSize: 13, background: tab === id ? '#F47B20' : 'white', color: tab === id ? 'white' : '#1A3A5C', border: tab === id ? 'none' : '1.5px solid #FFD4B0', cursor: 'pointer' }}>
+                      {label}
+                    </button>
+                  ))}
+                </div>
+                <button onClick={() => setShowExport(true)} style={{ background: '#2E7D32', color: 'white', border: 'none', borderRadius: 20, padding: '9px 18px', fontWeight: 700, fontSize: 13, cursor: 'pointer' }}>
+                  📊 ייצוא לאקסל
+                </button>
               </div>
 
               {loading ? (
@@ -229,6 +282,68 @@ export default function Admin() {
             </>
           )}
         </main>
+
+        {/* מודל ייצוא */}
+        {showExport && (
+          <div onClick={() => setShowExport(false)} style={{ position: 'fixed', inset: 0, background: 'rgba(26,58,92,0.6)', zIndex: 200, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
+            <div onClick={e => e.stopPropagation()} style={{ background: 'white', borderRadius: 20, maxWidth: 480, width: '100%', boxShadow: '0 24px 64px rgba(0,0,0,0.25)' }}>
+              <div style={{ height: 7, background: '#2E7D32', borderRadius: '20px 20px 0 0' }} />
+              <div style={{ padding: '24px 20px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
+                  <h2 style={{ margin: 0, fontSize: 18, fontWeight: 800, color: '#1A3A5C' }}>📊 ייצוא לאקסל</h2>
+                  <button onClick={() => setShowExport(false)} style={{ background: 'none', border: 'none', fontSize: 22, cursor: 'pointer', color: '#aaa' }}>✕</button>
+                </div>
+
+                <div style={{ marginBottom: 14 }}>
+                  <label style={lbl}>סטטוס</label>
+                  <select value={exportFilters.status} onChange={e => setExportFilters(f => ({ ...f, status: e.target.value }))} style={inp}>
+                    <option value="">הכל</option>
+                    <option value="approved">פעילים בלבד</option>
+                    <option value="pending">ממתינים בלבד</option>
+                    <option value="rejected">נדחו בלבד</option>
+                  </select>
+                </div>
+
+                <div style={{ marginBottom: 14 }}>
+                  <label style={lbl}>מחוז</label>
+                  <select value={exportFilters.district} onChange={e => setExportFilters(f => ({ ...f, district: e.target.value }))} style={inp}>
+                    <option value="">כל המחוזות</option>
+                    {DISTRICTS.map(d => <option key={d}>{d}</option>)}
+                  </select>
+                </div>
+
+                <div style={{ marginBottom: 14 }}>
+                  <label style={lbl}>קטגוריה</label>
+                  <select value={exportFilters.category} onChange={e => setExportFilters(f => ({ ...f, category: e.target.value, subcategory: '' }))} style={inp}>
+                    <option value="">כל הקטגוריות</option>
+                    {CATEGORY_NAMES.map(c => <option key={c}>{c}</option>)}
+                  </select>
+                </div>
+
+                {exportSubcategories.length > 0 && (
+                  <div style={{ marginBottom: 14 }}>
+                    <label style={lbl}>תת קטגוריה</label>
+                    <select value={exportFilters.subcategory} onChange={e => setExportFilters(f => ({ ...f, subcategory: e.target.value }))} style={inp}>
+                      <option value="">כל תתי הקטגוריות</option>
+                      {exportSubcategories.map(s => <option key={s}>{s}</option>)}
+                    </select>
+                  </div>
+                )}
+
+                <div style={{ background: '#F0FFF4', borderRadius: 12, padding: '12px 16px', marginBottom: 20, fontSize: 13, color: '#2E7D32' }}>
+                  הקובץ יכלול: שם, קטגוריה, תת קטגוריה, מחוז, עיר, כתובת, טלפון, מייל, אתר, תיאור, סטטוס ותאריך הוספה
+                </div>
+
+                <div style={{ display: 'flex', gap: 10 }}>
+                  <button onClick={exportToExcel} disabled={exporting} style={{ flex: 1, background: '#2E7D32', color: 'white', border: 'none', borderRadius: 20, padding: '12px 0', fontWeight: 700, fontSize: 14, cursor: exporting ? 'not-allowed' : 'pointer' }}>
+                    {exporting ? 'מייצא...' : '📥 הורד אקסל'}
+                  </button>
+                  <button onClick={() => setShowExport(false)} style={{ flex: 1, background: '#EEF2FF', color: '#1A3A5C', border: '1.5px solid #C5D0F0', borderRadius: 20, padding: '12px 0', fontWeight: 700, fontSize: 14, cursor: 'pointer' }}>ביטול</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
 
         {editingService && (
           <div onClick={() => setEditingService(null)} style={{ position: 'fixed', inset: 0, background: 'rgba(26,58,92,0.6)', zIndex: 200, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
