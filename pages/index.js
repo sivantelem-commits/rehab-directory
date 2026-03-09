@@ -16,8 +16,15 @@ export default function Home() {
   const [subcategory, setSubcategory] = useState('הכל')
   const [debouncedSearch, setDebouncedSearch] = useState('')
   const [mounted, setMounted] = useState(false)
+  const [showTop, setShowTop] = useState(false)
 
   useEffect(() => { setMounted(true) }, [])
+
+  useEffect(() => {
+    const handleScroll = () => setShowTop(window.scrollY > 400)
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
 
   useEffect(() => {
     const t = setTimeout(() => setDebouncedSearch(search), 300)
@@ -109,7 +116,11 @@ export default function Home() {
           ) : services.length === 0 ? (
             <div style={{ textAlign: 'center', padding: 64, color: '#aaa' }}>
               <div style={{ fontSize: 48, marginBottom: 12 }}>🔍</div>
-              <div style={{ fontWeight: 600, fontSize: 18 }}>לא נמצאו שירותים</div>
+              <div style={{ fontWeight: 600, fontSize: 18, marginBottom: 8 }}>לא נמצאו שירותים</div>
+              <button onClick={() => { setSearch(''); setDistrict('הכל'); setCategory('הכל'); setSubcategory('הכל') }}
+                style={{ background: '#F47B20', color: 'white', border: 'none', borderRadius: 20, padding: '10px 24px', fontWeight: 700, fontSize: 14, cursor: 'pointer', marginTop: 8 }}>
+                נקה פילטרים
+              </button>
             </div>
           ) : (
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 16, alignItems: 'stretch' }}>
@@ -121,6 +132,14 @@ export default function Home() {
             </div>
           )}
         </main>
+
+        {showTop && (
+          <button
+            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            style={{ position: 'fixed', bottom: 24, left: 24, width: 48, height: 48, borderRadius: '50%', background: '#F47B20', color: 'white', border: 'none', fontSize: 22, cursor: 'pointer', boxShadow: '0 4px 16px rgba(244,123,32,0.4)', zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            ↑
+          </button>
+        )}
 
         <footer style={{ background: '#1A3A5C', color: 'rgba(255,255,255,0.7)', textAlign: 'center', padding: '24px', fontSize: 13, marginTop: 48 }}>
           מאגר שירותי סל שיקום © {new Date().getFullYear()}
