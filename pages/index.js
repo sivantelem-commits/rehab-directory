@@ -56,20 +56,20 @@ export default function Home() {
         <meta property="og:url" content="https://rehabdirectoryil.vercel.app/" />
       </Head>
       <div dir="rtl" style={{ fontFamily: 'Arial, sans-serif', minHeight: '100vh', background: '#FFF8F3' }}>
-        <header style={{ background: '#1A3A5C', color: 'white', padding: '0 32px', height: 70, display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxShadow: '0 2px 12px rgba(0,0,0,0.15)' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-            <div style={{ width: 44, height: 44, borderRadius: '50%', background: '#F47B20', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22, fontWeight: 800, color: 'white' }}>♿</div>
-            <div>
-              <div style={{ fontWeight: 800, fontSize: 19 }}>סל שיקום</div>
-              <div style={{ fontSize: 11, opacity: 0.75 }}>מאגר שירותי שיקום בקהילה</div>
-            </div>
-          </div>
-          <nav style={{ display: 'flex', gap: 8 }}>
-            {[['/', 'שירותים'], ['/map', '🗺️ מפה'], ['/register', 'הרשמת שירות'], ['/about', 'אודות'], ['/admin', 'ניהול']].map(([href, label]) => (
-              <a key={href} href={href} style={{ color: 'white', background: 'rgba(255,255,255,0.12)', borderRadius: 20, padding: '7px 18px', fontWeight: 600, fontSize: 13, border: '1.5px solid rgba(255,255,255,0.25)', textDecoration: 'none' }}>{label}</a>
-            ))}
-          </nav>
-        </header>
+        <header style={{ background: '#1A3A5C', color: 'white', padding: '0 16px', height: 'auto', minHeight: 70, display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxShadow: '0 2px 12px rgba(0,0,0,0.15)', flexWrap: 'wrap', gap: 8, paddingTop: 10, paddingBottom: 10 }}>
+  <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+    <div style={{ width: 44, height: 44, borderRadius: '50%', background: '#F47B20', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22, fontWeight: 800, color: 'white' }}>♿</div>
+    <div>
+      <div style={{ fontWeight: 800, fontSize: 19 }}>סל שיקום</div>
+      <div style={{ fontSize: 11, opacity: 0.75 }}>מאגר שירותי שיקום בקהילה</div>
+    </div>
+  </div>
+  <nav style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+    {[['/', 'שירותים'], ['/map', '🗺️ מפה'], ['/register', 'הרשמת שירות'], ['/about', 'אודות'], ['/admin', 'ניהול']].map(([href, label]) => (
+      <a key={href} href={href} style={{ color: 'white', background: 'rgba(255,255,255,0.12)', borderRadius: 20, padding: '6px 12px', fontWeight: 600, fontSize: 12, border: '1.5px solid rgba(255,255,255,0.25)', textDecoration: 'none' }}>{label}</a>
+    ))}
+  </nav>
+</header>
 
         <div style={{ background: 'linear-gradient(135deg, #1A3A5C, #2A5298)', color: 'white', padding: '48px 32px', textAlign: 'center' }}>
           <h1 style={{ fontSize: 32, fontWeight: 800, margin: '0 0 10px' }}>מאגר שירותי סל שיקום</h1>
