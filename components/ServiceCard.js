@@ -1,13 +1,11 @@
 import { getCategoryColor } from '../lib/categories'
 
-export default function ServiceCard({ service, onClick }) {
+export default function ServiceCard({ service }) {
   const color = getCategoryColor(service.category, service.subcategory)
-
   return (
-    <div onClick={() => onClick(service)} style={{ background: 'white', borderRadius: 16, padding: '20px 22px', cursor: 'pointer', boxShadow: '0 4px 16px rgba(0,0,0,0.07)', border: '1.5px solid #FFE8D6', borderTop: `4px solid ${color}`, transition: 'transform 0.15s, box-shadow 0.15s' }}
+    <div style={{ background: 'white', borderRadius: 16, padding: '20px 22px', cursor: 'pointer', boxShadow: '0 4px 16px rgba(0,0,0,0.07)', border: '1.5px solid #FFE8D6', borderTop: `4px solid ${color}`, transition: 'transform 0.15s, box-shadow 0.15s', display: 'flex', flexDirection: 'column', height: '100%', minHeight: 200 }}
       onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 8px 24px rgba(0,0,0,0.12)' }}
       onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 4px 16px rgba(0,0,0,0.07)' }}>
-
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 10 }}>
         <div style={{ fontWeight: 700, fontSize: 16, color: '#1A3A5C', lineHeight: 1.3, flex: 1 }}>{service.name}</div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 4, alignItems: 'flex-end' }}>
@@ -17,16 +15,15 @@ export default function ServiceCard({ service, onClick }) {
           )}
         </div>
       </div>
-
       <div style={{ fontSize: 13, color: '#888', marginBottom: 8 }}>📍 {service.city}{service.district ? `, ${service.district}` : ''}</div>
-
-      {service.description && (
-        <div style={{ fontSize: 13.5, color: '#445', lineHeight: 1.55, marginBottom: 12, display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
-          {service.description}
-        </div>
-      )}
-
-      <div style={{ display: 'flex', gap: 12, fontSize: 13, color, flexWrap: 'wrap' }}>
+      <div style={{ flex: 1 }}>
+        {service.description && (
+          <div style={{ fontSize: 13.5, color: '#445', lineHeight: 1.55, marginBottom: 12, display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+            {service.description}
+          </div>
+        )}
+      </div>
+      <div style={{ display: 'flex', gap: 12, fontSize: 13, color, flexWrap: 'wrap', marginTop: 'auto' }}>
         {service.phone && <span>📞 {service.phone}</span>}
         {service.email && <span>✉️ {service.email}</span>}
       </div>
