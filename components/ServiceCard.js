@@ -3,7 +3,7 @@ import { getCategoryColor } from '../lib/categories'
 export default function ServiceCard({ service }) {
   const color = getCategoryColor(service.category, service.subcategory)
   return (
-    <div style={{ background: 'white', borderRadius: 16, padding: '20px 22px', cursor: 'pointer', boxShadow: '0 4px 16px rgba(0,0,0,0.07)', border: '1.5px solid #FFE8D6', borderTop: `4px solid ${color}`, transition: 'transform 0.15s, box-shadow 0.15s', display: 'flex', flexDirection: 'column', height: '100%', minHeight: 200 }}
+    <div style={{ background: 'white', borderRadius: 16, padding: '20px 22px', cursor: 'pointer', boxShadow: '0 4px 16px rgba(0,0,0,0.07)', border: '1.5px solid #FFE8D6', borderTop: `4px solid ${color}`, transition: 'transform 0.15s, box-shadow 0.15s', display: 'flex', flexDirection: 'column', height: '220px' }}
       onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 8px 24px rgba(0,0,0,0.12)' }}
       onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 4px 16px rgba(0,0,0,0.07)' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 10 }}>
@@ -16,14 +16,14 @@ export default function ServiceCard({ service }) {
         </div>
       </div>
       <div style={{ fontSize: 13, color: '#888', marginBottom: 8 }}>📍 {service.city}{service.district ? `, ${service.district}` : ''}</div>
-      <div style={{ flex: 1 }}>
+      <div style={{ flex: 1, overflow: 'hidden' }}>
         {service.description && (
-          <div style={{ fontSize: 13.5, color: '#445', lineHeight: 1.55, marginBottom: 12, display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+          <div style={{ fontSize: 13.5, color: '#445', lineHeight: 1.55, display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
             {service.description}
           </div>
         )}
       </div>
-      <div style={{ display: 'flex', gap: 12, fontSize: 13, color, flexWrap: 'wrap', marginTop: 'auto' }}>
+      <div style={{ display: 'flex', gap: 12, fontSize: 13, color, flexWrap: 'wrap', marginTop: 12 }}>
         {service.phone && <span>📞 {service.phone}</span>}
         {service.email && <span>✉️ {service.email}</span>}
       </div>
