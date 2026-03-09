@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react'
+import { CATEGORIES, CATEGORY_NAMES } from '../lib/categories'
 
 const DISTRICTS = ['צפון', 'חיפה', 'מרכז', 'תל אביב', 'ירושלים', 'דרום', 'יהודה ושומרון']
-const SERVICE_TYPES = ['שיקום תעסוקתי', 'בית מאזן', 'דיור מוגן']
 
 export default function Register() {
-  const [form, setForm] = useState({ name: '', district: '', city: '', type: '', description: '', phone: '', email: '', website: '', address: '' })
+  const [form, setForm] = useState({ name: '', district: '', city: '', category: '', subcategory: '', description: '', phone: '', email: '', website: '', address: '' })
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
   const [error, setError] = useState('')
@@ -14,8 +14,8 @@ export default function Register() {
 
   const handleSubmit = async () => {
     setError('')
-    const { name, district, city, type, phone, email } = form
-    if (!name || !district || !city || !type || !phone || !email) {
+    const { name, district, city, category, phone, email } = form
+    if (!name || !district || !city || !category || !phone || !email) {
       setError('יש למלא את כל שדות החובה המסומנים ב-*')
       return
     }
@@ -28,7 +28,7 @@ export default function Register() {
       })
       if (res.ok) {
         setSuccess(true)
-        setForm({ name: '', district: '', city: '', type: '', description: '', phone: '', email: '', website: '', address: '' })
+        setForm({ name: '', district: '', city: '', category: '', subcategory: '', description: '', phone: '', email: '', website: '', address: '' })
       } else {
         const d = await res.json()
         setError(d.error || 'שגיאה בשליחה')
@@ -42,6 +42,8 @@ export default function Register() {
 
   const inp = { width: '100%', padding: '11px 16px', borderRadius: 20, border: '1.5px solid #FFD4B0', fontSize: 14, background: '#FFF8F3', outline: 'none', boxSizing: 'border-box' }
   const lbl = { display: 'block', fontSize: 13.5, fontWeight: 700, color: '#1A3A5C', marginBottom: 6 }
+
+  const subcategories = form.category ? CATEGORIES[form.category]?.subcategories || [] : []
 
   if (!mounted) return null
 
@@ -103,12 +105,22 @@ export default function Register() {
             </div>
 
             <div style={{ marginBottom: 16 }}>
-              <label style={lbl}>סוג שירות *</label>
-              <select value={form.type} onChange={e => setForm(f => ({ ...f, type: e.target.value }))} style={inp}>
-                <option value="">בחרו סוג שירות</option>
-                {SERVICE_TYPES.map(t => <option key={t}>{t}</option>)}
+              <label style={lbl}>קטגוריה *</label>
+              <select value={form.category} onChange={e => setForm(f => ({ ...f, category: e.target.value, subcategory: '' }))} style={inp}>
+                <option value="">בחרו קטגוריה</option>
+                {CATEGORY_NAMES.map(c => <option key={c}>{c}</option>)}
               </select>
             </div>
+
+            {subcategories.length > 0 && (
+              <div style={{ marginBottom: 16 }}>
+                <label style={lbl}>תת קטגוריה</label>
+                <select value={form.subcategory} onChange={e => setForm(f => ({ ...f, subcategory: e.target.value }))} style={inp}>
+                  <option value="">בחרו תת קטגוריה</option>
+                  {subcategories.map(s => <option key={s}>{s}</option>)}
+                </select>
+              </div>
+            )}
 
             <div style={{ marginBottom: 24 }}>
               <label style={lbl}>תיאור השירות</label>
