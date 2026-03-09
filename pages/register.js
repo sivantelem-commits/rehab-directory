@@ -54,7 +54,7 @@ export default function Register() {
         <meta name="description" content="הרשמת שירות סל שיקום חדש למאגר" />
       </Head>
       <div dir="rtl" style={{ fontFamily: 'Arial, sans-serif', minHeight: '100vh', background: '#FFF8F3' }}>
-        <header style={{ background: '#1A3A5C', color: 'white', padding: '0 32px', height: 70, display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxShadow: '0 2px 12px rgba(0,0,0,0.15)' }}>
+        <header style={{ background: '#1A3A5C', color: 'white', padding: '10px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxShadow: '0 2px 12px rgba(0,0,0,0.15)', flexWrap: 'wrap', gap: 8 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
             <div style={{ width: 44, height: 44, borderRadius: '50%', background: '#F47B20', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22, fontWeight: 800, color: 'white' }}>♿</div>
             <div>
@@ -62,20 +62,20 @@ export default function Register() {
               <div style={{ fontSize: 11, opacity: 0.75 }}>מאגר שירותי שיקום בקהילה</div>
             </div>
           </div>
-          <nav style={{ display: 'flex', gap: 8 }}>
+          <nav style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
             {[['/', 'שירותים'], ['/map', '🗺️ מפה'], ['/register', 'הרשמת שירות'], ['/about', 'אודות'], ['/admin', 'ניהול']].map(([href, label]) => (
-              <a key={href} href={href} style={{ color: 'white', background: 'rgba(255,255,255,0.12)', borderRadius: 20, padding: '7px 18px', fontWeight: 600, fontSize: 13, border: '1.5px solid rgba(255,255,255,0.25)', textDecoration: 'none' }}>{label}</a>
+              <a key={href} href={href} style={{ color: 'white', background: 'rgba(255,255,255,0.12)', borderRadius: 20, padding: '6px 12px', fontWeight: 600, fontSize: 12, border: '1.5px solid rgba(255,255,255,0.25)', textDecoration: 'none' }}>{label}</a>
             ))}
           </nav>
         </header>
 
-        <div style={{ background: 'linear-gradient(135deg, #1A3A5C, #2A5298)', color: 'white', padding: '36px 32px', textAlign: 'center' }}>
+        <div style={{ background: 'linear-gradient(135deg, #1A3A5C, #2A5298)', color: 'white', padding: '32px 20px', textAlign: 'center' }}>
           <div style={{ fontSize: 36, marginBottom: 10 }}>➕</div>
-          <h1 style={{ fontSize: 26, fontWeight: 800, margin: '0 0 8px' }}>הרשמת שירות חדש</h1>
+          <h1 style={{ fontSize: 24, fontWeight: 800, margin: '0 0 8px' }}>הרשמת שירות חדש</h1>
           <p style={{ fontSize: 14, opacity: 0.85, margin: 0 }}>לאחר אישור האדמין השירות יופיע במאגר</p>
         </div>
 
-        <main style={{ maxWidth: 620, margin: '0 auto', padding: '36px 24px' }}>
+        <main style={{ maxWidth: 620, margin: '0 auto', padding: '28px 16px' }}>
           {success ? (
             <div style={{ background: 'white', borderRadius: 20, padding: 40, textAlign: 'center', border: '2px solid #F47B20', boxShadow: '0 4px 20px rgba(244,123,32,0.15)' }}>
               <div style={{ fontSize: 52, marginBottom: 14 }}>✅</div>
@@ -86,7 +86,7 @@ export default function Register() {
               </button>
             </div>
           ) : (
-            <div style={{ background: 'white', borderRadius: 20, padding: '28px 32px', boxShadow: '0 4px 20px rgba(244,123,32,0.1)', border: '1.5px solid #FFE8D6' }}>
+            <div style={{ background: 'white', borderRadius: 20, padding: '24px 20px', boxShadow: '0 4px 20px rgba(244,123,32,0.1)', border: '1.5px solid #FFE8D6' }}>
               {[
                 ['name', 'שם השירות *', 'text', 'שם המרכז / השירות'],
                 ['city', 'עיר *', 'text', 'עיר המרכז'],
