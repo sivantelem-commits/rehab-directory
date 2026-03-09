@@ -17,7 +17,6 @@ export default async function handler(req, res) {
       .select('*')
       .eq('status', 'pending')
       .order('created_at', { ascending: true })
-
     if (error) return res.status(500).json({ error: error.message })
     return res.status(200).json(data)
   }
@@ -33,7 +32,6 @@ export default async function handler(req, res) {
       .eq('id', id)
       .select()
       .single()
-
     if (error) return res.status(500).json({ error: error.message })
     return res.status(200).json(data)
   }
@@ -43,6 +41,18 @@ export default async function handler(req, res) {
     const { error } = await supabase.from('services').delete().eq('id', id)
     if (error) return res.status(500).json({ error: error.message })
     return res.status(200).json({ ok: true })
+  }
+
+  if (req.method === 'POST') {
+    const { id, lat, lng } = req.body
+    const { data, error } = await supabase
+      .from('services')
+      .update({ lat, lng })
+      .eq('id', id)
+      .select()
+      .single()
+    if (error) return res.status(500).json({ error: error.message })
+    return res.status(200).json(data)
   }
 
   res.status(405).end()
