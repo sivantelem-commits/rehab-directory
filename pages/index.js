@@ -65,8 +65,8 @@ export default function Home() {
             </div>
           </div>
           <nav style={{ display: 'flex', gap: 8 }}>
-{[['/', 'שירותים'], ['/map', '🗺️ מפה'], ['/register', 'הרשמת שירות'], ['/about', 'אודות'], ['/admin', 'ניהול']].map(([href, label]) => (
-  <a key={href} href={href} style={{ color: 'white', background: 'rgba(255,255,255,0.12)', borderRadius: 20, padding: '7px 18px', fontWeight: 600, fontSize: 13, border: '1.5px solid rgba(255,255,255,0.25)', textDecoration: 'none' }}>{label}</a>
+            {[['/', 'שירותים'], ['/map', '🗺️ מפה'], ['/register', 'הרשמת שירות'], ['/about', 'אודות'], ['/admin', 'ניהול']].map(([href, label]) => (
+              <a key={href} href={href} style={{ color: 'white', background: 'rgba(255,255,255,0.12)', borderRadius: 20, padding: '7px 18px', fontWeight: 600, fontSize: 13, border: '1.5px solid rgba(255,255,255,0.25)', textDecoration: 'none' }}>{label}</a>
             ))}
           </nav>
         </header>
@@ -112,9 +112,9 @@ export default function Home() {
               <div style={{ fontWeight: 600, fontSize: 18 }}>לא נמצאו שירותים</div>
             </div>
           ) : (
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: 20 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: 20, alignItems: 'stretch' }}>
               {services.map(s => (
-                <div key={s.id} onClick={() => router.push(`/service/${s.id}`)} style={{ cursor: 'pointer' }}>
+                <div key={s.id} onClick={() => router.push(`/service/${s.id}`)} style={{ cursor: 'pointer', height: '100%' }}>
                   <ServiceCard service={s} />
                 </div>
               ))}
