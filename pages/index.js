@@ -1,7 +1,8 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/router'
+import Head from 'next/head'
 import ServiceCard from '../components/ServiceCard'
-import { CATEGORIES, CATEGORY_NAMES, getCategoryColor } from '../lib/categories'
+import { CATEGORIES, CATEGORY_NAMES } from '../lib/categories'
 
 const DISTRICTS = ['הכל', 'צפון', 'חיפה', 'מרכז', 'תל אביב', 'ירושלים', 'דרום', 'יהודה ושומרון']
 
@@ -46,76 +47,85 @@ export default function Home() {
   const sel = { padding: '9px 14px', borderRadius: 20, border: '1.5px solid #FFD4B0', fontSize: 14, background: 'white', cursor: 'pointer', outline: 'none' }
 
   return (
-    <div dir="rtl" style={{ fontFamily: 'Arial, sans-serif', minHeight: '100vh', background: '#FFF8F3' }}>
-      <header style={{ background: '#1A3A5C', color: 'white', padding: '0 32px', height: 70, display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxShadow: '0 2px 12px rgba(0,0,0,0.15)' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-          <div style={{ width: 44, height: 44, borderRadius: '50%', background: '#F47B20', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22, fontWeight: 800, color: 'white' }}>♿</div>
-          <div>
-            <div style={{ fontWeight: 800, fontSize: 19 }}>סל שיקום</div>
-            <div style={{ fontSize: 11, opacity: 0.75 }}>מאגר שירותי שיקום בקהילה</div>
+    <>
+      <Head>
+        <title>מאגר שירותי סל שיקום</title>
+        <meta name="description" content="מצאו שירותי שיקום בקהילה – דיור, תעסוקה, השכלה וליווי לפי אזור בישראל" />
+        <meta property="og:title" content="מאגר שירותי סל שיקום" />
+        <meta property="og:description" content="מצאו שירותי שיקום בקהילה לפי אזור וקטגוריה" />
+        <meta property="og:url" content="https://rehabdirectoryil.vercel.app/" />
+      </Head>
+      <div dir="rtl" style={{ fontFamily: 'Arial, sans-serif', minHeight: '100vh', background: '#FFF8F3' }}>
+        <header style={{ background: '#1A3A5C', color: 'white', padding: '0 32px', height: 70, display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxShadow: '0 2px 12px rgba(0,0,0,0.15)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+            <div style={{ width: 44, height: 44, borderRadius: '50%', background: '#F47B20', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22, fontWeight: 800, color: 'white' }}>♿</div>
+            <div>
+              <div style={{ fontWeight: 800, fontSize: 19 }}>סל שיקום</div>
+              <div style={{ fontSize: 11, opacity: 0.75 }}>מאגר שירותי שיקום בקהילה</div>
+            </div>
           </div>
-        </div>
-        <nav style={{ display: 'flex', gap: 8 }}>
-          {[['/', 'שירותים'], ['/map', '🗺️ מפה'], ['/register', 'הרשמת שירות'], ['/admin', 'ניהול']].map(([href, label]) => (
-            <a key={href} href={href} style={{ color: 'white', background: 'rgba(255,255,255,0.12)', borderRadius: 20, padding: '7px 18px', fontWeight: 600, fontSize: 13, border: '1.5px solid rgba(255,255,255,0.25)', textDecoration: 'none' }}>{label}</a>
-          ))}
-        </nav>
-      </header>
-
-      <div style={{ background: 'linear-gradient(135deg, #1A3A5C, #2A5298)', color: 'white', padding: '48px 32px', textAlign: 'center' }}>
-        <h1 style={{ fontSize: 32, fontWeight: 800, margin: '0 0 10px' }}>מאגר שירותי סל שיקום</h1>
-        <p style={{ fontSize: 16, opacity: 0.85, margin: '0 0 28px' }}>מצאו שירותי שיקום בקהילה לפי אזור וקטגוריה</p>
-        <div style={{ maxWidth: 480, margin: '0 auto', position: 'relative' }}>
-          <input
-            type="text"
-            placeholder="חפשו לפי שם, עיר או תיאור..."
-            value={search}
-            onChange={e => setSearch(e.target.value)}
-            style={{ width: '100%', padding: '14px 20px', borderRadius: 30, border: 'none', fontSize: 15, outline: 'none', boxSizing: 'border-box', boxShadow: '0 4px 16px rgba(0,0,0,0.15)' }}
-          />
-        </div>
-      </div>
-
-      <div style={{ background: 'white', borderBottom: '1px solid #FFE8D6', padding: '16px 32px', display: 'flex', gap: 12, flexWrap: 'wrap', alignItems: 'center' }}>
-        <select value={district} onChange={e => setDistrict(e.target.value)} style={sel}>
-          {DISTRICTS.map(d => <option key={d}>{d}</option>)}
-        </select>
-        <select value={category} onChange={e => { setCategory(e.target.value); setSubcategory('הכל') }} style={sel}>
-          <option value="הכל">כל הקטגוריות</option>
-          {CATEGORY_NAMES.map(c => <option key={c}>{c}</option>)}
-        </select>
-        {category !== 'הכל' && (
-          <select value={subcategory} onChange={e => setSubcategory(e.target.value)} style={sel}>
-            {subcategories.map(s => <option key={s}>{s}</option>)}
-          </select>
-        )}
-        <div style={{ marginRight: 'auto', fontSize: 13, color: '#888' }}>
-          {loading ? 'טוען...' : `${services.length} שירותים`}
-        </div>
-      </div>
-
-      <main style={{ maxWidth: 1100, margin: '0 auto', padding: '32px 24px' }}>
-        {loading ? (
-          <div style={{ textAlign: 'center', padding: 64, color: '#F47B20' }}>טוען שירותים...</div>
-        ) : services.length === 0 ? (
-          <div style={{ textAlign: 'center', padding: 64, color: '#aaa' }}>
-            <div style={{ fontSize: 48, marginBottom: 12 }}>🔍</div>
-            <div style={{ fontWeight: 600, fontSize: 18 }}>לא נמצאו שירותים</div>
-          </div>
-        ) : (
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: 20 }}>
-            {services.map(s => (
-              <div key={s.id} onClick={() => router.push(`/service/${s.id}`)} style={{ cursor: 'pointer' }}>
-                <ServiceCard service={s} />
-              </div>
+          <nav style={{ display: 'flex', gap: 8 }}>
+            {[['/', 'שירותים'], ['/map', '🗺️ מפה'], ['/register', 'הרשמת שירות'], ['/admin', 'ניהול']].map(([href, label]) => (
+              <a key={href} href={href} style={{ color: 'white', background: 'rgba(255,255,255,0.12)', borderRadius: 20, padding: '7px 18px', fontWeight: 600, fontSize: 13, border: '1.5px solid rgba(255,255,255,0.25)', textDecoration: 'none' }}>{label}</a>
             ))}
-          </div>
-        )}
-      </main>
+          </nav>
+        </header>
 
-      <footer style={{ background: '#1A3A5C', color: 'rgba(255,255,255,0.7)', textAlign: 'center', padding: '24px', fontSize: 13, marginTop: 48 }}>
-        מאגר שירותי סל שיקום © {new Date().getFullYear()}
-      </footer>
-    </div>
+        <div style={{ background: 'linear-gradient(135deg, #1A3A5C, #2A5298)', color: 'white', padding: '48px 32px', textAlign: 'center' }}>
+          <h1 style={{ fontSize: 32, fontWeight: 800, margin: '0 0 10px' }}>מאגר שירותי סל שיקום</h1>
+          <p style={{ fontSize: 16, opacity: 0.85, margin: '0 0 28px' }}>מצאו שירותי שיקום בקהילה לפי אזור וקטגוריה</p>
+          <div style={{ maxWidth: 480, margin: '0 auto' }}>
+            <input
+              type="text"
+              placeholder="חפשו לפי שם, עיר או תיאור..."
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+              style={{ width: '100%', padding: '14px 20px', borderRadius: 30, border: 'none', fontSize: 15, outline: 'none', boxSizing: 'border-box', boxShadow: '0 4px 16px rgba(0,0,0,0.15)' }}
+            />
+          </div>
+        </div>
+
+        <div style={{ background: 'white', borderBottom: '1px solid #FFE8D6', padding: '16px 32px', display: 'flex', gap: 12, flexWrap: 'wrap', alignItems: 'center' }}>
+          <select value={district} onChange={e => setDistrict(e.target.value)} style={sel}>
+            {DISTRICTS.map(d => <option key={d}>{d}</option>)}
+          </select>
+          <select value={category} onChange={e => { setCategory(e.target.value); setSubcategory('הכל') }} style={sel}>
+            <option value="הכל">כל הקטגוריות</option>
+            {CATEGORY_NAMES.map(c => <option key={c}>{c}</option>)}
+          </select>
+          {category !== 'הכל' && (
+            <select value={subcategory} onChange={e => setSubcategory(e.target.value)} style={sel}>
+              {subcategories.map(s => <option key={s}>{s}</option>)}
+            </select>
+          )}
+          <div style={{ marginRight: 'auto', fontSize: 13, color: '#888' }}>
+            {loading ? 'טוען...' : `${services.length} שירותים`}
+          </div>
+        </div>
+
+        <main style={{ maxWidth: 1100, margin: '0 auto', padding: '32px 24px' }}>
+          {loading ? (
+            <div style={{ textAlign: 'center', padding: 64, color: '#F47B20' }}>טוען שירותים...</div>
+          ) : services.length === 0 ? (
+            <div style={{ textAlign: 'center', padding: 64, color: '#aaa' }}>
+              <div style={{ fontSize: 48, marginBottom: 12 }}>🔍</div>
+              <div style={{ fontWeight: 600, fontSize: 18 }}>לא נמצאו שירותים</div>
+            </div>
+          ) : (
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: 20 }}>
+              {services.map(s => (
+                <div key={s.id} onClick={() => router.push(`/service/${s.id}`)} style={{ cursor: 'pointer' }}>
+                  <ServiceCard service={s} />
+                </div>
+              ))}
+            </div>
+          )}
+        </main>
+
+        <footer style={{ background: '#1A3A5C', color: 'rgba(255,255,255,0.7)', textAlign: 'center', padding: '24px', fontSize: 13, marginTop: 48 }}>
+          מאגר שירותי סל שיקום © {new Date().getFullYear()}
+        </footer>
+      </div>
+    </>
   )
 }
