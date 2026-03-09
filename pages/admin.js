@@ -4,14 +4,24 @@ import { CATEGORIES, CATEGORY_NAMES, getCategoryColor } from '../lib/categories'
 
 const DISTRICTS = ['צפון', 'חיפה', 'מרכז', 'תל אביב', 'ירושלים', 'דרום', 'יהודה ושומרון']
 
-const CATEGORY_COLORS_HEX = {
-  'דיור': 'F3E5F5',
-  'תעסוקה': 'FFF3E0',
-  'השכלה': 'E3F2FD',
-  'חברה ופנאי': 'E8F5E9',
-  'ליווי ותמיכה': 'E1F5FE',
-  'טיפולי שיניים': 'FCE4EC',
-  'שירותים נוספים': 'ECEFF1',
+const CATEGORY_BG_COLORS = {
+  'דיור':           'FFF3E5F5',
+  'תעסוקה':         'FFFFF3E0',
+  'השכלה':          'FFE3F2FD',
+  'חברה ופנאי':     'FFE8F5E9',
+  'ליווי ותמיכה':   'FFE1F5FE',
+  'טיפולי שיניים':  'FFFCE4EC',
+  'שירותים נוספים': 'FFECEFF1',
+}
+
+const CATEGORY_TEXT_COLORS = {
+  'דיור':           'FF7B2D8B',
+  'תעסוקה':         'FFF47B20',
+  'השכלה':          'FF1A3A5C',
+  'חברה ופנאי':     'FF2E7D32',
+  'ליווי ותמיכה':   'FF0277BD',
+  'טיפולי שיניים':  'FFC2185B',
+  'שירותים נוספים': 'FF546E7A',
 }
 
 export default function Admin() {
@@ -113,119 +123,91 @@ export default function Admin() {
   }
 
   const exportToExcel = async () => {
-  setExporting(true)
-  try {
-    const params = new URLSearchParams()
-    if (exportFilters.status) params.set('status', exportFilters.status)
-    if (exportFilters.district) params.set('district', exportFilters.district)
-    if (exportFilters.category) params.set('category', exportFilters.category)
-    if (exportFilters.subcategory) params.set('subcategory', exportFilters.subcategory)
+    setExporting(true)
+    try {
+      const params = new URLSearchParams()
+      if (exportFilters.status) params.set('status', exportFilters.status)
+      if (exportFilters.district) params.set('district', exportFilters.district)
+      if (exportFilters.category) params.set('category', exportFilters.category)
+      if (exportFilters.subcategory) params.set('subcategory', exportFilters.subcategory)
 
-    const res = await fetch(`/api/admin/export?${params}`, { headers: { adminkey: adminKey } })
-    const data = await res.json()
+      const res = await fetch(`/api/admin/export?${params}`, { headers: { adminkey: adminKey } })
+      const data = await res.json()
 
-    const ExcelJS = (await import('exceljs')).default
-    const wb = new ExcelJS.Workbook()
-    wb.views = [{ rightToLeft: true }]
-    const ws = wb.addWorksheet('שירותים', { views: [{ rightToLeft: true }] })
+      const ExcelJS = (await import('exceljs')).default
+      const wb = new ExcelJS.Workbook()
+      wb.views = [{ rightToLeft: true }]
+      const ws = wb.addWorksheet('שירותים', { views: [{ rightToLeft: true }] })
 
-    const columns = [
-      { header: 'שם השירות', key: 'name', width: 28 },
-      { header: 'קטגוריה', key: 'category', width: 16 },
-      { header: 'תת קטגוריה', key: 'subcategory', width: 18 },
-      { header: 'מחוז', key: 'district', width: 12 },
-      { header: 'עיר', key: 'city', width: 14 },
-      { header: 'כתובת', key: 'address', width: 24 },
-      { header: 'טלפון', key: 'phone', width: 16 },
-      { header: 'מייל', key: 'email', width: 26 },
-      { header: 'אתר', key: 'website', width: 28 },
-      { header: 'תיאור', key: 'description', width: 40 },
-      { header: 'סטטוס', key: 'status', width: 12 },
-      { header: 'תאריך הוספה', key: 'created_at', width: 16 },
-    ]
-    ws.columns = columns
+      ws.columns = [
+        { header: 'שם השירות', key: 'name', width: 28 },
+        { header: 'קטגוריה', key: 'category', width: 16 },
+        { header: 'תת קטגוריה', key: 'subcategory', width: 18 },
+        { header: 'מחוז', key: 'district', width: 12 },
+        { header: 'עיר', key: 'city', width: 14 },
+        { header: 'כתובת', key: 'address', width: 24 },
+        { header: 'טלפון', key: 'phone', width: 16 },
+        { header: 'מייל', key: 'email', width: 26 },
+        { header: 'אתר', key: 'website', width: 28 },
+        { header: 'תיאור', key: 'description', width: 40 },
+        { header: 'סטטוס', key: 'status', width: 12 },
+        { header: 'תאריך הוספה', key: 'created_at', width: 16 },
+      ]
 
-    // עיצוב שורת כותרות
-    const headerRow = ws.getRow(1)
-    headerRow.height = 28
-    headerRow.eachCell(cell => {
-      cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF1A3A5C' } }
-      cell.font = { bold: true, color: { argb: 'FFFFFFFF' }, size: 12, name: 'Arial' }
-      cell.alignment = { horizontal: 'center', vertical: 'middle', readingOrder: 'rightToLeft' }
-      cell.border = { bottom: { style: 'medium', color: { argb: 'FFF47B20' } } }
-    })
-
-    // הוספת נתונים ועיצוב לפי קטגוריה
-    const categoryBgColors = {
-      'דיור':           'FFF3E5F5',
-      'תעסוקה':         'FFFFF3E0',
-      'השכלה':          'FFE3F2FD',
-      'חברה ופנאי':     'FFE8F5E9',
-      'ליווי ותמיכה':   'FFE1F5FE',
-      'טיפולי שיניים':  'FFFCE4EC',
-      'שירותים נוספים': 'FFECEFF1',
-    }
-
-    const categoryTextColors = {
-      'דיור':           'FF7B2D8B',
-      'תעסוקה':         'FFF47B20',
-      'השכלה':          'FF1A3A5C',
-      'חברה ופנאי':     'FF2E7D32',
-      'ליווי ותמיכה':   'FF0277BD',
-      'טיפולי שיניים':  'FFC2185B',
-      'שירותים נוספים': 'FF546E7A',
-    }
-
-    data.forEach(s => {
-      const row = ws.addRow({
-        name: s.name,
-        category: s.category,
-        subcategory: s.subcategory || '',
-        district: s.district,
-        city: s.city,
-        address: s.address || '',
-        phone: s.phone || '',
-        email: s.email || '',
-        website: s.website || '',
-        description: s.description || '',
-        status: s.status === 'approved' ? 'פעיל' : s.status === 'pending' ? 'ממתין' : 'נדחה',
-        created_at: new Date(s.created_at).toLocaleDateString('he-IL'),
+      const headerRow = ws.getRow(1)
+      headerRow.height = 28
+      headerRow.eachCell(cell => {
+        cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF1A3A5C' } }
+        cell.font = { bold: true, color: { argb: 'FFFFFFFF' }, size: 12, name: 'Arial' }
+        cell.alignment = { horizontal: 'center', vertical: 'middle', readingOrder: 'rightToLeft' }
+        cell.border = { bottom: { style: 'medium', color: { argb: 'FFF47B20' } } }
       })
 
-      const bg = categoryBgColors[s.category] || 'FFFFFFFF'
-      const textColor = categoryTextColors[s.category] || 'FF333333'
+      data.forEach(s => {
+        const row = ws.addRow({
+          name: s.name,
+          category: s.category,
+          subcategory: s.subcategory || '',
+          district: s.district,
+          city: s.city,
+          address: s.address || '',
+          phone: s.phone || '',
+          email: s.email || '',
+          website: s.website || '',
+          description: s.description || '',
+          status: s.status === 'approved' ? 'פעיל' : s.status === 'pending' ? 'ממתין' : 'נדחה',
+          created_at: new Date(s.created_at).toLocaleDateString('he-IL'),
+        })
 
-      row.height = 22
-      row.eachCell((cell, colNumber) => {
-        cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: bg } }
-        cell.alignment = { horizontal: 'right', vertical: 'middle', readingOrder: 'rightToLeft', wrapText: false }
-        cell.border = {
-          bottom: { style: 'thin', color: { argb: 'FFDDDDDD' } },
-          right: { style: 'thin', color: { argb: 'FFDDDDDD' } },
-        }
-        // צבע טקסט לעמודת קטגוריה
-        if (colNumber === 2) {
-          cell.font = { bold: true, color: { argb: textColor }, name: 'Arial' }
-        } else {
-          cell.font = { color: { argb: 'FF333333' }, name: 'Arial' }
-        }
+        const bg = CATEGORY_BG_COLORS[s.category] || 'FFFFFFFF'
+        const textColor = CATEGORY_TEXT_COLORS[s.category] || 'FF333333'
+
+        row.height = 22
+        row.eachCell((cell, colNumber) => {
+          cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: bg } }
+          cell.alignment = { horizontal: 'right', vertical: 'middle', readingOrder: 'rightToLeft' }
+          cell.border = {
+            bottom: { style: 'thin', color: { argb: 'FFDDDDDD' } },
+            right: { style: 'thin', color: { argb: 'FFDDDDDD' } },
+          }
+          cell.font = colNumber === 2
+            ? { bold: true, color: { argb: textColor }, name: 'Arial' }
+            : { color: { argb: 'FF333333' }, name: 'Arial' }
+        })
       })
-    })
 
-    // פילטר אוטומטי
-    ws.autoFilter = { from: 'A1', to: `L${data.length + 1}` }
+      ws.autoFilter = { from: 'A1', to: `L${data.length + 1}` }
 
-    // הורדה
-    const buffer = await wb.xlsx.writeBuffer()
-    const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = `סל-שיקום-${new Date().toLocaleDateString('he-IL').replace(/\//g, '-')}.xlsx`
-    a.click()
-    URL.revokeObjectURL(url)
-    setShowExport(false)
-  } finally { setExporting(false) }
+      const buffer = await wb.xlsx.writeBuffer()
+      const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `סל-שיקום-${new Date().toLocaleDateString('he-IL').replace(/\//g, '-')}.xlsx`
+      a.click()
+      URL.revokeObjectURL(url)
+      setShowExport(false)
+    } finally { setExporting(false) }
   }
 
   const inp = { width: '100%', padding: '10px 14px', borderRadius: 12, border: '1.5px solid #FFD4B0', fontSize: 14, background: '#FFF8F3', outline: 'none', boxSizing: 'border-box', fontFamily: 'inherit' }
