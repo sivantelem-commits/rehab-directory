@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react'
+import { CATEGORIES, CATEGORY_NAMES, getCategoryColor } from '../lib/categories'
 
-const TYPE_COLORS = { 'שיקום תעסוקתי': '#F47B20', 'בית מאזן': '#1A3A5C', 'דיור מוגן': '#E85D9A' }
 const DISTRICTS = ['צפון', 'חיפה', 'מרכז', 'תל אביב', 'ירושלים', 'דרום', 'יהודה ושומרון']
-const SERVICE_TYPES = ['שיקום תעסוקתי', 'בית מאזן', 'דיור מוגן']
 
 export default function Admin() {
   const [authed, setAuthed] = useState(false)
@@ -88,6 +87,8 @@ export default function Admin() {
   const inp = { width: '100%', padding: '10px 14px', borderRadius: 12, border: '1.5px solid #FFD4B0', fontSize: 14, background: '#FFF8F3', outline: 'none', boxSizing: 'border-box', fontFamily: 'inherit' }
   const lbl = { display: 'block', fontSize: 13, fontWeight: 700, color: '#1A3A5C', marginBottom: 5 }
 
+  const editSubcategories = editForm.category ? CATEGORIES[editForm.category]?.subcategories || [] : []
+
   return (
     <div dir="rtl" style={{ fontFamily: 'Arial, sans-serif', minHeight: '100vh', background: '#FFF8F3' }}>
       <header style={{ background: '#1A3A5C', color: 'white', padding: '0 32px', height: 70, display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxShadow: '0 2px 12px rgba(0,0,0,0.15)' }}>
@@ -157,26 +158,33 @@ export default function Admin() {
                 </div>
               ) : (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-                  {pending.map(s => (
-                    <div key={s.id} style={{ background: 'white', borderRadius: 16, padding: '22px 24px', boxShadow: '0 4px 16px rgba(0,0,0,0.07)', borderRight: '5px solid #F47B20' }}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', gap: 14, flexWrap: 'wrap' }}>
-                        <div style={{ flex: 1 }}>
-                          <div style={{ fontWeight: 700, fontSize: 17, color: '#1A3A5C', marginBottom: 4 }}>{s.name}</div>
-                          <div style={{ fontSize: 13, color: '#888', marginBottom: 6 }}>📍 {s.city}, {s.district} · {s.type}</div>
-                          <div style={{ fontSize: 13.5, color: '#445', marginBottom: 8, lineHeight: 1.55 }}>{s.description}</div>
-                          <div style={{ display: 'flex', gap: 14, fontSize: 13, color: '#F47B20' }}>
-                            {s.phone && <span>📞 {s.phone}</span>}
-                            {s.email && <span>✉️ {s.email}</span>}
+                  {pending.map(s => {
+                    const color = getCategoryColor(s.category, s.subcategory)
+                    return (
+                      <div key={s.id} style={{ background: 'white', borderRadius: 16, padding: '22px 24px', boxShadow: '0 4px 16px rgba(0,0,0,0.07)', borderRight: `5px solid ${color}` }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', gap: 14, flexWrap: 'wrap' }}>
+                          <div style={{ flex: 1 }}>
+                            <div style={{ fontWeight: 700, fontSize: 17, color: '#1A3A5C', marginBottom: 4 }}>{s.name}</div>
+                            <div style={{ display: 'flex', gap: 6, marginBottom: 6 }}>
+                              <span style={{ background: color, color: 'white', borderRadius: 20, padding: '2px 10px', fontSize: 11, fontWeight: 700 }}>{s.category}</span>
+                              {s.subcategory && <span style={{ background: `${color}22`, color, borderRadius: 20, padding: '2px 8px', fontSize: 11 }}>{s.subcategory}</span>}
+                            </div>
+                            <div style={{ fontSize: 13, color: '#888', marginBottom: 6 }}>📍 {s.city}, {s.district}</div>
+                            <div style={{ fontSize: 13.5, color: '#445', marginBottom: 8, lineHeight: 1.55 }}>{s.description}</div>
+                            <div style={{ display: 'flex', gap: 14, fontSize: 13, color }}>
+                              {s.phone && <span>📞 {s.phone}</span>}
+                              {s.email && <span>✉️ {s.email}</span>}
+                            </div>
+                          </div>
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                            <button onClick={() => updateStatus(s.id, 'approved')} style={{ background: '#F47B20', color: 'white', border: 'none', borderRadius: 20, padding: '9px 22px', fontWeight: 700, fontSize: 14, cursor: 'pointer' }}>✓ אשר</button>
+                            <button onClick={() => openEdit(s)} style={{ background: '#EEF2FF', color: '#1A3A5C', border: '1.5px solid #C5D0F0', borderRadius: 20, padding: '9px 22px', fontWeight: 700, fontSize: 14, cursor: 'pointer' }}>✏️ ערוך</button>
+                            <button onClick={() => updateStatus(s.id, 'rejected')} style={{ background: '#FFF0F0', color: '#C62828', border: '1.5px solid #FFCDD2', borderRadius: 20, padding: '9px 22px', fontWeight: 700, fontSize: 14, cursor: 'pointer' }}>✕ דחה</button>
                           </div>
                         </div>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                          <button onClick={() => updateStatus(s.id, 'approved')} style={{ background: '#F47B20', color: 'white', border: 'none', borderRadius: 20, padding: '9px 22px', fontWeight: 700, fontSize: 14, cursor: 'pointer' }}>✓ אשר</button>
-                          <button onClick={() => openEdit(s)} style={{ background: '#EEF2FF', color: '#1A3A5C', border: '1.5px solid #C5D0F0', borderRadius: 20, padding: '9px 22px', fontWeight: 700, fontSize: 14, cursor: 'pointer' }}>✏️ ערוך</button>
-                          <button onClick={() => updateStatus(s.id, 'rejected')} style={{ background: '#FFF0F0', color: '#C62828', border: '1.5px solid #FFCDD2', borderRadius: 20, padding: '9px 22px', fontWeight: 700, fontSize: 14, cursor: 'pointer' }}>✕ דחה</button>
-                        </div>
                       </div>
-                    </div>
-                  ))}
+                    )
+                  })}
                 </div>
               )
             ) : (
@@ -184,18 +192,21 @@ export default function Admin() {
                 <div style={{ textAlign: 'center', padding: 52, color: '#aaa' }}>אין שירותים פעילים</div>
               ) : (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                  {approved.map(s => (
-                    <div key={s.id} style={{ background: 'white', borderRadius: 14, padding: '16px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', boxShadow: '0 2px 8px rgba(0,0,0,0.06)', borderRight: `4px solid ${TYPE_COLORS[s.type] || '#F47B20'}` }}>
-                      <div>
-                        <div style={{ fontWeight: 600, fontSize: 15, color: '#1A3A5C' }}>{s.name}</div>
-                        <div style={{ fontSize: 12.5, color: '#aaa' }}>📍 {s.city} · {s.type}</div>
+                  {approved.map(s => {
+                    const color = getCategoryColor(s.category, s.subcategory)
+                    return (
+                      <div key={s.id} style={{ background: 'white', borderRadius: 14, padding: '16px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', boxShadow: '0 2px 8px rgba(0,0,0,0.06)', borderRight: `4px solid ${color}` }}>
+                        <div>
+                          <div style={{ fontWeight: 600, fontSize: 15, color: '#1A3A5C' }}>{s.name}</div>
+                          <div style={{ fontSize: 12.5, color: '#aaa' }}>📍 {s.city} · {s.category}{s.subcategory ? ` › ${s.subcategory}` : ''}</div>
+                        </div>
+                        <div style={{ display: 'flex', gap: 8 }}>
+                          <button onClick={() => openEdit(s)} style={{ background: '#EEF2FF', color: '#1A3A5C', border: '1.5px solid #C5D0F0', borderRadius: 20, padding: '6px 16px', fontSize: 13, cursor: 'pointer', fontWeight: 600 }}>✏️ ערוך</button>
+                          <button onClick={() => deleteService(s.id)} style={{ background: 'none', border: '1.5px solid #FFCDD2', color: '#C62828', borderRadius: 20, padding: '6px 16px', fontSize: 13, cursor: 'pointer', fontWeight: 600 }}>🗑️ מחק</button>
+                        </div>
                       </div>
-                      <div style={{ display: 'flex', gap: 8 }}>
-                        <button onClick={() => openEdit(s)} style={{ background: '#EEF2FF', color: '#1A3A5C', border: '1.5px solid #C5D0F0', borderRadius: 20, padding: '6px 16px', fontSize: 13, cursor: 'pointer', fontWeight: 600 }}>✏️ ערוך</button>
-                        <button onClick={() => deleteService(s.id)} style={{ background: 'none', border: '1.5px solid #FFCDD2', color: '#C62828', borderRadius: 20, padding: '6px 16px', fontSize: 13, cursor: 'pointer', fontWeight: 600 }}>🗑️ מחק</button>
-                      </div>
-                    </div>
-                  ))}
+                    )
+                  })}
                 </div>
               )
             )}
@@ -212,6 +223,7 @@ export default function Admin() {
                 <h2 style={{ margin: 0, fontSize: 20, fontWeight: 800, color: '#1A3A5C' }}>✏️ עריכת שירות</h2>
                 <button onClick={() => setEditingService(null)} style={{ background: 'none', border: 'none', fontSize: 22, cursor: 'pointer', color: '#aaa' }}>✕</button>
               </div>
+
               {[
                 ['name', 'שם השירות', 'text'],
                 ['city', 'עיר', 'text'],
@@ -225,22 +237,37 @@ export default function Admin() {
                   <input type={type} value={editForm[key] || ''} onChange={e => setEditForm(f => ({ ...f, [key]: e.target.value }))} style={inp} />
                 </div>
               ))}
+
               <div style={{ marginBottom: 14 }}>
                 <label style={lbl}>מחוז</label>
                 <select value={editForm.district || ''} onChange={e => setEditForm(f => ({ ...f, district: e.target.value }))} style={inp}>
                   {DISTRICTS.map(d => <option key={d}>{d}</option>)}
                 </select>
               </div>
+
               <div style={{ marginBottom: 14 }}>
-                <label style={lbl}>סוג שירות</label>
-                <select value={editForm.type || ''} onChange={e => setEditForm(f => ({ ...f, type: e.target.value }))} style={inp}>
-                  {SERVICE_TYPES.map(t => <option key={t}>{t}</option>)}
+                <label style={lbl}>קטגוריה</label>
+                <select value={editForm.category || ''} onChange={e => setEditForm(f => ({ ...f, category: e.target.value, subcategory: '' }))} style={inp}>
+                  <option value="">בחרו קטגוריה</option>
+                  {CATEGORY_NAMES.map(c => <option key={c}>{c}</option>)}
                 </select>
               </div>
+
+              {editSubcategories.length > 0 && (
+                <div style={{ marginBottom: 14 }}>
+                  <label style={lbl}>תת קטגוריה</label>
+                  <select value={editForm.subcategory || ''} onChange={e => setEditForm(f => ({ ...f, subcategory: e.target.value }))} style={inp}>
+                    <option value="">בחרו תת קטגוריה</option>
+                    {editSubcategories.map(s => <option key={s}>{s}</option>)}
+                  </select>
+                </div>
+              )}
+
               <div style={{ marginBottom: 22 }}>
                 <label style={lbl}>תיאור</label>
                 <textarea value={editForm.description || ''} onChange={e => setEditForm(f => ({ ...f, description: e.target.value }))} rows={4} style={{ ...inp, resize: 'vertical', borderRadius: 12 }} />
               </div>
+
               <div style={{ display: 'flex', gap: 10 }}>
                 <button onClick={saveEdit} disabled={saving} style={{ flex: 1, background: '#F47B20', color: 'white', border: 'none', borderRadius: 20, padding: '12px 0', fontWeight: 700, fontSize: 15, cursor: saving ? 'not-allowed' : 'pointer' }}>
                   {saving ? 'שומר...' : '💾 שמור שינויים'}
