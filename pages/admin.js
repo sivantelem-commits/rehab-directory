@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import Head from 'next/head'
 import { CATEGORIES, CATEGORY_NAMES, getCategoryColor } from '../lib/categories'
+import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend } from 'recharts'
 
 const DISTRICTS = ['צפון', 'חיפה', 'מרכז', 'תל אביב', 'ירושלים', 'דרום', 'יהודה ושומרון']
 
@@ -41,6 +42,7 @@ export default function Admin() {
   const [showExport, setShowExport] = useState(false)
   const [exportFilters, setExportFilters] = useState({ status: 'approved', district: '', category: '', subcategory: '' })
   const [exporting, setExporting] = useState(false)
+  const [stats, setStats] = useState(null)
 
   useEffect(() => { setMounted(true) }, [])
 
@@ -67,7 +69,21 @@ export default function Admin() {
     } finally { setLoading(false) }
   }
 
-  useEffect(() => { if (authed) fetchAll(adminKey) }, [authed])
+  const fetchStats = async (key) => {
+    const res = await fetch('/api/admin/stats', { headers: { adminkey: key } })
+    setStats(await res.json())
+  }
+
+  useEffect(() => {
+    if (authed) {
+      fetchAll(adminKey)
+      fetchStats(adminKey)
+    }
+  }, [authed])
+
+  useEffect(() => {
+    if (authed && tab === 'stats') fetchStats(adminKey)
+  }, [tab])
 
   const updateStatus = async (id, status) => {
     await fetch('/api/admin/services', {
@@ -86,12 +102,14 @@ export default function Admin() {
       }
     }
     fetchAll(adminKey)
+    fetchStats(adminKey)
   }
 
   const deleteService = async (id) => {
     if (!confirm('למחוק שירות זה לצמיתות?')) return
     await fetch(`/api/admin/services?id=${id}`, { method: 'DELETE', headers: { adminkey: adminKey } })
     fetchAll(adminKey)
+    fetchStats(adminKey)
   }
 
   const openEdit = (service) => {
@@ -219,9 +237,7 @@ export default function Admin() {
 
   return (
     <>
-      <Head>
-        <title>ניהול | סל שיקום</title>
-      </Head>
+      <Head><title>ניהול | סל שיקום</title></Head>
       <div dir="rtl" style={{ fontFamily: 'Arial, sans-serif', minHeight: '100vh', background: '#FFF8F3' }}>
         <header style={{ background: '#1A3A5C', color: 'white', padding: '10px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxShadow: '0 2px 12px rgba(0,0,0,0.15)', flexWrap: 'wrap', gap: 8 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
@@ -254,9 +270,7 @@ export default function Admin() {
                 onKeyDown={e => e.key === 'Enter' && login()}
                 style={{ width: '100%', padding: '12px 16px', borderRadius: 20, border: '1.5px solid #FFD4B0', fontSize: 15, textAlign: 'center', letterSpacing: 4, marginBottom: 10, background: '#FFF8F3', outline: 'none', boxSizing: 'border-box' }} />
               {loginError && <div style={{ color: '#C62828', fontSize: 13, marginBottom: 8 }}>{loginError}</div>}
-              <button onClick={login} style={{ width: '100%', background: '#F47B20', color: 'white', border: 'none', borderRadius: 20, padding: '12px 0', fontWeight: 700, fontSize: 15, cursor: 'pointer' }}>
-                כניסה
-              </button>
+              <button onClick={login} style={{ width: '100%', background: '#F47B20', color: 'white', border: 'none', borderRadius: 20, padding: '12px 0', fontWeight: 700, fontSize: 15, cursor: 'pointer' }}>כניסה</button>
             </div>
           ) : (
             <>
@@ -274,19 +288,21 @@ export default function Admin() {
 
               <div style={{ display: 'flex', gap: 8, marginBottom: 24, flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center' }}>
                 <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-                  {[['pending', `⏳ ממתינים (${pending.length})`], ['approved', `✅ פעילים (${approved.length})`]].map(([id, label]) => (
+                  {[['pending', `⏳ ממתינים (${pending.length})`], ['approved', `✅ פעילים (${approved.length})`], ['stats', '📊 סטטיסטיקות']].map(([id, label]) => (
                     <button key={id} onClick={() => setTab(id)} style={{ padding: '9px 18px', borderRadius: 20, fontWeight: 700, fontSize: 13, background: tab === id ? '#F47B20' : 'white', color: tab === id ? 'white' : '#1A3A5C', border: tab === id ? 'none' : '1.5px solid #FFD4B0', cursor: 'pointer' }}>
                       {label}
                     </button>
                   ))}
                 </div>
                 <button onClick={() => setShowExport(true)} style={{ background: '#2E7D32', color: 'white', border: 'none', borderRadius: 20, padding: '9px 18px', fontWeight: 700, fontSize: 13, cursor: 'pointer' }}>
-                  📊 ייצוא לאקסל
+                  📥 ייצוא לאקסל
                 </button>
               </div>
 
               {loading ? (
                 <div style={{ textAlign: 'center', padding: 48, color: '#F47B20' }}>טוען...</div>
+              ) : tab === 'stats' ? (
+                <StatsTab stats={stats} />
               ) : tab === 'pending' ? (
                 pending.length === 0 ? (
                   <div style={{ textAlign: 'center', padding: 52, color: '#aaa' }}>
@@ -353,7 +369,7 @@ export default function Admin() {
               <div style={{ height: 7, background: '#2E7D32', borderRadius: '20px 20px 0 0' }} />
               <div style={{ padding: '24px 20px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
-                  <h2 style={{ margin: 0, fontSize: 18, fontWeight: 800, color: '#1A3A5C' }}>📊 ייצוא לאקסל</h2>
+                  <h2 style={{ margin: 0, fontSize: 18, fontWeight: 800, color: '#1A3A5C' }}>📥 ייצוא לאקסל</h2>
                   <button onClick={() => setShowExport(false)} style={{ background: 'none', border: 'none', fontSize: 22, cursor: 'pointer', color: '#aaa' }}>✕</button>
                 </div>
                 <div style={{ marginBottom: 14 }}>
@@ -455,11 +471,7 @@ export default function Admin() {
         )}
 
         {locationService && (
-          <LocationPicker
-            service={locationService}
-            onSave={saveLocation}
-            onClose={() => setLocationService(null)}
-          />
+          <LocationPicker service={locationService} onSave={saveLocation} onClose={() => setLocationService(null)} />
         )}
 
         <footer style={{ background: '#1A3A5C', color: 'rgba(255,255,255,0.7)', textAlign: 'center', padding: '24px', fontSize: 13, marginTop: 48 }}>
@@ -467,6 +479,102 @@ export default function Admin() {
         </footer>
       </div>
     </>
+  )
+}
+
+function StatsTab({ stats }) {
+  if (!stats) return <div style={{ textAlign: 'center', padding: 48, color: '#F47B20' }}>טוען סטטיסטיקות...</div>
+
+  const COLORS = ['#7B2D8B','#F47B20','#1A3A5C','#2E7D32','#0277BD','#C2185B','#546E7A']
+  const districts = ['צפון','חיפה','מרכז','תל אביב','ירושלים','דרום','יהודה ושומרון']
+  const categories = Object.keys(stats.crossTable || {})
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+
+      {/* מספרים כלליים */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: 12 }}>
+        {[
+          ['סה"כ שירותים', stats.total, '#1A3A5C', '📋'],
+          ['פעילים', stats.approved, '#2E7D32', '✅'],
+          ['ממתינים', stats.pending, '#F47B20', '⏳'],
+          ['נדחו', stats.rejected, '#C62828', '❌'],
+        ].map(([label, val, color, icon]) => (
+          <div key={label} style={{ background: 'white', borderRadius: 16, padding: '18px 16px', textAlign: 'center', boxShadow: '0 4px 16px rgba(0,0,0,0.07)', borderTop: `4px solid ${color}` }}>
+            <div style={{ fontSize: 28, marginBottom: 6 }}>{icon}</div>
+            <div style={{ fontSize: 32, fontWeight: 800, color }}>{val}</div>
+            <div style={{ fontSize: 12, color: '#888', marginTop: 4 }}>{label}</div>
+          </div>
+        ))}
+      </div>
+
+      {/* גרפים */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(340px, 1fr))', gap: 20 }}>
+
+        {/* גרף עוגה לפי קטגוריה */}
+        <div style={{ background: 'white', borderRadius: 16, padding: '20px', boxShadow: '0 4px 16px rgba(0,0,0,0.07)' }}>
+          <h3 style={{ margin: '0 0 16px', fontSize: 15, fontWeight: 800, color: '#1A3A5C' }}>🥧 לפי קטגוריה</h3>
+          <ResponsiveContainer width="100%" height={240}>
+            <PieChart>
+              <Pie data={stats.byCategory} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80} label={({ name, value }) => `${name} (${value})`} labelLine={false}>
+                {stats.byCategory.map((entry, i) => (
+                  <Cell key={i} fill={COLORS[i % COLORS.length]} />
+                ))}
+              </Pie>
+              <Tooltip formatter={(value, name) => [value, name]} />
+            </PieChart>
+          </ResponsiveContainer>
+        </div>
+
+        {/* גרף עמודות לפי מחוז */}
+        <div style={{ background: 'white', borderRadius: 16, padding: '20px', boxShadow: '0 4px 16px rgba(0,0,0,0.07)' }}>
+          <h3 style={{ margin: '0 0 16px', fontSize: 15, fontWeight: 800, color: '#1A3A5C' }}>📊 לפי מחוז</h3>
+          <ResponsiveContainer width="100%" height={240}>
+            <BarChart data={stats.byDistrict} margin={{ top: 5, right: 10, left: -20, bottom: 5 }}>
+              <XAxis dataKey="name" tick={{ fontSize: 11 }} />
+              <YAxis tick={{ fontSize: 11 }} allowDecimals={false} />
+              <Tooltip />
+              <Bar dataKey="value" name="שירותים" radius={[6, 6, 0, 0]}>
+                {stats.byDistrict.map((entry, i) => (
+                  <Cell key={i} fill={COLORS[i % COLORS.length]} />
+                ))}
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
+
+      {/* טבלת פירוט קטגוריה × מחוז */}
+      <div style={{ background: 'white', borderRadius: 16, padding: '20px', boxShadow: '0 4px 16px rgba(0,0,0,0.07)', overflowX: 'auto' }}>
+        <h3 style={{ margin: '0 0 16px', fontSize: 15, fontWeight: 800, color: '#1A3A5C' }}>📋 פירוט לפי קטגוריה ומחוז</h3>
+        <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
+          <thead>
+            <tr style={{ background: '#1A3A5C', color: 'white' }}>
+              <th style={{ padding: '10px 14px', textAlign: 'right', borderRadius: '8px 0 0 0' }}>קטגוריה</th>
+              {districts.map(d => <th key={d} style={{ padding: '10px 10px', textAlign: 'center', whiteSpace: 'nowrap' }}>{d}</th>)}
+              <th style={{ padding: '10px 14px', textAlign: 'center', background: '#F47B20', borderRadius: '0 8px 0 0' }}>סה"כ</th>
+            </tr>
+          </thead>
+          <tbody>
+            {categories.map((cat, i) => {
+              const color = getCategoryColor(cat)
+              const total = districts.reduce((sum, d) => sum + (stats.crossTable[cat][d] || 0), 0)
+              return (
+                <tr key={cat} style={{ background: i % 2 === 0 ? '#FFF8F3' : 'white' }}>
+                  <td style={{ padding: '10px 14px', fontWeight: 700, color, borderRight: `3px solid ${color}` }}>{cat}</td>
+                  {districts.map(d => (
+                    <td key={d} style={{ padding: '10px', textAlign: 'center', color: stats.crossTable[cat][d] ? '#1A3A5C' : '#ddd', fontWeight: stats.crossTable[cat][d] ? 700 : 400 }}>
+                      {stats.crossTable[cat][d] || '–'}
+                    </td>
+                  ))}
+                  <td style={{ padding: '10px 14px', textAlign: 'center', fontWeight: 800, color: '#F47B20' }}>{total}</td>
+                </tr>
+              )
+            })}
+          </tbody>
+        </table>
+      </div>
+    </div>
   )
 }
 
