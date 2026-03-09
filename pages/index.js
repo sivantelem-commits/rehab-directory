@@ -1,14 +1,14 @@
 import { useState, useEffect, useCallback } from 'react'
+import { useRouter } from 'next/router'
 import ServiceCard from '../components/ServiceCard'
-import ServiceModal from '../components/ServiceModal'
 import { CATEGORIES, CATEGORY_NAMES, getCategoryColor } from '../lib/categories'
 
 const DISTRICTS = ['הכל', 'צפון', 'חיפה', 'מרכז', 'תל אביב', 'ירושלים', 'דרום', 'יהודה ושומרון']
 
 export default function Home() {
+  const router = useRouter()
   const [services, setServices] = useState([])
   const [loading, setLoading] = useState(true)
-  const [selected, setSelected] = useState(null)
   const [search, setSearch] = useState('')
   const [district, setDistrict] = useState('הכל')
   const [category, setCategory] = useState('הכל')
@@ -19,33 +19,31 @@ export default function Home() {
   useEffect(() => { setMounted(true) }, [])
 
   useEffect(() => {
-    const t = setTimeout(() => setDebouncedSearch(search), 350)
+    const t = setTimeout(() => setDebouncedSearch(search), 300)
     return () => clearTimeout(t)
   }, [search])
 
   const fetchServices = useCallback(async () => {
     setLoading(true)
-    const params = new URLSearchParams()
-    if (district !== 'הכל') params.set('district', district)
-    if (category !== 'הכל') params.set('category', category)
-    if (subcategory !== 'הכל') params.set('subcategory', subcategory)
-    if (debouncedSearch) params.set('search', debouncedSearch)
     try {
+      const params = new URLSearchParams()
+      if (district !== 'הכל') params.set('district', district)
+      if (category !== 'הכל') params.set('category', category)
+      if (subcategory !== 'הכל') params.set('subcategory', subcategory)
+      if (debouncedSearch) params.set('search', debouncedSearch)
       const res = await fetch(`/api/services?${params}`)
       const data = await res.json()
       setServices(Array.isArray(data) ? data : [])
-    } catch (e) {
-      console.error(e)
-    } finally {
-      setLoading(false)
-    }
+    } finally { setLoading(false) }
   }, [district, category, subcategory, debouncedSearch])
 
   useEffect(() => { fetchServices() }, [fetchServices])
 
-  const subcategories = category !== 'הכל' ? ['הכל', ...CATEGORIES[category].subcategories] : ['הכל']
+  const subcategories = category !== 'הכל' ? ['הכל', ...CATEGORIES[category].subcategories] : []
 
   if (!mounted) return null
+
+  const sel = { padding: '9px 14px', borderRadius: 20, border: '1.5px solid #FFD4B0', fontSize: 14, background: 'white', cursor: 'pointer', outline: 'none' }
 
   return (
     <div dir="rtl" style={{ fontFamily: 'Arial, sans-serif', minHeight: '100vh', background: '#FFF8F3' }}>
@@ -64,74 +62,53 @@ export default function Home() {
         </nav>
       </header>
 
-      <div style={{ background: 'linear-gradient(135deg, #1A3A5C 0%, #2A5298 100%)', color: 'white', padding: '48px 32px', textAlign: 'center' }}>
-        <div style={{ maxWidth: 640, margin: '0 auto' }}>
-          <div style={{ fontSize: 42, marginBottom: 12 }}>🌈</div>
-          <h1 style={{ fontSize: 32, fontWeight: 800, margin: '0 0 12px', lineHeight: 1.3 }}>מאגר שירותי סל שיקום</h1>
-          <p style={{ fontSize: 16, opacity: 0.88, margin: 0, lineHeight: 1.7 }}>
-            מצאו את השירות המתאים לכם — לפי מיקום, סוג שירות ותחום
-          </p>
+      <div style={{ background: 'linear-gradient(135deg, #1A3A5C, #2A5298)', color: 'white', padding: '48px 32px', textAlign: 'center' }}>
+        <h1 style={{ fontSize: 32, fontWeight: 800, margin: '0 0 10px' }}>מאגר שירותי סל שיקום</h1>
+        <p style={{ fontSize: 16, opacity: 0.85, margin: '0 0 28px' }}>מצאו שירותי שיקום בקהילה לפי אזור וקטגוריה</p>
+        <div style={{ maxWidth: 480, margin: '0 auto', position: 'relative' }}>
+          <input
+            type="text"
+            placeholder="חפשו לפי שם, עיר או תיאור..."
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            style={{ width: '100%', padding: '14px 20px', borderRadius: 30, border: 'none', fontSize: 15, outline: 'none', boxSizing: 'border-box', boxShadow: '0 4px 16px rgba(0,0,0,0.15)' }}
+          />
         </div>
       </div>
 
-      <main style={{ maxWidth: 1160, margin: '0 auto', padding: '36px 24px' }}>
-
-        {/* קטגוריות ראשיות */}
-        <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginBottom: 16, justifyContent: 'center' }}>
-          {['הכל', ...CATEGORY_NAMES].map(cat => {
-            const color = cat === 'הכל' ? '#1A3A5C' : CATEGORIES[cat].color
-            const active = category === cat
-            return (
-              <button key={cat} onClick={() => { setCategory(cat); setSubcategory('הכל') }}
-                style={{ padding: '8px 18px', borderRadius: 20, fontWeight: 700, fontSize: 13, cursor: 'pointer', border: `2px solid ${color}`, background: active ? color : 'white', color: active ? 'white' : color, transition: 'all 0.2s' }}>
-                {cat}
-              </button>
-            )
-          })}
-        </div>
-
-        {/* תת קטגוריות */}
+      <div style={{ background: 'white', borderBottom: '1px solid #FFE8D6', padding: '16px 32px', display: 'flex', gap: 12, flexWrap: 'wrap', alignItems: 'center' }}>
+        <select value={district} onChange={e => setDistrict(e.target.value)} style={sel}>
+          {DISTRICTS.map(d => <option key={d}>{d}</option>)}
+        </select>
+        <select value={category} onChange={e => { setCategory(e.target.value); setSubcategory('הכל') }} style={sel}>
+          <option value="הכל">כל הקטגוריות</option>
+          {CATEGORY_NAMES.map(c => <option key={c}>{c}</option>)}
+        </select>
         {category !== 'הכל' && (
-          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 20, justifyContent: 'center' }}>
-            {subcategories.map(sub => {
-              const color = sub === 'הכל' ? '#888' : getCategoryColor(category, sub)
-              const active = subcategory === sub
-              return (
-                <button key={sub} onClick={() => setSubcategory(sub)}
-                  style={{ padding: '6px 14px', borderRadius: 20, fontWeight: 600, fontSize: 12, cursor: 'pointer', border: `1.5px solid ${color}`, background: active ? color : 'white', color: active ? 'white' : color }}>
-                  {sub}
-                </button>
-              )
-            })}
-          </div>
-        )}
-
-        {/* פילטרים */}
-        <div style={{ background: 'white', borderRadius: 16, padding: '16px 24px', marginBottom: 28, boxShadow: '0 4px 20px rgba(244,123,32,0.1)', border: '1.5px solid #FFE0C8', display: 'flex', gap: 14, flexWrap: 'wrap', alignItems: 'center' }}>
-          <input
-            value={search}
-            onChange={e => setSearch(e.target.value)}
-            placeholder="🔍 חיפוש לפי שם, עיר..."
-            style={{ flex: '1 1 200px', padding: '10px 14px', borderRadius: 20, border: '1.5px solid #FFD4B0', fontSize: 14, background: '#FFF8F3', outline: 'none' }}
-          />
-          <select value={district} onChange={e => setDistrict(e.target.value)} style={{ flex: '1 1 140px', padding: '10px 14px', borderRadius: 20, border: '1.5px solid #FFD4B0', fontSize: 14, background: '#FFF8F3', cursor: 'pointer', outline: 'none' }}>
-            {DISTRICTS.map(d => <option key={d} value={d}>{d}</option>)}
+          <select value={subcategory} onChange={e => setSubcategory(e.target.value)} style={sel}>
+            {subcategories.map(s => <option key={s}>{s}</option>)}
           </select>
-          <span style={{ fontSize: 13.5, color: '#F47B20', fontWeight: 700, whiteSpace: 'nowrap' }}>
-            {loading ? '...' : `${services.length} שירותים`}
-          </span>
+        )}
+        <div style={{ marginRight: 'auto', fontSize: 13, color: '#888' }}>
+          {loading ? 'טוען...' : `${services.length} שירותים`}
         </div>
+      </div>
 
+      <main style={{ maxWidth: 1100, margin: '0 auto', padding: '32px 24px' }}>
         {loading ? (
           <div style={{ textAlign: 'center', padding: 64, color: '#F47B20' }}>טוען שירותים...</div>
         ) : services.length === 0 ? (
           <div style={{ textAlign: 'center', padding: 64, color: '#aaa' }}>
             <div style={{ fontSize: 48, marginBottom: 12 }}>🔍</div>
-            <div style={{ fontSize: 17, fontWeight: 600 }}>לא נמצאו שירותים</div>
+            <div style={{ fontWeight: 600, fontSize: 18 }}>לא נמצאו שירותים</div>
           </div>
         ) : (
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: 20 }}>
-            {services.map(s => <ServiceCard key={s.id} service={s} getCategoryColor={getCategoryColor} onClick={setSelected} />)}
+            {services.map(s => (
+              <div key={s.id} onClick={() => router.push(`/service/${s.id}`)} style={{ cursor: 'pointer' }}>
+                <ServiceCard service={s} />
+              </div>
+            ))}
           </div>
         )}
       </main>
@@ -139,8 +116,6 @@ export default function Home() {
       <footer style={{ background: '#1A3A5C', color: 'rgba(255,255,255,0.7)', textAlign: 'center', padding: '24px', fontSize: 13, marginTop: 48 }}>
         מאגר שירותי סל שיקום © {new Date().getFullYear()}
       </footer>
-
-      {selected && <ServiceModal service={selected} onClose={() => setSelected(null)} getCategoryColor={getCategoryColor} />}
     </div>
   )
 }
