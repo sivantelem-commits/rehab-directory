@@ -3,7 +3,16 @@ import Head from 'next/head'
 import { CATEGORIES, CATEGORY_NAMES, getCategoryColor } from '../lib/categories'
 
 const DISTRICTS = ['צפון', 'חיפה', 'מרכז', 'תל אביב', 'ירושלים', 'דרום', 'יהודה ושומרון']
-const ALL_DISTRICTS = ['הכל', ...DISTRICTS]
+
+const CATEGORY_COLORS_HEX = {
+  'דיור': 'F3E5F5',
+  'תעסוקה': 'FFF3E0',
+  'השכלה': 'E3F2FD',
+  'חברה ופנאי': 'E8F5E9',
+  'ליווי ותמיכה': 'E1F5FE',
+  'טיפולי שיניים': 'FCE4EC',
+  'שירותים נוספים': 'ECEFF1',
+}
 
 export default function Admin() {
   const [authed, setAuthed] = useState(false)
@@ -116,6 +125,7 @@ export default function Admin() {
       const data = await res.json()
 
       const XLSX = await import('xlsx')
+
       const rows = data.map(s => ({
         'שם השירות': s.name,
         'קטגוריה': s.category,
@@ -132,16 +142,51 @@ export default function Admin() {
       }))
 
       const ws = XLSX.utils.json_to_sheet(rows, { origin: 'A1' })
-      const wb = XLSX.utils.book_new()
-      XLSX.utils.book_append_sheet(wb, ws, 'שירותים')
+      ws['!dir'] = 'rtl'
+
+      const headerKeys = Object.keys(rows[0] || {})
 
       // רוחב עמודות אוטומטי
-      const colWidths = Object.keys(rows[0] || {}).map(key => ({
-        wch: Math.max(key.length, ...rows.map(r => String(r[key] || '').length)) + 2
+      ws['!cols'] = headerKeys.map(key => ({
+        wch: Math.max(key.length, ...rows.map(r => String(r[key] || '').length)) + 4
       }))
-      ws['!cols'] = colWidths
 
-      XLSX.writeFile(wb, `סל-שיקום-${new Date().toLocaleDateString('he-IL').replace(/\//g, '-')}.xlsx`)
+      // פילטר אוטומטי
+      ws['!autofilter'] = { ref: `A1:L${rows.length + 1}` }
+
+      // עיצוב כותרות
+      headerKeys.forEach((key, i) => {
+        const cellRef = XLSX.utils.encode_cell({ r: 0, c: i })
+        if (!ws[cellRef]) return
+        ws[cellRef].s = {
+          fill: { patternType: 'solid', fgColor: { rgb: '1A3A5C' } },
+          font: { bold: true, color: { rgb: 'FFFFFF' }, sz: 12 },
+          alignment: { horizontal: 'center', vertical: 'center', readingOrder: 2 },
+          border: { bottom: { style: 'medium', color: { rgb: 'F47B20' } } }
+        }
+      })
+
+      // עיצוב שורות לפי קטגוריה
+      rows.forEach((row, rowIndex) => {
+        const color = CATEGORY_COLORS_HEX[row['קטגוריה']] || 'FFFFFF'
+        headerKeys.forEach((key, colIndex) => {
+          const cellRef = XLSX.utils.encode_cell({ r: rowIndex + 1, c: colIndex })
+          if (!ws[cellRef]) ws[cellRef] = { v: '', t: 's' }
+          ws[cellRef].s = {
+            fill: { patternType: 'solid', fgColor: { rgb: color } },
+            alignment: { horizontal: 'right', vertical: 'center', readingOrder: 2, wrapText: true },
+            border: {
+              bottom: { style: 'thin', color: { rgb: 'DDDDDD' } },
+              right: { style: 'thin', color: { rgb: 'DDDDDD' } },
+            }
+          }
+        })
+      })
+
+      const wb = XLSX.utils.book_new()
+      wb.Workbook = { Views: [{ RTL: true }] }
+      XLSX.utils.book_append_sheet(wb, ws, 'שירותים')
+      XLSX.writeFile(wb, `סל-שיקום-${new Date().toLocaleDateString('he-IL').replace(/\//g, '-')}.xlsx`, { bookType: 'xlsx', type: 'binary', cellStyles: true })
       setShowExport(false)
     } finally { setExporting(false) }
   }
@@ -283,7 +328,6 @@ export default function Admin() {
           )}
         </main>
 
-        {/* מודל ייצוא */}
         {showExport && (
           <div onClick={() => setShowExport(false)} style={{ position: 'fixed', inset: 0, background: 'rgba(26,58,92,0.6)', zIndex: 200, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
             <div onClick={e => e.stopPropagation()} style={{ background: 'white', borderRadius: 20, maxWidth: 480, width: '100%', boxShadow: '0 24px 64px rgba(0,0,0,0.25)' }}>
@@ -293,7 +337,6 @@ export default function Admin() {
                   <h2 style={{ margin: 0, fontSize: 18, fontWeight: 800, color: '#1A3A5C' }}>📊 ייצוא לאקסל</h2>
                   <button onClick={() => setShowExport(false)} style={{ background: 'none', border: 'none', fontSize: 22, cursor: 'pointer', color: '#aaa' }}>✕</button>
                 </div>
-
                 <div style={{ marginBottom: 14 }}>
                   <label style={lbl}>סטטוס</label>
                   <select value={exportFilters.status} onChange={e => setExportFilters(f => ({ ...f, status: e.target.value }))} style={inp}>
@@ -303,7 +346,6 @@ export default function Admin() {
                     <option value="rejected">נדחו בלבד</option>
                   </select>
                 </div>
-
                 <div style={{ marginBottom: 14 }}>
                   <label style={lbl}>מחוז</label>
                   <select value={exportFilters.district} onChange={e => setExportFilters(f => ({ ...f, district: e.target.value }))} style={inp}>
@@ -311,7 +353,6 @@ export default function Admin() {
                     {DISTRICTS.map(d => <option key={d}>{d}</option>)}
                   </select>
                 </div>
-
                 <div style={{ marginBottom: 14 }}>
                   <label style={lbl}>קטגוריה</label>
                   <select value={exportFilters.category} onChange={e => setExportFilters(f => ({ ...f, category: e.target.value, subcategory: '' }))} style={inp}>
@@ -319,7 +360,6 @@ export default function Admin() {
                     {CATEGORY_NAMES.map(c => <option key={c}>{c}</option>)}
                   </select>
                 </div>
-
                 {exportSubcategories.length > 0 && (
                   <div style={{ marginBottom: 14 }}>
                     <label style={lbl}>תת קטגוריה</label>
@@ -329,11 +369,9 @@ export default function Admin() {
                     </select>
                   </div>
                 )}
-
                 <div style={{ background: '#F0FFF4', borderRadius: 12, padding: '12px 16px', marginBottom: 20, fontSize: 13, color: '#2E7D32' }}>
-                  הקובץ יכלול: שם, קטגוריה, תת קטגוריה, מחוז, עיר, כתובת, טלפון, מייל, אתר, תיאור, סטטוס ותאריך הוספה
+                  הקובץ יכלול עיצוב צבעוני לפי קטגוריה, כותרות מודגשות ואפשרות סינון בכל עמודה
                 </div>
-
                 <div style={{ display: 'flex', gap: 10 }}>
                   <button onClick={exportToExcel} disabled={exporting} style={{ flex: 1, background: '#2E7D32', color: 'white', border: 'none', borderRadius: 20, padding: '12px 0', fontWeight: 700, fontSize: 14, cursor: exporting ? 'not-allowed' : 'pointer' }}>
                     {exporting ? 'מייצא...' : '📥 הורד אקסל'}
