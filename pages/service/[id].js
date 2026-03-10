@@ -1,9 +1,17 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import Head from 'next/head'
-import { getCategoryColor } from '../../lib/categories'
 
-export default function ServicePage() {
+const CATEGORIES = {
+  'בתי"מ': { color: '#0277BD', icon: '🏠' },
+  'מחלקות אשפוז': { color: '#7B2D8B', icon: '🏥' },
+  'מרפאות יום': { color: '#2E7D32', icon: '☀️' },
+  'חדרי מיון': { color: '#C62828', icon: '🚨' },
+}
+
+const NAV = [['/', '🏠 ראשי'], ['/rehab', '♿ שיקום'], ['/treatment', '🏥 טיפול'], ['/register-treatment', 'הרשמת שירות'], ['/admin', 'ניהול']]
+
+export default function TreatmentServicePage() {
   const router = useRouter()
   const { id } = router.query
   const [service, setService] = useState(null)
@@ -15,10 +23,10 @@ export default function ServicePage() {
 
   useEffect(() => {
     if (!id) return
-    fetch('/api/services')
+    fetch(`/api/treatment?id=${id}`)
       .then(r => r.json())
       .then(data => {
-        const found = data.find(s => s.id === id)
+        const found = Array.isArray(data) ? data.find(s => s.id === id) : null
         setService(found || null)
         setLoading(false)
       })
@@ -31,77 +39,69 @@ export default function ServicePage() {
   }
 
   const shareWhatsApp = () => {
-    const text = `${service.name} – שירות סל שיקום ב${service.city}\n${window.location.href}`
+    const text = `${service.name} – שירות טיפולי ב${service.city}\n${window.location.href}`
     window.open(`https://wa.me/?text=${encodeURIComponent(text)}`)
   }
 
   if (!mounted) return null
 
   if (loading) return (
-    <div dir="rtl" style={{ fontFamily: 'Arial, sans-serif', minHeight: '100vh', background: '#FFF8F3', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      <div style={{ color: '#F47B20', fontSize: 18 }}>טוען...</div>
+    <div dir="rtl" style={{ fontFamily: 'Arial, sans-serif', minHeight: '100vh', background: '#F0F7FF', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <div style={{ color: '#0277BD', fontSize: 18 }}>טוען...</div>
     </div>
   )
 
   if (!service) return (
-    <div dir="rtl" style={{ fontFamily: 'Arial, sans-serif', minHeight: '100vh', background: '#FFF8F3', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: 16 }}>
+    <div dir="rtl" style={{ fontFamily: 'Arial, sans-serif', minHeight: '100vh', background: '#F0F7FF', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: 16 }}>
       <div style={{ fontSize: 48 }}>😕</div>
-      <div style={{ fontSize: 18, color: '#1A3A5C', fontWeight: 700 }}>השירות לא נמצא</div>
-      <button onClick={() => router.push('/')} style={{ background: '#F47B20', color: 'white', border: 'none', borderRadius: 20, padding: '10px 24px', fontWeight: 700, cursor: 'pointer' }}>חזרה לרשימה</button>
+      <div style={{ fontSize: 18, color: '#0277BD', fontWeight: 700 }}>השירות לא נמצא</div>
+      <button onClick={() => router.push('/treatment')} style={{ background: '#0277BD', color: 'white', border: 'none', borderRadius: 20, padding: '10px 24px', fontWeight: 700, cursor: 'pointer' }}>חזרה לרשימה</button>
     </div>
   )
 
-  const color = getCategoryColor(service.category, service.subcategory)
-  const title = `${service.name} – ${service.city} | סל שיקום`
-  const description = service.description || `${service.category} ב${service.city}, ${service.district}`
-  const url = `https://rehabdirectoryil.vercel.app/service/${id}`
+  const cat = CATEGORIES[service.category] || { color: '#0277BD', icon: '🏥' }
 
   return (
     <>
       <Head>
-        <title>{title}</title>
-        <meta name="description" content={description} />
-        <meta property="og:title" content={title} />
-        <meta property="og:description" content={description} />
-        <meta property="og:url" content={url} />
-        <meta property="og:type" content="article" />
+        <title>{service.name} – {service.city} | בריאות נפש בישראל</title>
+        <meta name="description" content={service.description || `${service.category} ב${service.city}`} />
       </Head>
-      <div dir="rtl" style={{ fontFamily: 'Arial, sans-serif', minHeight: '100vh', background: '#FFF8F3' }}>
-        <header style={{ background: '#1A3A5C', color: 'white', padding: '10px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxShadow: '0 2px 12px rgba(0,0,0,0.15)', flexWrap: 'wrap', gap: 8 }}>
+      <div dir="rtl" style={{ fontFamily: 'Arial, sans-serif', minHeight: '100vh', background: '#F0F7FF' }}>
+        <header style={{ background: '#0277BD', color: 'white', padding: '10px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxShadow: '0 2px 12px rgba(0,0,0,0.15)', flexWrap: 'wrap', gap: 8 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-            <div style={{ width: 44, height: 44, borderRadius: '50%', background: '#F47B20', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22, fontWeight: 800, color: 'white' }}>♿</div>
+            <div style={{ width: 44, height: 44, borderRadius: '50%', background: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22 }}>🧠</div>
             <div>
-              <div style={{ fontWeight: 800, fontSize: 19 }}>סל שיקום</div>
-              <div style={{ fontSize: 11, opacity: 0.75 }}>מאגר שירותי שיקום בקהילה</div>
+              <div style={{ fontWeight: 800, fontSize: 19 }}>בריאות נפש בישראל</div>
+              <div style={{ fontSize: 11, opacity: 0.75 }}>שירותי טיפול</div>
             </div>
           </div>
           <nav style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-            {[['/', 'שירותים'], ['/map', '🗺️ מפה'], ['/register', 'הרשמת שירות'], ['/about', 'אודות'], ['/admin', 'ניהול']].map(([href, label]) => (
+            {NAV.map(([href, label]) => (
               <a key={href} href={href} style={{ color: 'white', background: 'rgba(255,255,255,0.12)', borderRadius: 20, padding: '6px 12px', fontWeight: 600, fontSize: 12, border: '1.5px solid rgba(255,255,255,0.25)', textDecoration: 'none' }}>{label}</a>
             ))}
           </nav>
         </header>
 
-        <div style={{ background: 'linear-gradient(135deg, #1A3A5C, #2A5298)', color: 'white', padding: '20px 16px' }}>
-          <button onClick={() => router.push('/')} style={{ background: 'rgba(255,255,255,0.15)', border: '1.5px solid rgba(255,255,255,0.3)', color: 'white', borderRadius: 20, padding: '8px 18px', cursor: 'pointer', fontSize: 14, fontWeight: 600 }}>
+        <div style={{ background: 'linear-gradient(135deg, #0277BD, #0288D1)', color: 'white', padding: '20px 16px' }}>
+          <button onClick={() => router.push('/treatment')} style={{ background: 'rgba(255,255,255,0.15)', border: '1.5px solid rgba(255,255,255,0.3)', color: 'white', borderRadius: 20, padding: '8px 18px', cursor: 'pointer', fontSize: 14, fontWeight: 600 }}>
             → חזרה לרשימה
           </button>
         </div>
 
         <main style={{ maxWidth: 720, margin: '0 auto', padding: '24px 16px' }}>
           <div style={{ background: 'white', borderRadius: 20, overflow: 'hidden', boxShadow: '0 4px 24px rgba(0,0,0,0.08)' }}>
-            <div style={{ height: 8, background: color }} />
+            <div style={{ height: 8, background: cat.color }} />
             <div style={{ padding: '24px 20px' }}>
               <div style={{ display: 'flex', gap: 8, marginBottom: 14, flexWrap: 'wrap' }}>
-                <span style={{ background: color, color: 'white', borderRadius: 20, padding: '4px 14px', fontSize: 13, fontWeight: 700 }}>{service.category}</span>
-                {service.subcategory && <span style={{ background: `${color}22`, color, borderRadius: 20, padding: '4px 12px', fontSize: 13 }}>{service.subcategory}</span>}
+                <span style={{ background: cat.color, color: 'white', borderRadius: 20, padding: '4px 14px', fontSize: 13, fontWeight: 700 }}>{cat.icon} {service.category}</span>
               </div>
 
               <h1 style={{ fontSize: 24, fontWeight: 800, color: '#1A3A5C', margin: '0 0 8px' }}>{service.name}</h1>
-              <div style={{ fontSize: 14, color: '#888', marginBottom: 20 }}>📍 {service.address || service.city}, {service.district}</div>
+              <div style={{ fontSize: 14, color: '#888', marginBottom: 20 }}>📍 {service.address || service.city}{service.district ? `, ${service.district}` : ''}</div>
 
               {service.description && (
-                <div style={{ background: '#FFF8F3', borderRadius: 12, padding: '16px', marginBottom: 20, fontSize: 14, color: '#334', lineHeight: 1.7 }}>
+                <div style={{ background: '#F0F7FF', borderRadius: 12, padding: '16px', marginBottom: 20, fontSize: 14, color: '#334', lineHeight: 1.7 }}>
                   {service.description}
                 </div>
               )}
@@ -126,7 +126,7 @@ export default function ServicePage() {
                   </a>
                 )}
                 {service.website && (
-                  <a href={service.website} target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center', gap: 8, background: '#FFF8F3', border: '1.5px solid #FFD4B0', borderRadius: 14, padding: '12px 14px', textDecoration: 'none', color: '#F47B20', gridColumn: 'span 2' }}>
+                  <a href={service.website} target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center', gap: 8, background: '#F0F7FF', border: '1.5px solid #B3D4E8', borderRadius: 14, padding: '12px 14px', textDecoration: 'none', color: '#0277BD', gridColumn: 'span 2' }}>
                     <span style={{ fontSize: 20 }}>🌐</span>
                     <div>
                       <div style={{ fontSize: 10, opacity: 0.7 }}>אתר אינטרנט</div>
@@ -136,7 +136,7 @@ export default function ServicePage() {
                 )}
               </div>
 
-              {service.lat && <ServiceMap service={service} color={color} />}
+              {service.lat && <TreatmentMap service={service} color={cat.color} />}
 
               <div style={{ display: 'flex', gap: 10, marginTop: 20 }}>
                 <button onClick={shareWhatsApp} style={{ flex: 1, background: '#25D366', color: 'white', border: 'none', borderRadius: 20, padding: '12px 0', fontWeight: 700, fontSize: 14, cursor: 'pointer' }}>
@@ -150,20 +150,20 @@ export default function ServicePage() {
           </div>
         </main>
 
-        <footer style={{ background: '#1A3A5C', color: 'rgba(255,255,255,0.7)', textAlign: 'center', padding: '24px', fontSize: 13, marginTop: 48 }}>
-          מאגר שירותי סל שיקום © {new Date().getFullYear()}
+        <footer style={{ background: '#0277BD', color: 'rgba(255,255,255,0.7)', textAlign: 'center', padding: '24px', fontSize: 13, marginTop: 48 }}>
+          בריאות נפש בישראל © {new Date().getFullYear()}
         </footer>
       </div>
     </>
   )
 }
 
-function ServiceMap({ service, color }) {
+function TreatmentMap({ service, color }) {
   useEffect(() => {
     if (typeof window === 'undefined') return
     const L = require('leaflet')
     require('leaflet/dist/leaflet.css')
-    const map = L.map('service-map').setView([service.lat, service.lng], 15)
+    const map = L.map('treatment-map').setView([service.lat, service.lng], 15)
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map)
     const icon = L.divIcon({
       html: `<div style="background:${color};width:16px;height:16px;border-radius:50%;border:2px solid white;box-shadow:0 2px 6px rgba(0,0,0,0.3)"></div>`,
@@ -172,5 +172,5 @@ function ServiceMap({ service, color }) {
     L.marker([service.lat, service.lng], { icon }).addTo(map)
     return () => map.remove()
   }, [])
-  return <div id="service-map" style={{ height: 200, borderRadius: 12, overflow: 'hidden', marginBottom: 20 }} />
+  return <div id="treatment-map" style={{ height: 200, borderRadius: 12, overflow: 'hidden', marginBottom: 20 }} />
 }
