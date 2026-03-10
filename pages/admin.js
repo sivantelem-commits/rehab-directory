@@ -280,9 +280,11 @@ export default function Admin() {
                     </button>
                   ))}
                 </div>
-                <button onClick={() => setShowExport(true)} style={{ background: '#2E7D32', color: 'white', border: 'none', borderRadius: 20, padding: '9px 18px', fontWeight: 700, fontSize: 13, cursor: 'pointer' }}>
-                  📥 ייצוא לאקסל
-                </button>
+               {tab !== 'treatment' && (
+  <button onClick={() => setShowExport(true)} style={{ background: '#2E7D32', color: 'white', border: 'none', borderRadius: 20, padding: '9px 18px', fontWeight: 700, fontSize: 13, cursor: 'pointer' }}>
+    📥 ייצוא לאקסל
+  </button>
+)}
               </div>
 
               {loading ? (
