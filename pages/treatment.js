@@ -11,8 +11,7 @@ const CATEGORIES = {
   'חדרי מיון': { color: '#C62828', icon: '🚨', desc: 'מיון פסיכיאטרי' },
 }
 
-const NAV = [['/', '🏠 ראשי'], ['/rehab', '♿ שיקום'], ['/treatment', '🏥 טיפול'], ['/register-treatment', 'הרשמת שירות'], ['/admin', 'ניהול']]
-
+const NAV = [['/', '🏠 ראשי'], ['/rehab', '♿ שיקום'], ['/treatment', '🏥 טיפול'], ['/map', '🗺️ מפה'], ['/register-treatment', 'הרשמת שירות'], ['/admin', 'ניהול']]
 export default function Treatment() {
   const router = useRouter()
   const [services, setServices] = useState([])
