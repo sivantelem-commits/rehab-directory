@@ -9,8 +9,7 @@ const CATEGORIES = {
   'חדרי מיון': { color: '#C62828', icon: '🚨' },
 }
 
-const NAV = [['/', '🏠 ראשי'], ['/rehab', '♿ שיקום'], ['/treatment', '🏥 טיפול'], ['/register-treatment', 'הרשמת שירות'], ['/admin', 'ניהול']]
-
+const NAV = [['/', '🏠 ראשי'], ['/rehab', '♿ שיקום'], ['/treatment', '🏥 טיפול'], ['/map', '🗺️ מפה'], ['/register-treatment', 'הרשמת שירות'], ['/admin', 'ניהול']]
 export default function TreatmentServicePage() {
   const router = useRouter()
   const { id } = router.query
