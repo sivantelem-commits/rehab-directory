@@ -1,7 +1,6 @@
 import Head from 'next/head'
 
-const NAV = [['/', '🏠 ראשי'], ['/rehab', '♿ שיקום'], ['/treatment', '🏥 טיפול'], ['/map', '🗺️ מפה'], ['/about', 'אודות'], ['/admin', 'ניהול']]
-
+const NAV = [['/', '🏠 ראשי'], ['/rehab', '♿ שיקום'], ['/treatment', '🏥 טיפול'], ['/map', '🗺️ מפה'], ['/register-treatment', 'הרשמת שירות'], ['/about', 'אודות'], ['/admin', 'ניהול']]
 export default function About() {
   return (
     <>
