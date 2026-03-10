@@ -12,6 +12,7 @@ const TREATMENT_COLORS = {
   'מרפאות יום': '#2E7D32', 'חדרי מיון': '#C62828',
 }
 
+const DISTRICTS = ['הכל', 'צפון', 'חיפה', 'מרכז', 'תל אביב', 'ירושלים', 'דרום', 'יהודה ושומרון']
 const NAV = [['/', '🏠 ראשי'], ['/rehab', '♿ שיקום'], ['/treatment', '🏥 טיפול'], ['/map', '🗺️ מפה'], ['/admin', 'ניהול']]
 
 export default function MapPage() {
@@ -19,6 +20,9 @@ export default function MapPage() {
   const [treatmentServices, setTreatmentServices] = useState([])
   const [showRehab, setShowRehab] = useState(true)
   const [showTreatment, setShowTreatment] = useState(true)
+  const [rehabCategory, setRehabCategory] = useState('הכל')
+  const [treatmentCategory, setTreatmentCategory] = useState('הכל')
+  const [district, setDistrict] = useState('הכל')
   const [mounted, setMounted] = useState(false)
   const [selected, setSelected] = useState(null)
   const mapRef = useRef(null)
@@ -44,8 +48,18 @@ export default function MapPage() {
     markersRef.current.forEach(m => m.remove())
     markersRef.current = []
 
+    const filteredRehab = rehabServices.filter(s =>
+      (rehabCategory === 'הכל' || s.category === rehabCategory) &&
+      (district === 'הכל' || s.district === district)
+    )
+
+    const filteredTreatment = treatmentServices.filter(s =>
+      (treatmentCategory === 'הכל' || s.category === treatmentCategory) &&
+      (district === 'הכל' || s.district === district)
+    )
+
     if (showRehab) {
-      rehabServices.forEach(s => {
+      filteredRehab.forEach(s => {
         const color = REHAB_COLORS[s.category] || '#F47B20'
         const icon = L.divIcon({
           html: `<div style="background:${color};width:14px;height:14px;border-radius:50%;border:2px solid white;box-shadow:0 2px 6px rgba(0,0,0,0.3)"></div>`,
@@ -58,10 +72,10 @@ export default function MapPage() {
     }
 
     if (showTreatment) {
-      treatmentServices.forEach(s => {
+      filteredTreatment.forEach(s => {
         const color = TREATMENT_COLORS[s.category] || '#0277BD'
         const icon = L.divIcon({
-          html: `<div style="background:${color};width:14px;height:14px;border-radius:50%;border:2px solid white;box-shadow:0 2px 6px rgba(0,0,0,0.3);clip-path:polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)"></div>`,
+          html: `<div style="background:${color};width:14px;height:14px;border:2px solid white;box-shadow:0 2px 6px rgba(0,0,0,0.3);clip-path:polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)"></div>`,
           className: '', iconSize: [14, 14],
         })
         const marker = L.marker([s.lat, s.lng], { icon }).addTo(mapRef.current)
@@ -69,17 +83,25 @@ export default function MapPage() {
         markersRef.current.push(marker)
       })
     }
-  }, [mounted, rehabServices, treatmentServices, showRehab, showTreatment])
+  }, [mounted, rehabServices, treatmentServices, showRehab, showTreatment, rehabCategory, treatmentCategory, district])
 
   if (!mounted) return null
 
-  const total = (showRehab ? rehabServices.length : 0) + (showTreatment ? treatmentServices.length : 0)
+  const filteredRehabCount = rehabServices.filter(s =>
+    (rehabCategory === 'הכל' || s.category === rehabCategory) &&
+    (district === 'הכל' || s.district === district)
+  ).length
+
+  const filteredTreatmentCount = treatmentServices.filter(s =>
+    (treatmentCategory === 'הכל' || s.category === treatmentCategory) &&
+    (district === 'הכל' || s.district === district)
+  ).length
+
+  const sel = { padding: '7px 12px', borderRadius: 20, border: '1.5px solid #ddd', fontSize: 13, background: 'white', cursor: 'pointer', outline: 'none' }
 
   return (
     <>
-      <Head>
-        <title>מפה | בריאות נפש בישראל</title>
-      </Head>
+      <Head><title>מפה | בריאות נפש בישראל</title></Head>
       <div dir="rtl" style={{ fontFamily: 'Arial, sans-serif', minHeight: '100vh', background: '#FFF8F3', display: 'flex', flexDirection: 'column' }}>
         <header style={{ background: '#1A3A5C', color: 'white', padding: '10px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxShadow: '0 2px 12px rgba(0,0,0,0.15)', flexWrap: 'wrap', gap: 8 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
@@ -97,23 +119,45 @@ export default function MapPage() {
         </header>
 
         <div style={{ background: 'white', borderBottom: '1px solid #FFE8D6', padding: '10px 16px', display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'center' }}>
-          <button onClick={() => setShowRehab(v => !v)}
-            style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 16px', borderRadius: 20, border: `2px solid ${showRehab ? '#F47B20' : '#ddd'}`, background: showRehab ? '#FFF3E8' : 'white', color: showRehab ? '#F47B20' : '#aaa', fontWeight: 700, fontSize: 13, cursor: 'pointer' }}>
-            <div style={{ width: 12, height: 12, borderRadius: '50%', background: showRehab ? '#F47B20' : '#ddd' }} />
-            ♿ שיקום ({rehabServices.length})
-          </button>
-          <button onClick={() => setShowTreatment(v => !v)}
-            style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 16px', borderRadius: 20, border: `2px solid ${showTreatment ? '#0277BD' : '#ddd'}`, background: showTreatment ? '#E3F2FD' : 'white', color: showTreatment ? '#0277BD' : '#aaa', fontWeight: 700, fontSize: 13, cursor: 'pointer' }}>
-            <div style={{ width: 12, height: 12, background: showTreatment ? '#0277BD' : '#ddd', clipPath: 'polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)' }} />
-            🏥 טיפול ({treatmentServices.length})
-          </button>
+          <select value={district} onChange={e => setDistrict(e.target.value)} style={sel}>
+            {DISTRICTS.map(d => <option key={d}>{d}</option>)}
+          </select>
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+            <button onClick={() => setShowRehab(v => !v)}
+              style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '7px 14px', borderRadius: 20, border: `2px solid ${showRehab ? '#F47B20' : '#ddd'}`, background: showRehab ? '#FFF3E8' : 'white', color: showRehab ? '#F47B20' : '#aaa', fontWeight: 700, fontSize: 13, cursor: 'pointer' }}>
+              <div style={{ width: 10, height: 10, borderRadius: '50%', background: showRehab ? '#F47B20' : '#ddd' }} />
+              ♿ שיקום
+            </button>
+            {showRehab && (
+              <select value={rehabCategory} onChange={e => setRehabCategory(e.target.value)} style={{ ...sel, borderColor: '#F47B20' }}>
+                <option value="הכל">כל הקטגוריות</option>
+                {Object.keys(REHAB_COLORS).map(c => <option key={c}>{c}</option>)}
+              </select>
+            )}
+          </div>
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+            <button onClick={() => setShowTreatment(v => !v)}
+              style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '7px 14px', borderRadius: 20, border: `2px solid ${showTreatment ? '#0277BD' : '#ddd'}`, background: showTreatment ? '#E3F2FD' : 'white', color: showTreatment ? '#0277BD' : '#aaa', fontWeight: 700, fontSize: 13, cursor: 'pointer' }}>
+              <div style={{ width: 10, height: 10, background: showTreatment ? '#0277BD' : '#ddd', clipPath: 'polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)' }} />
+              🏥 טיפול
+            </button>
+            {showTreatment && (
+              <select value={treatmentCategory} onChange={e => setTreatmentCategory(e.target.value)} style={{ ...sel, borderColor: '#0277BD' }}>
+                <option value="הכל">כל הקטגוריות</option>
+                {Object.keys(TREATMENT_COLORS).map(c => <option key={c}>{c}</option>)}
+              </select>
+            )}
+          </div>
+
           <div style={{ fontSize: 13, color: '#888', marginRight: 'auto' }}>
-            {total} שירותים על המפה
+            {(showRehab ? filteredRehabCount : 0) + (showTreatment ? filteredTreatmentCount : 0)} שירותים
           </div>
         </div>
 
         <div style={{ position: 'relative', flex: 1 }}>
-          <div id="main-map" style={{ height: 'calc(100vh - 180px)', width: '100%' }} />
+          <div id="main-map" style={{ height: 'calc(100vh - 200px)', width: '100%' }} />
 
           {selected && (
             <div style={{ position: 'absolute', bottom: 16, right: 16, left: 16, maxWidth: 360, margin: '0 auto', background: 'white', borderRadius: 16, padding: '16px', boxShadow: '0 8px 32px rgba(0,0,0,0.2)', borderTop: `4px solid ${selected.type === 'rehab' ? (REHAB_COLORS[selected.category] || '#F47B20') : (TREATMENT_COLORS[selected.category] || '#0277BD')}`, zIndex: 1000 }}>
