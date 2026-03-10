@@ -604,6 +604,10 @@ function LocationPicker({ service, onSave, onClose }) {
   const mapRef = useRef(null)
   const markerRef = useRef(null)
   const [coords, setCoords] = useState(service.lat ? [service.lat, service.lng] : [31.5, 34.8])
+  const [searchQuery, setSearchQuery] = useState(service.address ? `${service.address}, ${service.city}` : service.city || '')
+  const [searching, setSearching] = useState(false)
+  const [searchError, setSearchError] = useState('')
+
   useEffect(() => {
     if (typeof window === 'undefined') return
     const L = require('leaflet')
@@ -626,6 +630,36 @@ function LocationPicker({ service, onSave, onClose }) {
     mapRef.current = map
     return () => map.remove()
   }, [])
+
+  const searchAddress = async () => {
+    if (!searchQuery.trim()) return
+    setSearching(true)
+    setSearchError('')
+    try {
+      const res = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(searchQuery)}&format=json&limit=1&countrycodes=il`)
+      const data = await res.json()
+      if (data.length === 0) {
+        setSearchError('הכתובת לא נמצאה, נסו לחפש בצורה שונה')
+        return
+      }
+      const { lat, lon } = data[0]
+      const newCoords = [parseFloat(lat), parseFloat(lon)]
+      setCoords(newCoords)
+      const L = require('leaflet')
+      mapRef.current.setView(newCoords, 16)
+      if (markerRef.current) {
+        markerRef.current.setLatLng(newCoords)
+      } else {
+        markerRef.current = L.marker(newCoords, { draggable: true }).addTo(mapRef.current)
+        markerRef.current.on('dragend', e => { const pos = e.target.getLatLng(); setCoords([pos.lat, pos.lng]) })
+      }
+    } catch (e) {
+      setSearchError('שגיאה בחיפוש, נסו שוב')
+    } finally {
+      setSearching(false)
+    }
+  }
+
   return (
     <div onClick={onClose} style={{ position: 'fixed', inset: 0, background: 'rgba(26,58,92,0.6)', zIndex: 300, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
       <div onClick={e => e.stopPropagation()} style={{ background: 'white', borderRadius: 20, maxWidth: 600, width: '100%', boxShadow: '0 24px 64px rgba(0,0,0,0.25)' }}>
@@ -634,12 +668,34 @@ function LocationPicker({ service, onSave, onClose }) {
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
             <div>
               <h3 style={{ margin: 0, color: '#1A3A5C', fontSize: 16, fontWeight: 800 }}>📍 עדכון מיקום</h3>
-              <div style={{ fontSize: 12, color: '#888', marginTop: 4 }}>{service.name} — לחצי על המפה</div>
+              <div style={{ fontSize: 12, color: '#888', marginTop: 4 }}>{service.name}</div>
             </div>
             <button onClick={onClose} style={{ background: 'none', border: 'none', fontSize: 22, cursor: 'pointer', color: '#aaa' }}>✕</button>
           </div>
-          <div id="location-map" style={{ height: 320, borderRadius: 12, overflow: 'hidden', marginBottom: 12 }} />
-          {coords && <div style={{ fontSize: 11, color: '#888', marginBottom: 10, textAlign: 'center' }}>{coords[0].toFixed(4)}, {coords[1].toFixed(4)}</div>}
+
+          <div style={{ display: 'flex', gap: 8, marginBottom: 8 }}>
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={e => setSearchQuery(e.target.value)}
+              onKeyDown={e => e.key === 'Enter' && searchAddress()}
+              placeholder="הכניסו כתובת מלאה, למשל: רחוב הרצל 5, רמת ישי"
+              style={{ flex: 1, padding: '10px 14px', borderRadius: 20, border: '1.5px solid #FFD4B0', fontSize: 14, outline: 'none', fontFamily: 'inherit' }}
+            />
+            <button onClick={searchAddress} disabled={searching}
+              style={{ background: '#F47B20', color: 'white', border: 'none', borderRadius: 20, padding: '10px 18px', fontWeight: 700, fontSize: 13, cursor: searching ? 'not-allowed' : 'pointer', whiteSpace: 'nowrap' }}>
+              {searching ? 'מחפש...' : '🔍 חפש'}
+            </button>
+          </div>
+
+          {searchError && <div style={{ fontSize: 12, color: '#C62828', marginBottom: 8, padding: '6px 12px', background: '#FFF0F0', borderRadius: 10 }}>⚠️ {searchError}</div>}
+
+          <div style={{ fontSize: 11, color: '#aaa', marginBottom: 8 }}>או לחצו ישירות על המפה לסימון מדויק</div>
+
+          <div id="location-map" style={{ height: 300, borderRadius: 12, overflow: 'hidden', marginBottom: 12 }} />
+
+          {coords && <div style={{ fontSize: 11, color: '#888', marginBottom: 10, textAlign: 'center' }}>{coords[0].toFixed(5)}, {coords[1].toFixed(5)}</div>}
+
           <div style={{ display: 'flex', gap: 10 }}>
             <button onClick={() => onSave(coords[0], coords[1])} style={{ flex: 1, background: '#F47B20', color: 'white', border: 'none', borderRadius: 20, padding: '12px 0', fontWeight: 700, fontSize: 14, cursor: 'pointer' }}>💾 שמור מיקום</button>
             <button onClick={onClose} style={{ flex: 1, background: '#EEF2FF', color: '#1A3A5C', border: '1.5px solid #C5D0F0', borderRadius: 20, padding: '12px 0', fontWeight: 700, fontSize: 14, cursor: 'pointer' }}>ביטול</button>
