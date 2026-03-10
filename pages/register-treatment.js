@@ -3,8 +3,7 @@ import Head from 'next/head'
 
 const DISTRICTS = ['צפון', 'חיפה', 'מרכז', 'תל אביב', 'ירושלים', 'דרום', 'יהודה ושומרון']
 const CATEGORIES = ['בתי"מ', 'מחלקות אשפוז', 'מרפאות יום', 'חדרי מיון']
-const NAV = [['/', '🏠 ראשי'], ['/rehab', '♿ שיקום'], ['/treatment', '🏥 טיפול'], ['/map', '🗺️ מפה'], ['/register-treatment', 'הרשמת שירות'], ['/about', 'אודות'], ['/admin', 'ניהול']]
-
+const NAV = [['/', '🏠 ראשי'], ['/rehab', '♿ שיקום'], ['/treatment', '🏥 טיפול'], ['/map', '🗺️ מפה'], ['/about', 'אודות'], ['/admin', 'ניהול']]
 export default function RegisterTreatment() {
   const [form, setForm] = useState({ name: '', district: '', city: '', category: '', description: '', phone: '', email: '', website: '', address: '' })
   const [loading, setLoading] = useState(false)
