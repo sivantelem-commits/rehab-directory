@@ -121,3 +121,44 @@ export default function Treatment() {
               </button>
             </div>
           ) : (
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 16 }}>
+              {services.map(s => {
+                const cat = CATEGORIES[s.category] || { color: '#0277BD', icon: '🏥' }
+                return (
+                  <div key={s.id} onClick={() => router.push(`/treatment/${s.id}`)}
+                    style={{ background: 'white', borderRadius: 16, padding: '20px', cursor: 'pointer', boxShadow: '0 4px 16px rgba(0,0,0,0.07)', border: '1.5px solid #B3D4E8', borderTop: `4px solid ${cat.color}`, display: 'flex', flexDirection: 'column', minHeight: 200 }}
+                    onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 8px 24px rgba(0,0,0,0.12)' }}
+                    onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 4px 16px rgba(0,0,0,0.07)' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 10 }}>
+                      <div style={{ fontWeight: 700, fontSize: 16, color: '#1A3A5C', flex: 1 }}>{s.name}</div>
+                      <span style={{ background: cat.color, color: 'white', borderRadius: 20, padding: '3px 10px', fontSize: 11, fontWeight: 700, whiteSpace: 'nowrap', marginRight: 8 }}>{cat.icon} {s.category}</span>
+                    </div>
+                    <div style={{ fontSize: 13, color: '#888', marginBottom: 8 }}>📍 {s.city}{s.district ? `, ${s.district}` : ''}</div>
+                    <div style={{ flex: 1, fontSize: 13.5, color: '#445', lineHeight: 1.55, display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                      {s.description}
+                    </div>
+                    <div style={{ display: 'flex', gap: 12, fontSize: 13, color: cat.color, flexWrap: 'wrap', marginTop: 12 }}>
+                      {s.phone && <span>📞 {s.phone}</span>}
+                      {s.email && <span>✉️ {s.email}</span>}
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          )}
+        </main>
+
+        {showTop && (
+          <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            style={{ position: 'fixed', bottom: 24, left: 24, width: 48, height: 48, borderRadius: '50%', background: '#0277BD', color: 'white', border: 'none', fontSize: 22, cursor: 'pointer', boxShadow: '0 4px 16px rgba(2,119,189,0.4)', zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            ↑
+          </button>
+        )}
+
+        <footer style={{ background: '#0277BD', color: 'rgba(255,255,255,0.7)', textAlign: 'center', padding: '24px', fontSize: 13, marginTop: 48 }}>
+          בריאות נפש בישראל © {new Date().getFullYear()}
+        </footer>
+      </div>
+    </>
+  )
+}
