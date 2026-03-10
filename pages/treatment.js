@@ -11,6 +11,8 @@ const CATEGORIES = {
   'חדרי מיון': { color: '#C62828', icon: '🚨', desc: 'מיון פסיכיאטרי' },
 }
 
+const NAV = [['/', '🏠 ראשי'], ['/rehab', '♿ שיקום'], ['/treatment', '🏥 טיפול'], ['/register-treatment', 'הרשמת שירות'], ['/admin', 'ניהול']]
+
 export default function Treatment() {
   const router = useRouter()
   const [services, setServices] = useState([])
@@ -70,7 +72,7 @@ export default function Treatment() {
             </div>
           </div>
           <nav style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-            {[['/', '🏠 ראשי'], ['/rehab', '♿ שיקום'], ['/treatment', '🏥 טיפול'], ['/register-treatment', 'הרשמת שירות']].map(([href, label]) => (
+            {NAV.map(([href, label]) => (
               <a key={href} href={href} style={{ color: 'white', background: 'rgba(255,255,255,0.12)', borderRadius: 20, padding: '6px 12px', fontWeight: 600, fontSize: 12, border: '1.5px solid rgba(255,255,255,0.25)', textDecoration: 'none' }}>{label}</a>
             ))}
           </nav>
