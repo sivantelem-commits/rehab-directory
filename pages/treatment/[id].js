@@ -9,6 +9,8 @@ const CATEGORIES = {
   'חדרי מיון': { color: '#C62828', icon: '🚨' },
 }
 
+const NAV = [['/', '🏠 ראשי'], ['/rehab', '♿ שיקום'], ['/treatment', '🏥 טיפול'], ['/map', '🗺️ מפה'], ['/register-treatment', 'הרשמת שירות'], ['/about', 'אודות'], ['/admin', 'ניהול']]
+
 export default function TreatmentServicePage() {
   const router = useRouter()
   const { id } = router.query
@@ -75,7 +77,7 @@ export default function TreatmentServicePage() {
             </div>
           </div>
           <nav style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-            {[['/', '🏠 ראשי'], ['/rehab', '♿ שיקום'], ['/treatment', '🏥 טיפול']].map(([href, label]) => (
+            {NAV.map(([href, label]) => (
               <a key={href} href={href} style={{ color: 'white', background: 'rgba(255,255,255,0.12)', borderRadius: 20, padding: '6px 12px', fontWeight: 600, fontSize: 12, border: '1.5px solid rgba(255,255,255,0.25)', textDecoration: 'none' }}>{label}</a>
             ))}
           </nav>
@@ -91,10 +93,9 @@ export default function TreatmentServicePage() {
           <div style={{ background: 'white', borderRadius: 20, overflow: 'hidden', boxShadow: '0 4px 24px rgba(0,0,0,0.08)' }}>
             <div style={{ height: 8, background: cat.color }} />
             <div style={{ padding: '24px 20px' }}>
-              <div style={{ display: 'flex', gap: 8, marginBottom: 14, flexWrap: 'wrap' }}>
+              <div style={{ display: 'flex', gap: 8, marginBottom: 14 }}>
                 <span style={{ background: cat.color, color: 'white', borderRadius: 20, padding: '4px 14px', fontSize: 13, fontWeight: 700 }}>{cat.icon} {service.category}</span>
               </div>
-
               <h1 style={{ fontSize: 24, fontWeight: 800, color: '#1A3A5C', margin: '0 0 8px' }}>{service.name}</h1>
               <div style={{ fontSize: 14, color: '#888', marginBottom: 20 }}>📍 {service.address || service.city}{service.district ? `, ${service.district}` : ''}</div>
 
@@ -108,28 +109,19 @@ export default function TreatmentServicePage() {
                 {service.phone && (
                   <a href={`tel:${service.phone}`} style={{ display: 'flex', alignItems: 'center', gap: 8, background: '#F0FFF4', border: '1.5px solid #A5D6A7', borderRadius: 14, padding: '12px 14px', textDecoration: 'none', color: '#2E7D32' }}>
                     <span style={{ fontSize: 20 }}>📞</span>
-                    <div>
-                      <div style={{ fontSize: 10, opacity: 0.7 }}>טלפון</div>
-                      <div style={{ fontWeight: 700, fontSize: 13 }}>{service.phone}</div>
-                    </div>
+                    <div><div style={{ fontSize: 10, opacity: 0.7 }}>טלפון</div><div style={{ fontWeight: 700, fontSize: 13 }}>{service.phone}</div></div>
                   </a>
                 )}
                 {service.email && (
                   <a href={`mailto:${service.email}`} style={{ display: 'flex', alignItems: 'center', gap: 8, background: '#EEF2FF', border: '1.5px solid #C5D0F0', borderRadius: 14, padding: '12px 14px', textDecoration: 'none', color: '#1A3A5C' }}>
                     <span style={{ fontSize: 20 }}>✉️</span>
-                    <div>
-                      <div style={{ fontSize: 10, opacity: 0.7 }}>מייל</div>
-                      <div style={{ fontWeight: 700, fontSize: 12, wordBreak: 'break-all' }}>{service.email}</div>
-                    </div>
+                    <div><div style={{ fontSize: 10, opacity: 0.7 }}>מייל</div><div style={{ fontWeight: 700, fontSize: 12, wordBreak: 'break-all' }}>{service.email}</div></div>
                   </a>
                 )}
                 {service.website && (
                   <a href={service.website} target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center', gap: 8, background: '#F0F7FF', border: '1.5px solid #B3D4E8', borderRadius: 14, padding: '12px 14px', textDecoration: 'none', color: '#0277BD', gridColumn: 'span 2' }}>
                     <span style={{ fontSize: 20 }}>🌐</span>
-                    <div>
-                      <div style={{ fontSize: 10, opacity: 0.7 }}>אתר אינטרנט</div>
-                      <div style={{ fontWeight: 700, fontSize: 12, wordBreak: 'break-all' }}>{service.website}</div>
-                    </div>
+                    <div><div style={{ fontSize: 10, opacity: 0.7 }}>אתר אינטרנט</div><div style={{ fontWeight: 700, fontSize: 12, wordBreak: 'break-all' }}>{service.website}</div></div>
                   </a>
                 )}
               </div>
@@ -137,9 +129,7 @@ export default function TreatmentServicePage() {
               {service.lat && <TreatmentMap service={service} color={cat.color} />}
 
               <div style={{ display: 'flex', gap: 10, marginTop: 20 }}>
-                <button onClick={shareWhatsApp} style={{ flex: 1, background: '#25D366', color: 'white', border: 'none', borderRadius: 20, padding: '12px 0', fontWeight: 700, fontSize: 14, cursor: 'pointer' }}>
-                  💬 וואטסאפ
-                </button>
+                <button onClick={shareWhatsApp} style={{ flex: 1, background: '#25D366', color: 'white', border: 'none', borderRadius: 20, padding: '12px 0', fontWeight: 700, fontSize: 14, cursor: 'pointer' }}>💬 וואטסאפ</button>
                 <button onClick={copyLink} style={{ flex: 1, background: copied ? '#E8F5E9' : '#EEF2FF', color: copied ? '#2E7D32' : '#1A3A5C', border: `1.5px solid ${copied ? '#A5D6A7' : '#C5D0F0'}`, borderRadius: 20, padding: '12px 0', fontWeight: 700, fontSize: 14, cursor: 'pointer' }}>
                   {copied ? '✓ הועתק!' : '🔗 קישור'}
                 </button>
