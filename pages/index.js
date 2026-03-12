@@ -69,16 +69,7 @@ export default function Home() {
             onMouseDown={e => e.currentTarget.style.transform = 'translateY(2px)'}
             onMouseUp={e => e.currentTarget.style.transform = 'translateY(-5px)'}
           >
-            {/* ברק עליון */}
-            <div style={{
-              position: 'absolute', top: 8, left: '20%', right: '20%',
-              height: '28%', background: 'rgba(255,255,255,0.3)',
-              borderRadius: '999px', pointerEvents: 'none',
-            }} />
-            <span style={{ fontSize: 28 }}>♿</span>
-            <span style={{ fontSize: 18, fontWeight: 800 }}>שיקום</span>
-            <span style={{ fontSize: 11, fontWeight: 500, opacity: 0.8 }}>סל שיקום בקהילה</span>
-          </button>
+        
 
           {/* טיפול */}
           <button
@@ -108,17 +99,7 @@ export default function Home() {
             onMouseDown={e => e.currentTarget.style.transform = 'translateY(2px)'}
             onMouseUp={e => e.currentTarget.style.transform = 'translateY(-5px)'}
           >
-            {/* ברק עליון */}
-            <div style={{
-              position: 'absolute', top: 8, left: '20%', right: '20%',
-              height: '28%', background: 'rgba(255,255,255,0.3)',
-              borderRadius: '999px', pointerEvents: 'none',
-            }} />
-            <span style={{ fontSize: 28 }}>🏥</span>
-            <span style={{ fontSize: 18, fontWeight: 800 }}>טיפול</span>
-            <span style={{ fontSize: 11, fontWeight: 500, opacity: 0.8 }}>בתי"מ, אשפוז ומרפאות</span>
-          </button>
-
+    
         </div>
 
         <p style={{ marginTop: 52, fontSize: 12, color: '#c0b0d8', fontWeight: 500 }}>
