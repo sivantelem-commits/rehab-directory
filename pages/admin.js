@@ -142,13 +142,15 @@ export default function Admin() {
   }
 
   const saveLocation = async (lat, lng) => {
-    await fetch('/api/admin/services', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', adminkey: adminKey },
-      body: JSON.stringify({ id: locationService.id, lat, lng }),
-    })
-    setLocationService(null); fetchAll(adminKey)
-  }
+  const isTreatment = locationService._table === 'treatment'
+  const endpoint = isTreatment ? '/api/admin/treatment-services' : '/api/admin/services'
+  await fetch(endpoint, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', adminkey: adminKey },
+    body: JSON.stringify({ id: locationService.id, lat, lng }),
+  })
+  setLocationService(null); fetchAll(adminKey)
+}
 
   const exportRehabToExcel = async () => {
     setExporting(true)
