@@ -12,16 +12,17 @@ export default function Home() {
         <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
       </Head>
 
-      <div dir="rtl" style={{
-        fontFamily: "'Nunito', sans-serif",
-        minHeight: '100vh',
-        background: '#f7f3ff',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: '24px',
-      }}>
+     <div dir="rtl" style={{
+  fontFamily: "'Nunito', sans-serif",
+  minHeight: '100vh',
+  background: '#f7f3ff',
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  justifyContent: 'flex-start',
+  padding: '24px',
+  paddingTop: 40,
+}}>
 
         {/* כותרת */}
 <div style={{ textAlign: 'center', marginBottom: 52, marginTop: -60 }}>
