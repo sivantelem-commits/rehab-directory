@@ -69,12 +69,10 @@ export default function TreatmentServicePage() {
       </Head>
       <div dir="rtl" style={{ fontFamily: 'Arial, sans-serif', minHeight: '100vh', background: '#F0F7FF' }}>
         <header style={{ background: '#0277BD', color: 'white', padding: '10px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxShadow: '0 2px 12px rgba(0,0,0,0.15)', flexWrap: 'wrap', gap: 8 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-            <div style={{ width: 44, height: 44, borderRadius: '50%', background: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22 }}>🧠</div>
-            <div>
-              <div style={{ fontWeight: 800, fontSize: 19 }}>בריאות נפש בישראל</div>
-              <div style={{ fontSize: 11, opacity: 0.75 }}>שירותי טיפול</div>
-            </div>
+         <div style={{ paddingRight: 50 }}>
+  <div style={{ fontWeight: 800, fontSize: 19 }}>בריאות נפש בישראל</div>
+  <div style={{ fontSize: 11, opacity: 0.75 }}>שירותי טיפול</div>
+</div>
           </div>
           <nav style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
             {NAV.map(([href, label]) => (
