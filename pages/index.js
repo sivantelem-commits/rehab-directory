@@ -56,7 +56,6 @@ export default function Home() {
               fontFamily: "'Nunito', sans-serif",
               boxShadow: '0 6px 0 #3a8a5e, 0 10px 24px rgba(74,171,120,0.3)',
               transition: 'transform 0.22s cubic-bezier(.34,1.56,.64,1), box-shadow 0.2s ease',
-              position: 'relative', overflow: 'hidden',
             }}
             onMouseEnter={e => {
               e.currentTarget.style.transform = 'translateY(-5px)'
@@ -69,7 +68,10 @@ export default function Home() {
             onMouseDown={e => e.currentTarget.style.transform = 'translateY(2px)'}
             onMouseUp={e => e.currentTarget.style.transform = 'translateY(-5px)'}
           >
-        
+            <span style={{ fontSize: 28 }}>♿</span>
+            <span style={{ fontSize: 18, fontWeight: 800 }}>שיקום</span>
+            <span style={{ fontSize: 11, fontWeight: 500, opacity: 0.8 }}>סל שיקום בקהילה</span>
+          </button>
 
           {/* טיפול */}
           <button
@@ -86,7 +88,6 @@ export default function Home() {
               fontFamily: "'Nunito', sans-serif",
               boxShadow: '0 6px 0 #c85e32, 0 10px 24px rgba(238,122,80,0.3)',
               transition: 'transform 0.22s cubic-bezier(.34,1.56,.64,1), box-shadow 0.2s ease',
-              position: 'relative', overflow: 'hidden',
             }}
             onMouseEnter={e => {
               e.currentTarget.style.transform = 'translateY(-5px)'
@@ -99,12 +100,12 @@ export default function Home() {
             onMouseDown={e => e.currentTarget.style.transform = 'translateY(2px)'}
             onMouseUp={e => e.currentTarget.style.transform = 'translateY(-5px)'}
           >
-    
-        </div>
+            <span style={{ fontSize: 28 }}>🏥</span>
+            <span style={{ fontSize: 18, fontWeight: 800 }}>טיפול</span>
+            <span style={{ fontSize: 11, fontWeight: 500, opacity: 0.8 }}>בתי"מ, אשפוז ומרפאות</span>
+          </button>
 
-        <p style={{ marginTop: 52, fontSize: 12, color: '#c0b0d8', fontWeight: 500 }}>
-          בריאות נפש בישראל · שירותי שיקום בקהילה
-        </p>
+        </div>
 
       </div>
     </>
