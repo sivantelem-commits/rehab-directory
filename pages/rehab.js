@@ -90,13 +90,12 @@ export default function Rehab() {
     <img
   src="/logo.png"
   alt="לוגו"
-  style={{
-    width: 44,
-    height: 44,
-    objectFit: 'contain',
-    filter: 'brightness(0) invert(1)',
-    mixBlendMode: 'multiply',
-  }}
+ style={{
+  width: 44,
+  height: 44,
+  objectFit: 'contain',
+  filter: 'brightness(0) invert(1)',
+}}
 />
     <div>
       <div style={{ fontWeight: 800, fontSize: 18 }}>בריאות נפש בישראל</div>
