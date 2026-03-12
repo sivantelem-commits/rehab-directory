@@ -70,7 +70,7 @@ export default function Register() {
 
         <div style={{ background: 'linear-gradient(135deg, #1A3A5C, #2A5298)', color: 'white', padding: '32px 20px', textAlign: 'center' }}>
           <div style={{ fontSize: 36, marginBottom: 10 }}>➕</div>
-          <h1 style={{ fontSize: 24, fontWeight: 800, margin: '0 0 8px' }}>הרשמת שירות חדש</h1>
+          <h1 style={{ fontSize: 24, fontWeight: 800, margin: '0 0 8px' }}>הרשמת שירות שיקום חדש</h1>
           <p style={{ fontSize: 14, opacity: 0.85, margin: 0 }}>לאחר אישור האדמין השירות יופיע במאגר</p>
         </div>
 
