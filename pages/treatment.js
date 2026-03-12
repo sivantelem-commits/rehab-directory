@@ -89,13 +89,17 @@ export default function Treatment() {
           flexWrap: 'wrap',
           gap: 8,
         }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-            <div style={{
-              width: 44, height: 44, borderRadius: '50%',
-              background: 'rgba(255,255,255,0.2)',
-              display: 'flex', alignItems: 'center',
-              justifyContent: 'center', fontSize: 22,
-            }}>🧠</div>
+          <img
+  src="/logo.png"
+  alt="לוגו"
+  style={{
+    width: 44,
+    height: 44,
+    objectFit: 'contain',
+    filter: 'brightness(0) invert(1)',
+    mixBlendMode: 'multiply',
+  }}
+/>
             <div>
               <div style={{ fontWeight: 800, fontSize: 18 }}>בריאות נפש בישראל</div>
               <div style={{ fontSize: 11, opacity: 0.8 }}>שירותי טיפול</div>
