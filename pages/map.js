@@ -13,8 +13,9 @@ const TREATMENT_COLORS = {
 }
 
 const DISTRICTS = ['הכל', 'צפון', 'חיפה', 'מרכז', 'תל אביב', 'ירושלים', 'דרום', 'יהודה ושומרון']
-const NAV = [['/', '🏠 ראשי'], ['/rehab', '♿ שיקום'], ['/treatment', '🏥 טיפול'], ['/map', '🗺️ מפה'], ['/register', 'הרשמת שירות'], ['/about', 'אודות'], ['/admin', 'ניהול']]export default function MapPage() {
-  const [rehabServices, setRehabServices] = useState([])
+const NAV = [['/', '🏠 ראשי'], ['/rehab', '♿ שיקום'], ['/treatment', '🏥 טיפול'], ['/map', '🗺️ מפה'], ['/register', 'הרשמת שירות'], ['/about', 'אודות'], ['/admin', 'ניהול']]
+
+export default function MapPage() {  const [rehabServices, setRehabServices] = useState([])
   const [treatmentServices, setTreatmentServices] = useState([])
   const [showRehab, setShowRehab] = useState(true)
   const [showTreatment, setShowTreatment] = useState(true)
