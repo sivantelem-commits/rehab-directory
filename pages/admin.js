@@ -18,7 +18,8 @@ const CATEGORY_TEXT_COLORS = {
   'טיפולי שיניים': 'FFC2185B', 'שירותים נוספים': 'FF546E7A',
 }
 
-const NAV = [['/', '🏠 ראשי'], ['/rehab', '♿ שיקום'], ['/treatment', '🏥 טיפול'], ['/map', '🗺️ מפה'], ['/register', 'הרשמת שירות'], ['/about', 'אודות'], ['/admin', 'ניהול']]
+const NAV = [['/', '🏠 ראשי'], ['/rehab', '♿ שיקום'], ['/treatment', '🏥 טיפול'], ['/map', '🗺️ מפה'], ['/about', 'אודות'], ['/admin', 'ניהול']]
+
 export default function Admin() {
   const [authed, setAuthed] = useState(false)
   const [password, setPassword] = useState('')
@@ -288,18 +289,21 @@ export default function Admin() {
 
   return (
     <>
-      <Head><title>ניהול | בריאות נפש בישראל</title></Head>
-      <div dir="rtl" style={{ fontFamily: 'Arial, sans-serif', minHeight: '100vh', background: '#FFF8F3' }}>
-        <header style={{ background: '#1A3A5C', color: 'white', padding: '10px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxShadow: '0 2px 12px rgba(0,0,0,0.15)', flexWrap: 'wrap', gap: 8 }}>
+      <Head>
+        <title>ניהול | בריאות נפש בישראל</title>
+        <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
+      </Head>
+      <div dir="rtl" style={{ fontFamily: "'Nunito', sans-serif", minHeight: '100vh', background: '#f5f5f5' }}>
+        <header style={{ background: '#1A3A5C', color: 'white', padding: '10px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxShadow: '0 2px 12px rgba(0,0,0,0.15)', flexWrap: 'wrap', gap: 8 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-           <div style={{ paddingRight: 50 }}>
-  <div style={{ fontWeight: 800, fontSize: 19 }}>בריאות נפש בישראל</div>
-  <div style={{ fontSize: 11, opacity: 0.75 }}>פאנל ניהול</div>
+            <div style={{ paddingRight: 50 }}>
+              <div style={{ fontWeight: 800, fontSize: 18 }}>בריאות נפש בישראל</div>
+              <div style={{ fontSize: 11, opacity: 0.75 }}>פאנל ניהול</div>
             </div>
           </div>
           <nav style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
             {NAV.map(([href, label]) => (
-              <a key={href} href={href} style={{ color: 'white', background: 'rgba(255,255,255,0.12)', borderRadius: 20, padding: '6px 12px', fontWeight: 600, fontSize: 12, border: '1.5px solid rgba(255,255,255,0.25)', textDecoration: 'none' }}>{label}</a>
+              <a key={href} href={href} style={{ color: 'white', background: 'rgba(255,255,255,0.1)', borderRadius: '999px', padding: '6px 14px', fontWeight: 600, fontSize: 12, border: '1.5px solid rgba(255,255,255,0.2)', textDecoration: 'none' }}>{label}</a>
             ))}
           </nav>
         </header>
