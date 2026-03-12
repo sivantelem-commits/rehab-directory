@@ -12,9 +12,9 @@ export default function About() {
         <header style={{ background: '#1A3A5C', color: 'white', padding: '10px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxShadow: '0 2px 12px rgba(0,0,0,0.15)', flexWrap: 'wrap', gap: 8 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
             <div>
-              <div style={{ fontWeight: 800, fontSize: 19 }}>בריאות נפש בישראל</div>
-              <div style={{ fontSize: 11, opacity: 0.75 }}>אודות הפורטל</div>
-            </div>
+             <div style={{ paddingRight: 50 }}>
+  <div style={{ fontWeight: 800, fontSize: 19 }}>בריאות נפש בישראל</div>
+  <div style={{ fontSize: 11, opacity: 0.75 }}>אודות הפורטל</div>
           </div>
           <nav style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
             {NAV.map(([href, label]) => (
