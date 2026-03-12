@@ -78,7 +78,7 @@ export default function TreatmentServicePage() {
           boxShadow: '0 2px 12px rgba(200,94,50,0.2)', flexWrap: 'wrap', gap: 8,
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-            <img src="/logo.png" alt="לוגו" style={{ width: 44, height: 44, objectFit: 'contain', filter: 'brightness(0) invert(1)', mixBlendMode: 'multiply' }} />
+            <img src="/logo.png" alt="לוגו" style={{ width: 44, height: 44, objectFit: 'contain', filter: 'brightness(0) invert(1)' }} />
             <div>
               <div style={{ fontWeight: 800, fontSize: 18 }}>בריאות נפש בישראל</div>
               <div style={{ fontSize: 11, opacity: 0.8 }}>שירותי טיפול</div>
