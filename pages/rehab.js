@@ -95,7 +95,7 @@ export default function Rehab() {
     height: 44,
     objectFit: 'contain',
     filter: 'brightness(0) invert(1)',
-    mixBlendMode: 'screen',
+    mixBlendMode: 'multiply',
   }}
 />
     <div>
