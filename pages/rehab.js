@@ -88,15 +88,16 @@ export default function Rehab() {
 }}>
   <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
     <img
-      src="/logo.png"
-      alt="לוגו"
-      style={{
-        width: 44,
-        height: 44,
-        objectFit: 'contain',
-        filter: 'brightness(0) invert(1)',
-      }}
-    />
+  src="/logo.png"
+  alt="לוגו"
+  style={{
+    width: 44,
+    height: 44,
+    objectFit: 'contain',
+    filter: 'brightness(0) invert(1)',
+    mixBlendMode: 'screen',
+  }}
+/>
     <div>
       <div style={{ fontWeight: 800, fontSize: 18 }}>בריאות נפש בישראל</div>
       <div style={{ fontSize: 11, opacity: 0.8 }}>שירותי שיקום בקהילה</div>
