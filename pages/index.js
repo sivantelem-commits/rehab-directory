@@ -15,7 +15,7 @@ export default function Home() {
       <div dir="rtl" style={{
         fontFamily: "'Heebo', sans-serif",
         minHeight: '100vh',
-        background: 'linear-gradient(160deg, #e8faf7 0%, #fdf6f0 60%, #fde8dc 100%)',
+        background: 'linear-gradient(160deg, #f3eeff 0%, #ece4fb 60%, #e4d8f7 100%)',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
@@ -28,13 +28,13 @@ export default function Home() {
           <div style={{ fontSize: 52, marginBottom: 14 }}>🧠</div>
           <h1 style={{
             fontSize: 34, fontWeight: 800,
-            color: '#1e9e88',
+            color: '#5b2d8e',
             margin: '0 0 10px',
             letterSpacing: '-0.5px',
           }}>
             בריאות נפש בישראל
           </h1>
-          <p style={{ fontSize: 15, color: '#999', margin: 0, fontWeight: 400 }}>
+          <p style={{ fontSize: 15, color: '#7a5fa0', margin: 0, fontWeight: 400 }}>
             בחרו את סוג השירות שאתם מחפשים
           </p>
         </div>
@@ -48,27 +48,27 @@ export default function Home() {
             style={{
               width: 210, height: 210,
               borderRadius: '50%',
-              background: 'white',
-              border: '3px solid #f4956a',
-              color: '#e07a52',
+              background: '#c9a8e8',
+              border: '3px solid #b084d4',
+              color: '#3d1a6e',
               cursor: 'pointer',
               display: 'flex', flexDirection: 'column',
               alignItems: 'center', justifyContent: 'center', gap: 10,
-              boxShadow: '0 6px 24px rgba(244,149,106,0.18)',
+              boxShadow: '0 6px 24px rgba(176,132,212,0.28)',
               transition: 'transform 0.22s cubic-bezier(.34,1.56,.64,1), box-shadow 0.2s ease',
             }}
             onMouseEnter={e => {
               e.currentTarget.style.transform = 'translateY(-6px) scale(1.04)'
-              e.currentTarget.style.boxShadow = '0 16px 40px rgba(244,149,106,0.32)'
+              e.currentTarget.style.boxShadow = '0 16px 40px rgba(176,132,212,0.42)'
             }}
             onMouseLeave={e => {
               e.currentTarget.style.transform = 'translateY(0) scale(1)'
-              e.currentTarget.style.boxShadow = '0 6px 24px rgba(244,149,106,0.18)'
+              e.currentTarget.style.boxShadow = '0 6px 24px rgba(176,132,212,0.28)'
             }}
           >
             <span style={{ fontSize: 48 }}>♿</span>
-            <span style={{ fontSize: 20, fontWeight: 800, color: '#e07a52' }}>שיקום</span>
-            <span style={{ fontSize: 12, color: '#bbb', fontWeight: 400 }}>סל שיקום בקהילה</span>
+            <span style={{ fontSize: 20, fontWeight: 800 }}>שיקום</span>
+            <span style={{ fontSize: 12, color: '#5d3a8a', fontWeight: 400 }}>סל שיקום בקהילה</span>
           </button>
 
           {/* טיפול */}
@@ -77,33 +77,32 @@ export default function Home() {
             style={{
               width: 210, height: 210,
               borderRadius: '50%',
-              background: 'white',
-              border: '3px solid #2db8a0',
-              color: '#1e9e88',
+              background: '#b094d6',
+              border: '3px solid #9370c4',
+              color: '#3d1a6e',
               cursor: 'pointer',
               display: 'flex', flexDirection: 'column',
               alignItems: 'center', justifyContent: 'center', gap: 10,
-              boxShadow: '0 6px 24px rgba(45,184,160,0.18)',
+              boxShadow: '0 6px 24px rgba(147,112,196,0.28)',
               transition: 'transform 0.22s cubic-bezier(.34,1.56,.64,1), box-shadow 0.2s ease',
             }}
             onMouseEnter={e => {
               e.currentTarget.style.transform = 'translateY(-6px) scale(1.04)'
-              e.currentTarget.style.boxShadow = '0 16px 40px rgba(45,184,160,0.32)'
+              e.currentTarget.style.boxShadow = '0 16px 40px rgba(147,112,196,0.42)'
             }}
             onMouseLeave={e => {
               e.currentTarget.style.transform = 'translateY(0) scale(1)'
-              e.currentTarget.style.boxShadow = '0 6px 24px rgba(45,184,160,0.18)'
+              e.currentTarget.style.boxShadow = '0 6px 24px rgba(147,112,196,0.28)'
             }}
           >
             <span style={{ fontSize: 48 }}>🏥</span>
-            <span style={{ fontSize: 20, fontWeight: 800, color: '#1e9e88' }}>טיפול</span>
-            <span style={{ fontSize: 12, color: '#bbb', fontWeight: 400 }}>בתי"מ, אשפוז ומרפאות</span>
+            <span style={{ fontSize: 20, fontWeight: 800 }}>טיפול</span>
+            <span style={{ fontSize: 12, color: '#5d3a8a', fontWeight: 400 }}>בתי"מ, אשפוז ומרפאות</span>
           </button>
 
         </div>
 
-        {/* כיתוב תחתון */}
-        <p style={{ marginTop: 52, fontSize: 12, color: '#ccc', fontWeight: 400 }}>
+        <p style={{ marginTop: 52, fontSize: 12, color: '#7a5fa0', fontWeight: 400 }}>
           בריאות נפש בישראל · שירותי שיקום בקהילה
         </p>
 
