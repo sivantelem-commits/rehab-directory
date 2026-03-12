@@ -9,19 +9,19 @@ export default function About() {
         <meta name="description" content="אודות פורטל בריאות נפש בישראל – מי אנחנו ולמה נוצר האתר" />
       </Head>
       <div dir="rtl" style={{ fontFamily: 'Arial, sans-serif', minHeight: '100vh', background: '#F0F7FF' }}>
-        <header style={{ background: '#1A3A5C', color: 'white', padding: '10px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxShadow: '0 2px 12px rgba(0,0,0,0.15)', flexWrap: 'wrap', gap: 8 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-            <div>
-             <div style={{ paddingRight: 50 }}>
-  <div style={{ fontWeight: 800, fontSize: 19 }}>בריאות נפש בישראל</div>
-  <div style={{ fontSize: 11, opacity: 0.75 }}>אודות הפורטל</div>
-          </div>
-          <nav style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-            {NAV.map(([href, label]) => (
-              <a key={href} href={href} style={{ color: 'white', background: 'rgba(255,255,255,0.12)', borderRadius: 20, padding: '6px 12px', fontWeight: 600, fontSize: 12, border: '1.5px solid rgba(255,255,255,0.25)', textDecoration: 'none' }}>{label}</a>
-            ))}
-          </nav>
-        </header>
+       <header style={{ background: '#1A3A5C', color: 'white', padding: '10px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxShadow: '0 2px 12px rgba(0,0,0,0.15)', flexWrap: 'wrap', gap: 8 }}>
+  <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+    <div style={{ paddingRight: 50 }}>
+      <div style={{ fontWeight: 800, fontSize: 19 }}>בריאות נפש בישראל</div>
+      <div style={{ fontSize: 11, opacity: 0.75 }}>אודות הפורטל</div>
+    </div>
+  </div>
+  <nav style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+    {NAV.map(([href, label]) => (
+      <a key={href} href={href} style={{ color: 'white', background: 'rgba(255,255,255,0.12)', borderRadius: 20, padding: '6px 12px', fontWeight: 600, fontSize: 12, border: '1.5px solid rgba(255,255,255,0.25)', textDecoration: 'none' }}>{label}</a>
+    ))}
+  </nav>
+</header>
 
         <div style={{ background: 'linear-gradient(135deg, #1A3A5C, #2A5298)', color: 'white', padding: '48px 20px', textAlign: 'center' }}>
           <div style={{ fontSize: 52, marginBottom: 16 }}>🧠</div>
