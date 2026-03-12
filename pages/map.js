@@ -102,19 +102,19 @@ export default function MapPage() {
     <>
       <Head><title>מפה | בריאות נפש בישראל</title></Head>
       <div dir="rtl" style={{ fontFamily: 'Arial, sans-serif', minHeight: '100vh', background: '#FFF8F3', display: 'flex', flexDirection: 'column' }}>
-        <header style={{ background: '#1A3A5C', color: 'white', padding: '10px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxShadow: '0 2px 12px rgba(0,0,0,0.15)', flexWrap: 'wrap', gap: 8 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-            <div>
-              <div style={{ paddingRight: 50 }}>
-  <div style={{ fontWeight: 800, fontSize: 19 }}>בריאות נפש בישראל</div>
-  <div style={{ fontSize: 11, opacity: 0.75 }}>מפת שירותים</div>
-          </div>
-          <nav style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-            {NAV.map(([href, label]) => (
-              <a key={href} href={href} style={{ color: 'white', background: 'rgba(255,255,255,0.12)', borderRadius: 20, padding: '6px 12px', fontWeight: 600, fontSize: 12, border: '1.5px solid rgba(255,255,255,0.25)', textDecoration: 'none' }}>{label}</a>
-            ))}
-          </nav>
-        </header>
+       <header style={{ background: '#1A3A5C', color: 'white', padding: '10px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxShadow: '0 2px 12px rgba(0,0,0,0.15)', flexWrap: 'wrap', gap: 8 }}>
+  <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+    <div style={{ paddingRight: 50 }}>
+      <div style={{ fontWeight: 800, fontSize: 19 }}>בריאות נפש בישראל</div>
+      <div style={{ fontSize: 11, opacity: 0.75 }}>מפת שירותים</div>
+    </div>
+  </div>
+  <nav style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+    {NAV.map(([href, label]) => (
+      <a key={href} href={href} style={{ color: 'white', background: 'rgba(255,255,255,0.12)', borderRadius: 20, padding: '6px 12px', fontWeight: 600, fontSize: 12, border: '1.5px solid rgba(255,255,255,0.25)', textDecoration: 'none' }}>{label}</a>
+    ))}
+  </nav>
+</header>
 
         <div style={{ background: 'white', borderBottom: '1px solid #FFE8D6', padding: '10px 16px', display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'center' }}>
           <select value={district} onChange={e => setDistrict(e.target.value)} style={sel}>
