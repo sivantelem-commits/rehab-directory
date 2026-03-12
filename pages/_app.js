@@ -12,13 +12,11 @@ export default function App({ Component, pageProps }) {
           alt="לוגו"
           style={{
             position: 'fixed',
-            top: 12,
-            right: 16,
+            top: 8,
+            right: 12,
             width: 44,
             height: 44,
             objectFit: 'contain',
-            filter: 'brightness(0) invert(1)',
-            mixBlendMode: 'multiply',
             zIndex: 9999,
             pointerEvents: 'none',
           }}
