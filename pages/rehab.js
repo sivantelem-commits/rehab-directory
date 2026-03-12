@@ -91,8 +91,8 @@ export default function Rehab() {
   src="/logo.png"
   alt="לוגו"
   style={{
-    width: 44,
-    height: 44,
+    width: 160,
+    height: 160,
     objectFit: 'contain',
     filter: 'brightness(0) invert(1)',
     mixBlendMode: 'multiply',
