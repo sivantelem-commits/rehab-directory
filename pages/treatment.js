@@ -98,7 +98,6 @@ export default function Treatment() {
         height: 44,
         objectFit: 'contain',
         filter: 'brightness(0) invert(1)',
-        mixBlendMode: 'multiply',
       }}
     />
     <div>
