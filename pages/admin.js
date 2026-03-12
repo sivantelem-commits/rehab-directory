@@ -18,8 +18,7 @@ const CATEGORY_TEXT_COLORS = {
   'טיפולי שיניים': 'FFC2185B', 'שירותים נוספים': 'FF546E7A',
 }
 
-const NAV = [['/', '🏠 ראשי'], ['/rehab', '♿ שיקום'], ['/treatment', '🏥 טיפול'], ['/map', '🗺️ מפה'], ['/about', 'אודות'], ['/admin', 'ניהול']]
-
+const NAV = [['/', '🏠 ראשי'], ['/rehab', '♿ שיקום'], ['/treatment', '🏥 טיפול'], ['/map', '🗺️ מפה'], ['/register', 'הרשמת שירות'], ['/about', 'אודות'], ['/admin', 'ניהול']]
 export default function Admin() {
   const [authed, setAuthed] = useState(false)
   const [password, setPassword] = useState('')
@@ -296,10 +295,11 @@ export default function Admin() {
       <div dir="rtl" style={{ fontFamily: "'Nunito', sans-serif", minHeight: '100vh', background: '#f5f5f5' }}>
         <header style={{ background: '#1A3A5C', color: 'white', padding: '10px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxShadow: '0 2px 12px rgba(0,0,0,0.15)', flexWrap: 'wrap', gap: 8 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-            <div style={{ paddingRight: 50 }}>
-              <div style={{ fontWeight: 800, fontSize: 18 }}>בריאות נפש בישראל</div>
-              <div style={{ fontSize: 11, opacity: 0.75 }}>פאנל ניהול</div>
-            </div>
+           <img src="/logo.png" alt="לוגו" style={{ width: 44, height: 44, objectFit: 'contain', filter: 'brightness(0) invert(1)' }} />
+<div>
+  <div style={{ fontWeight: 800, fontSize: 18 }}>בריאות נפש בישראל</div>
+  <div style={{ fontSize: 11, opacity: 0.75 }}>פאנל ניהול</div>
+</div>
           </div>
           <nav style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
             {NAV.map(([href, label]) => (
