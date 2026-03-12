@@ -27,7 +27,8 @@ export default function Home() {
         <div style={{ textAlign: 'center', marginBottom: 56 }}>
           <div style={{ fontSize: 52, marginBottom: 14 }}>🧠</div>
           <h1 style={{
-            fontSize: 34, fontWeight: 800,
+            fontSize: 34,
+            fontWeight: 800,
             color: '#5b2d8e',
             margin: '0 0 10px',
             letterSpacing: '-0.5px',
@@ -54,16 +55,16 @@ export default function Home() {
               cursor: 'pointer',
               display: 'flex', flexDirection: 'column',
               alignItems: 'center', justifyContent: 'center', gap: 10,
-              boxShadow: '0 6px 24px rgba(176,132,212,0.28)',
+              boxShadow: '0 8px 0px #9370c4, 0 12px 24px rgba(147,112,196,0.35)',
               transition: 'transform 0.22s cubic-bezier(.34,1.56,.64,1), box-shadow 0.2s ease',
             }}
             onMouseEnter={e => {
               e.currentTarget.style.transform = 'translateY(-6px) scale(1.04)'
-              e.currentTarget.style.boxShadow = '0 16px 40px rgba(176,132,212,0.42)'
+              e.currentTarget.style.boxShadow = '0 12px 0px #9370c4, 0 20px 40px rgba(147,112,196,0.45)'
             }}
             onMouseLeave={e => {
               e.currentTarget.style.transform = 'translateY(0) scale(1)'
-              e.currentTarget.style.boxShadow = '0 6px 24px rgba(176,132,212,0.28)'
+              e.currentTarget.style.boxShadow = '0 8px 0px #9370c4, 0 12px 24px rgba(147,112,196,0.35)'
             }}
           >
             <span style={{ fontSize: 48 }}>♿</span>
@@ -83,16 +84,16 @@ export default function Home() {
               cursor: 'pointer',
               display: 'flex', flexDirection: 'column',
               alignItems: 'center', justifyContent: 'center', gap: 10,
-              boxShadow: '0 6px 24px rgba(147,112,196,0.28)',
+              boxShadow: '0 8px 0px #7a52b0, 0 12px 24px rgba(122,82,176,0.35)',
               transition: 'transform 0.22s cubic-bezier(.34,1.56,.64,1), box-shadow 0.2s ease',
             }}
             onMouseEnter={e => {
               e.currentTarget.style.transform = 'translateY(-6px) scale(1.04)'
-              e.currentTarget.style.boxShadow = '0 16px 40px rgba(147,112,196,0.42)'
+              e.currentTarget.style.boxShadow = '0 12px 0px #7a52b0, 0 20px 40px rgba(122,82,176,0.45)'
             }}
             onMouseLeave={e => {
               e.currentTarget.style.transform = 'translateY(0) scale(1)'
-              e.currentTarget.style.boxShadow = '0 6px 24px rgba(147,112,196,0.28)'
+              e.currentTarget.style.boxShadow = '0 8px 0px #7a52b0, 0 12px 24px rgba(122,82,176,0.35)'
             }}
           >
             <span style={{ fontSize: 48 }}>🏥</span>
