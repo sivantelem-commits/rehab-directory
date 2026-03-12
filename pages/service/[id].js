@@ -64,11 +64,10 @@ export default function ServicePage() {
       <div dir="rtl" style={{ fontFamily: 'Arial, sans-serif', minHeight: '100vh', background: '#FFF8F3' }}>
         <header style={{ background: '#1A3A5C', color: 'white', padding: '10px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxShadow: '0 2px 12px rgba(0,0,0,0.15)', flexWrap: 'wrap', gap: 8 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-            <div style={{ width: 44, height: 44, borderRadius: '50%', background: '#F47B20', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22, fontWeight: 800, color: 'white' }}>♿</div>
-            <div>
-              <div style={{ fontWeight: 800, fontSize: 19 }}>בריאות נפש בישראל</div>
-              <div style={{ fontSize: 11, opacity: 0.75 }}>שירותי שיקום</div>
-            </div>
+           <div style={{ paddingRight: 50 }}>
+  <div style={{ fontWeight: 800, fontSize: 19 }}>בריאות נפש בישראל</div>
+  <div style={{ fontSize: 11, opacity: 0.75 }}>שירותי שיקום</div>
+</div>
           </div>
           <nav style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
             {NAV.map(([href, label]) => (
