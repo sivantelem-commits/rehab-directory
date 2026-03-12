@@ -26,7 +26,7 @@ export default function Home() {
 
         {/* כותרת */}
 <div style={{ textAlign: 'center', marginBottom: 52, marginTop: -60 }}>
-  <img src="/logo.png" alt="לוגו" style={{ width: 320, height: 320, objectFit: 'contain', marginBottom: -40, mixBlendMode: 'multiply' }} />          <h1 style={{
+  <img src="/logo.png" alt="לוגו" style={{ width: 220, height: 220, objectFit: 'contain', marginBottom: -40, mixBlendMode: 'multiply' }} />          <h1 style={{
             fontSize: 32, fontWeight: 800,
             color: '#3d2a6e', margin: '0 0 10px',
             letterSpacing: '-0.3px',
