@@ -51,41 +51,115 @@ export default function Rehab() {
 
   if (!mounted) return null
 
-  const sel = { padding: '9px 14px', borderRadius: 20, border: '1.5px solid #FFD4B0', fontSize: 14, background: 'white', cursor: 'pointer', outline: 'none' }
+  const sel = {
+    padding: '9px 16px',
+    borderRadius: '999px',
+    border: '1.5px solid #a8d8b0',
+    fontSize: 14,
+    background: 'white',
+    cursor: 'pointer',
+    outline: 'none',
+    fontFamily: "'Nunito', sans-serif",
+    color: '#2d6a4f',
+    fontWeight: 600,
+  }
 
   return (
     <>
       <Head>
         <title>שיקום | בריאות נפש בישראל</title>
         <meta name="description" content="מאגר שירותי סל שיקום בקהילה – דיור, תעסוקה, השכלה וליווי לפי אזור בישראל" />
+        <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
       </Head>
-      <div dir="rtl" style={{ fontFamily: 'Arial, sans-serif', minHeight: '100vh', background: '#FFF8F3' }}>
-        <header style={{ background: '#1A3A5C', color: 'white', padding: '10px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxShadow: '0 2px 12px rgba(0,0,0,0.15)', flexWrap: 'wrap', gap: 8 }}>
+
+      <div dir="rtl" style={{ fontFamily: "'Nunito', sans-serif", minHeight: '100vh', background: '#f2faf4' }}>
+
+        {/* HEADER */}
+        <header style={{
+          background: 'linear-gradient(135deg, #2d6a4f, #4aab78)',
+          color: 'white',
+          padding: '10px 20px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          boxShadow: '0 2px 12px rgba(45,106,79,0.2)',
+          flexWrap: 'wrap',
+          gap: 8,
+        }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-            <div style={{ width: 44, height: 44, borderRadius: '50%', background: '#F47B20', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22, fontWeight: 800, color: 'white' }}>♿</div>
+            <div style={{
+              width: 44, height: 44, borderRadius: '50%',
+              background: 'rgba(255,255,255,0.2)',
+              display: 'flex', alignItems: 'center',
+              justifyContent: 'center', fontSize: 22,
+            }}>♿</div>
             <div>
-              <div style={{ fontWeight: 800, fontSize: 19 }}>בריאות נפש בישראל</div>
-              <div style={{ fontSize: 11, opacity: 0.75 }}>שירותי שיקום בקהילה</div>
+              <div style={{ fontWeight: 800, fontSize: 18 }}>בריאות נפש בישראל</div>
+              <div style={{ fontSize: 11, opacity: 0.8 }}>שירותי שיקום בקהילה</div>
             </div>
           </div>
           <nav style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
             {[['/', '🏠 ראשי'], ['/rehab', '♿ שיקום'], ['/treatment', '🏥 טיפול'], ['/map', '🗺️ מפה'], ['/register', 'הרשמת שירות'], ['/about', 'אודות'], ['/admin', 'ניהול']].map(([href, label]) => (
-              <a key={href} href={href} style={{ color: 'white', background: 'rgba(255,255,255,0.12)', borderRadius: 20, padding: '6px 12px', fontWeight: 600, fontSize: 12, border: '1.5px solid rgba(255,255,255,0.25)', textDecoration: 'none' }}>{label}</a>
+              <a key={href} href={href} style={{
+                color: 'white',
+                background: href === '/rehab' ? 'rgba(255,255,255,0.25)' : 'rgba(255,255,255,0.1)',
+                borderRadius: '999px',
+                padding: '6px 14px',
+                fontWeight: 600,
+                fontSize: 12,
+                border: href === '/rehab' ? '1.5px solid rgba(255,255,255,0.6)' : '1.5px solid rgba(255,255,255,0.2)',
+                textDecoration: 'none',
+                transition: 'background 0.15s',
+              }}>{label}</a>
             ))}
           </nav>
         </header>
 
-        <div style={{ background: 'linear-gradient(135deg, #1A3A5C, #2A5298)', color: 'white', padding: '36px 20px', textAlign: 'center' }}>
-          <h1 style={{ fontSize: 26, fontWeight: 800, margin: '0 0 10px' }}>♿ שירותי שיקום</h1>
-          <p style={{ fontSize: 15, opacity: 0.85, margin: '0 0 24px' }}>מצאו שירותי שיקום בקהילה לפי אזור וקטגוריה</p>
+        {/* HERO */}
+        <div style={{
+          background: 'linear-gradient(160deg, #3a8a5e, #4aab78)',
+          color: 'white',
+          padding: '40px 20px',
+          textAlign: 'center',
+        }}>
+          <h1 style={{ fontSize: 28, fontWeight: 800, margin: '0 0 8px', letterSpacing: '-0.3px' }}>
+            ♿ שירותי שיקום
+          </h1>
+          <p style={{ fontSize: 15, opacity: 0.85, margin: '0 0 24px', fontWeight: 500 }}>
+            מצאו שירותי שיקום בקהילה לפי אזור וקטגוריה
+          </p>
           <div style={{ maxWidth: 480, margin: '0 auto' }}>
-            <input type="text" placeholder="חפשו לפי שם, עיר או תיאור..."
-              value={search} onChange={e => setSearch(e.target.value)}
-              style={{ width: '100%', padding: '14px 20px', borderRadius: 30, border: 'none', fontSize: 15, outline: 'none', boxSizing: 'border-box', boxShadow: '0 4px 16px rgba(0,0,0,0.15)' }} />
+            <input
+              type="text"
+              placeholder="חפשו לפי שם, עיר או תיאור..."
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+              style={{
+                width: '100%',
+                padding: '14px 22px',
+                borderRadius: '999px',
+                border: 'none',
+                fontSize: 15,
+                outline: 'none',
+                boxSizing: 'border-box',
+                boxShadow: '0 4px 20px rgba(0,0,0,0.12)',
+                fontFamily: "'Nunito', sans-serif",
+                fontWeight: 500,
+              }}
+            />
           </div>
         </div>
 
-        <div style={{ background: 'white', borderBottom: '1px solid #FFE8D6', padding: '12px 16px', display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'center' }}>
+        {/* FILTERS */}
+        <div style={{
+          background: 'white',
+          borderBottom: '1px solid #d4edda',
+          padding: '12px 20px',
+          display: 'flex',
+          gap: 10,
+          flexWrap: 'wrap',
+          alignItems: 'center',
+        }}>
           <select value={district} onChange={e => setDistrict(e.target.value)} style={sel}>
             {DISTRICTS.map(d => <option key={d}>{d}</option>)}
           </select>
@@ -98,20 +172,45 @@ export default function Rehab() {
               {subcategories.map(s => <option key={s}>{s}</option>)}
             </select>
           )}
-          <div style={{ marginRight: 'auto', fontSize: 13, color: '#888' }}>
+          <div style={{ marginRight: 'auto', fontSize: 13, color: '#7aaa88', fontWeight: 600 }}>
             {loading ? 'טוען...' : `${services.length} שירותים`}
           </div>
         </div>
 
-        <main style={{ maxWidth: 1100, margin: '0 auto', padding: '24px 16px' }}>
+        {/* MAIN */}
+        <main style={{ maxWidth: 1100, margin: '0 auto', padding: '28px 16px' }}>
           {loading ? (
-            <div style={{ textAlign: 'center', padding: 64, color: '#F47B20' }}>טוען שירותים...</div>
+            <div style={{ textAlign: 'center', padding: 64, color: '#4aab78', fontSize: 16, fontWeight: 600 }}>
+              טוען שירותים...
+            </div>
           ) : services.length === 0 ? (
             <div style={{ textAlign: 'center', padding: 64, color: '#aaa' }}>
               <div style={{ fontSize: 48, marginBottom: 12 }}>🔍</div>
-              <div style={{ fontWeight: 600, fontSize: 18, marginBottom: 8 }}>לא נמצאו שירותים</div>
-              <button onClick={() => { setSearch(''); setDistrict('הכל'); setCategory('הכל'); setSubcategory('הכל') }}
-                style={{ background: '#F47B20', color: 'white', border: 'none', borderRadius: 20, padding: '10px 24px', fontWeight: 700, fontSize: 14, cursor: 'pointer', marginTop: 8 }}>
+              <div style={{ fontWeight: 700, fontSize: 18, marginBottom: 8, color: '#555' }}>לא נמצאו שירותים</div>
+              <button
+                onClick={() => { setSearch(''); setDistrict('הכל'); setCategory('הכל'); setSubcategory('הכל') }}
+                style={{
+                  background: 'linear-gradient(160deg, #7ec8a0, #4aab78)',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '999px',
+                  padding: '11px 28px',
+                  fontWeight: 700,
+                  fontSize: 14,
+                  cursor: 'pointer',
+                  fontFamily: "'Nunito', sans-serif",
+                  boxShadow: '0 4px 0 #3a8a5e, 0 8px 20px rgba(74,171,120,0.3)',
+                  transition: 'transform 0.2s, box-shadow 0.2s',
+                }}
+                onMouseEnter={e => {
+                  e.currentTarget.style.transform = 'translateY(-3px)'
+                  e.currentTarget.style.boxShadow = '0 7px 0 #3a8a5e, 0 14px 28px rgba(74,171,120,0.35)'
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.transform = 'translateY(0)'
+                  e.currentTarget.style.boxShadow = '0 4px 0 #3a8a5e, 0 8px 20px rgba(74,171,120,0.3)'
+                }}
+              >
                 נקה פילטרים
               </button>
             </div>
@@ -126,16 +225,42 @@ export default function Rehab() {
           )}
         </main>
 
+        {/* SCROLL TO TOP */}
         {showTop && (
-          <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-            style={{ position: 'fixed', bottom: 24, left: 24, width: 48, height: 48, borderRadius: '50%', background: '#F47B20', color: 'white', border: 'none', fontSize: 22, cursor: 'pointer', boxShadow: '0 4px 16px rgba(244,123,32,0.4)', zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <button
+            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            style={{
+              position: 'fixed', bottom: 24, left: 24,
+              width: 48, height: 48, borderRadius: '50%',
+              background: 'linear-gradient(160deg, #7ec8a0, #4aab78)',
+              color: 'white', border: 'none', fontSize: 20,
+              cursor: 'pointer',
+              boxShadow: '0 4px 0 #3a8a5e, 0 8px 20px rgba(74,171,120,0.35)',
+              zIndex: 100,
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              fontWeight: 800,
+              transition: 'transform 0.2s',
+            }}
+            onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-2px)'}
+            onMouseLeave={e => e.currentTarget.style.transform = 'translateY(0)'}
+          >
             ↑
           </button>
         )}
 
-        <footer style={{ background: '#1A3A5C', color: 'rgba(255,255,255,0.7)', textAlign: 'center', padding: '24px', fontSize: 13, marginTop: 48 }}>
-          בריאות נפש בישראל © {new Date().getFullYear()}
+        {/* FOOTER */}
+        <footer style={{
+          background: 'linear-gradient(135deg, #2d6a4f, #3a8a5e)',
+          color: 'rgba(255,255,255,0.75)',
+          textAlign: 'center',
+          padding: '24px',
+          fontSize: 13,
+          marginTop: 48,
+          fontWeight: 500,
+        }}>
+          בריאות נפש בישראל © 2026
         </footer>
+
       </div>
     </>
   )
