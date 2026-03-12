@@ -1,29 +1,5 @@
 import { useRouter } from 'next/router'
 
 export default function App({ Component, pageProps }) {
-  const router = useRouter()
-  const isHome = router.pathname === '/'
-
-  return (
-    <>
-      {!isHome && (
-        <img
-    src="/logo.png"
-    alt="לוגו"
-    style={{
-      position: 'fixed',
-      top: 10,
-      right: 16,
-      width: 44,
-      height: 44,
-      objectFit: 'contain',
-      zIndex: 9999,
-      pointerEvents: 'none',
-      filter: 'brightness(0) invert(1)',
-    }}
-  />
-)}
-      <Component {...pageProps} />
-    </>
-  )
+  return <Component {...pageProps} />
 }
