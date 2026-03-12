@@ -19,6 +19,7 @@ const CATEGORY_TEXT_COLORS = {
 }
 
 const NAV = [['/', '🏠 ראשי'], ['/rehab', '♿ שיקום'], ['/treatment', '🏥 טיפול'], ['/map', '🗺️ מפה'], ['/register', 'הרשמת שירות'], ['/about', 'אודות'], ['/admin', 'ניהול']]
+
 export default function Admin() {
   const [authed, setAuthed] = useState(false)
   const [password, setPassword] = useState('')
@@ -28,7 +29,7 @@ export default function Admin() {
   const [pendingTreatment, setPendingTreatment] = useState([])
   const [approvedTreatment, setApprovedTreatment] = useState([])
   const [loading, setLoading] = useState(false)
-  const [section, setSection] = useState('rehab') // 'rehab' | 'treatment' | 'stats'
+  const [section, setSection] = useState('rehab')
   const [rehabTab, setRehabTab] = useState('pending')
   const [treatmentTab, setTreatmentTab] = useState('pending')
   const [adminKey, setAdminKey] = useState('')
@@ -122,15 +123,19 @@ export default function Admin() {
     fetchAll(adminKey)
   }
 
-  const openEdit = (service) => { setEditingService(service); setEditForm({ ...service }) }
+  const openEdit = (service, table = 'services') => {
+    setEditingService(service)
+    setEditForm({ ...service, _table: table })
+  }
 
   const saveEdit = async () => {
     setSaving(true)
     try {
+      const { _table, ...fields } = editForm
       await fetch('/api/admin/edit', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json', adminkey: adminKey },
-        body: JSON.stringify(editForm),
+        body: JSON.stringify({ ...fields, table: _table }),
       })
       setEditingService(null); fetchAll(adminKey)
     } finally { setSaving(false) }
@@ -281,7 +286,8 @@ export default function Admin() {
 
   const inp = { width: '100%', padding: '10px 14px', borderRadius: 12, border: '1.5px solid #FFD4B0', fontSize: 14, background: '#FFF8F3', outline: 'none', boxSizing: 'border-box', fontFamily: 'inherit' }
   const lbl = { display: 'block', fontSize: 13, fontWeight: 700, color: '#1A3A5C', marginBottom: 5 }
-  const editSubcategories = editForm.category ? CATEGORIES[editForm.category]?.subcategories || [] : []
+  const isTreatmentEdit = editForm._table === 'treatment'
+  const editSubcategories = (!isTreatmentEdit && editForm.category) ? CATEGORIES[editForm.category]?.subcategories || [] : []
   const exportSubcategories = exportFilters.category ? CATEGORIES[exportFilters.category]?.subcategories || [] : []
 
   if (!mounted) return null
@@ -295,11 +301,11 @@ export default function Admin() {
       <div dir="rtl" style={{ fontFamily: "'Nunito', sans-serif", minHeight: '100vh', background: '#f5f5f5' }}>
         <header style={{ background: '#1A3A5C', color: 'white', padding: '10px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxShadow: '0 2px 12px rgba(0,0,0,0.15)', flexWrap: 'wrap', gap: 8 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-           <img src="/logo.png" alt="לוגו" style={{ width: 44, height: 44, objectFit: 'contain', filter: 'brightness(0) invert(1)' }} />
-<div>
-  <div style={{ fontWeight: 800, fontSize: 18 }}>בריאות נפש בישראל</div>
-  <div style={{ fontSize: 11, opacity: 0.75 }}>פאנל ניהול</div>
-</div>
+            <img src="/logo.png" alt="לוגו" style={{ width: 44, height: 44, objectFit: 'contain', filter: 'brightness(0) invert(1)' }} />
+            <div>
+              <div style={{ fontWeight: 800, fontSize: 18 }}>בריאות נפש בישראל</div>
+              <div style={{ fontSize: 11, opacity: 0.75 }}>פאנל ניהול</div>
+            </div>
           </div>
           <nav style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
             {NAV.map(([href, label]) => (
@@ -328,7 +334,6 @@ export default function Admin() {
             </div>
           ) : (
             <>
-              {/* סיכום מספרים */}
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: 12, marginBottom: 28 }}>
                 {[
                   ['♿', 'שיקום פעילים', approved.length, '#F47B20'],
@@ -346,7 +351,6 @@ export default function Admin() {
                 ))}
               </div>
 
-              {/* ניווט ראשי — שלושה סעיפים שווים */}
               <div style={{ display: 'flex', gap: 12, marginBottom: 24, flexWrap: 'wrap' }}>
                 {[
                   ['rehab', '♿ שיקום', '#F47B20'],
@@ -405,7 +409,7 @@ export default function Admin() {
                               </div>
                               <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
                                 <button onClick={() => updateStatus(s.id, 'approved')} style={{ background: '#F47B20', color: 'white', border: 'none', borderRadius: 20, padding: '8px 18px', fontWeight: 700, fontSize: 13, cursor: 'pointer' }}>✓ אשר</button>
-                                <button onClick={() => openEdit(s)} style={{ background: '#EEF2FF', color: '#1A3A5C', border: '1.5px solid #C5D0F0', borderRadius: 20, padding: '8px 18px', fontWeight: 700, fontSize: 13, cursor: 'pointer' }}>✏️ ערוך</button>
+                                <button onClick={() => openEdit(s, 'services')} style={{ background: '#EEF2FF', color: '#1A3A5C', border: '1.5px solid #C5D0F0', borderRadius: 20, padding: '8px 18px', fontWeight: 700, fontSize: 13, cursor: 'pointer' }}>✏️ ערוך</button>
                                 <button onClick={() => updateStatus(s.id, 'rejected')} style={{ background: '#FFF0F0', color: '#C62828', border: '1.5px solid #FFCDD2', borderRadius: 20, padding: '8px 18px', fontWeight: 700, fontSize: 13, cursor: 'pointer' }}>✕ דחה</button>
                               </div>
                             </div>
@@ -427,7 +431,7 @@ export default function Admin() {
                               {!s.lat && <div style={{ fontSize: 11, color: '#F47B20', marginBottom: 6 }}>⚠️ אין מיקום במפה</div>}
                               <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
                                 <button onClick={() => setLocationService(s)} style={{ background: s.lat ? '#E8F5E9' : '#FFF3E0', color: s.lat ? '#2E7D32' : '#E65100', border: `1.5px solid ${s.lat ? '#A5D6A7' : '#FFCC80'}`, borderRadius: 20, padding: '5px 12px', fontSize: 12, cursor: 'pointer', fontWeight: 600 }}>📍 {s.lat ? 'עדכן מיקום' : 'הוסף מיקום'}</button>
-                                <button onClick={() => openEdit(s)} style={{ background: '#EEF2FF', color: '#1A3A5C', border: '1.5px solid #C5D0F0', borderRadius: 20, padding: '5px 12px', fontSize: 12, cursor: 'pointer', fontWeight: 600 }}>✏️ ערוך</button>
+                                <button onClick={() => openEdit(s, 'services')} style={{ background: '#EEF2FF', color: '#1A3A5C', border: '1.5px solid #C5D0F0', borderRadius: 20, padding: '5px 12px', fontSize: 12, cursor: 'pointer', fontWeight: 600 }}>✏️ ערוך</button>
                                 <button onClick={() => deleteService(s.id)} style={{ background: 'none', border: '1.5px solid #FFCDD2', color: '#C62828', borderRadius: 20, padding: '5px 12px', fontSize: 12, cursor: 'pointer', fontWeight: 600 }}>🗑️ מחק</button>
                               </div>
                             </div>
@@ -438,7 +442,6 @@ export default function Admin() {
                   )}
                 </div>
               ) : (
-                // טיפול
                 <div>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16, flexWrap: 'wrap', gap: 10 }}>
                     <div style={{ display: 'flex', gap: 8 }}>
@@ -477,10 +480,14 @@ export default function Admin() {
                               {treatmentTab === 'pending' ? (
                                 <>
                                   <button onClick={() => updateTreatmentStatus(s.id, 'approved')} style={{ background: '#0277BD', color: 'white', border: 'none', borderRadius: 20, padding: '7px 16px', fontWeight: 700, fontSize: 13, cursor: 'pointer' }}>✓ אשר</button>
+                                  <button onClick={() => openEdit(s, 'treatment')} style={{ background: '#EEF2FF', color: '#1A3A5C', border: '1.5px solid #C5D0F0', borderRadius: 20, padding: '7px 16px', fontWeight: 700, fontSize: 13, cursor: 'pointer' }}>✏️ ערוך</button>
                                   <button onClick={() => updateTreatmentStatus(s.id, 'rejected')} style={{ background: '#FFF0F0', color: '#C62828', border: '1.5px solid #FFCDD2', borderRadius: 20, padding: '7px 16px', fontWeight: 700, fontSize: 13, cursor: 'pointer' }}>✕ דחה</button>
                                 </>
                               ) : (
-                                <button onClick={() => deleteTreatmentService(s.id)} style={{ background: 'none', border: '1.5px solid #FFCDD2', color: '#C62828', borderRadius: 20, padding: '5px 12px', fontSize: 12, cursor: 'pointer', fontWeight: 600 }}>🗑️ מחק</button>
+                                <>
+                                  <button onClick={() => openEdit(s, 'treatment')} style={{ background: '#EEF2FF', color: '#1A3A5C', border: '1.5px solid #C5D0F0', borderRadius: 20, padding: '5px 12px', fontSize: 12, cursor: 'pointer', fontWeight: 600 }}>✏️ ערוך</button>
+                                  <button onClick={() => deleteTreatmentService(s.id)} style={{ background: 'none', border: '1.5px solid #FFCDD2', color: '#C62828', borderRadius: 20, padding: '5px 12px', fontSize: 12, cursor: 'pointer', fontWeight: 600 }}>🗑️ מחק</button>
+                                </>
                               )}
                             </div>
                           </div>
@@ -494,7 +501,6 @@ export default function Admin() {
           )}
         </main>
 
-        {/* מודל ייצוא שיקום */}
         {showExportRehab && (
           <div onClick={() => setShowExportRehab(false)} style={{ position: 'fixed', inset: 0, background: 'rgba(26,58,92,0.6)', zIndex: 200, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
             <div onClick={e => e.stopPropagation()} style={{ background: 'white', borderRadius: 20, maxWidth: 480, width: '100%', boxShadow: '0 24px 64px rgba(0,0,0,0.25)' }}>
@@ -532,7 +538,6 @@ export default function Admin() {
           </div>
         )}
 
-        {/* מודל ייצוא טיפול */}
         {showExportTreatment && (
           <div onClick={() => setShowExportTreatment(false)} style={{ position: 'fixed', inset: 0, background: 'rgba(26,58,92,0.6)', zIndex: 200, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
             <div onClick={e => e.stopPropagation()} style={{ background: 'white', borderRadius: 20, maxWidth: 480, width: '100%', boxShadow: '0 24px 64px rgba(0,0,0,0.25)' }}>
@@ -561,14 +566,16 @@ export default function Admin() {
           </div>
         )}
 
-        {/* מודל עריכה */}
+        {/* מודל עריכה — תומך בשיקום וטיפול */}
         {editingService && (
           <div onClick={() => setEditingService(null)} style={{ position: 'fixed', inset: 0, background: 'rgba(26,58,92,0.6)', zIndex: 200, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
             <div onClick={e => e.stopPropagation()} style={{ background: 'white', borderRadius: 20, maxWidth: 560, width: '100%', maxHeight: '90vh', overflowY: 'auto', boxShadow: '0 24px 64px rgba(0,0,0,0.25)' }}>
-              <div style={{ height: 7, background: '#F47B20', borderRadius: '20px 20px 0 0' }} />
+              <div style={{ height: 7, background: isTreatmentEdit ? '#0277BD' : '#F47B20', borderRadius: '20px 20px 0 0' }} />
               <div style={{ padding: '24px 20px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
-                  <h2 style={{ margin: 0, fontSize: 18, fontWeight: 800, color: '#1A3A5C' }}>✏️ עריכת שירות</h2>
+                  <h2 style={{ margin: 0, fontSize: 18, fontWeight: 800, color: '#1A3A5C' }}>
+                    ✏️ עריכת שירות {isTreatmentEdit ? 'טיפול' : 'שיקום'}
+                  </h2>
                   <button onClick={() => setEditingService(null)} style={{ background: 'none', border: 'none', fontSize: 22, cursor: 'pointer', color: '#aaa' }}>✕</button>
                 </div>
                 {[['name','שם השירות','text'],['city','עיר','text'],['phone','טלפון','tel'],['email','מייל','email'],['address','כתובת','text'],['website','אתר אינטרנט','url']].map(([key, label, type]) => (
@@ -587,10 +594,13 @@ export default function Admin() {
                   <label style={lbl}>קטגוריה</label>
                   <select value={editForm.category || ''} onChange={e => setEditForm(f => ({ ...f, category: e.target.value, subcategory: '' }))} style={inp}>
                     <option value="">בחרו קטגוריה</option>
-                    {CATEGORY_NAMES.map(c => <option key={c}>{c}</option>)}
+                    {isTreatmentEdit
+                      ? TREATMENT_CATEGORIES.map(c => <option key={c}>{c}</option>)
+                      : CATEGORY_NAMES.map(c => <option key={c}>{c}</option>)
+                    }
                   </select>
                 </div>
-                {editSubcategories.length > 0 && (
+                {!isTreatmentEdit && editSubcategories.length > 0 && (
                   <div style={{ marginBottom: 14 }}>
                     <label style={lbl}>תת קטגוריה</label>
                     <select value={editForm.subcategory || ''} onChange={e => setEditForm(f => ({ ...f, subcategory: e.target.value }))} style={inp}>
@@ -604,7 +614,7 @@ export default function Admin() {
                   <textarea value={editForm.description || ''} onChange={e => setEditForm(f => ({ ...f, description: e.target.value }))} rows={4} style={{ ...inp, resize: 'vertical', borderRadius: 12 }} />
                 </div>
                 <div style={{ display: 'flex', gap: 10 }}>
-                  <button onClick={saveEdit} disabled={saving} style={{ flex: 1, background: '#F47B20', color: 'white', border: 'none', borderRadius: 20, padding: '12px 0', fontWeight: 700, fontSize: 14, cursor: saving ? 'not-allowed' : 'pointer' }}>
+                  <button onClick={saveEdit} disabled={saving} style={{ flex: 1, background: isTreatmentEdit ? '#0277BD' : '#F47B20', color: 'white', border: 'none', borderRadius: 20, padding: '12px 0', fontWeight: 700, fontSize: 14, cursor: saving ? 'not-allowed' : 'pointer' }}>
                     {saving ? 'שומר...' : '💾 שמור'}
                   </button>
                   <button onClick={() => setEditingService(null)} style={{ flex: 1, background: '#EEF2FF', color: '#1A3A5C', border: '1.5px solid #C5D0F0', borderRadius: 20, padding: '12px 0', fontWeight: 700, fontSize: 14, cursor: 'pointer' }}>ביטול</button>
