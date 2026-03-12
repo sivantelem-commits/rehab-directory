@@ -54,22 +54,19 @@ export default function Register() {
         <meta name="description" content="הרשמת שירות סל שיקום חדש למאגר" />
       </Head>
       <div dir="rtl" style={{ fontFamily: 'Arial, sans-serif', minHeight: '100vh', background: '#FFF8F3' }}>
-        <header style={{ background: '#1A3A5C', color: 'white', padding: '10px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxShadow: '0 2px 12px rgba(0,0,0,0.15)', flexWrap: 'wrap', gap: 8 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-<div style={{ paddingRight: 50 }}>
-  <div style={{ fontWeight: 800, fontSize: 19 }}>סל שיקום</div>
-  <div style={{ fontSize: 11, opacity: 0.75 }}>מאגר שירותי שיקום בקהילה</div>
-</div>            <div>
-              <div style={{ fontWeight: 800, fontSize: 19 }}>סל שיקום</div>
-              <div style={{ fontSize: 11, opacity: 0.75 }}>מאגר שירותי שיקום בקהילה</div>
-            </div>
-          </div>
-          <nav style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-            {[['/', 'שירותים'], ['/map', '🗺️ מפה'], ['/register', 'הרשמת שירות'], ['/about', 'אודות'], ['/admin', 'ניהול']].map(([href, label]) => (
-              <a key={href} href={href} style={{ color: 'white', background: 'rgba(255,255,255,0.12)', borderRadius: 20, padding: '6px 12px', fontWeight: 600, fontSize: 12, border: '1.5px solid rgba(255,255,255,0.25)', textDecoration: 'none' }}>{label}</a>
-            ))}
-          </nav>
-        </header>
+       <header style={{ background: '#1A3A5C', color: 'white', padding: '10px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxShadow: '0 2px 12px rgba(0,0,0,0.15)', flexWrap: 'wrap', gap: 8 }}>
+  <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+    <div style={{ paddingRight: 50 }}>
+      <div style={{ fontWeight: 800, fontSize: 19 }}>סל שיקום</div>
+      <div style={{ fontSize: 11, opacity: 0.75 }}>מאגר שירותי שיקום בקהילה</div>
+    </div>
+  </div>
+  <nav style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+    {[['/', 'שירותים'], ['/map', '🗺️ מפה'], ['/register', 'הרשמת שירות'], ['/about', 'אודות'], ['/admin', 'ניהול']].map(([href, label]) => (
+      <a key={href} href={href} style={{ color: 'white', background: 'rgba(255,255,255,0.12)', borderRadius: 20, padding: '6px 12px', fontWeight: 600, fontSize: 12, border: '1.5px solid rgba(255,255,255,0.25)', textDecoration: 'none' }}>{label}</a>
+    ))}
+  </nav>
+</header>
 
         <div style={{ background: 'linear-gradient(135deg, #1A3A5C, #2A5298)', color: 'white', padding: '32px 20px', textAlign: 'center' }}>
           <div style={{ fontSize: 36, marginBottom: 10 }}>➕</div>
