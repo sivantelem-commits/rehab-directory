@@ -19,8 +19,7 @@ const { data, error } = await supabase.from('treatment_services').insert([{
   name, district, city, category, description, phone, email, website, address, is_national: !!is_national,
   status: 'pending',
 }]).select()
-
-  if (error) return res.status(500).json({ error: error.message })
+if (error) return res.status(500).json({ error: error.message })
 
   // מייל לאדמין
   await resend.emails.send({
