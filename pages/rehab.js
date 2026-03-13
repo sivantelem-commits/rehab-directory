@@ -6,6 +6,40 @@ import { CATEGORIES, CATEGORY_NAMES } from '../lib/categories'
 
 const DISTRICTS = ['הכל', 'צפון', 'חיפה', 'מרכז', 'תל אביב', 'ירושלים', 'דרום', 'יהודה ושומרון', '🌍 ארצי']
 
+
+const SkeletonCard = () => (
+  <div style={{
+    background: 'white', borderRadius: 20, padding: '20px',
+    boxShadow: '0 4px 16px rgba(0,0,0,0.06)', border: '1.5px solid #d4edda',
+    borderTop: '4px solid #d4edda', minHeight: 200,
+  }}>
+    <style>{`
+      @keyframes shimmer {
+        0% { background-position: -400px 0 }
+        100% { background-position: 400px 0 }
+      }
+      .skel-r {
+        background: linear-gradient(90deg, #e8f5ec 25%, #f2faf4 50%, #e8f5ec 75%);
+        background-size: 800px 100%;
+        animation: shimmer 1.4s infinite;
+        border-radius: 8px;
+      }
+    `}</style>
+    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 12 }}>
+      <div className="skel-r" style={{ height: 18, width: '55%' }} />
+      <div className="skel-r" style={{ height: 18, width: '28%', borderRadius: 999 }} />
+    </div>
+    <div className="skel-r" style={{ height: 14, width: '40%', marginBottom: 14 }} />
+    <div className="skel-r" style={{ height: 13, width: '100%', marginBottom: 6 }} />
+    <div className="skel-r" style={{ height: 13, width: '90%', marginBottom: 6 }} />
+    <div className="skel-r" style={{ height: 13, width: '75%', marginBottom: 18 }} />
+    <div style={{ display: 'flex', gap: 10 }}>
+      <div className="skel-r" style={{ height: 13, width: 80 }} />
+      <div className="skel-r" style={{ height: 13, width: 120 }} />
+    </div>
+  </div>
+)
+
 export default function Rehab() {
   const router = useRouter()
   const [services, setServices] = useState([])
@@ -155,7 +189,9 @@ export default function Rehab() {
 
         <main style={{ maxWidth: 1100, margin: '0 auto', padding: '28px 16px' }}>
           {loading ? (
-            <div style={{ textAlign: 'center', padding: 64, color: '#4aab78', fontSize: 16, fontWeight: 600 }}>טוען שירותים...</div>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 16, alignItems: 'stretch' }}>
+              {Array.from({ length: 9 }).map((_, i) => <SkeletonCard key={i} />)}
+            </div>
           ) : services.length === 0 ? (
             <div style={{ textAlign: 'center', padding: 64, color: '#aaa' }}>
               <div style={{ fontSize: 48, marginBottom: 12 }}>🔍</div>
