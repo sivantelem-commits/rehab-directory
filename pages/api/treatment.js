@@ -1,5 +1,4 @@
 import { createClient } from '@supabase/supabase-js'
-
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
   process.env.SUPABASE_SERVICE_ROLE_KEY
@@ -7,20 +6,23 @@ const supabase = createClient(
 
 export default async function handler(req, res) {
   if (req.method !== 'GET') return res.status(405).end()
-
-  const { district, category, search } = req.query
+  const { district, category, search, national } = req.query
 
   let query = supabase
     .from('treatment_services')
     .select('*')
     .eq('status', 'approved')
 
-  if (district) query = query.eq('district', district)
+  if (national === 'true') {
+    query = query.eq('is_national', true)
+  } else if (district) {
+    query = query.eq('district', district)
+  }
+
   if (category) query = query.eq('category', category)
   if (search) query = query.or(`name.ilike.%${search}%,city.ilike.%${search}%,description.ilike.%${search}%`)
 
   const { data, error } = await query.order('created_at', { ascending: false })
-
   if (error) return res.status(500).json({ error: error.message })
   res.status(200).json(data || [])
 }
