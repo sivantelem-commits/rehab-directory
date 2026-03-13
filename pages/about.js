@@ -4,9 +4,17 @@ const NAV = [['/', '🏠 ראשי'], ['/rehab', '♿ שיקום'], ['/treatment'
 export default function About() {
   return (
     <>
-      <Head>
+            <Head>
         <title>אודות | בריאות נפש בישראל</title>
-        <meta name="description" content="אודות פורטל בריאות נפש בישראל – מי אנחנו ולמה נוצר האתר" />
+        <meta name="description" content="אודות פורטל בריאות נפש בישראל – מנגישים מידע על שירותי שיקום וטיפול פסיכיאטרי לאנשים, משפחות ואנשי מקצוע." />
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href="https://rehabdirectoryil.vercel.app/about" />
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content="אודות | בריאות נפש בישראל" />
+        <meta property="og:description" content="אודות פורטל בריאות נפש בישראל – מנגישים מידע על שירותי שיקום וטיפול פסיכיאטרי לאנשים, משפחות ואנשי מקצוע." />
+        <meta property="og:url" content="https://rehabdirectoryil.vercel.app/about" />
+        <meta property="og:locale" content="he_IL" />
+        <meta property="og:site_name" content="בריאות נפש בישראל" />
         <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
       </Head>
       <div dir="rtl" style={{ fontFamily: "'Nunito', sans-serif", minHeight: '100vh', background: '#F0F7FF' }}>
