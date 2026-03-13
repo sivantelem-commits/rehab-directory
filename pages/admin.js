@@ -646,13 +646,19 @@ function StatsTab({ stats }) {
   const categories = Object.keys(stats.crossTable || {})
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+
+      <div style={{ fontWeight: 800, fontSize: 16, color: '#1A3A5C' }}>♿ סטטיסטיקות שיקום</div>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: 12 }}>
         {[['סה"כ שירותים', stats.total, '#1A3A5C', '📋'], ['פעילים', stats.approved, '#2E7D32', '✅'], ['ממתינים', stats.pending, '#F47B20', '⏳'], ['נדחו', stats.rejected, '#C62828', '❌']].map(([label, val, color, icon]) => (
           <div key={label} style={{ background: 'white', borderRadius: 16, padding: '18px 16px', textAlign: 'center', boxShadow: '0 4px 16px rgba(0,0,0,0.07)', borderTop: `4px solid ${color}` }}>
             <div style={{ fontSize: 28, marginBottom: 6 }}>{icon}</div>
             <div style={{ fontSize: 32, fontWeight: 800, color }}>{val}</div>
             <div style={{ fontSize: 12, color: '#888', marginTop: 4 }}>{label}</div>
-                                                                                                                                                                                    <div style={{ fontWeight: 800, fontSize: 16, color: '#ee7a50', marginTop: 8 }}>🏥 סטטיסטיקות טיפול</div>
+          </div>
+        ))}
+      </div>
+
+      <div style={{ fontWeight: 800, fontSize: 16, color: '#ee7a50' }}>🏥 סטטיסטיקות טיפול</div>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: 12 }}>
         {[['סה"כ שירותים', stats.totalTreatment, '#1A3A5C', '📋'], ['פעילים', stats.approvedTreatment, '#2E7D32', '✅'], ['ממתינים', stats.pendingTreatment, '#ee7a50', '⏳'], ['נדחו', stats.rejectedTreatment, '#C62828', '❌']].map(([label, val, color, icon]) => (
           <div key={label} style={{ background: 'white', borderRadius: 16, padding: '18px 16px', textAlign: 'center', boxShadow: '0 4px 16px rgba(0,0,0,0.07)', borderTop: `4px solid ${color}` }}>
@@ -662,9 +668,10 @@ function StatsTab({ stats }) {
           </div>
         ))}
       </div>
-          </div>
-        ))}
-      </div>
+
+    </div>
+  )
+}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(340px, 1fr))', gap: 20 }}>
         <div style={{ background: 'white', borderRadius: 16, padding: '20px', boxShadow: '0 4px 16px rgba(0,0,0,0.07)' }}>
           <h3 style={{ margin: '0 0 16px', fontSize: 15, fontWeight: 800, color: '#1A3A5C' }}>🥧 לפי קטגוריה</h3>
