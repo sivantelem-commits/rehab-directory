@@ -94,7 +94,7 @@ export default function Rehab() {
             </div>
           </div>
           <nav style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-            {[['/', '🏠 ראשי'], ['/rehab', '♿ שיקום'], ['/treatment', '🏥 טיפול'], ['/map', '🗺️ מפה'], ['/register', 'הרשמת שירות'], ['/about', 'אודות'], ['/admin', 'ניהול']].map(([href, label]) => (
+            {[['/', '🏠 ראשי'], ['/rehab', '♿ שיקום'], ['/treatment', '🏥 טיפול'], ['/map', '🗺️ מפה'], ['/register', 'הרשמת שירות'], ['/about', 'אודות'], ['/contact', '✉️ צור קשר'], ['/admin', 'ניהול']].map(([href, label]) => (
               <a key={href} href={href} style={{
                 color: 'white',
                 background: href === '/rehab' ? 'rgba(255,255,255,0.25)' : 'rgba(255,255,255,0.1)',
@@ -189,6 +189,9 @@ export default function Rehab() {
           background: 'linear-gradient(135deg, #2d6a4f, #3a8a5e)', color: 'rgba(255,255,255,0.75)',
           textAlign: 'center', padding: '24px', fontSize: 13, marginTop: 48, fontWeight: 500,
         }}>
+          <div style={{ marginBottom: 8 }}>
+            <a href="/contact" style={{ color: 'rgba(255,255,255,0.7)', textDecoration: 'none' }}>✉️ צור קשר</a>
+          </div>
           בריאות נפש בישראל © 2026
         </footer>
       </div>
