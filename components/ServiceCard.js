@@ -18,11 +18,7 @@ export default function ServiceCard({ service }) {
 <div style={{ fontSize: 13, color: '#888', marginBottom: 8, display: 'flex', alignItems: 'center', gap: 6 }}>
   📍 {service.city}{service.district ? `, ${service.district}` : ''}
   {service.is_national && <span style={{ background: '#1A3A5C', color: 'white', borderRadius: 20, padding: '2px 8px', fontSize: 10, fontWeight: 700 }}>🌍 ארצי</span>}
-</div>      <div style={{ flex: 1, overflow: 'hidden' }}>
-        {service.description && (
-          <div style={{ fontSize: 13.5, color: '#445', lineHeight: 1.55, display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
-            {service.description}
-          </div>
+</div>
         )}
       </div>
       <div style={{ display: 'flex', gap: 12, fontSize: 13, color, flexWrap: 'wrap', marginTop: 12 }}>
