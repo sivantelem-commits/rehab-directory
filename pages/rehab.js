@@ -4,7 +4,7 @@ import Head from 'next/head'
 import ServiceCard from '../components/ServiceCard'
 import { CATEGORIES, CATEGORY_NAMES } from '../lib/categories'
 
-const DISTRICTS = ['הכל', 'צפון', 'חיפה', 'מרכז', 'תל אביב', 'ירושלים', 'דרום', 'יהודה ושומרון']
+const DISTRICTS = ['הכל', 'צפון', 'חיפה', 'מרכז', 'תל אביב', 'ירושלים', 'דרום', 'יהודה ושומרון', '🌍 ארצי']
 
 export default function Rehab() {
   const router = useRouter()
@@ -14,7 +14,6 @@ export default function Rehab() {
   const [district, setDistrict] = useState('הכל')
   const [category, setCategory] = useState('הכל')
   const [subcategory, setSubcategory] = useState('הכל')
-  const [nationalOnly, setNationalOnly] = useState(false)
   const [debouncedSearch, setDebouncedSearch] = useState('')
   const [mounted, setMounted] = useState(false)
   const [showTop, setShowTop] = useState(false)
@@ -36,34 +35,39 @@ export default function Rehab() {
     setLoading(true)
     try {
       const params = new URLSearchParams()
-      if (district !== 'הכל') params.set('district', district)
+      if (district === '🌍 ארצי') {
+        params.set('national', 'true')
+      } else if (district !== 'הכל') {
+        params.set('district', district)
+      }
       if (category !== 'הכל') params.set('category', category)
       if (subcategory !== 'הכל') params.set('subcategory', subcategory)
       if (debouncedSearch) params.set('search', debouncedSearch)
-      if (nationalOnly) params.set('national', 'true')
       const res = await fetch(`/api/services?${params}`)
       const data = await res.json()
       setServices(Array.isArray(data) ? data : [])
     } finally { setLoading(false) }
-  }, [district, category, subcategory, debouncedSearch, nationalOnly])
+  }, [district, category, subcategory, debouncedSearch])
 
   useEffect(() => { fetchServices() }, [fetchServices])
 
   const subcategories = category !== 'הכל' ? ['הכל', ...CATEGORIES[category].subcategories] : []
+  const isNational = district === '🌍 ארצי'
 
   if (!mounted) return null
 
   const sel = {
-    padding: '9px 16px',
-    borderRadius: '999px',
+    padding: '9px 16px', borderRadius: '999px', fontSize: 14,
+    background: 'white', cursor: 'pointer', outline: 'none',
+    fontFamily: "'Nunito', sans-serif", color: '#2d6a4f', fontWeight: 600,
     border: '1.5px solid #a8d8b0',
-    fontSize: 14,
-    background: 'white',
-    cursor: 'pointer',
-    outline: 'none',
-    fontFamily: "'Nunito', sans-serif",
-    color: '#2d6a4f',
-    fontWeight: 600,
+  }
+
+  const districtSel = {
+    ...sel,
+    border: `1.5px solid ${isNational ? '#1A3A5C' : '#a8d8b0'}`,
+    background: isNational ? '#EEF2FF' : 'white',
+    color: isNational ? '#1A3A5C' : '#2d6a4f',
   }
 
   return (
@@ -76,17 +80,11 @@ export default function Rehab() {
 
       <div dir="rtl" style={{ fontFamily: "'Nunito', sans-serif", minHeight: '100vh', background: '#f2faf4' }}>
 
-        {/* HEADER */}
         <header style={{
-          background: 'linear-gradient(135deg, #2d6a4f, #4aab78)',
-          color: 'white',
-          padding: '10px 20px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          boxShadow: '0 2px 12px rgba(45,106,79,0.2)',
-          flexWrap: 'wrap',
-          gap: 8,
+          background: 'linear-gradient(135deg, #2d6a4f, #4aab78)', color: 'white',
+          padding: '10px 20px', display: 'flex', alignItems: 'center',
+          justifyContent: 'space-between', boxShadow: '0 2px 12px rgba(45,106,79,0.2)',
+          flexWrap: 'wrap', gap: 8,
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
             <img src="/logo.png" alt="לוגו" style={{ width: 44, height: 44, objectFit: 'contain', filter: 'brightness(0) invert(1)' }} />
@@ -100,64 +98,34 @@ export default function Rehab() {
               <a key={href} href={href} style={{
                 color: 'white',
                 background: href === '/rehab' ? 'rgba(255,255,255,0.25)' : 'rgba(255,255,255,0.1)',
-                borderRadius: '999px',
-                padding: '6px 14px',
-                fontWeight: 600,
-                fontSize: 12,
+                borderRadius: '999px', padding: '6px 14px', fontWeight: 600, fontSize: 12,
                 border: href === '/rehab' ? '1.5px solid rgba(255,255,255,0.6)' : '1.5px solid rgba(255,255,255,0.2)',
-                textDecoration: 'none',
-                transition: 'background 0.15s',
+                textDecoration: 'none', transition: 'background 0.15s',
               }}>{label}</a>
             ))}
           </nav>
         </header>
 
-        {/* HERO */}
-        <div style={{
-          background: 'linear-gradient(160deg, #3a8a5e, #4aab78)',
-          color: 'white',
-          padding: '40px 20px',
-          textAlign: 'center',
-        }}>
-          <h1 style={{ fontSize: 28, fontWeight: 800, margin: '0 0 8px', letterSpacing: '-0.3px' }}>
-            ♿ שירותי שיקום
-          </h1>
-          <p style={{ fontSize: 15, opacity: 0.85, margin: '0 0 24px', fontWeight: 500 }}>
-            מצאו שירותי שיקום בקהילה לפי אזור וקטגוריה
-          </p>
+        <div style={{ background: 'linear-gradient(160deg, #3a8a5e, #4aab78)', color: 'white', padding: '40px 20px', textAlign: 'center' }}>
+          <h1 style={{ fontSize: 28, fontWeight: 800, margin: '0 0 8px', letterSpacing: '-0.3px' }}>♿ שירותי שיקום</h1>
+          <p style={{ fontSize: 15, opacity: 0.85, margin: '0 0 24px', fontWeight: 500 }}>מצאו שירותי שיקום בקהילה לפי אזור וקטגוריה</p>
           <div style={{ maxWidth: 480, margin: '0 auto' }}>
-            <input
-              type="text"
-              placeholder="חפשו לפי שם, עיר או תיאור..."
-              value={search}
+            <input type="text" placeholder="חפשו לפי שם, עיר או תיאור..." value={search}
               onChange={e => setSearch(e.target.value)}
               style={{
-                width: '100%',
-                padding: '14px 22px',
-                borderRadius: '999px',
-                border: 'none',
-                fontSize: 15,
-                outline: 'none',
-                boxSizing: 'border-box',
-                boxShadow: '0 4px 20px rgba(0,0,0,0.12)',
-                fontFamily: "'Nunito', sans-serif",
-                fontWeight: 500,
+                width: '100%', padding: '14px 22px', borderRadius: '999px', border: 'none',
+                fontSize: 15, outline: 'none', boxSizing: 'border-box',
+                boxShadow: '0 4px 20px rgba(0,0,0,0.12)', fontFamily: "'Nunito', sans-serif", fontWeight: 500,
               }}
             />
           </div>
         </div>
 
-        {/* FILTERS */}
         <div style={{
-          background: 'white',
-          borderBottom: '1px solid #d4edda',
-          padding: '12px 20px',
-          display: 'flex',
-          gap: 10,
-          flexWrap: 'wrap',
-          alignItems: 'center',
+          background: 'white', borderBottom: '1px solid #d4edda',
+          padding: '12px 20px', display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'center',
         }}>
-          <select value={district} onChange={e => setDistrict(e.target.value)} style={sel}>
+          <select value={district} onChange={e => setDistrict(e.target.value)} style={districtSel}>
             {DISTRICTS.map(d => <option key={d}>{d}</option>)}
           </select>
 
@@ -172,56 +140,26 @@ export default function Rehab() {
             </select>
           )}
 
-          {/* כפתור ארצי */}
-          <button
-            onClick={() => setNationalOnly(v => !v)}
-            style={{
-              display: 'flex', alignItems: 'center', gap: 6,
-              padding: '9px 16px',
-              borderRadius: '999px',
-              border: `1.5px solid ${nationalOnly ? '#1A3A5C' : '#a8d8b0'}`,
-              background: nationalOnly ? '#EEF2FF' : 'white',
-              color: nationalOnly ? '#1A3A5C' : '#2d6a4f',
-              fontWeight: 700, fontSize: 14, cursor: 'pointer',
-              fontFamily: "'Nunito', sans-serif",
-              transition: 'all 0.15s',
-            }}
-          >
-            🌍 ארצי בלבד
-          </button>
-
           <div style={{ marginRight: 'auto', fontSize: 13, color: '#7aaa88', fontWeight: 600 }}>
             {loading ? 'טוען...' : `${services.length} שירותים`}
           </div>
         </div>
 
-        {/* MAIN */}
         <main style={{ maxWidth: 1100, margin: '0 auto', padding: '28px 16px' }}>
           {loading ? (
-            <div style={{ textAlign: 'center', padding: 64, color: '#4aab78', fontSize: 16, fontWeight: 600 }}>
-              טוען שירותים...
-            </div>
+            <div style={{ textAlign: 'center', padding: 64, color: '#4aab78', fontSize: 16, fontWeight: 600 }}>טוען שירותים...</div>
           ) : services.length === 0 ? (
             <div style={{ textAlign: 'center', padding: 64, color: '#aaa' }}>
               <div style={{ fontSize: 48, marginBottom: 12 }}>🔍</div>
               <div style={{ fontWeight: 700, fontSize: 18, marginBottom: 8, color: '#555' }}>לא נמצאו שירותים</div>
               <button
-                onClick={() => { setSearch(''); setDistrict('הכל'); setCategory('הכל'); setSubcategory('הכל'); setNationalOnly(false) }}
+                onClick={() => { setSearch(''); setDistrict('הכל'); setCategory('הכל'); setSubcategory('הכל') }}
                 style={{
-                  background: 'linear-gradient(160deg, #7ec8a0, #4aab78)',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '999px',
-                  padding: '11px 28px',
-                  fontWeight: 700,
-                  fontSize: 14,
-                  cursor: 'pointer',
-                  fontFamily: "'Nunito', sans-serif",
-                  boxShadow: '0 4px 0 #3a8a5e, 0 8px 20px rgba(74,171,120,0.3)',
+                  background: 'linear-gradient(160deg, #7ec8a0, #4aab78)', color: 'white', border: 'none',
+                  borderRadius: '999px', padding: '11px 28px', fontWeight: 700, fontSize: 14, cursor: 'pointer',
+                  fontFamily: "'Nunito', sans-serif", boxShadow: '0 4px 0 #3a8a5e, 0 8px 20px rgba(74,171,120,0.3)',
                 }}
-              >
-                נקה פילטרים
-              </button>
+              >נקה פילטרים</button>
             </div>
           ) : (
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 16, alignItems: 'stretch' }}>
@@ -234,41 +172,25 @@ export default function Rehab() {
           )}
         </main>
 
-        {/* SCROLL TO TOP */}
         {showTop && (
-          <button
-            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+          <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
             style={{
-              position: 'fixed', bottom: 24, left: 24,
-              width: 48, height: 48, borderRadius: '50%',
-              background: 'linear-gradient(160deg, #7ec8a0, #4aab78)',
-              color: 'white', border: 'none', fontSize: 20,
-              cursor: 'pointer',
-              boxShadow: '0 4px 0 #3a8a5e, 0 8px 20px rgba(74,171,120,0.35)',
-              zIndex: 100,
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              fontWeight: 800,
+              position: 'fixed', bottom: 24, left: 24, width: 48, height: 48, borderRadius: '50%',
+              background: 'linear-gradient(160deg, #7ec8a0, #4aab78)', color: 'white', border: 'none',
+              fontSize: 20, cursor: 'pointer', boxShadow: '0 4px 0 #3a8a5e, 0 8px 20px rgba(74,171,120,0.35)',
+              zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800,
             }}
             onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-2px)'}
             onMouseLeave={e => e.currentTarget.style.transform = 'translateY(0)'}
-          >
-            ↑
-          </button>
+          >↑</button>
         )}
 
-        {/* FOOTER */}
         <footer style={{
-          background: 'linear-gradient(135deg, #2d6a4f, #3a8a5e)',
-          color: 'rgba(255,255,255,0.75)',
-          textAlign: 'center',
-          padding: '24px',
-          fontSize: 13,
-          marginTop: 48,
-          fontWeight: 500,
+          background: 'linear-gradient(135deg, #2d6a4f, #3a8a5e)', color: 'rgba(255,255,255,0.75)',
+          textAlign: 'center', padding: '24px', fontSize: 13, marginTop: 48, fontWeight: 500,
         }}>
           בריאות נפש בישראל © 2026
         </footer>
-
       </div>
     </>
   )
