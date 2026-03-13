@@ -11,7 +11,7 @@ const CATEGORIES = {
   'חדרי מיון': { color: '#b84a2a', icon: '🚨', desc: 'מיון פסיכיאטרי' },
 }
 
-const NAV = [['/', '🏠 ראשי'], ['/rehab', '♿ שיקום'], ['/treatment', '🏥 טיפול'], ['/map', '🗺️ מפה'], ['/register', 'הרשמת שירות'], ['/about', 'אודות'], ['/admin', 'ניהול']]
+const NAV = [['/', '🏠 ראשי'], ['/rehab', '♿ שיקום'], ['/treatment', '🏥 טיפול'], ['/map', '🗺️ מפה'], ['/register', 'הרשמת שירות'], ['/about', 'אודות'], ['/contact', '✉️ צור קשר'], ['/admin', 'ניהול']]
 
 export default function Treatment() {
   const router = useRouter()
@@ -240,6 +240,9 @@ export default function Treatment() {
           background: 'linear-gradient(135deg, #c85e32, #d4693a)', color: 'rgba(255,255,255,0.75)',
           textAlign: 'center', padding: '24px', fontSize: 13, marginTop: 48, fontWeight: 500,
         }}>
+          <div style={{ marginBottom: 8 }}>
+            <a href="/contact" style={{ color: 'rgba(255,255,255,0.7)', textDecoration: 'none' }}>✉️ צור קשר</a>
+          </div>
           בריאות נפש בישראל © 2026
         </footer>
       </div>
