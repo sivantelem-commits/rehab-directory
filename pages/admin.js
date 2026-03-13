@@ -669,9 +669,6 @@ function StatsTab({ stats }) {
         ))}
       </div>
 
-    </div>
-  )
-}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(340px, 1fr))', gap: 20 }}>
         <div style={{ background: 'white', borderRadius: 16, padding: '20px', boxShadow: '0 4px 16px rgba(0,0,0,0.07)' }}>
           <h3 style={{ margin: '0 0 16px', fontSize: 15, fontWeight: 800, color: '#1A3A5C' }}>🥧 לפי קטגוריה</h3>
@@ -698,6 +695,7 @@ function StatsTab({ stats }) {
           </ResponsiveContainer>
         </div>
       </div>
+
       <div style={{ background: 'white', borderRadius: 16, padding: '20px', boxShadow: '0 4px 16px rgba(0,0,0,0.07)', overflowX: 'auto' }}>
         <h3 style={{ margin: '0 0 16px', fontSize: 15, fontWeight: 800, color: '#1A3A5C' }}>📋 פירוט לפי קטגוריה ומחוז</h3>
         <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
@@ -727,6 +725,7 @@ function StatsTab({ stats }) {
           </tbody>
         </table>
       </div>
+
     </div>
   )
 }
