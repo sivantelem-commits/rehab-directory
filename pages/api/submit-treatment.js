@@ -11,15 +11,14 @@ const resend = new Resend(process.env.RESEND_API_KEY)
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).end()
 
-  const { name, district, city, category, description, phone, email, website, address } = req.body
-
-  if (!name || !district || !city || !category || !phone || !email) {
-    return res.status(400).json({ error: 'שדות חובה חסרים' })
-  }
-
-  const { data, error } = await supabase.from('treatment_services').insert([{
-    name, district, city, category, description, phone, email, website, address,
-    status: 'pending',
+ const { name, district, city, category, description, phone, email, website, address, is_national } = req.body
+if (!name || (!district && !is_national) || !city || !category || !phone || !email) {
+  return res.status(400).json({ error: 'שדות חובה חסרים' })
+}
+const { data, error } = await supabase.from('treatment_services').insert([{
+  name, district, city, category, description, phone, email, website, address, is_national: !!is_national,
+  status: 'pending',
+}])
   }]).select()
 
   if (error) return res.status(500).json({ error: error.message })
