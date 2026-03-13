@@ -53,8 +53,17 @@ export default function Contact() {
 
   return (
     <>
-      <Head>
+            <Head>
         <title>צור קשר | בריאות נפש בישראל</title>
+        <meta name="description" content="יש לכם הערה, תיקון או רעיון לשיפור הפורטל? צרו קשר – נשמח לשמוע." />
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href="https://rehabdirectoryil.vercel.app/contact" />
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content="צור קשר | בריאות נפש בישראל" />
+        <meta property="og:description" content="יש לכם הערה, תיקון או רעיון לשיפור הפורטל? צרו קשר – נשמח לשמוע." />
+        <meta property="og:url" content="https://rehabdirectoryil.vercel.app/contact" />
+        <meta property="og:locale" content="he_IL" />
+        <meta property="og:site_name" content="בריאות נפש בישראל" />
         <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
       </Head>
 
