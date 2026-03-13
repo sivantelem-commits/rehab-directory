@@ -643,19 +643,14 @@ function StatsTab({ stats }) {
   if (!stats) return <div style={{ textAlign: 'center', padding: 48, color: '#F47B20' }}>טוען סטטיסטיקות...</div>
   const COLORS = ['#7B2D8B','#F47B20','#1A3A5C','#2E7D32','#0277BD','#C2185B','#546E7A']
   const districts = ['צפון','חיפה','מרכז','תל אביב','ירושלים','דרום','יהודה ושומרון']
-  const categories = Object.keys(stats.crossTable || {})
+  const categories = Object.keys(stats.crossTable || 
+const [activeTab, setActiveTab] = React.useState('rehab'){(() => {
+  const isRehab = activeTab === 'rehab'
+  const byCategory = isRehab ? stats.byCategory : stats.byCategoryTreatment
+  const byDistrict = isRehab ? stats.byDistrict : stats.byDistrictTreatment
+  const crossTable = isRehab ? stats.crossTable : stats.crossTableTreatment
+  const cats = Object.keys(crossTable || {})
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
-
-      <div style={{ fontWeight: 800, fontSize: 16, color: '#1A3A5C' }}>♿ סטטיסטיקות שיקום</div>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: 12 }}>
-        {[['סה"כ שירותים', stats.total, '#1A3A5C', '📋'], ['פעילים', stats.approved, '#2E7D32', '✅'], ['ממתינים', stats.pending, '#F47B20', '⏳'], ['נדחו', stats.rejected, '#C62828', '❌']].map(([label, val, color, icon]) => (
-          <div key={label} style={{ background: 'white', borderRadius: 16, padding: '18px 16px', textAlign: 'center', boxShadow: '0 4px 16px rgba(0,0,0,0.07)', borderTop: `4px solid ${color}` }}>
-            <div style={{ fontSize: 28, marginBottom: 6 }}>{icon}</div>
-            <div style={{ fontSize: 32, fontWeight: 800, color }}>{val}</div>
-            <div style={{ fontSize: 12, color: '#888', marginTop: 4 }}>{label}</div>
-          </div>
-        ))}
       </div>
 
       <div style={{ fontWeight: 800, fontSize: 16, color: '#ee7a50' }}>🏥 סטטיסטיקות טיפול</div>
