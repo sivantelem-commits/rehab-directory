@@ -284,9 +284,10 @@ export default function Treatment() {
                         whiteSpace: 'nowrap', marginRight: 8,
                       }}>{cat.icon} {s.category}</span>
                     </div>
-                    <div style={{ fontSize: 13, color: '#aaa', marginBottom: 8, fontWeight: 500 }}>
-                      📍 {s.city}{s.district ? `, ${s.district}` : ''}
-                    </div>
+                    <div style={{ fontSize: 13, color: '#aaa', marginBottom: 8, fontWeight: 500, display: 'flex', alignItems: 'center', gap: 6 }}>
+  📍 {s.city}{s.district ? `, ${s.district}` : ''}
+  {s.is_national && <span style={{ background: '#1A3A5C', color: 'white', borderRadius: 20, padding: '2px 8px', fontSize: 10, fontWeight: 700 }}>🌍 ארצי</span>}
+</div>
                     <div style={{
                       flex: 1, fontSize: 13.5, color: '#555',
                       lineHeight: 1.6,
