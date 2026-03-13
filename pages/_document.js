@@ -15,8 +15,7 @@ export default function Document() {
         <meta name="twitter:card" content="summary" />
         <meta name="twitter:title" content="מאגר שירותי סל שיקום" />
         <meta name="twitter:description" content="מצאו שירותי שיקום בקהילה לפי אזור וקטגוריה" />
-        <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='50' fill='%23F47B20'/><text y='.9em' font-size='70' x='15'>♿</text></svg>" />
-      </Head>
+<link rel="icon" href="/logo.png" />      </Head>
       <body>
         <Main />
         <NextScript />
