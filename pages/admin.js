@@ -44,6 +44,8 @@ export default function Admin() {
   const [exportTreatmentFilters, setExportTreatmentFilters] = useState({ status: 'approved', district: '', category: '' })
   const [exporting, setExporting] = useState(false)
   const [stats, setStats] = useState(null)
+  const [duplicates, setDuplicates] = useState([])
+  const [loadingDuplicates, setLoadingDuplicates] = useState(false)
 
   useEffect(() => { setMounted(true) }, [])
 
@@ -77,6 +79,45 @@ export default function Admin() {
   const fetchStats = async (key) => {
     const res = await fetch('/api/admin/stats', { headers: { adminkey: key } })
     setStats(await res.json())
+  }
+
+  const fetchDuplicates = async (key) => {
+    setLoadingDuplicates(true)
+    try {
+      const [rehabRes, treatmentRes] = await Promise.all([
+        fetch('/api/services'),
+        fetch('/api/admin/treatment-services?status=approved', { headers: { adminkey: key } }),
+      ])
+      const rehab = await rehabRes.json()
+      const treatment = await treatmentRes.json()
+
+      const findDups = (list, type) => {
+        const pairs = []
+        for (let i = 0; i < list.length; i++) {
+          for (let j = i + 1; j < list.length; j++) {
+            const a = list[i], b = list[j]
+            const nameSim = a.name && b.name && (
+              a.name.trim() === b.name.trim() ||
+              a.name.includes(b.name) || b.name.includes(a.name)
+            )
+            const citySim = !a.city || !b.city || a.city.trim() === b.city.trim()
+            const catSim = !a.category || !b.category || a.category === b.category
+            if (nameSim && citySim && catSim) {
+              pairs.push({ a: { ...a, _type: type }, b: { ...b, _type: type }, dismissed: false })
+            }
+          }
+        }
+        return pairs
+      }
+
+      const allDups = [
+        ...findDups(Array.isArray(rehab) ? rehab : [], 'rehab'),
+        ...findDups(Array.isArray(treatment) ? treatment : [], 'treatment'),
+      ]
+      setDuplicates(allDups)
+    } finally {
+      setLoadingDuplicates(false)
+    }
   }
 
   useEffect(() => {
@@ -360,9 +401,10 @@ export default function Admin() {
                 {[
                   ['rehab', '♿ שיקום', '#F47B20'],
                   ['treatment', '🏥 טיפול', '#0277BD'],
+                  ['duplicates', '🔁 כפילויות', '#7B2D8B'],
                   ['stats', '📊 סטטיסטיקות', '#2E7D32'],
                 ].map(([id, label, color]) => (
-                  <button key={id} onClick={() => setSection(id)}
+                  <button key={id} onClick={() => { setSection(id); if (id === 'duplicates') fetchDuplicates(adminKey) }}
                     style={{ flex: 1, minWidth: 120, padding: '14px 0', borderRadius: 16, fontWeight: 800, fontSize: 15, background: section === id ? color : 'white', color: section === id ? 'white' : color, border: `2px solid ${color}`, cursor: 'pointer', boxShadow: section === id ? `0 4px 16px ${color}44` : 'none' }}>
                     {label}
                   </button>
@@ -373,6 +415,22 @@ export default function Admin() {
                 <div style={{ textAlign: 'center', padding: 48, color: '#F47B20' }}>טוען...</div>
               ) : section === 'stats' ? (
                 <StatsTab stats={stats} />
+              ) : section === 'duplicates' ? (
+                <DuplicatesTab
+                  duplicates={duplicates}
+                  loading={loadingDuplicates}
+                  onDismiss={(i) => setDuplicates(d => d.map((p, idx) => idx === i ? { ...p, dismissed: true } : p))}
+                  onDelete={async (id, type) => {
+                    if (!confirm('למחוק שירות זה לצמיתות?')) return
+                    if (type === 'treatment') {
+                      await fetch(`/api/admin/treatment-services?id=${id}`, { method: 'DELETE', headers: { adminkey: adminKey } })
+                    } else {
+                      await fetch(`/api/admin/services?id=${id}`, { method: 'DELETE', headers: { adminkey: adminKey } })
+                    }
+                    fetchDuplicates(adminKey)
+                    fetchAll(adminKey)
+                  }}
+                />
               ) : section === 'rehab' ? (
                 <div>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16, flexWrap: 'wrap', gap: 10 }}>
@@ -657,6 +715,70 @@ export default function Admin() {
         </footer>
       </div>
     </>
+  )
+}
+
+function DuplicatesTab({ duplicates, loading, onDismiss, onDelete }) {
+  const active = duplicates.filter(p => !p.dismissed)
+
+  if (loading) return <div style={{ textAlign: 'center', padding: 48, color: '#7B2D8B' }}>מחפש כפילויות...</div>
+
+  if (active.length === 0) return (
+    <div style={{ textAlign: 'center', padding: 52, color: '#aaa' }}>
+      <div style={{ fontSize: 40, marginBottom: 10 }}>✅</div>
+      <div style={{ fontWeight: 600 }}>לא נמצאו כפילויות</div>
+    </div>
+  )
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+      <div style={{ fontSize: 13, color: '#7B2D8B', fontWeight: 700, background: '#F3E5F5', borderRadius: 10, padding: '8px 14px' }}>
+        נמצאו {active.length} זוגות חשודים — בדקו ומחקו כפילויות לפי הצורך
+      </div>
+      {duplicates.map((pair, i) => {
+        if (pair.dismissed) return null
+        const typeLabel = pair.a._type === 'rehab' ? '♿ שיקום' : '🏥 טיפול'
+        const typeColor = pair.a._type === 'rehab' ? '#F47B20' : '#0277BD'
+        return (
+          <div key={i} style={{
+            background: 'white', borderRadius: 16, padding: '18px',
+            boxShadow: '0 4px 16px rgba(0,0,0,0.07)',
+            borderRight: '5px solid #7B2D8B',
+          }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
+              <span style={{ background: typeColor, color: 'white', borderRadius: 999, padding: '2px 10px', fontSize: 11, fontWeight: 700 }}>{typeLabel}</span>
+              <button onClick={() => onDismiss(i)} style={{ background: 'none', border: '1.5px solid #ddd', color: '#aaa', borderRadius: 20, padding: '4px 12px', fontSize: 12, cursor: 'pointer', fontWeight: 600 }}>
+                התעלם
+              </button>
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr auto 1fr', gap: 12, alignItems: 'start' }}>
+              {[pair.a, pair.b].map((s, si) => (
+                <div key={si} style={{
+                  background: '#F8F9FF', borderRadius: 12, padding: '12px 14px',
+                  border: '1.5px solid #E0E4F0',
+                  ...(si === 1 ? {} : {})
+                }}>
+                  <div style={{ fontWeight: 700, fontSize: 14, color: '#1A3A5C', marginBottom: 4 }}>{s.name}</div>
+                  <div style={{ fontSize: 12, color: '#888', marginBottom: 6, lineHeight: 1.6 }}>
+                    📍 {s.city}{s.district ? `, ${s.district}` : ''}<br />
+                    🏷️ {s.category}<br />
+                    {s.phone && <span>📞 {s.phone}</span>}
+                  </div>
+                  <button
+                    onClick={() => onDelete(s.id, s._type)}
+                    style={{ background: '#FFF0F0', border: '1.5px solid #FFCDD2', color: '#C62828', borderRadius: 20, padding: '5px 12px', fontSize: 12, cursor: 'pointer', fontWeight: 600 }}
+                  >
+                    🗑️ מחק זה
+                  </button>
+                </div>
+              ))}
+              <div style={{ textAlign: 'center', fontSize: 20, color: '#7B2D8B', paddingTop: 20 }}>🔁</div>
+            </div>
+          </div>
+        )
+      })}
+    </div>
   )
 }
 
