@@ -142,6 +142,7 @@ export default function Admin() {
   }
 
  const saveLocation = async (lat, lng) => {
+  console.log('locationService._table:', locationService._table)
   const isTreatment = locationService._table === 'treatment'
   const endpoint = isTreatment ? '/api/admin/treatment-services' : '/api/admin/services'
   await fetch(endpoint, {
