@@ -141,17 +141,17 @@ export default function Admin() {
     } finally { setSaving(false) }
   }
 
- const saveLocation = async (lat, lng) => {
-  console.log('locationService._table:', locationService._table)
-  const isTreatment = locationService._table === 'treatment'
-  const endpoint = isTreatment ? '/api/admin/treatment-services' : '/api/admin/services'
-  await fetch(endpoint, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', adminkey: adminKey },
-    body: JSON.stringify({ id: locationService.id, lat, lng }),
-  })
-  setLocationService(null); fetchAll(adminKey)
-}
+  const saveLocation = async (lat, lng) => {
+    console.log('locationService._table:', locationService._table)
+    const isTreatment = locationService._table === 'treatment'
+    const endpoint = isTreatment ? '/api/admin/treatment-services' : '/api/admin/services'
+    await fetch(endpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', adminkey: adminKey },
+      body: JSON.stringify({ id: locationService.id, lat, lng }),
+    })
+    setLocationService(null); fetchAll(adminKey)
+  }
 
   const exportRehabToExcel = async () => {
     setExporting(true)
@@ -178,6 +178,7 @@ export default function Admin() {
         { header: 'מייל', key: 'email', width: 26 },
         { header: 'אתר', key: 'website', width: 28 },
         { header: 'תיאור', key: 'description', width: 40 },
+        { header: 'ארצי', key: 'is_national', width: 10 },
         { header: 'סטטוס', key: 'status', width: 12 },
         { header: 'תאריך הוספה', key: 'created_at', width: 16 },
       ]
@@ -195,6 +196,7 @@ export default function Admin() {
           district: s.district, city: s.city, address: s.address || '',
           phone: s.phone || '', email: s.email || '', website: s.website || '',
           description: s.description || '',
+          is_national: s.is_national ? '✓' : '',
           status: s.status === 'approved' ? 'פעיל' : s.status === 'pending' ? 'ממתין' : 'נדחה',
           created_at: new Date(s.created_at).toLocaleDateString('he-IL'),
         })
@@ -208,7 +210,7 @@ export default function Admin() {
           cell.font = colNumber === 2 ? { bold: true, color: { argb: textColor }, name: 'Arial' } : { color: { argb: 'FF333333' }, name: 'Arial' }
         })
       })
-      ws.autoFilter = { from: 'A1', to: `L${data.length + 1}` }
+      ws.autoFilter = { from: 'A1', to: `M${data.length + 1}` }
       const buffer = await wb.xlsx.writeBuffer()
       const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
       const url = URL.createObjectURL(blob)
@@ -399,7 +401,9 @@ export default function Admin() {
                           const color = getCategoryColor(s.category, s.subcategory)
                           return (
                             <div key={s.id} style={{ background: 'white', borderRadius: 16, padding: '20px', boxShadow: '0 4px 16px rgba(0,0,0,0.07)', borderRight: `5px solid ${color}` }}>
-                              <div style={{ fontWeight: 700, fontSize: 16, color: '#1A3A5C', marginBottom: 4 }}>{s.name}</div>
+                              <div style={{ fontWeight: 700, fontSize: 16, color: '#1A3A5C', marginBottom: 4 }}>
+                                {s.name} {s.is_national && <span title="פריסה ארצית">🌍</span>}
+                              </div>
                               <div style={{ display: 'flex', gap: 6, marginBottom: 6, flexWrap: 'wrap' }}>
                                 <span style={{ background: color, color: 'white', borderRadius: 20, padding: '2px 10px', fontSize: 11, fontWeight: 700 }}>{s.category}</span>
                                 {s.subcategory && <span style={{ background: `${color}22`, color, borderRadius: 20, padding: '2px 8px', fontSize: 11 }}>{s.subcategory}</span>}
@@ -429,7 +433,9 @@ export default function Admin() {
                           const color = getCategoryColor(s.category, s.subcategory)
                           return (
                             <div key={s.id} style={{ background: 'white', borderRadius: 14, padding: '14px 16px', boxShadow: '0 2px 8px rgba(0,0,0,0.06)', borderRight: `4px solid ${color}` }}>
-                              <div style={{ fontWeight: 600, fontSize: 14, color: '#1A3A5C', marginBottom: 2 }}>{s.name}</div>
+                              <div style={{ fontWeight: 600, fontSize: 14, color: '#1A3A5C', marginBottom: 2 }}>
+                                {s.name} {s.is_national && <span title="פריסה ארצית">🌍</span>}
+                              </div>
                               <div style={{ fontSize: 12, color: '#aaa', marginBottom: 6 }}>📍 {s.city} · {s.category}{s.subcategory ? ` › ${s.subcategory}` : ''}</div>
                               {!s.lat && <div style={{ fontSize: 11, color: '#F47B20', marginBottom: 6 }}>⚠️ אין מיקום במפה</div>}
                               <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
@@ -470,7 +476,9 @@ export default function Admin() {
                         const color = TREATMENT_COLORS[s.category] || '#0277BD'
                         return (
                           <div key={s.id} style={{ background: 'white', borderRadius: 14, padding: '16px', boxShadow: '0 2px 8px rgba(0,0,0,0.06)', borderRight: `4px solid ${color}` }}>
-                            <div style={{ fontWeight: 700, fontSize: 15, color: '#1A3A5C', marginBottom: 4 }}>{s.name}</div>
+                            <div style={{ fontWeight: 700, fontSize: 15, color: '#1A3A5C', marginBottom: 4 }}>
+                              {s.name} {s.is_national && <span title="פריסה ארצית">🌍</span>}
+                            </div>
                             <span style={{ background: color, color: 'white', borderRadius: 20, padding: '2px 10px', fontSize: 11, fontWeight: 700 }}>{s.category}</span>
                             <div style={{ fontSize: 13, color: '#888', margin: '6px 0' }}>📍 {s.city}, {s.district}</div>
                             {s.description && <div style={{ fontSize: 13, color: '#445', marginBottom: 8, lineHeight: 1.55 }}>{s.description}</div>}
@@ -488,8 +496,8 @@ export default function Admin() {
                               ) : (
                                 <>
                                   <button onClick={() => openEdit(s, 'treatment')} style={{ background: '#EEF2FF', color: '#1A3A5C', border: '1.5px solid #C5D0F0', borderRadius: 20, padding: '5px 12px', fontSize: 12, cursor: 'pointer', fontWeight: 600 }}>✏️ ערוך</button>
-                                <button onClick={() => setLocationService({ ...s, _table: 'treatment' })} style={{ background: s.lat ? '#E8F5E9' : '#FFF3E0', color: s.lat ? '#2E7D32' : '#E65100', border: `1.5px solid ${s.lat ? '#A5D6A7' : '#FFCC80'}`, borderRadius: 20, padding: '5px 12px', fontSize: 12, cursor: 'pointer', fontWeight: 600 }}>📍 {s.lat ? 'עדכן מיקום' : 'הוסף מיקום'}</button>
-                                <button onClick={() => deleteTreatmentService(s.id)} style={{ background: 'none', border: '1.5px solid #FFCDD2', color: '#C62828', borderRadius: 20, padding: '5px 12px', fontSize: 12, cursor: 'pointer', fontWeight: 600 }}>🗑️ מחק</button>
+                                  <button onClick={() => setLocationService({ ...s, _table: 'treatment' })} style={{ background: s.lat ? '#E8F5E9' : '#FFF3E0', color: s.lat ? '#2E7D32' : '#E65100', border: `1.5px solid ${s.lat ? '#A5D6A7' : '#FFCC80'}`, borderRadius: 20, padding: '5px 12px', fontSize: 12, cursor: 'pointer', fontWeight: 600 }}>📍 {s.lat ? 'עדכן מיקום' : 'הוסף מיקום'}</button>
+                                  <button onClick={() => deleteTreatmentService(s.id)} style={{ background: 'none', border: '1.5px solid #FFCDD2', color: '#C62828', borderRadius: 20, padding: '5px 12px', fontSize: 12, cursor: 'pointer', fontWeight: 600 }}>🗑️ מחק</button>
                                 </>
                               )}
                             </div>
@@ -612,9 +620,21 @@ export default function Admin() {
                     </select>
                   </div>
                 )}
-                <div style={{ marginBottom: 22 }}>
+                <div style={{ marginBottom: 14 }}>
                   <label style={lbl}>תיאור</label>
                   <textarea value={editForm.description || ''} onChange={e => setEditForm(f => ({ ...f, description: e.target.value }))} rows={4} style={{ ...inp, resize: 'vertical', borderRadius: 12 }} />
+                </div>
+                {/* ✅ checkbox פריסה ארצית */}
+                <div style={{ marginBottom: 22 }}>
+                  <label style={{ display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer' }}>
+                    <input
+                      type="checkbox"
+                      checked={editForm.is_national || false}
+                      onChange={e => setEditForm(f => ({ ...f, is_national: e.target.checked }))}
+                      style={{ width: 18, height: 18, accentColor: '#F47B20', cursor: 'pointer' }}
+                    />
+                    <span style={{ fontSize: 14, fontWeight: 700, color: '#1A3A5C' }}>🌍 פריסה ארצית</span>
+                  </label>
                 </div>
                 <div style={{ display: 'flex', gap: 10 }}>
                   <button onClick={saveEdit} disabled={saving} style={{ flex: 1, background: isTreatmentEdit ? '#0277BD' : '#F47B20', color: 'white', border: 'none', borderRadius: 20, padding: '12px 0', fontWeight: 700, fontSize: 14, cursor: saving ? 'not-allowed' : 'pointer' }}>
@@ -739,6 +759,7 @@ function StatsTab({ stats }) {
     </div>
   )
 }
+
 function LocationPicker({ service, onSave, onClose }) {
   const mapRef = useRef(null)
   const markerRef = useRef(null)
