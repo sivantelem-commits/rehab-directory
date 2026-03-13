@@ -23,6 +23,8 @@ export default function MapPage() {
   const [rehabCategory, setRehabCategory] = useState('הכל')
   const [treatmentCategory, setTreatmentCategory] = useState('הכל')
   const [district, setDistrict] = useState('הכל')
+  const [showNationalOnly, setShowNationalOnly] = useState(false)
+  const [showNationalPanel, setShowNationalPanel] = useState(false)
   const [mounted, setMounted] = useState(false)
   const [selected, setSelected] = useState(null)
   const mapRef = useRef(null)
@@ -31,8 +33,8 @@ export default function MapPage() {
   useEffect(() => { setMounted(true) }, [])
 
   useEffect(() => {
-    fetch('/api/services').then(r => r.json()).then(data => setRehabServices(Array.isArray(data) ? data.filter(s => s.lat) : []))
-    fetch('/api/treatment').then(r => r.json()).then(data => setTreatmentServices(Array.isArray(data) ? data.filter(s => s.lat) : []))
+    fetch('/api/services').then(r => r.json()).then(data => setRehabServices(Array.isArray(data) ? data : []))
+    fetch('/api/treatment').then(r => r.json()).then(data => setTreatmentServices(Array.isArray(data) ? data : []))
   }, [])
 
   useEffect(() => {
@@ -49,20 +51,34 @@ export default function MapPage() {
     markersRef.current = []
 
     const filteredRehab = rehabServices.filter(s =>
+      s.lat &&
       (rehabCategory === 'הכל' || s.category === rehabCategory) &&
-      (district === 'הכל' || s.district === district)
+      (district === 'הכל' || s.district === district) &&
+      (!showNationalOnly || s.is_national)
     )
 
     const filteredTreatment = treatmentServices.filter(s =>
+      s.lat &&
       (treatmentCategory === 'הכל' || s.category === treatmentCategory) &&
-      (district === 'הכל' || s.district === district)
+      (district === 'הכל' || s.district === district) &&
+      (!showNationalOnly || s.is_national)
     )
 
     if (showRehab) {
       filteredRehab.forEach(s => {
         const color = REHAB_COLORS[s.category] || '#4aab78'
+        const isNational = s.is_national
         const icon = L.divIcon({
-html: `<div style="width:14px;height:14px;border-radius:50%;background:${color};border:2px solid white;box-shadow:0 2px 6px rgba(0,0,0,0.3)"></div>`,        })
+          html: isNational
+            ? `<div style="position:relative;width:20px;height:20px">
+                <div style="width:18px;height:18px;border-radius:50%;background:${color};border:2.5px solid white;box-shadow:0 2px 8px rgba(0,0,0,0.35)"></div>
+                <div style="position:absolute;top:-6px;right:-6px;font-size:11px;line-height:1">🌍</div>
+               </div>`
+            : `<div style="width:14px;height:14px;border-radius:50%;background:${color};border:2px solid white;box-shadow:0 2px 6px rgba(0,0,0,0.3)"></div>`,
+          className: '',
+          iconSize: isNational ? [20, 20] : [14, 14],
+          iconAnchor: isNational ? [10, 10] : [7, 7],
+        })
         const marker = L.marker([s.lat, s.lng], { icon }).addTo(mapRef.current)
         marker.on('click', () => setSelected({ ...s, type: 'rehab' }))
         markersRef.current.push(marker)
@@ -72,27 +88,51 @@ html: `<div style="width:14px;height:14px;border-radius:50%;background:${color};
     if (showTreatment) {
       filteredTreatment.forEach(s => {
         const color = TREATMENT_COLORS[s.category] || '#ee7a50'
+        const isNational = s.is_national
         const icon = L.divIcon({
-html: `<div style="width:18px;height:18px;clip-path:polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);background:white;box-shadow:0 2px 6px rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center"><div style="width:12px;height:12px;clip-path:polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);background:${color}"></div></div>`,          className: '', iconSize: [14, 14],
+          html: isNational
+            ? `<div style="position:relative;width:22px;height:22px">
+                <div style="width:20px;height:20px;clip-path:polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);background:white;box-shadow:0 2px 8px rgba(0,0,0,0.35);display:flex;align-items:center;justify-content:center"><div style="width:13px;height:13px;clip-path:polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);background:${color}"></div></div>
+                <div style="position:absolute;top:-6px;right:-6px;font-size:11px;line-height:1">🌍</div>
+               </div>`
+            : `<div style="width:18px;height:18px;clip-path:polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);background:white;box-shadow:0 2px 6px rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center"><div style="width:12px;height:12px;clip-path:polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);background:${color}"></div></div>`,
+          className: '',
+          iconSize: isNational ? [22, 22] : [18, 18],
+          iconAnchor: isNational ? [11, 11] : [9, 9],
         })
         const marker = L.marker([s.lat, s.lng], { icon }).addTo(mapRef.current)
         marker.on('click', () => setSelected({ ...s, type: 'treatment' }))
         markersRef.current.push(marker)
       })
     }
-  }, [mounted, rehabServices, treatmentServices, showRehab, showTreatment, rehabCategory, treatmentCategory, district])
+  }, [mounted, rehabServices, treatmentServices, showRehab, showTreatment, rehabCategory, treatmentCategory, district, showNationalOnly])
 
   if (!mounted) return null
 
   const filteredRehabCount = rehabServices.filter(s =>
+    s.lat &&
     (rehabCategory === 'הכל' || s.category === rehabCategory) &&
-    (district === 'הכל' || s.district === district)
+    (district === 'הכל' || s.district === district) &&
+    (!showNationalOnly || s.is_national)
   ).length
 
   const filteredTreatmentCount = treatmentServices.filter(s =>
+    s.lat &&
     (treatmentCategory === 'הכל' || s.category === treatmentCategory) &&
-    (district === 'הכל' || s.district === district)
+    (district === 'הכל' || s.district === district) &&
+    (!showNationalOnly || s.is_national)
   ).length
+
+  // שירותים ארציים לפאנל הצד
+  const nationalRehab = rehabServices.filter(s =>
+    s.is_national &&
+    (rehabCategory === 'הכל' || s.category === rehabCategory)
+  )
+  const nationalTreatment = treatmentServices.filter(s =>
+    s.is_national &&
+    (treatmentCategory === 'הכל' || s.category === treatmentCategory)
+  )
+  const nationalCount = nationalRehab.length + nationalTreatment.length
 
   const sel = { padding: '7px 12px', borderRadius: '999px', border: '1.5px solid #ddd', fontSize: 13, background: 'white', cursor: 'pointer', outline: 'none' }
 
@@ -119,6 +159,7 @@ html: `<div style="width:18px;height:18px;clip-path:polygon(50% 0%, 100% 50%, 50
           </nav>
         </header>
 
+        {/* סרגל פילטרים */}
         <div style={{ background: 'white', borderBottom: '1px solid #e0e0e0', padding: '10px 16px', display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'center' }}>
           <select value={district} onChange={e => setDistrict(e.target.value)} style={sel}>
             {DISTRICTS.map(d => <option key={d}>{d}</option>)}
@@ -152,6 +193,39 @@ html: `<div style="width:18px;height:18px;clip-path:polygon(50% 0%, 100% 50%, 50
             )}
           </div>
 
+          {/* כפתור ארצי */}
+          <button
+            onClick={() => setShowNationalOnly(v => !v)}
+            style={{
+              display: 'flex', alignItems: 'center', gap: 6,
+              padding: '7px 14px', borderRadius: '999px',
+              border: `2px solid ${showNationalOnly ? '#1A3A5C' : '#ddd'}`,
+              background: showNationalOnly ? '#EEF2FF' : 'white',
+              color: showNationalOnly ? '#1A3A5C' : '#aaa',
+              fontWeight: 700, fontSize: 13, cursor: 'pointer',
+              fontFamily: "'Nunito', sans-serif",
+              transition: 'all 0.15s',
+            }}>
+            🌍 ארצי בלבד
+          </button>
+
+          {/* כפתור פאנל ארצי */}
+          {nationalCount > 0 && (
+            <button
+              onClick={() => setShowNationalPanel(v => !v)}
+              style={{
+                display: 'flex', alignItems: 'center', gap: 6,
+                padding: '7px 14px', borderRadius: '999px',
+                border: `2px solid #7B2D8B`,
+                background: showNationalPanel ? '#F3E5F5' : 'white',
+                color: '#7B2D8B',
+                fontWeight: 700, fontSize: 13, cursor: 'pointer',
+                fontFamily: "'Nunito', sans-serif",
+              }}>
+              📋 שירותים ארציים ({nationalCount})
+            </button>
+          )}
+
           <div style={{ fontSize: 13, color: '#888', marginRight: 'auto', fontWeight: 600 }}>
             {(showRehab ? filteredRehabCount : 0) + (showTreatment ? filteredTreatmentCount : 0)} שירותים
           </div>
@@ -160,11 +234,77 @@ html: `<div style="width:18px;height:18px;clip-path:polygon(50% 0%, 100% 50%, 50
         <div style={{ position: 'relative', flex: 1 }}>
           <div id="main-map" style={{ height: 'calc(100vh - 130px)', width: '100%' }} />
 
+          {/* פאנל שירותים ארציים */}
+          {showNationalPanel && (
+            <div style={{
+              position: 'absolute', top: 12, right: 12, width: 300,
+              maxHeight: 'calc(100vh - 200px)', overflowY: 'auto',
+              background: 'white', borderRadius: 16,
+              boxShadow: '0 8px 32px rgba(0,0,0,0.18)',
+              borderTop: '4px solid #7B2D8B',
+              zIndex: 1000,
+            }}>
+              <div style={{ padding: '14px 16px 10px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #f0f0f0', position: 'sticky', top: 0, background: 'white', borderRadius: '16px 16px 0 0' }}>
+                <div style={{ fontWeight: 800, fontSize: 14, color: '#1A3A5C' }}>🌍 שירותים ארציים</div>
+                <button onClick={() => setShowNationalPanel(false)} style={{ background: 'none', border: 'none', fontSize: 18, cursor: 'pointer', color: '#aaa' }}>✕</button>
+              </div>
+
+              <div style={{ padding: '10px 12px', display: 'flex', flexDirection: 'column', gap: 8 }}>
+                {showRehab && nationalRehab.length > 0 && (
+                  <>
+                    <div style={{ fontSize: 11, fontWeight: 800, color: '#4aab78', textTransform: 'uppercase', letterSpacing: 0.5, marginTop: 4 }}>♿ שיקום</div>
+                    {nationalRehab.map(s => (
+                      <div key={s.id}
+                        onClick={() => { setSelected({ ...s, type: 'rehab' }); setShowNationalPanel(false) }}
+                        style={{ padding: '10px 12px', borderRadius: 12, background: '#f9f9f9', cursor: 'pointer', border: '1.5px solid #eee', transition: 'background 0.1s' }}
+                        onMouseEnter={e => e.currentTarget.style.background = '#f2faf4'}
+                        onMouseLeave={e => e.currentTarget.style.background = '#f9f9f9'}
+                      >
+                        <div style={{ fontWeight: 700, fontSize: 13, color: '#1A3A5C', marginBottom: 2 }}>{s.name}</div>
+                        <div style={{ fontSize: 11, color: '#888' }}>
+                          <span style={{ background: '#f2faf4', color: '#2d6a4f', borderRadius: 999, padding: '1px 7px', fontWeight: 600 }}>{s.category}</span>
+                          {s.phone && <span style={{ marginRight: 6 }}>· 📞 {s.phone}</span>}
+                        </div>
+                      </div>
+                    ))}
+                  </>
+                )}
+
+                {showTreatment && nationalTreatment.length > 0 && (
+                  <>
+                    <div style={{ fontSize: 11, fontWeight: 800, color: '#ee7a50', textTransform: 'uppercase', letterSpacing: 0.5, marginTop: 4 }}>🏥 טיפול</div>
+                    {nationalTreatment.map(s => (
+                      <div key={s.id}
+                        onClick={() => { setSelected({ ...s, type: 'treatment' }); setShowNationalPanel(false) }}
+                        style={{ padding: '10px 12px', borderRadius: 12, background: '#f9f9f9', cursor: 'pointer', border: '1.5px solid #eee', transition: 'background 0.1s' }}
+                        onMouseEnter={e => e.currentTarget.style.background = '#fff8f3'}
+                        onMouseLeave={e => e.currentTarget.style.background = '#f9f9f9'}
+                      >
+                        <div style={{ fontWeight: 700, fontSize: 13, color: '#1A3A5C', marginBottom: 2 }}>{s.name}</div>
+                        <div style={{ fontSize: 11, color: '#888' }}>
+                          <span style={{ background: '#fff8f3', color: '#c85e32', borderRadius: 999, padding: '1px 7px', fontWeight: 600 }}>{s.category}</span>
+                          {s.phone && <span style={{ marginRight: 6 }}>· 📞 {s.phone}</span>}
+                        </div>
+                      </div>
+                    ))}
+                  </>
+                )}
+
+                {nationalRehab.length === 0 && nationalTreatment.length === 0 && (
+                  <div style={{ textAlign: 'center', padding: '20px 0', color: '#aaa', fontSize: 13 }}>אין שירותים ארציים</div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* popup שירות נבחר */}
           {selected && (
             <div style={{ position: 'absolute', bottom: 16, right: 16, left: 16, maxWidth: 360, margin: '0 auto', background: 'white', borderRadius: 16, padding: '16px', boxShadow: '0 8px 32px rgba(0,0,0,0.2)', borderTop: `4px solid ${selected.type === 'rehab' ? (REHAB_COLORS[selected.category] || '#4aab78') : (TREATMENT_COLORS[selected.category] || '#ee7a50')}`, zIndex: 1000 }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 8 }}>
                 <div>
-                  <div style={{ fontWeight: 700, fontSize: 15, color: '#1A3A5C' }}>{selected.name}</div>
+                  <div style={{ fontWeight: 700, fontSize: 15, color: '#1A3A5C' }}>
+                    {selected.name} {selected.is_national && <span title="פריסה ארצית">🌍</span>}
+                  </div>
                   <div style={{ fontSize: 12, color: '#888', marginTop: 2 }}>📍 {selected.city}{selected.district ? `, ${selected.district}` : ''}</div>
                 </div>
                 <button onClick={() => setSelected(null)} style={{ background: 'none', border: 'none', fontSize: 20, cursor: 'pointer', color: '#aaa', padding: 0 }}>✕</button>
@@ -173,6 +313,11 @@ html: `<div style="width:18px;height:18px;clip-path:polygon(50% 0%, 100% 50%, 50
                 <span style={{ background: selected.type === 'rehab' ? '#f2faf4' : '#fff8f3', color: selected.type === 'rehab' ? '#2d6a4f' : '#c85e32', borderRadius: '999px', padding: '2px 10px', fontSize: 11, fontWeight: 700 }}>
                   {selected.type === 'rehab' ? '♿' : '🏥'} {selected.category}
                 </span>
+                {selected.is_national && (
+                  <span style={{ background: '#EEF2FF', color: '#1A3A5C', borderRadius: '999px', padding: '2px 10px', fontSize: 11, fontWeight: 700 }}>
+                    🌍 פריסה ארצית
+                  </span>
+                )}
               </div>
               {selected.description && <div style={{ fontSize: 12, color: '#445', lineHeight: 1.55, marginBottom: 10, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{selected.description}</div>}
               <a href={`/${selected.type === 'rehab' ? 'service' : 'treatment'}/${selected.id}`}
