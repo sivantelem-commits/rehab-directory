@@ -9,7 +9,8 @@ const CATEGORIES = {
   'חדרי מיון': { color: '#b84a2a', icon: '🚨' },
 }
 
-const NAV = [['/', '🏠 ראשי'], ['/rehab', '♿ שיקום'], ['/treatment', '🏥 טיפול'], ['/map', '🗺️ מפה'], ['/register', 'הרשמת שירות'], ['/about', 'אודות'], ['/admin', 'ניהול']]
+const NAV = [['/', '🏠 ראשי'], ['/rehab', '♿ שיקום'], ['/treatment', '🏥 טיפול'], ['/map', '🗺️ מפה'], ['/register', 'הרשמת שירות'], ['/about', 'אודות'], ['/contact', '✉️ צור קשר'], ['/admin', 'ניהול']]
+const BASE_URL = 'https://rehabdirectoryil.vercel.app'
 
 export default function TreatmentServicePage() {
   const router = useRouter()
@@ -43,6 +44,10 @@ export default function TreatmentServicePage() {
     window.open(`https://wa.me/?text=${encodeURIComponent(text)}`)
   }
 
+  const reportError = () => {
+    router.push(`/contact?type=fix&serviceName=${encodeURIComponent(service.name)}`)
+  }
+
   if (!mounted) return null
 
   if (loading) return (
@@ -60,17 +65,28 @@ export default function TreatmentServicePage() {
   )
 
   const cat = CATEGORIES[service.category] || { color: '#ee7a50', icon: '🏥' }
+  const pageUrl = `${BASE_URL}/treatment/${id}`
+  const pageDesc = service.description
+    ? service.description.slice(0, 155)
+    : `${service.category} ב${service.city}. שירות טיפולי בבריאות הנפש.`
 
   return (
     <>
       <Head>
         <title>{service.name} – {service.city} | בריאות נפש בישראל</title>
-        <meta name="description" content={service.description || `${service.category} ב${service.city}`} />
+        <meta name="description" content={pageDesc} />
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href={pageUrl} />
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content={`${service.name} – ${service.city} | בריאות נפש בישראל`} />
+        <meta property="og:description" content={pageDesc} />
+        <meta property="og:url" content={pageUrl} />
+        <meta property="og:locale" content="he_IL" />
+        <meta property="og:site_name" content="בריאות נפש בישראל" />
         <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
       </Head>
       <div dir="rtl" style={{ fontFamily: "'Nunito', sans-serif", minHeight: '100vh', background: '#fff8f3' }}>
 
-        {/* HEADER */}
         <header style={{
           background: 'linear-gradient(135deg, #c85e32, #ee7a50)',
           color: 'white', padding: '10px 20px',
@@ -87,8 +103,7 @@ export default function TreatmentServicePage() {
           <nav style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
             {NAV.map(([href, label]) => (
               <a key={href} href={href} style={{
-                color: 'white',
-                background: 'rgba(255,255,255,0.1)',
+                color: 'white', background: 'rgba(255,255,255,0.1)',
                 borderRadius: '999px', padding: '6px 14px', fontWeight: 600, fontSize: 12,
                 border: '1.5px solid rgba(255,255,255,0.2)', textDecoration: 'none',
               }}>{label}</a>
@@ -96,24 +111,26 @@ export default function TreatmentServicePage() {
           </nav>
         </header>
 
-        {/* חזרה */}
-        <div style={{ background: 'linear-gradient(160deg, #d4693a, #ee7a50)', padding: '16px 20px' }}>
+        {/* breadcrumb + חזרה */}
+        <div style={{ background: 'linear-gradient(160deg, #d4693a, #ee7a50)', padding: '12px 20px', display: 'flex', alignItems: 'center', gap: 8 }}>
           <button onClick={() => router.push('/treatment')} style={{
             background: 'rgba(255,255,255,0.15)', border: '1.5px solid rgba(255,255,255,0.3)',
-            color: 'white', borderRadius: '999px', padding: '8px 18px',
-            cursor: 'pointer', fontSize: 14, fontWeight: 600,
+            color: 'white', borderRadius: '999px', padding: '6px 14px',
+            cursor: 'pointer', fontSize: 13, fontWeight: 600,
             fontFamily: "'Nunito', sans-serif",
-          }}>
-            → חזרה לרשימה
-          </button>
+          }}>🏥 טיפול</button>
+          <span style={{ color: 'rgba(255,255,255,0.5)', fontSize: 14 }}>←</span>
+          <span style={{ color: 'rgba(255,255,255,0.9)', fontSize: 13, fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: 200 }}>{service.name}</span>
         </div>
 
         <main style={{ maxWidth: 720, margin: '0 auto', padding: '24px 16px' }}>
           <div style={{ background: 'white', borderRadius: 20, overflow: 'hidden', boxShadow: '0 4px 24px rgba(200,94,50,0.1)', border: '1.5px solid #fad4b8' }}>
             <div style={{ height: 8, background: cat.color }} />
             <div style={{ padding: '24px 20px' }}>
-              <div style={{ display: 'flex', gap: 8, marginBottom: 14 }}>
+
+              <div style={{ display: 'flex', gap: 8, marginBottom: 14, flexWrap: 'wrap' }}>
                 <span style={{ background: cat.color, color: 'white', borderRadius: '999px', padding: '4px 14px', fontSize: 13, fontWeight: 700 }}>{cat.icon} {service.category}</span>
+                {service.is_national && <span style={{ background: '#EEF2FF', color: '#1A3A5C', borderRadius: '999px', padding: '4px 14px', fontSize: 13, fontWeight: 700 }}>🌍 פריסה ארצית</span>}
               </div>
 
               <h1 style={{ fontSize: 24, fontWeight: 800, color: '#c85e32', margin: '0 0 8px' }}>{service.name}</h1>
@@ -148,22 +165,36 @@ export default function TreatmentServicePage() {
 
               {service.lat && <TreatmentMap service={service} color={cat.color} />}
 
-              <div style={{ display: 'flex', gap: 10, marginTop: 20 }}>
+              {/* כפתורי שיתוף */}
+              <div style={{ display: 'flex', gap: 10, marginTop: 20, flexWrap: 'wrap' }}>
                 <button onClick={shareWhatsApp} style={{ flex: 1, background: '#25D366', color: 'white', border: 'none', borderRadius: '999px', padding: '12px 0', fontWeight: 700, fontSize: 14, cursor: 'pointer', fontFamily: "'Nunito', sans-serif" }}>💬 וואטסאפ</button>
                 <button onClick={copyLink} style={{ flex: 1, background: '#fff8f3', color: '#c85e32', border: '1.5px solid #fad4b8', borderRadius: '999px', padding: '12px 0', fontWeight: 700, fontSize: 14, cursor: 'pointer', fontFamily: "'Nunito', sans-serif" }}>
                   {copied ? '✓ הועתק!' : '🔗 קישור'}
                 </button>
               </div>
+
+              {/* דווח על שגיאה */}
+              <div style={{ marginTop: 16, textAlign: 'center' }}>
+                <button onClick={reportError} style={{
+                  background: 'none', border: 'none', color: '#aaa', fontSize: 12,
+                  cursor: 'pointer', fontFamily: "'Nunito', sans-serif", textDecoration: 'underline',
+                }}>
+                  ⚠️ דווח על שגיאה או מידע לא עדכני
+                </button>
+              </div>
+
             </div>
           </div>
         </main>
 
-        {/* FOOTER */}
         <footer style={{
           background: 'linear-gradient(135deg, #c85e32, #d4693a)',
           color: 'rgba(255,255,255,0.75)', textAlign: 'center',
           padding: '24px', fontSize: 13, marginTop: 48, fontWeight: 500,
         }}>
+          <div style={{ marginBottom: 8 }}>
+            <a href="/contact" style={{ color: 'rgba(255,255,255,0.7)', textDecoration: 'none' }}>✉️ צור קשר</a>
+          </div>
           בריאות נפש בישראל © 2026
         </footer>
       </div>
