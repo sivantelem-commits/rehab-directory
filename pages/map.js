@@ -74,8 +74,7 @@ html: `<div style="width:18px;height:18px;clip-path:polygon(50% 0%, 100% 50%, 50
       filteredTreatment.forEach(s => {
         const color = TREATMENT_COLORS[s.category] || '#ee7a50'
         const icon = L.divIcon({
-          html: `<div style="background:${color};width:14px;height:14px;border:2px solid white;box-shadow:0 2px 6px rgba(0,0,0,0.3);clip-path:polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)"></div>`,
-          className: '', iconSize: [14, 14],
+html: `<div style="width:18px;height:18px;clip-path:polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);background:white;box-shadow:0 2px 6px rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center"><div style="width:12px;height:12px;clip-path:polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);background:${color}"></div></div>`,          className: '', iconSize: [14, 14],
         })
         const marker = L.marker([s.lat, s.lng], { icon }).addTo(mapRef.current)
         marker.on('click', () => setSelected({ ...s, type: 'treatment' }))
