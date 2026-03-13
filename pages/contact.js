@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useRouter } from 'next/router'
 import Head from 'next/head'
 
 const NAV = [['/', '🏠 ראשי'], ['/rehab', '♿ שיקום'], ['/treatment', '🏥 טיפול'], ['/map', '🗺️ מפה'], ['/register', 'הרשמת שירות'], ['/about', 'אודות'], ['/contact', '✉️ צור קשר'], ['/admin', 'ניהול']]
@@ -12,6 +13,7 @@ const TYPES = [
 ]
 
 export default function Contact() {
+  const router = useRouter()
   const [type, setType] = useState('')
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
@@ -20,6 +22,15 @@ export default function Contact() {
   const [sending, setSending] = useState(false)
   const [sent, setSent] = useState(false)
   const [error, setError] = useState('')
+
+
+  // מילוי אוטומטי מ-query params
+  useEffect(() => {
+    if (!router.isReady) return
+    const { type: qType, serviceName: qService } = router.query
+    if (qType) setType(qType)
+    if (qService) setServiceName(qService)
+  }, [router.isReady, router.query])
 
   const needsServiceName = type === 'fix' || type === 'inactive'
 
