@@ -1,6 +1,6 @@
 import Head from 'next/head'
 
-const NAV = [['/', '🏠 ראשי'], ['/rehab', '♿ שיקום'], ['/treatment', '🏥 טיפול'], ['/map', '🗺️ מפה'], ['/register', 'הרשמת שירות'], ['/about', 'אודות'], ['/admin', 'ניהול']]
+const NAV = [['/', '🏠 ראשי'], ['/rehab', '♿ שיקום'], ['/treatment', '🏥 טיפול'], ['/map', '🗺️ מפה'], ['/register', 'הרשמת שירות'], ['/about', 'אודות'], ['/contact', '✉️ צור קשר'], ['/admin', 'ניהול']]
 export default function About() {
   return (
     <>
@@ -56,13 +56,17 @@ export default function About() {
             <p style={p}>הפורטל נבנה על בסיס שיתוף פעולה. אם אתם מנהלים שירות בריאות נפש טיפולי או שיקומי, ותרצו שהוא יופיע כאן, תוכלו להירשם דרך טופס ההרשמה. כל שירות עובר אישור לפני פרסום.</p>
             <p style={p}>אם אתם אנשי מקצוע ומזהים מידע חסר או שגוי נשמח לשמוע. יחד נוכל לבנות מאגר מידע מהימן, עדכני ומועיל לכל מי שזקוק לו.</p>
             <div style={{ display: 'flex', gap: 10, marginTop: 16, flexWrap: 'wrap' }}>
-              <a href="/register" style={btn('#F47B20')}> הרשמת שירותי שיקום וטיפול</a>
+              <a href="/register" style={btn('#F47B20')}>הרשמת שירותי שיקום וטיפול</a>
+              <a href="/contact" style={btn('#1A3A5C')}>✉️ צור קשר</a>
             </div>
           </Card>
 
         </main>
 
         <footer style={{ background: '#1A3A5C', color: 'rgba(255,255,255,0.7)', textAlign: 'center', padding: '24px', fontSize: 13, marginTop: 16 }}>
+          <div style={{ marginBottom: 8 }}>
+            <a href="/contact" style={{ color: 'rgba(255,255,255,0.7)', textDecoration: 'none' }}>✉️ צור קשר</a>
+          </div>
           בריאות נפש בישראל © {new Date().getFullYear()}
         </footer>
       </div>
