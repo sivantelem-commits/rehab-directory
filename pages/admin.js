@@ -18,7 +18,7 @@ const CATEGORY_TEXT_COLORS = {
   'טיפולי שיניים': 'FFC2185B', 'שירותים נוספים': 'FF546E7A',
 }
 
-const NAV = [['/', '🏠 ראשי'], ['/rehab', '♿ שיקום'], ['/treatment', '🏥 טיפול'], ['/map', '🗺️ מפה'], ['/register', 'הרשמת שירות'], ['/about', 'אודות'], ['/admin', 'ניהול']]
+const NAV = [['/', '🏠 ראשי'], ['/rehab', '♿ שיקום'], ['/treatment', '🏥 טיפול'], ['/map', '🗺️ מפה'], ['/register', 'הרשמת שירות'], ['/about', 'אודות'], ['/contact', '✉️ צור קשר'], ['/admin', 'ניהול']]
 
 export default function Admin() {
   const [authed, setAuthed] = useState(false)
@@ -652,6 +652,7 @@ export default function Admin() {
         )}
 
         <footer style={{ background: '#1A3A5C', color: 'rgba(255,255,255,0.7)', textAlign: 'center', padding: '24px', fontSize: 13, marginTop: 48 }}>
+          <div style={{ marginBottom: 8 }}><a href="/contact" style={{ color: 'rgba(255,255,255,0.7)', textDecoration: 'none' }}>✉️ צור קשר</a></div>
           בריאות נפש בישראל © {new Date().getFullYear()}
         </footer>
       </div>
