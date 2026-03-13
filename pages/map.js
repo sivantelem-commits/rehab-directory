@@ -27,10 +27,17 @@ export default function MapPage() {
   const [showNationalPanel, setShowNationalPanel] = useState(false)
   const [mounted, setMounted] = useState(false)
   const [selected, setSelected] = useState(null)
+  const [isMobile, setIsMobile] = useState(false)
   const mapRef = useRef(null)
   const markersRef = useRef([])
 
-  useEffect(() => { setMounted(true) }, [])
+  useEffect(() => {
+    setMounted(true)
+    const check = () => setIsMobile(window.innerWidth < 768)
+    check()
+    window.addEventListener('resize', check)
+    return () => window.removeEventListener('resize', check)
+  }, [])
 
   useEffect(() => {
     fetch('/api/services').then(r => r.json()).then(data => setRehabServices(Array.isArray(data) ? data : []))
@@ -231,8 +238,8 @@ export default function MapPage() {
           </div>
         </div>
 
-        <div style={{ position: 'relative', flex: 1 }}>
-          <div id="main-map" style={{ height: 'calc(100vh - 130px)', width: '100%' }} />
+        <div style={{ position: 'relative', flex: 1, display: 'flex', flexDirection: 'column' }}>
+          <div id="main-map" style={{ height: isMobile ? '55vw' : 'calc(100vh - 130px)', minHeight: isMobile ? 260 : undefined, width: '100%' }} />
 
           {/* פאנל שירותים ארציים */}
           {showNationalPanel && (
@@ -299,7 +306,20 @@ export default function MapPage() {
 
           {/* popup שירות נבחר */}
           {selected && (
-            <div style={{ position: 'absolute', bottom: 16, right: 16, left: 16, maxWidth: 360, margin: '0 auto', background: 'white', borderRadius: 16, padding: '16px', boxShadow: '0 8px 32px rgba(0,0,0,0.2)', borderTop: `4px solid ${selected.type === 'rehab' ? (REHAB_COLORS[selected.category] || '#4aab78') : (TREATMENT_COLORS[selected.category] || '#ee7a50')}`, zIndex: 1000 }}>
+            <div style={{
+              position: isMobile ? 'relative' : 'absolute',
+              bottom: isMobile ? undefined : 16,
+              right: isMobile ? undefined : 16,
+              left: isMobile ? undefined : 16,
+              maxWidth: isMobile ? '100%' : 360,
+              margin: isMobile ? '0' : '0 auto',
+              background: 'white',
+              borderRadius: isMobile ? 0 : 16,
+              padding: '16px',
+              boxShadow: '0 8px 32px rgba(0,0,0,0.2)',
+              borderTop: `4px solid ${selected.type === 'rehab' ? (REHAB_COLORS[selected.category] || '#4aab78') : (TREATMENT_COLORS[selected.category] || '#ee7a50')}`,
+              zIndex: 1000,
+            }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 8 }}>
                 <div>
                   <div style={{ fontWeight: 700, fontSize: 15, color: '#1A3A5C' }}>
