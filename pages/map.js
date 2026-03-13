@@ -145,8 +145,17 @@ export default function MapPage() {
 
   return (
     <>
-      <Head>
-        <title>מפה | בריאות נפש בישראל</title>
+            <Head>
+        <title>מפת שירותים | בריאות נפש בישראל</title>
+        <meta name="description" content="מפה אינטראקטיבית של שירותי שיקום וטיפול פסיכיאטרי בישראל – סננו לפי אזור וקטגוריה." />
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href="https://rehabdirectoryil.vercel.app/map" />
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content="מפת שירותים | בריאות נפש בישראל" />
+        <meta property="og:description" content="מפה אינטראקטיבית של שירותי שיקום וטיפול פסיכיאטרי בישראל – סננו לפי אזור וקטגוריה." />
+        <meta property="og:url" content="https://rehabdirectoryil.vercel.app/map" />
+        <meta property="og:locale" content="he_IL" />
+        <meta property="og:site_name" content="בריאות נפש בישראל" />
         <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
       </Head>
       <div dir="rtl" style={{ fontFamily: "'Nunito', sans-serif", minHeight: '100vh', background: '#f5f5f5', display: 'flex', flexDirection: 'column' }}>
