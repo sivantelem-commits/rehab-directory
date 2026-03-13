@@ -18,8 +18,7 @@ if (!name || (!district && !is_national) || !city || !category || !phone || !ema
 const { data, error } = await supabase.from('treatment_services').insert([{
   name, district, city, category, description, phone, email, website, address, is_national: !!is_national,
   status: 'pending',
-}])
-  }]).select()
+}]).select()
 
   if (error) return res.status(500).json({ error: error.message })
 
