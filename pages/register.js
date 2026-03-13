@@ -4,7 +4,7 @@ import { CATEGORIES, CATEGORY_NAMES } from '../lib/categories'
 
 const DISTRICTS = ['צפון', 'חיפה', 'מרכז', 'תל אביב', 'ירושלים', 'דרום', 'יהודה ושומרון']
 const TREATMENT_CATEGORIES = ['בתי"מ', 'מחלקות אשפוז', 'מרפאות יום', 'חדרי מיון']
-const NAV = [['/', '🏠 ראשי'], ['/rehab', '♿ שיקום'], ['/treatment', '🏥 טיפול'], ['/map', '🗺️ מפה'], ['/register', 'הרשמת שירות'], ['/about', 'אודות'], ['/admin', 'ניהול']]
+const NAV = [['/', '🏠 ראשי'], ['/rehab', '♿ שיקום'], ['/treatment', '🏥 טיפול'], ['/map', '🗺️ מפה'], ['/register', 'הרשמת שירות'], ['/about', 'אודות'], ['/contact', '✉️ צור קשר'], ['/admin', 'ניהול']]
 
 const emptyForm = { name: '', district: '', city: '', category: '', subcategory: '', description: '', phone: '', email: '', website: '', address: '', is_national: false }
 export default function Register() {
@@ -27,7 +27,8 @@ export default function Register() {
   const handleSubmit = async () => {
     setError('')
     const { name, district, city, category, phone, email } = form
-if (!name || (!district && !form.is_national) || !city || !category || !phone || !email) {      setError('יש למלא את כל שדות החובה המסומנים ב-*')
+    if (!name || (!district && !form.is_national) || !city || !category || !phone || !email) {
+      setError('יש למלא את כל שדות החובה המסומנים ב-*')
       return
     }
     setLoading(true)
@@ -78,7 +79,6 @@ if (!name || (!district && !form.is_national) || !city || !category || !phone ||
       </Head>
       <div dir="rtl" style={{ fontFamily: "'Nunito', sans-serif", minHeight: '100vh', background: isRehab ? '#f2faf4' : '#FFF8F3' }}>
 
-        {/* HEADER */}
         <header style={{
           background: `linear-gradient(135deg, ${darkColor}, ${color})`,
           color: 'white', padding: '10px 20px',
@@ -105,7 +105,6 @@ if (!name || (!district && !form.is_national) || !city || !category || !phone ||
           </nav>
         </header>
 
-        {/* HERO */}
         <div style={{
           background: `linear-gradient(160deg, ${darkColor}, ${color})`,
           color: 'white', padding: '32px 20px', textAlign: 'center',
@@ -117,7 +116,6 @@ if (!name || (!district && !form.is_national) || !city || !category || !phone ||
 
         <main style={{ maxWidth: 620, margin: '0 auto', padding: '28px 16px' }}>
 
-          {/* TABS */}
           <div style={{
             display: 'flex', borderRadius: '999px', overflow: 'hidden',
             border: `2px solid ${color}`, marginBottom: 24,
@@ -186,21 +184,21 @@ if (!name || (!district && !form.is_national) || !city || !category || !phone ||
                 </div>
               ))}
 
-             <div style={{ marginBottom: 16 }}>
-  <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13.5, fontWeight: 700, color: darkColor, marginBottom: 10, cursor: 'pointer' }}>
-    <input type="checkbox" checked={form.is_national} onChange={e => setForm(f => ({ ...f, is_national: e.target.checked, district: e.target.checked ? '' : f.district }))} style={{ width: 18, height: 18, cursor: 'pointer' }} />
-    פריסה ארצית
-  </label>
-  {!form.is_national && (
-    <>
-      <label style={lbl}>מחוז *</label>
-      <select value={form.district} onChange={e => setForm(f => ({ ...f, district: e.target.value }))} style={inp}>
-        <option value="">בחרו מחוז</option>
-        {DISTRICTS.map(d => <option key={d}>{d}</option>)}
-      </select>
-    </>
-  )}
-</div>
+              <div style={{ marginBottom: 16 }}>
+                <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13.5, fontWeight: 700, color: darkColor, marginBottom: 10, cursor: 'pointer' }}>
+                  <input type="checkbox" checked={form.is_national} onChange={e => setForm(f => ({ ...f, is_national: e.target.checked, district: e.target.checked ? '' : f.district }))} style={{ width: 18, height: 18, cursor: 'pointer' }} />
+                  פריסה ארצית
+                </label>
+                {!form.is_national && (
+                  <>
+                    <label style={lbl}>מחוז *</label>
+                    <select value={form.district} onChange={e => setForm(f => ({ ...f, district: e.target.value }))} style={inp}>
+                      <option value="">בחרו מחוז</option>
+                      {DISTRICTS.map(d => <option key={d}>{d}</option>)}
+                    </select>
+                  </>
+                )}
+              </div>
 
               <div style={{ marginBottom: 16 }}>
                 <label style={lbl}>קטגוריה *</label>
@@ -264,6 +262,9 @@ if (!name || (!district && !form.is_national) || !city || !category || !phone ||
           color: 'rgba(255,255,255,0.75)', textAlign: 'center',
           padding: '24px', fontSize: 13, marginTop: 48, fontWeight: 500,
         }}>
+          <div style={{ marginBottom: 8 }}>
+            <a href="/contact" style={{ color: 'rgba(255,255,255,0.7)', textDecoration: 'none' }}>✉️ צור קשר</a>
+          </div>
           בריאות נפש בישראל © 2026
         </footer>
       </div>
