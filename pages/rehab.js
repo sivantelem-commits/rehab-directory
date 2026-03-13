@@ -14,6 +14,7 @@ export default function Rehab() {
   const [district, setDistrict] = useState('הכל')
   const [category, setCategory] = useState('הכל')
   const [subcategory, setSubcategory] = useState('הכל')
+  const [nationalOnly, setNationalOnly] = useState(false)
   const [debouncedSearch, setDebouncedSearch] = useState('')
   const [mounted, setMounted] = useState(false)
   const [showTop, setShowTop] = useState(false)
@@ -39,11 +40,12 @@ export default function Rehab() {
       if (category !== 'הכל') params.set('category', category)
       if (subcategory !== 'הכל') params.set('subcategory', subcategory)
       if (debouncedSearch) params.set('search', debouncedSearch)
+      if (nationalOnly) params.set('national', 'true')
       const res = await fetch(`/api/services?${params}`)
       const data = await res.json()
       setServices(Array.isArray(data) ? data : [])
     } finally { setLoading(false) }
-  }, [district, category, subcategory, debouncedSearch])
+  }, [district, category, subcategory, debouncedSearch, nationalOnly])
 
   useEffect(() => { fetchServices() }, [fetchServices])
 
@@ -76,48 +78,39 @@ export default function Rehab() {
 
         {/* HEADER */}
         <header style={{
-  background: 'linear-gradient(135deg, #2d6a4f, #4aab78)',
-  color: 'white',
-  padding: '10px 20px',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'space-between',
-  boxShadow: '0 2px 12px rgba(45,106,79,0.2)',
-  flexWrap: 'wrap',
-  gap: 8,
-}}>
-  <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-    <img
-  src="/logo.png"
-  alt="לוגו"
- style={{
-  width: 44,
-  height: 44,
-  objectFit: 'contain',
-  filter: 'brightness(0) invert(1)',
-}}
-/>
-    <div>
-      <div style={{ fontWeight: 800, fontSize: 18 }}>בריאות נפש בישראל</div>
-      <div style={{ fontSize: 11, opacity: 0.8 }}>שירותי שיקום בקהילה</div>
-    </div>
-  </div>
-  <nav style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-    {[['/', '🏠 ראשי'], ['/rehab', '♿ שיקום'], ['/treatment', '🏥 טיפול'], ['/map', '🗺️ מפה'], ['/register', 'הרשמת שירות'], ['/about', 'אודות'], ['/admin', 'ניהול']].map(([href, label]) => (
-      <a key={href} href={href} style={{
-        color: 'white',
-        background: href === '/rehab' ? 'rgba(255,255,255,0.25)' : 'rgba(255,255,255,0.1)',
-        borderRadius: '999px',
-        padding: '6px 14px',
-        fontWeight: 600,
-        fontSize: 12,
-        border: href === '/rehab' ? '1.5px solid rgba(255,255,255,0.6)' : '1.5px solid rgba(255,255,255,0.2)',
-        textDecoration: 'none',
-        transition: 'background 0.15s',
-      }}>{label}</a>
-    ))}
-  </nav>
-</header>
+          background: 'linear-gradient(135deg, #2d6a4f, #4aab78)',
+          color: 'white',
+          padding: '10px 20px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          boxShadow: '0 2px 12px rgba(45,106,79,0.2)',
+          flexWrap: 'wrap',
+          gap: 8,
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+            <img src="/logo.png" alt="לוגו" style={{ width: 44, height: 44, objectFit: 'contain', filter: 'brightness(0) invert(1)' }} />
+            <div>
+              <div style={{ fontWeight: 800, fontSize: 18 }}>בריאות נפש בישראל</div>
+              <div style={{ fontSize: 11, opacity: 0.8 }}>שירותי שיקום בקהילה</div>
+            </div>
+          </div>
+          <nav style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+            {[['/', '🏠 ראשי'], ['/rehab', '♿ שיקום'], ['/treatment', '🏥 טיפול'], ['/map', '🗺️ מפה'], ['/register', 'הרשמת שירות'], ['/about', 'אודות'], ['/admin', 'ניהול']].map(([href, label]) => (
+              <a key={href} href={href} style={{
+                color: 'white',
+                background: href === '/rehab' ? 'rgba(255,255,255,0.25)' : 'rgba(255,255,255,0.1)',
+                borderRadius: '999px',
+                padding: '6px 14px',
+                fontWeight: 600,
+                fontSize: 12,
+                border: href === '/rehab' ? '1.5px solid rgba(255,255,255,0.6)' : '1.5px solid rgba(255,255,255,0.2)',
+                textDecoration: 'none',
+                transition: 'background 0.15s',
+              }}>{label}</a>
+            ))}
+          </nav>
+        </header>
 
         {/* HERO */}
         <div style={{
@@ -167,15 +160,36 @@ export default function Rehab() {
           <select value={district} onChange={e => setDistrict(e.target.value)} style={sel}>
             {DISTRICTS.map(d => <option key={d}>{d}</option>)}
           </select>
+
           <select value={category} onChange={e => { setCategory(e.target.value); setSubcategory('הכל') }} style={sel}>
             <option value="הכל">כל הקטגוריות</option>
             {CATEGORY_NAMES.map(c => <option key={c}>{c}</option>)}
           </select>
+
           {category !== 'הכל' && (
             <select value={subcategory} onChange={e => setSubcategory(e.target.value)} style={sel}>
               {subcategories.map(s => <option key={s}>{s}</option>)}
             </select>
           )}
+
+          {/* כפתור ארצי */}
+          <button
+            onClick={() => setNationalOnly(v => !v)}
+            style={{
+              display: 'flex', alignItems: 'center', gap: 6,
+              padding: '9px 16px',
+              borderRadius: '999px',
+              border: `1.5px solid ${nationalOnly ? '#1A3A5C' : '#a8d8b0'}`,
+              background: nationalOnly ? '#EEF2FF' : 'white',
+              color: nationalOnly ? '#1A3A5C' : '#2d6a4f',
+              fontWeight: 700, fontSize: 14, cursor: 'pointer',
+              fontFamily: "'Nunito', sans-serif",
+              transition: 'all 0.15s',
+            }}
+          >
+            🌍 ארצי בלבד
+          </button>
+
           <div style={{ marginRight: 'auto', fontSize: 13, color: '#7aaa88', fontWeight: 600 }}>
             {loading ? 'טוען...' : `${services.length} שירותים`}
           </div>
@@ -192,7 +206,7 @@ export default function Rehab() {
               <div style={{ fontSize: 48, marginBottom: 12 }}>🔍</div>
               <div style={{ fontWeight: 700, fontSize: 18, marginBottom: 8, color: '#555' }}>לא נמצאו שירותים</div>
               <button
-                onClick={() => { setSearch(''); setDistrict('הכל'); setCategory('הכל'); setSubcategory('הכל') }}
+                onClick={() => { setSearch(''); setDistrict('הכל'); setCategory('הכל'); setSubcategory('הכל'); setNationalOnly(false) }}
                 style={{
                   background: 'linear-gradient(160deg, #7ec8a0, #4aab78)',
                   color: 'white',
@@ -204,15 +218,6 @@ export default function Rehab() {
                   cursor: 'pointer',
                   fontFamily: "'Nunito', sans-serif",
                   boxShadow: '0 4px 0 #3a8a5e, 0 8px 20px rgba(74,171,120,0.3)',
-                  transition: 'transform 0.2s, box-shadow 0.2s',
-                }}
-                onMouseEnter={e => {
-                  e.currentTarget.style.transform = 'translateY(-3px)'
-                  e.currentTarget.style.boxShadow = '0 7px 0 #3a8a5e, 0 14px 28px rgba(74,171,120,0.35)'
-                }}
-                onMouseLeave={e => {
-                  e.currentTarget.style.transform = 'translateY(0)'
-                  e.currentTarget.style.boxShadow = '0 4px 0 #3a8a5e, 0 8px 20px rgba(74,171,120,0.3)'
                 }}
               >
                 נקה פילטרים
@@ -243,7 +248,6 @@ export default function Rehab() {
               zIndex: 100,
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               fontWeight: 800,
-              transition: 'transform 0.2s',
             }}
             onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-2px)'}
             onMouseLeave={e => e.currentTarget.style.transform = 'translateY(0)'}
