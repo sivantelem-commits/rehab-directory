@@ -63,17 +63,14 @@ async function sendAdminNotification(service) {
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).end()
 
-  const { name, district, city, category, subcategory, description, phone, email, website, address } = req.body
-
-  if (!name || !district || !city || !category || !phone || !email) {
-    return res.status(400).json({ error: 'Missing required fields' })
-  }
-
-  const { lat, lng } = await geocode(city, address)
-
-  const { data, error } = await supabase
-    .from('services')
-    .insert([{ name, district, city, category, subcategory, description, phone, email, website, address, status: 'pending', lat, lng }])
+  const { name, district, city, category, subcategory, description, phone, email, website, address, is_national } = req.body
+if (!name || (!district && !is_national) || !city || !category || !phone || !email) {
+  return res.status(400).json({ error: 'Missing required fields' })
+}
+const { lat, lng } = await geocode(city, address)
+const { data, error } = await supabase
+  .from('services')
+  .insert([{ name, district, city, category, subcategory, description, phone, email, website, address, is_national: !!is_national, status: 'pending', lat, lng }])
     .select()
     .single()
 
