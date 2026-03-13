@@ -72,9 +72,17 @@ export default function Rehab() {
 
   return (
     <>
-      <Head>
-        <title>שיקום | בריאות נפש בישראל</title>
-        <meta name="description" content="מאגר שירותי סל שיקום בקהילה – דיור, תעסוקה, השכלה וליווי לפי אזור בישראל" />
+            <Head>
+        <title>שירותי שיקום בקהילה | בריאות נפש בישראל</title>
+        <meta name="description" content="מאגר שירותי סל שיקום בקהילה – דיור, תעסוקה, השכלה וליווי לפי אזור בישראל. מצאו שירותי שיקום מוכרים לאנשים עם מגבלה נפשית." />
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href="https://rehabdirectoryil.vercel.app/rehab" />
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content="שירותי שיקום בקהילה | בריאות נפש בישראל" />
+        <meta property="og:description" content="מאגר שירותי סל שיקום בקהילה – דיור, תעסוקה, השכלה וליווי לפי אזור בישראל. מצאו שירותי שיקום מוכרים לאנשים עם מגבלה נפשית." />
+        <meta property="og:url" content="https://rehabdirectoryil.vercel.app/rehab" />
+        <meta property="og:locale" content="he_IL" />
+        <meta property="og:site_name" content="בריאות נפש בישראל" />
         <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
       </Head>
 
