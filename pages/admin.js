@@ -640,17 +640,27 @@ export default function Admin() {
 }
 
 function StatsTab({ stats }) {
+  const [activeTab, setActiveTab] = useState('rehab')
   if (!stats) return <div style={{ textAlign: 'center', padding: 48, color: '#F47B20' }}>טוען סטטיסטיקות...</div>
   const COLORS = ['#7B2D8B','#F47B20','#1A3A5C','#2E7D32','#0277BD','#C2185B','#546E7A']
   const districts = ['צפון','חיפה','מרכז','תל אביב','ירושלים','דרום','יהודה ושומרון']
-  const categories = Object.keys(stats.crossTable || 
-const [activeTab, setActiveTab] = React.useState('rehab'){(() => {
   const isRehab = activeTab === 'rehab'
   const byCategory = isRehab ? stats.byCategory : stats.byCategoryTreatment
   const byDistrict = isRehab ? stats.byDistrict : stats.byDistrictTreatment
   const crossTable = isRehab ? stats.crossTable : stats.crossTableTreatment
   const cats = Object.keys(crossTable || {})
   return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+
+      <div style={{ fontWeight: 800, fontSize: 16, color: '#1A3A5C' }}>♿ סטטיסטיקות שיקום</div>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: 12 }}>
+        {[['סה"כ שירותים', stats.total, '#1A3A5C', '📋'], ['פעילים', stats.approved, '#2E7D32', '✅'], ['ממתינים', stats.pending, '#F47B20', '⏳'], ['נדחו', stats.rejected, '#C62828', '❌']].map(([label, val, color, icon]) => (
+          <div key={label} style={{ background: 'white', borderRadius: 16, padding: '18px 16px', textAlign: 'center', boxShadow: '0 4px 16px rgba(0,0,0,0.07)', borderTop: `4px solid ${color}` }}>
+            <div style={{ fontSize: 28, marginBottom: 6 }}>{icon}</div>
+            <div style={{ fontSize: 32, fontWeight: 800, color }}>{val}</div>
+            <div style={{ fontSize: 12, color: '#888', marginTop: 4 }}>{label}</div>
+          </div>
+        ))}
       </div>
 
       <div style={{ fontWeight: 800, fontSize: 16, color: '#ee7a50' }}>🏥 סטטיסטיקות טיפול</div>
@@ -664,77 +674,67 @@ const [activeTab, setActiveTab] = React.useState('rehab'){(() => {
         ))}
       </div>
 
-     {(() => {
-        const [activeTab, setActiveTab] = React.useState('rehab')
-        const isRehab = activeTab === 'rehab'
-        const byCategory = isRehab ? stats.byCategory : stats.byCategoryTreatment
-        const byDistrict = isRehab ? stats.byDistrict : stats.byDistrictTreatment
-        const crossTable = isRehab ? stats.crossTable : stats.crossTableTreatment
-        const cats = Object.keys(crossTable || {})
-        return (
-          <>
-            <div style={{ display: 'flex', gap: 8 }}>
-              <button onClick={() => setActiveTab('rehab')} style={{ padding: '8px 20px', borderRadius: 999, fontWeight: 700, fontSize: 13, cursor: 'pointer', background: isRehab ? '#1A3A5C' : 'white', color: isRehab ? 'white' : '#1A3A5C', border: '2px solid #1A3A5C' }}>♿ שיקום</button>
-              <button onClick={() => setActiveTab('treatment')} style={{ padding: '8px 20px', borderRadius: 999, fontWeight: 700, fontSize: 13, cursor: 'pointer', background: !isRehab ? '#ee7a50' : 'white', color: !isRehab ? 'white' : '#ee7a50', border: '2px solid #ee7a50' }}>🏥 טיפול</button>
-            </div>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(340px, 1fr))', gap: 20 }}>
-              <div style={{ background: 'white', borderRadius: 16, padding: '20px', boxShadow: '0 4px 16px rgba(0,0,0,0.07)' }}>
-                <h3 style={{ margin: '0 0 16px', fontSize: 15, fontWeight: 800, color: '#1A3A5C' }}>🥧 לפי קטגוריה</h3>
-                <ResponsiveContainer width="100%" height={240}>
-                  <PieChart>
-                    <Pie data={byCategory} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80} label={({ name, value }) => `${name} (${value})`} labelLine={false}>
-                      {(byCategory || []).map((entry, i) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}
-                    </Pie>
-                    <Tooltip />
-                  </PieChart>
-                </ResponsiveContainer>
-              </div>
-              <div style={{ background: 'white', borderRadius: 16, padding: '20px', boxShadow: '0 4px 16px rgba(0,0,0,0.07)' }}>
-                <h3 style={{ margin: '0 0 16px', fontSize: 15, fontWeight: 800, color: '#1A3A5C' }}>📊 לפי מחוז</h3>
-                <ResponsiveContainer width="100%" height={240}>
-                  <BarChart data={byDistrict} margin={{ top: 5, right: 10, left: -20, bottom: 5 }}>
-                    <XAxis dataKey="name" tick={{ fontSize: 11 }} />
-                    <YAxis tick={{ fontSize: 11 }} allowDecimals={false} />
-                    <Tooltip />
-                    <Bar dataKey="value" name="שירותים" radius={[6, 6, 0, 0]}>
-                      {(byDistrict || []).map((entry, i) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}
-                    </Bar>
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
-            </div>
-            <div style={{ background: 'white', borderRadius: 16, padding: '20px', boxShadow: '0 4px 16px rgba(0,0,0,0.07)', overflowX: 'auto' }}>
-              <h3 style={{ margin: '0 0 16px', fontSize: 15, fontWeight: 800, color: '#1A3A5C' }}>📋 פירוט לפי קטגוריה ומחוז</h3>
-              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
-                <thead>
-                  <tr style={{ background: '#1A3A5C', color: 'white' }}>
-                    <th style={{ padding: '10px 14px', textAlign: 'right' }}>קטגוריה</th>
-                    {districts.map(d => <th key={d} style={{ padding: '10px', textAlign: 'center', whiteSpace: 'nowrap' }}>{d}</th>)}
-                    <th style={{ padding: '10px 14px', textAlign: 'center', background: '#F47B20' }}>סה"כ</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {cats.map((cat, i) => {
-                    const color = getCategoryColor(cat)
-                    const total = districts.reduce((sum, d) => sum + ((crossTable[cat] || {})[d] || 0), 0)
-                    return (
-                      <tr key={cat} style={{ background: i % 2 === 0 ? '#FFF8F3' : 'white' }}>
-                        <td style={{ padding: '10px 14px', fontWeight: 700, color, borderRight: `3px solid ${color}` }}>{cat}</td>
-                        {districts.map(d => (
-                          <td key={d} style={{ padding: '10px', textAlign: 'center', color: (crossTable[cat] || {})[d] ? '#1A3A5C' : '#ddd', fontWeight: (crossTable[cat] || {})[d] ? 700 : 400 }}>
-                            {(crossTable[cat] || {})[d] || '–'}
-                          </td>
-                        ))}
-                        <td style={{ padding: '10px 14px', textAlign: 'center', fontWeight: 800, color: '#F47B20' }}>{total}</td>
-                      </tr>
-                    )
-                  })}
-                </tbody>
-              </table>
-            </div>
-         </>
-        )
-      })()}
+      <div style={{ display: 'flex', gap: 8 }}>
+        <button onClick={() => setActiveTab('rehab')} style={{ padding: '8px 20px', borderRadius: 999, fontWeight: 700, fontSize: 13, cursor: 'pointer', background: isRehab ? '#1A3A5C' : 'white', color: isRehab ? 'white' : '#1A3A5C', border: '2px solid #1A3A5C', fontFamily: "'Nunito', sans-serif" }}>♿ שיקום</button>
+        <button onClick={() => setActiveTab('treatment')} style={{ padding: '8px 20px', borderRadius: 999, fontWeight: 700, fontSize: 13, cursor: 'pointer', background: !isRehab ? '#ee7a50' : 'white', color: !isRehab ? 'white' : '#ee7a50', border: '2px solid #ee7a50', fontFamily: "'Nunito', sans-serif" }}>🏥 טיפול</button>
+      </div>
+
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(340px, 1fr))', gap: 20 }}>
+        <div style={{ background: 'white', borderRadius: 16, padding: '20px', boxShadow: '0 4px 16px rgba(0,0,0,0.07)' }}>
+          <h3 style={{ margin: '0 0 16px', fontSize: 15, fontWeight: 800, color: '#1A3A5C' }}>🥧 לפי קטגוריה</h3>
+          <ResponsiveContainer width="100%" height={240}>
+            <PieChart>
+              <Pie data={byCategory} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80} label={({ name, value }) => `${name} (${value})`} labelLine={false}>
+                {(byCategory || []).map((entry, i) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}
+              </Pie>
+              <Tooltip />
+            </PieChart>
+          </ResponsiveContainer>
+        </div>
+        <div style={{ background: 'white', borderRadius: 16, padding: '20px', boxShadow: '0 4px 16px rgba(0,0,0,0.07)' }}>
+          <h3 style={{ margin: '0 0 16px', fontSize: 15, fontWeight: 800, color: '#1A3A5C' }}>📊 לפי מחוז</h3>
+          <ResponsiveContainer width="100%" height={240}>
+            <BarChart data={byDistrict} margin={{ top: 5, right: 10, left: -20, bottom: 5 }}>
+              <XAxis dataKey="name" tick={{ fontSize: 11 }} />
+              <YAxis tick={{ fontSize: 11 }} allowDecimals={false} />
+              <Tooltip />
+              <Bar dataKey="value" name="שירותים" radius={[6, 6, 0, 0]}>
+                {(byDistrict || []).map((entry, i) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
+
+      <div style={{ background: 'white', borderRadius: 16, padding: '20px', boxShadow: '0 4px 16px rgba(0,0,0,0.07)', overflowX: 'auto' }}>
+        <h3 style={{ margin: '0 0 16px', fontSize: 15, fontWeight: 800, color: '#1A3A5C' }}>📋 פירוט לפי קטגוריה ומחוז</h3>
+        <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
+          <thead>
+            <tr style={{ background: '#1A3A5C', color: 'white' }}>
+              <th style={{ padding: '10px 14px', textAlign: 'right' }}>קטגוריה</th>
+              {districts.map(d => <th key={d} style={{ padding: '10px', textAlign: 'center', whiteSpace: 'nowrap' }}>{d}</th>)}
+              <th style={{ padding: '10px 14px', textAlign: 'center', background: '#F47B20' }}>סה"כ</th>
+            </tr>
+          </thead>
+          <tbody>
+            {cats.map((cat, i) => {
+              const color = getCategoryColor(cat)
+              const total = districts.reduce((sum, d) => sum + ((crossTable[cat] || {})[d] || 0), 0)
+              return (
+                <tr key={cat} style={{ background: i % 2 === 0 ? '#FFF8F3' : 'white' }}>
+                  <td style={{ padding: '10px 14px', fontWeight: 700, color, borderRight: `3px solid ${color}` }}>{cat}</td>
+                  {districts.map(d => (
+                    <td key={d} style={{ padding: '10px', textAlign: 'center', color: (crossTable[cat] || {})[d] ? '#1A3A5C' : '#ddd', fontWeight: (crossTable[cat] || {})[d] ? 700 : 400 }}>
+                      {(crossTable[cat] || {})[d] || '–'}
+                    </td>
+                  ))}
+                  <td style={{ padding: '10px 14px', textAlign: 'center', fontWeight: 800, color: '#F47B20' }}>{total}</td>
+                </tr>
+              )
+            })}
+          </tbody>
+        </table>
+      </div>
 
     </div>
   )
