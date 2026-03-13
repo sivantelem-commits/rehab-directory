@@ -652,6 +652,16 @@ function StatsTab({ stats }) {
             <div style={{ fontSize: 28, marginBottom: 6 }}>{icon}</div>
             <div style={{ fontSize: 32, fontWeight: 800, color }}>{val}</div>
             <div style={{ fontSize: 12, color: '#888', marginTop: 4 }}>{label}</div>
+                                                                                                                                                                                    <div style={{ fontWeight: 800, fontSize: 16, color: '#ee7a50', marginTop: 8 }}>🏥 סטטיסטיקות טיפול</div>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: 12 }}>
+        {[['סה"כ שירותים', stats.totalTreatment, '#1A3A5C', '📋'], ['פעילים', stats.approvedTreatment, '#2E7D32', '✅'], ['ממתינים', stats.pendingTreatment, '#ee7a50', '⏳'], ['נדחו', stats.rejectedTreatment, '#C62828', '❌']].map(([label, val, color, icon]) => (
+          <div key={label} style={{ background: 'white', borderRadius: 16, padding: '18px 16px', textAlign: 'center', boxShadow: '0 4px 16px rgba(0,0,0,0.07)', borderTop: `4px solid ${color}` }}>
+            <div style={{ fontSize: 28, marginBottom: 6 }}>{icon}</div>
+            <div style={{ fontSize: 32, fontWeight: 800, color }}>{val}</div>
+            <div style={{ fontSize: 12, color: '#888', marginTop: 4 }}>{label}</div>
+          </div>
+        ))}
+      </div>
           </div>
         ))}
       </div>
