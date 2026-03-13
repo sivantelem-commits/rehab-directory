@@ -737,13 +737,13 @@ function StatsTab({ stats }) {
                 </tbody>
               </table>
             </div>
-          </>
+         </>
         )
+      })()}
 
     </div>
   )
 }
-
 function LocationPicker({ service, onSave, onClose }) {
   const mapRef = useRef(null)
   const markerRef = useRef(null)
