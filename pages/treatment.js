@@ -76,9 +76,17 @@ export default function Treatment() {
 
   return (
     <>
-      <Head>
-        <title>טיפול | בריאות נפש בישראל</title>
-        <meta name="description" content="בתי מאזנים, מחלקות אשפוז, מרפאות יום וחדרי מיון פסיכיאטריים בישראל" />
+            <Head>
+        <title>שירותי טיפול פסיכיאטרי | בריאות נפש בישראל</title>
+        <meta name="description" content="בתים מאזנים, מחלקות אשפוז פסיכיאטרי, מרפאות יום וחדרי מיון בישראל – מצאו שירות טיפולי לפי אזור וקטגוריה." />
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href="https://rehabdirectoryil.vercel.app/treatment" />
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content="שירותי טיפול פסיכיאטרי | בריאות נפש בישראל" />
+        <meta property="og:description" content="בתים מאזנים, מחלקות אשפוז פסיכיאטרי, מרפאות יום וחדרי מיון בישראל – מצאו שירות טיפולי לפי אזור וקטגוריה." />
+        <meta property="og:url" content="https://rehabdirectoryil.vercel.app/treatment" />
+        <meta property="og:locale" content="he_IL" />
+        <meta property="og:site_name" content="בריאות נפש בישראל" />
         <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
       </Head>
 
