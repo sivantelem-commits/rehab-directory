@@ -27,8 +27,7 @@ export default function Register() {
   const handleSubmit = async () => {
     setError('')
     const { name, district, city, category, phone, email } = form
-    if (!name || !district || !city || !category || !phone || !email) {
-      setError('יש למלא את כל שדות החובה המסומנים ב-*')
+if (!name || (!district && !form.is_national) || !city || !category || !phone || !email) {      setError('יש למלא את כל שדות החובה המסומנים ב-*')
       return
     }
     setLoading(true)
