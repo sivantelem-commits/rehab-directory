@@ -739,52 +739,6 @@ function StatsTab({ stats }) {
             </div>
           </>
         )
-      })()}
-        </div>
-        <div style={{ background: 'white', borderRadius: 16, padding: '20px', boxShadow: '0 4px 16px rgba(0,0,0,0.07)' }}>
-          <h3 style={{ margin: '0 0 16px', fontSize: 15, fontWeight: 800, color: '#1A3A5C' }}>📊 לפי מחוז</h3>
-          <ResponsiveContainer width="100%" height={240}>
-            <BarChart data={stats.byDistrict} margin={{ top: 5, right: 10, left: -20, bottom: 5 }}>
-              <XAxis dataKey="name" tick={{ fontSize: 11 }} />
-              <YAxis tick={{ fontSize: 11 }} allowDecimals={false} />
-              <Tooltip />
-              <Bar dataKey="value" name="שירותים" radius={[6, 6, 0, 0]}>
-                {stats.byDistrict.map((entry, i) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}
-              </Bar>
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-      </div>
-
-      <div style={{ background: 'white', borderRadius: 16, padding: '20px', boxShadow: '0 4px 16px rgba(0,0,0,0.07)', overflowX: 'auto' }}>
-        <h3 style={{ margin: '0 0 16px', fontSize: 15, fontWeight: 800, color: '#1A3A5C' }}>📋 פירוט לפי קטגוריה ומחוז</h3>
-        <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
-          <thead>
-            <tr style={{ background: '#1A3A5C', color: 'white' }}>
-              <th style={{ padding: '10px 14px', textAlign: 'right' }}>קטגוריה</th>
-              {districts.map(d => <th key={d} style={{ padding: '10px', textAlign: 'center', whiteSpace: 'nowrap' }}>{d}</th>)}
-              <th style={{ padding: '10px 14px', textAlign: 'center', background: '#F47B20' }}>סה"כ</th>
-            </tr>
-          </thead>
-          <tbody>
-            {categories.map((cat, i) => {
-              const color = getCategoryColor(cat)
-              const total = districts.reduce((sum, d) => sum + (stats.crossTable[cat][d] || 0), 0)
-              return (
-                <tr key={cat} style={{ background: i % 2 === 0 ? '#FFF8F3' : 'white' }}>
-                  <td style={{ padding: '10px 14px', fontWeight: 700, color, borderRight: `3px solid ${color}` }}>{cat}</td>
-                  {districts.map(d => (
-                    <td key={d} style={{ padding: '10px', textAlign: 'center', color: stats.crossTable[cat][d] ? '#1A3A5C' : '#ddd', fontWeight: stats.crossTable[cat][d] ? 700 : 400 }}>
-                      {stats.crossTable[cat][d] || '–'}
-                    </td>
-                  ))}
-                  <td style={{ padding: '10px 14px', textAlign: 'center', fontWeight: 800, color: '#F47B20' }}>{total}</td>
-                </tr>
-              )
-            })}
-          </tbody>
-        </table>
-      </div>
 
     </div>
   )
