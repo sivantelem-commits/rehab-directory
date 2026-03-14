@@ -3,10 +3,10 @@ import { useRouter } from 'next/router'
 import Head from 'next/head'
 
 const CATEGORIES = {
-  'בתי"מ': { color: '#e07a50', icon: '🏠' },
-  'מחלקות אשפוז': { color: '#c85e32', icon: '🏥' },
-  'מרפאות יום': { color: '#f4a27a', icon: '☀️' },
-  'חדרי מיון': { color: '#b84a2a', icon: '🚨' },
+  'בתים מאזנים': { color: '#0A3040', icon: '🏠' },
+  'מחלקות אשפוז': { color: '#1565A8', icon: '🏥' },
+  'מרפאות יום': { color: '#0891B2', icon: '☀️' },
+  'חדרי מיון': { color: '#06B6D4', icon: '🚨' },
 }
 
 const NAV = [['/', '🏠 ראשי'], ['/rehab', '♿ שיקום'], ['/treatment', '🏥 טיפול'], ['/map', '🗺️ מפה'], ['/register', 'הרשמת שירות'], ['/about', 'אודות'], ['/contact', '✉️ צור קשר'], ['/admin', 'ניהול']]
@@ -51,20 +51,20 @@ export default function TreatmentServicePage() {
   if (!mounted) return null
 
   if (loading) return (
-    <div dir="rtl" style={{ fontFamily: "'Nunito', sans-serif", minHeight: '100vh', background: '#fff8f3', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      <div style={{ color: '#ee7a50', fontSize: 18, fontWeight: 700 }}>טוען...</div>
+    <div dir="rtl" style={{ fontFamily: "'Nunito', sans-serif", minHeight: '100vh', background: '#f0faff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <div style={{ color: '#0891B2', fontSize: 18, fontWeight: 700 }}>טוען...</div>
     </div>
   )
 
   if (!service) return (
-    <div dir="rtl" style={{ fontFamily: "'Nunito', sans-serif", minHeight: '100vh', background: '#fff8f3', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: 16 }}>
+    <div dir="rtl" style={{ fontFamily: "'Nunito', sans-serif", minHeight: '100vh', background: '#f0faff', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: 16 }}>
       <div style={{ fontSize: 48 }}>😕</div>
-      <div style={{ fontSize: 18, color: '#ee7a50', fontWeight: 700 }}>השירות לא נמצא</div>
-      <button onClick={() => router.push('/treatment')} style={{ background: 'linear-gradient(160deg, #f4a27a, #ee7a50)', color: 'white', border: 'none', borderRadius: '999px', padding: '10px 24px', fontWeight: 700, cursor: 'pointer', fontFamily: "'Nunito', sans-serif", boxShadow: '0 4px 0 #c85e32' }}>חזרה לרשימה</button>
+      <div style={{ fontSize: 18, color: '#0891B2', fontWeight: 700 }}>השירות לא נמצא</div>
+      <button onClick={() => router.push('/treatment')} style={{ background: 'linear-gradient(160deg, #0891B2, #164E63)', color: 'white', border: 'none', borderRadius: '999px', padding: '10px 24px', fontWeight: 700, cursor: 'pointer', fontFamily: "'Nunito', sans-serif", boxShadow: '0 4px 0 #0A3040' }}>חזרה לרשימה</button>
     </div>
   )
 
-  const cat = CATEGORIES[service.category] || { color: '#ee7a50', icon: '🏥' }
+  const cat = CATEGORIES[service.category] || { color: '#0891B2', icon: '🏥' }
   const pageUrl = `${BASE_URL}/treatment/${id}`
   const pageDesc = service.description
     ? service.description.slice(0, 155)
@@ -85,13 +85,13 @@ export default function TreatmentServicePage() {
         <meta property="og:site_name" content="בריאות נפש בישראל" />
         <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
       </Head>
-      <div dir="rtl" style={{ fontFamily: "'Nunito', sans-serif", minHeight: '100vh', background: '#fff8f3' }}>
+      <div dir="rtl" style={{ fontFamily: "'Nunito', sans-serif", minHeight: '100vh', background: '#f0faff' }}>
 
         <header style={{
-          background: 'linear-gradient(135deg, #c85e32, #ee7a50)',
+          background: 'linear-gradient(135deg, #164E63, #0891B2)',
           color: 'white', padding: '10px 20px',
           display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-          boxShadow: '0 2px 12px rgba(200,94,50,0.2)', flexWrap: 'wrap', gap: 8,
+          boxShadow: '0 2px 12px rgba(22,78,99,0.2)', flexWrap: 'wrap', gap: 8,
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
             <img src="/logo.png" alt="לוגו" style={{ width: 44, height: 44, objectFit: 'contain', filter: 'brightness(0) invert(1)' }} />
@@ -112,7 +112,7 @@ export default function TreatmentServicePage() {
         </header>
 
         {/* breadcrumb + חזרה */}
-        <div style={{ background: 'linear-gradient(160deg, #d4693a, #ee7a50)', padding: '12px 20px', display: 'flex', alignItems: 'center', gap: 8 }}>
+        <div style={{ background: 'linear-gradient(160deg, #164E63, #0891B2)', padding: '12px 20px', display: 'flex', alignItems: 'center', gap: 8 }}>
           <button onClick={() => router.push('/treatment')} style={{
             background: 'rgba(255,255,255,0.15)', border: '1.5px solid rgba(255,255,255,0.3)',
             color: 'white', borderRadius: '999px', padding: '6px 14px',
@@ -124,7 +124,7 @@ export default function TreatmentServicePage() {
         </div>
 
         <main style={{ maxWidth: 720, margin: '0 auto', padding: '24px 16px' }}>
-          <div style={{ background: 'white', borderRadius: 20, overflow: 'hidden', boxShadow: '0 4px 24px rgba(200,94,50,0.1)', border: '1.5px solid #fad4b8' }}>
+          <div style={{ background: 'white', borderRadius: 20, overflow: 'hidden', boxShadow: '0 4px 24px rgba(8,145,178,0.1)', border: '1.5px solid #a0d8e8' }}>
             <div style={{ height: 8, background: cat.color }} />
             <div style={{ padding: '24px 20px' }}>
 
@@ -133,11 +133,11 @@ export default function TreatmentServicePage() {
                 {service.is_national && <span style={{ background: '#EEF2FF', color: '#1A3A5C', borderRadius: '999px', padding: '4px 14px', fontSize: 13, fontWeight: 700 }}>🌍 פריסה ארצית</span>}
               </div>
 
-              <h1 style={{ fontSize: 24, fontWeight: 800, color: '#c85e32', margin: '0 0 8px' }}>{service.name}</h1>
+              <h1 style={{ fontSize: 24, fontWeight: 800, color: '#0A6080', margin: '0 0 8px' }}>{service.name}</h1>
               <div style={{ fontSize: 14, color: '#888', marginBottom: 20 }}>📍 {service.address || service.city}{service.district ? `, ${service.district}` : ''}</div>
 
               {service.description && (
-                <div style={{ background: '#fff8f3', borderRadius: 12, padding: '16px', marginBottom: 20, fontSize: 14, color: '#334', lineHeight: 1.7 }}>
+                <div style={{ background: '#f0faff', borderRadius: 12, padding: '16px', marginBottom: 20, fontSize: 14, color: '#334', lineHeight: 1.7 }}>
                   {service.description}
                 </div>
               )}
@@ -150,13 +150,13 @@ export default function TreatmentServicePage() {
                   </a>
                 )}
                 {service.email && (
-                  <a href={`mailto:${service.email}`} style={{ display: 'flex', alignItems: 'center', gap: 8, background: '#fff8f3', border: '1.5px solid #fad4b8', borderRadius: 14, padding: '12px 14px', textDecoration: 'none', color: '#c85e32' }}>
+                  <a href={`mailto:${service.email}`} style={{ display: 'flex', alignItems: 'center', gap: 8, background: '#f0faff', border: '1.5px solid #a0d8e8', borderRadius: 14, padding: '12px 14px', textDecoration: 'none', color: '#0A6080' }}>
                     <span style={{ fontSize: 20 }}>✉️</span>
                     <div><div style={{ fontSize: 10, opacity: 0.7 }}>מייל</div><div style={{ fontWeight: 700, fontSize: 12, wordBreak: 'break-all' }}>{service.email}</div></div>
                   </a>
                 )}
                 {service.website && (
-                  <a href={service.website} target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center', gap: 8, background: '#fff8f3', border: '1.5px solid #fad4b8', borderRadius: 14, padding: '12px 14px', textDecoration: 'none', color: '#c85e32', gridColumn: 'span 2' }}>
+                  <a href={service.website} target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center', gap: 8, background: '#f0faff', border: '1.5px solid #a0d8e8', borderRadius: 14, padding: '12px 14px', textDecoration: 'none', color: '#0A6080', gridColumn: 'span 2' }}>
                     <span style={{ fontSize: 20 }}>🌐</span>
                     <div><div style={{ fontSize: 10, opacity: 0.7 }}>אתר אינטרנט</div><div style={{ fontWeight: 700, fontSize: 12, wordBreak: 'break-all' }}>{service.website}</div></div>
                   </a>
@@ -168,7 +168,7 @@ export default function TreatmentServicePage() {
               {/* כפתורי שיתוף */}
               <div style={{ display: 'flex', gap: 10, marginTop: 20, flexWrap: 'wrap' }}>
                 <button onClick={shareWhatsApp} style={{ flex: 1, background: '#25D366', color: 'white', border: 'none', borderRadius: '999px', padding: '12px 0', fontWeight: 700, fontSize: 14, cursor: 'pointer', fontFamily: "'Nunito', sans-serif" }}>💬 וואטסאפ</button>
-                <button onClick={copyLink} style={{ flex: 1, background: '#fff8f3', color: '#c85e32', border: '1.5px solid #fad4b8', borderRadius: '999px', padding: '12px 0', fontWeight: 700, fontSize: 14, cursor: 'pointer', fontFamily: "'Nunito', sans-serif" }}>
+                <button onClick={copyLink} style={{ flex: 1, background: '#f0faff', color: '#0A6080', border: '1.5px solid #a0d8e8', borderRadius: '999px', padding: '12px 0', fontWeight: 700, fontSize: 14, cursor: 'pointer', fontFamily: "'Nunito', sans-serif" }}>
                   {copied ? '✓ הועתק!' : '🔗 קישור'}
                 </button>
               </div>
@@ -188,7 +188,7 @@ export default function TreatmentServicePage() {
         </main>
 
         <footer style={{
-          background: 'linear-gradient(135deg, #c85e32, #d4693a)',
+          background: 'linear-gradient(135deg, #0A3040, #164E63)',
           color: 'rgba(255,255,255,0.75)', textAlign: 'center',
           padding: '24px', fontSize: 13, marginTop: 48, fontWeight: 500,
         }}>
