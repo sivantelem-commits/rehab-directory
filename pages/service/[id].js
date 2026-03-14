@@ -45,16 +45,16 @@ export default function ServicePage() {
   if (!mounted) return null
 
   if (loading) return (
-    <div dir="rtl" style={{ fontFamily: "'Nunito', sans-serif", minHeight: '100vh', background: '#f2faf4', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      <div style={{ color: '#4aab78', fontSize: 18, fontWeight: 700 }}>טוען...</div>
+    <div dir="rtl" style={{ fontFamily: "'Nunito', sans-serif", minHeight: '100vh', background: '#f7f0ff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <div style={{ color: '#8B00D4', fontSize: 18, fontWeight: 700 }}>טוען...</div>
     </div>
   )
 
   if (!service) return (
-    <div dir="rtl" style={{ fontFamily: "'Nunito', sans-serif", minHeight: '100vh', background: '#f2faf4', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: 16 }}>
+    <div dir="rtl" style={{ fontFamily: "'Nunito', sans-serif", minHeight: '100vh', background: '#f7f0ff', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: 16 }}>
       <div style={{ fontSize: 48 }}>😕</div>
-      <div style={{ fontSize: 18, color: '#4aab78', fontWeight: 700 }}>השירות לא נמצא</div>
-      <button onClick={() => router.push('/rehab')} style={{ background: 'linear-gradient(160deg, #7ec8a0, #4aab78)', color: 'white', border: 'none', borderRadius: '999px', padding: '10px 24px', fontWeight: 700, cursor: 'pointer', fontFamily: "'Nunito', sans-serif", boxShadow: '0 4px 0 #3a8a5e' }}>חזרה לרשימה</button>
+      <div style={{ fontSize: 18, color: '#8B00D4', fontWeight: 700 }}>השירות לא נמצא</div>
+      <button onClick={() => router.push('/rehab')} style={{ background: 'linear-gradient(160deg, #8B00D4, #4C0080)', color: 'white', border: 'none', borderRadius: '999px', padding: '10px 24px', fontWeight: 700, cursor: 'pointer', fontFamily: "'Nunito', sans-serif", boxShadow: '0 4px 0 #2E0060' }}>חזרה לרשימה</button>
     </div>
   )
 
@@ -79,13 +79,13 @@ export default function ServicePage() {
         <meta property="og:site_name" content="בריאות נפש בישראל" />
         <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
       </Head>
-      <div dir="rtl" style={{ fontFamily: "'Nunito', sans-serif", minHeight: '100vh', background: '#f2faf4' }}>
+      <div dir="rtl" style={{ fontFamily: "'Nunito', sans-serif", minHeight: '100vh', background: '#f7f0ff' }}>
 
         <header style={{
-          background: 'linear-gradient(135deg, #2d6a4f, #4aab78)',
+          background: 'linear-gradient(135deg, #2E0060, #8B00D4)',
           color: 'white', padding: '10px 20px',
           display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-          boxShadow: '0 2px 12px rgba(45,106,79,0.2)', flexWrap: 'wrap', gap: 8,
+          boxShadow: '0 2px 12px rgba(76,0,128,0.2)', flexWrap: 'wrap', gap: 8,
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
             <img src="/logo.png" alt="לוגו" style={{ width: 44, height: 44, objectFit: 'contain', filter: 'brightness(0) invert(1)' }} />
@@ -106,7 +106,7 @@ export default function ServicePage() {
         </header>
 
         {/* breadcrumb + חזרה */}
-        <div style={{ background: 'linear-gradient(160deg, #3a8a5e, #4aab78)', padding: '12px 20px', display: 'flex', alignItems: 'center', gap: 8 }}>
+        <div style={{ background: 'linear-gradient(160deg, #4C0080, #8B00D4)', padding: '12px 20px', display: 'flex', alignItems: 'center', gap: 8 }}>
           <button onClick={() => router.push('/rehab')} style={{
             background: 'rgba(255,255,255,0.15)', border: '1.5px solid rgba(255,255,255,0.3)',
             color: 'white', borderRadius: '999px', padding: '6px 14px',
@@ -118,7 +118,7 @@ export default function ServicePage() {
         </div>
 
         <main style={{ maxWidth: 720, margin: '0 auto', padding: '24px 16px' }}>
-          <div style={{ background: 'white', borderRadius: 20, overflow: 'hidden', boxShadow: '0 4px 24px rgba(45,106,79,0.1)', border: '1.5px solid #d4edda' }}>
+          <div style={{ background: 'white', borderRadius: 20, overflow: 'hidden', boxShadow: '0 4px 24px rgba(76,0,128,0.1)', border: '1.5px solid #d4b0f0' }}>
             <div style={{ height: 8, background: color }} />
             <div style={{ padding: '24px 20px' }}>
 
@@ -128,11 +128,11 @@ export default function ServicePage() {
                 {service.is_national && <span style={{ background: '#EEF2FF', color: '#1A3A5C', borderRadius: '999px', padding: '4px 14px', fontSize: 13, fontWeight: 700 }}>🌍 פריסה ארצית</span>}
               </div>
 
-              <h1 style={{ fontSize: 24, fontWeight: 800, color: '#2d6a4f', margin: '0 0 8px' }}>{service.name}</h1>
+              <h1 style={{ fontSize: 24, fontWeight: 800, color: '#4C0080', margin: '0 0 8px' }}>{service.name}</h1>
               <div style={{ fontSize: 14, color: '#888', marginBottom: 20 }}>📍 {service.address || service.city}{service.district ? `, ${service.district}` : ''}</div>
 
               {service.description && (
-                <div style={{ background: '#f2faf4', borderRadius: 12, padding: '16px', marginBottom: 20, fontSize: 14, color: '#334', lineHeight: 1.7 }}>
+                <div style={{ background: '#f7f0ff', borderRadius: 12, padding: '16px', marginBottom: 20, fontSize: 14, color: '#334', lineHeight: 1.7 }}>
                   {service.description}
                 </div>
               )}
@@ -145,13 +145,13 @@ export default function ServicePage() {
                   </a>
                 )}
                 {service.email && (
-                  <a href={`mailto:${service.email}`} style={{ display: 'flex', alignItems: 'center', gap: 8, background: '#f2faf4', border: '1.5px solid #a8d8b0', borderRadius: 14, padding: '12px 14px', textDecoration: 'none', color: '#2d6a4f' }}>
+                  <a href={`mailto:${service.email}`} style={{ display: 'flex', alignItems: 'center', gap: 8, background: '#f7f0ff', border: '1.5px solid #d4b0f0', borderRadius: 14, padding: '12px 14px', textDecoration: 'none', color: '#4C0080' }}>
                     <span style={{ fontSize: 20 }}>✉️</span>
                     <div><div style={{ fontSize: 10, opacity: 0.7 }}>מייל</div><div style={{ fontWeight: 700, fontSize: 12, wordBreak: 'break-all' }}>{service.email}</div></div>
                   </a>
                 )}
                 {service.website && (
-                  <a href={service.website} target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center', gap: 8, background: '#f2faf4', border: '1.5px solid #a8d8b0', borderRadius: 14, padding: '12px 14px', textDecoration: 'none', color: '#2d6a4f', gridColumn: 'span 2' }}>
+                  <a href={service.website} target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center', gap: 8, background: '#f7f0ff', border: '1.5px solid #d4b0f0', borderRadius: 14, padding: '12px 14px', textDecoration: 'none', color: '#4C0080', gridColumn: 'span 2' }}>
                     <span style={{ fontSize: 20 }}>🌐</span>
                     <div><div style={{ fontSize: 10, opacity: 0.7 }}>אתר אינטרנט</div><div style={{ fontWeight: 700, fontSize: 12, wordBreak: 'break-all' }}>{service.website}</div></div>
                   </a>
@@ -163,7 +163,7 @@ export default function ServicePage() {
               {/* כפתורי שיתוף */}
               <div style={{ display: 'flex', gap: 10, marginTop: 20, flexWrap: 'wrap' }}>
                 <button onClick={shareWhatsApp} style={{ flex: 1, background: '#25D366', color: 'white', border: 'none', borderRadius: '999px', padding: '12px 0', fontWeight: 700, fontSize: 14, cursor: 'pointer', fontFamily: "'Nunito', sans-serif" }}>💬 וואטסאפ</button>
-                <button onClick={copyLink} style={{ flex: 1, background: '#f2faf4', color: '#2d6a4f', border: '1.5px solid #a8d8b0', borderRadius: '999px', padding: '12px 0', fontWeight: 700, fontSize: 14, cursor: 'pointer', fontFamily: "'Nunito', sans-serif" }}>
+                <button onClick={copyLink} style={{ flex: 1, background: '#f7f0ff', color: '#4C0080', border: '1.5px solid #d4b0f0', borderRadius: '999px', padding: '12px 0', fontWeight: 700, fontSize: 14, cursor: 'pointer', fontFamily: "'Nunito', sans-serif" }}>
                   {copied ? '✓ הועתק!' : '🔗 קישור'}
                 </button>
               </div>
@@ -183,7 +183,7 @@ export default function ServicePage() {
         </main>
 
         <footer style={{
-          background: 'linear-gradient(135deg, #2d6a4f, #3a8a5e)',
+          background: 'linear-gradient(135deg, #2E0060, #4C0080)',
           color: 'rgba(255,255,255,0.75)', textAlign: 'center',
           padding: '24px', fontSize: 13, marginTop: 48, fontWeight: 500,
         }}>
