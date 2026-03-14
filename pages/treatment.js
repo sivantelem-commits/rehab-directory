@@ -95,20 +95,6 @@ export default function Treatment() {
 
   if (!mounted) return null
 
-  const sel = {
-    padding: '9px 16px', borderRadius: '999px', fontSize: 14,
-    background: 'white', cursor: 'pointer', outline: 'none',
-    fontFamily: "'Nunito', sans-serif", color: '#0A6080', fontWeight: 600,
-    border: '1.5px solid #a0d8e8',
-  }
-
-  const districtSel = {
-    ...sel,
-    border: `1.5px solid ${isNational ? '#1A3A5C' : '#a0d8e8'}`,
-    background: isNational ? '#EEF2FF' : 'white',
-    color: isNational ? '#1A3A5C' : '#0A6080',
-  }
-
   return (
     <>
             <Head>
@@ -168,41 +154,52 @@ export default function Treatment() {
           </div>
         </div>
 
-        {/* CATEGORY FILTERS */}
+        {/* שורת מחוז + ספירה */}
         <div style={{
           background: 'white', borderBottom: '1px solid #a0d8e8',
-          padding: '16px', display: 'flex', gap: 10, flexWrap: 'wrap', justifyContent: 'center',
+          padding: '10px 16px', display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center',
         }}>
-          {[['הכל', '#0891B2', '🔍'], ...Object.entries(CATEGORIES).map(([k, v]) => [k, v.color, v.icon])].map(([cat, col, icon]) => (
-            <button key={cat} onClick={() => setCategory(cat)}
-              style={{
-                display: 'flex', alignItems: 'center', gap: 8, padding: '9px 18px',
-                borderRadius: '999px', border: `2px solid ${category === cat ? col : '#f4c4a8'}`,
-                background: category === cat ? col : 'white', color: category === cat ? 'white' : '#c85e32',
-                fontWeight: 700, fontSize: 13, cursor: 'pointer', fontFamily: "'Nunito', sans-serif",
-                transition: 'all 0.15s ease',
-                boxShadow: category === cat ? `0 4px 0 ${col}99, 0 6px 16px ${col}44` : 'none',
-              }}
-              onMouseEnter={e => { if (category !== cat) e.currentTarget.style.background = '#e0f5fb' }}
-              onMouseLeave={e => { if (category !== cat) e.currentTarget.style.background = 'white' }}
-            >
-              <span>{icon}</span><span>{cat}</span>
-            </button>
-          ))}
-        </div>
-
-        {/* DISTRICT FILTER */}
-        <div style={{
-          background: 'white', borderBottom: '1px solid #a0d8e8',
-          padding: '12px 20px', display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'center',
-        }}>
-          <select value={district} onChange={e => setDistrict(e.target.value)} style={districtSel}>
-            {DISTRICTS.map(d => <option key={d}>{d}</option>)}
-          </select>
-
+          {DISTRICTS.map(d => {
+            const isNat = d === '🌍 ארצי'
+            const active = district === d
+            return (
+              <button key={d} onClick={() => setDistrict(d)} style={{
+                padding: '7px 14px', borderRadius: '999px', fontSize: 13, fontWeight: 600,
+                border: `2px solid ${active ? (isNat ? '#1A3A5C' : '#0891B2') : '#c8eaf2'}`,
+                background: active ? (isNat ? '#1A3A5C' : '#0891B2') : 'white',
+                color: active ? 'white' : (isNat ? '#1A3A5C' : '#0A6080'),
+                cursor: 'pointer', fontFamily: "'Nunito', sans-serif",
+                transition: 'all 0.15s',
+              }}>{d}</button>
+            )
+          })}
           <div style={{ marginRight: 'auto', fontSize: 13, color: '#0891B2', fontWeight: 600 }}>
             {loading ? 'טוען...' : `${services.length} שירותים`}
           </div>
+        </div>
+
+        {/* שורת קטגוריות */}
+        <div style={{
+          background: 'white', borderBottom: '1px solid #a0d8e8',
+          padding: '10px 16px', display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center',
+        }}>
+          {[['הכל', '#0891B2', '🔍'], ...Object.entries(CATEGORIES).map(([k, v]) => [k, v.color, v.icon])].map(([name, color, icon]) => {
+            const active = category === name
+            return (
+              <button key={name} onClick={() => setCategory(name)} style={{
+                display: 'flex', alignItems: 'center', gap: 6,
+                padding: '7px 16px', borderRadius: '999px', fontSize: 13, fontWeight: 700,
+                border: `2px solid ${active ? color : '#c8eaf2'}`,
+                background: active ? color : 'white',
+                color: active ? 'white' : color,
+                cursor: 'pointer', fontFamily: "'Nunito', sans-serif",
+                transition: 'all 0.15s',
+                boxShadow: active ? `0 3px 0 ${color}99` : 'none',
+              }}>
+                <span>{icon}</span><span>{name}</span>
+              </button>
+            )
+          })}
         </div>
 
         <main style={{ maxWidth: 1100, margin: '0 auto', padding: '28px 16px' }}>
