@@ -90,20 +90,6 @@ export default function Rehab() {
 
   if (!mounted) return null
 
-  const sel = {
-    padding: '9px 16px', borderRadius: '999px', fontSize: 14,
-    background: 'white', cursor: 'pointer', outline: 'none',
-    fontFamily: "'Nunito', sans-serif", color: '#4C0080', fontWeight: 600,
-    border: '1.5px solid #d4b0f0',
-  }
-
-  const districtSel = {
-    ...sel,
-    border: `1.5px solid ${isNational ? '#1A3A5C' : '#d4b0f0'}`,
-    background: isNational ? '#EEF2FF' : 'white',
-    color: isNational ? '#1A3A5C' : '#4C0080',
-  }
-
   return (
     <>
             <Head>
@@ -163,29 +149,76 @@ export default function Rehab() {
           </div>
         </div>
 
+        {/* שורת מחוז + ספירה */}
         <div style={{
           background: 'white', borderBottom: '1px solid #d4b0f0',
-          padding: '12px 20px', display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'center',
+          padding: '10px 16px', display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center',
         }}>
-          <select value={district} onChange={e => setDistrict(e.target.value)} style={districtSel}>
-            {DISTRICTS.map(d => <option key={d}>{d}</option>)}
-          </select>
-
-          <select value={category} onChange={e => { setCategory(e.target.value); setSubcategory('הכל') }} style={sel}>
-            <option value="הכל">כל הקטגוריות</option>
-            {CATEGORY_NAMES.map(c => <option key={c}>{c}</option>)}
-          </select>
-
-          {category !== 'הכל' && (
-            <select value={subcategory} onChange={e => setSubcategory(e.target.value)} style={sel}>
-              {subcategories.map(s => <option key={s}>{s}</option>)}
-            </select>
-          )}
-
+          {DISTRICTS.map(d => {
+            const isNat = d === '🌍 ארצי'
+            const active = district === d
+            return (
+              <button key={d} onClick={() => setDistrict(d)} style={{
+                padding: '7px 14px', borderRadius: '999px', fontSize: 13, fontWeight: 600,
+                border: `2px solid ${active ? (isNat ? '#1A3A5C' : '#8B00D4') : '#e0d0f0'}`,
+                background: active ? (isNat ? '#1A3A5C' : '#8B00D4') : 'white',
+                color: active ? 'white' : (isNat ? '#1A3A5C' : '#4C0080'),
+                cursor: 'pointer', fontFamily: "'Nunito', sans-serif",
+                transition: 'all 0.15s',
+              }}>{d}</button>
+            )
+          })}
           <div style={{ marginRight: 'auto', fontSize: 13, color: '#9B00CC', fontWeight: 600 }}>
             {loading ? 'טוען...' : `${services.length} שירותים`}
           </div>
         </div>
+
+        {/* שורת קטגוריות */}
+        <div style={{
+          background: 'white', borderBottom: `1px solid ${category !== 'הכל' ? '#d4b0f0' : '#f0e8ff'}`,
+          padding: '10px 16px', display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center',
+        }}>
+          {[['הכל', null], ...CATEGORY_NAMES.map(n => [n, CATEGORIES[n]])].map(([name, cat]) => {
+            const color = cat ? cat.color : '#8B00D4'
+            const active = category === name
+            return (
+              <button key={name} onClick={() => { setCategory(name); setSubcategory('הכל') }} style={{
+                padding: '7px 16px', borderRadius: '999px', fontSize: 13, fontWeight: 700,
+                border: `2px solid ${active ? color : '#e0d0f0'}`,
+                background: active ? color : 'white',
+                color: active ? 'white' : color,
+                cursor: 'pointer', fontFamily: "'Nunito', sans-serif",
+                transition: 'all 0.15s',
+                boxShadow: active ? `0 3px 0 ${color}99` : 'none',
+              }}>
+                {name === 'הכל' ? '🔍 הכל' : name}
+              </button>
+            )
+          })}
+        </div>
+
+        {/* שורת תת-קטגוריות */}
+        {category !== 'הכל' && subcategories.length > 0 && (
+          <div style={{
+            background: '#faf5ff', borderBottom: '1px solid #d4b0f0',
+            padding: '8px 16px', display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center',
+          }}>
+            {subcategories.map(s => {
+              const active = subcategory === s
+              const color = CATEGORIES[category]?.color || '#8B00D4'
+              return (
+                <button key={s} onClick={() => setSubcategory(s)} style={{
+                  padding: '5px 14px', borderRadius: '999px', fontSize: 12, fontWeight: 600,
+                  border: `1.5px solid ${active ? color : '#d4b0f0'}`,
+                  background: active ? `${color}22` : 'white',
+                  color: active ? color : '#666',
+                  cursor: 'pointer', fontFamily: "'Nunito', sans-serif",
+                  transition: 'all 0.15s',
+                }}>{s}</button>
+              )
+            })}
+          </div>
+        )}
 
         <main style={{ maxWidth: 1100, margin: '0 auto', padding: '28px 16px' }}>
           {loading ? (
