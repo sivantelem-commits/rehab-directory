@@ -9,6 +9,7 @@ const CATEGORIES = {
   'מחלקות אשפוז': { color: '#0A6080', icon: '🏥', desc: 'אשפוז פסיכיאטרי' },
   'מרפאות יום': { color: '#0891B2', icon: '☀️', desc: 'טיפול יומי' },
   'חדרי מיון': { color: '#06B6D4', icon: '🚨', desc: 'מיון פסיכיאטרי' },
+  'שירותים נוספים': { color: '#0A6080', icon: '➕', desc: 'שירותים נוספים' },
 }
 
 const NAV = [['/', '🏠 ראשי'], ['/rehab', '♿ שיקום'], ['/treatment', '🏥 טיפול'], ['/map', '🗺️ מפה'], ['/register', 'הרשמת שירות'], ['/about', 'אודות'], ['/contact', '✉️ צור קשר'], ['/admin', 'ניהול']]
@@ -154,7 +155,7 @@ export default function Treatment() {
 
         <div style={{ background: 'linear-gradient(160deg, #164E63, #0891B2)', color: 'white', padding: '40px 20px', textAlign: 'center' }}>
           <h1 style={{ fontSize: 28, fontWeight: 800, margin: '0 0 8px', letterSpacing: '-0.3px' }}>🏥 שירותי טיפול</h1>
-          <p style={{ fontSize: 15, opacity: 0.85, margin: '0 0 24px', fontWeight: 500 }}>בתים מאזנים, מחלקות אשפוז, מרפאות יום וחדרי מיון</p>
+          <p style={{ fontSize: 15, opacity: 0.85, margin: '0 0 24px', fontWeight: 500 }}>בתים מאזנים, מחלקות אשפוז, מרפאות יום, חדרי מיון ועוד</p>
           <div style={{ maxWidth: 480, margin: '0 auto' }}>
             <input type="text" placeholder="חפשו לפי שם, עיר או תיאור..." value={search}
               onChange={e => setSearch(e.target.value)}
