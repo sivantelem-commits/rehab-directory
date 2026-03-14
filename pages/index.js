@@ -1,8 +1,41 @@
 import { useRouter } from 'next/router'
+import { useEffect, useState } from 'react'
 import Head from 'next/head'
 
 export default function Home() {
   const router = useRouter()
+  const [newService, setNewService] = useState(null)
+
+  useEffect(() => {
+    // מביא את השירות האחרון שנוסף מכל אחת מהטבלאות
+    Promise.all([
+      fetch('/api/services').then(r => r.json()).catch(() => []),
+      fetch('/api/treatment').then(r => r.json()).catch(() => []),
+    ]).then(([rehab, treatment]) => {
+      const rehabLatest = Array.isArray(rehab) ? rehab[0] : null
+      const treatmentLatest = Array.isArray(treatment) ? treatment[0] : null
+
+      // בוחר את החדש יותר לפי created_at
+      if (!rehabLatest && !treatmentLatest) return
+      if (!rehabLatest) return setNewService({ ...treatmentLatest, type: 'treatment' })
+      if (!treatmentLatest) return setNewService({ ...rehabLatest, type: 'rehab' })
+
+      const r = new Date(rehabLatest.created_at || 0)
+      const t = new Date(treatmentLatest.created_at || 0)
+      setNewService(r > t
+        ? { ...rehabLatest, type: 'rehab' }
+        : { ...treatmentLatest, type: 'treatment' }
+      )
+    })
+  }, [])
+
+  const handleBannerClick = () => {
+    if (!newService) return
+    router.push(newService.type === 'rehab'
+      ? `/service/${newService.id}`
+      : `/treatment/${newService.id}`
+    )
+  }
 
   return (
     <>
@@ -24,8 +57,63 @@ export default function Home() {
         paddingTop: 40,
       }}>
 
+        {/* באנר שירות חדש */}
+        {newService && (
+          <div
+            onClick={handleBannerClick}
+            style={{
+              width: '100%', maxWidth: 480,
+              background: 'white',
+              border: `2px solid ${newService.type === 'rehab' ? '#4aab78' : '#ee7a50'}`,
+              borderRadius: 16,
+              padding: '12px 18px',
+              marginBottom: 32,
+              cursor: 'pointer',
+              display: 'flex', alignItems: 'center', gap: 12,
+              boxShadow: `0 4px 16px ${newService.type === 'rehab' ? 'rgba(74,171,120,0.15)' : 'rgba(238,122,80,0.15)'}`,
+              transition: 'transform 0.15s, box-shadow 0.15s',
+            }}
+            onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = `0 8px 24px ${newService.type === 'rehab' ? 'rgba(74,171,120,0.25)' : 'rgba(238,122,80,0.25)'}` }}
+            onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = `0 4px 16px ${newService.type === 'rehab' ? 'rgba(74,171,120,0.15)' : 'rgba(238,122,80,0.15)'}` }}
+          >
+            {/* אייקון */}
+            <div style={{
+              width: 40, height: 40, borderRadius: '50%', flexShrink: 0,
+              background: newService.type === 'rehab' ? '#f2faf4' : '#fff8f3',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              fontSize: 20,
+            }}>
+              {newService.type === 'rehab' ? '♿' : '🏥'}
+            </div>
+
+            {/* טקסט */}
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 2 }}>
+                <span style={{
+                  background: newService.type === 'rehab' ? '#4aab78' : '#ee7a50',
+                  color: 'white', borderRadius: '999px', padding: '2px 8px',
+                  fontSize: 10, fontWeight: 700,
+                }}>✨ חדש!</span>
+                <span style={{ fontSize: 11, color: '#aaa', fontWeight: 500 }}>
+                  {newService.type === 'rehab' ? 'שיקום' : 'טיפול'}
+                </span>
+              </div>
+              <div style={{
+                fontWeight: 700, fontSize: 14, color: '#1a1a2e',
+                overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+              }}>{newService.name}</div>
+              <div style={{ fontSize: 12, color: '#aaa', fontWeight: 500 }}>
+                📍 {newService.city}{newService.district ? `, ${newService.district}` : ''}
+              </div>
+            </div>
+
+            {/* חץ */}
+            <div style={{ fontSize: 18, color: newService.type === 'rehab' ? '#4aab78' : '#ee7a50', flexShrink: 0 }}>←</div>
+          </div>
+        )}
+
         {/* כותרת */}
-        <div style={{ textAlign: 'center', marginBottom: 52, marginTop: 40 }}>
+        <div style={{ textAlign: 'center', marginBottom: 52, marginTop: newService ? 0 : 40 }}>
           <img src="/logo.png" alt="לוגו" style={{ width: 200, height: 200, objectFit: 'contain', marginBottom: 10, mixBlendMode: 'multiply' }} />
           <h1 style={{
             fontSize: 32, fontWeight: 800,
