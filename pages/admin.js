@@ -4,8 +4,8 @@ import { CATEGORIES, CATEGORY_NAMES, getCategoryColor } from '../lib/categories'
 import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts'
 
 const DISTRICTS = ['צפון', 'חיפה', 'מרכז', 'תל אביב', 'ירושלים', 'דרום', 'יהודה ושומרון']
-const TREATMENT_CATEGORIES = ['בתי"מ', 'מחלקות אשפוז', 'מרפאות יום', 'חדרי מיון']
-const TREATMENT_COLORS = { 'בתי"מ': '#0277BD', 'מחלקות אשפוז': '#7B2D8B', 'מרפאות יום': '#2E7D32', 'חדרי מיון': '#C62828' }
+const TREATMENT_CATEGORIES = ['בתים מאזנים', 'מחלקות אשפוז', 'מרפאות יום', 'חדרי מיון']
+const TREATMENT_COLORS = { 'בתים מאזנים': '#0277BD', 'מחלקות אשפוז': '#7B2D8B', 'מרפאות יום': '#2E7D32', 'חדרי מיון': '#C62828' }
 
 const CATEGORY_BG_COLORS = {
   'דיור': 'FFF3E5F5', 'תעסוקה': 'FFFFF3E0', 'השכלה': 'FFE3F2FD',
@@ -289,7 +289,7 @@ export default function Admin() {
         { header: 'תאריך הוספה', key: 'created_at', width: 16 },
       ]
       const CAT_COLORS = {
-        'בתי"מ': { bg: 'FFE3F2FD', text: 'FF0277BD' },
+        'בתים מאזנים': { bg: 'FFE3F2FD', text: 'FF0277BD' },
         'מחלקות אשפוז': { bg: 'FFF3E5F5', text: 'FF7B2D8B' },
         'מרפאות יום': { bg: 'FFE8F5E9', text: 'FF2E7D32' },
         'חדרי מיון': { bg: 'FFFFEBEE', text: 'FFC62828' },
