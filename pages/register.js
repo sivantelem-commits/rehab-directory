@@ -3,7 +3,7 @@ import Head from 'next/head'
 import { CATEGORIES, CATEGORY_NAMES } from '../lib/categories'
 
 const DISTRICTS = ['צפון', 'חיפה', 'מרכז', 'תל אביב', 'ירושלים', 'דרום', 'יהודה ושומרון']
-const TREATMENT_CATEGORIES = ['בתים מאזנים', 'מחלקות אשפוז', 'מרפאות יום', 'חדרי מיון']
+const TREATMENT_CATEGORIES = ['בתים מאזנים', 'מחלקות אשפוז', 'מרפאות יום', 'חדרי מיון', 'שירותים נוספים']
 const NAV = [['/', '🏠 ראשי'], ['/rehab', '♿ שיקום'], ['/treatment', '🏥 טיפול'], ['/map', '🗺️ מפה'], ['/register', 'הרשמת שירות'], ['/about', 'אודות'], ['/contact', '✉️ צור קשר'], ['/admin', 'ניהול']]
 
 const emptyForm = { name: '', district: '', city: '', category: '', subcategory: '', description: '', phone: '', email: '', website: '', address: '', is_national: false }
@@ -62,7 +62,7 @@ export default function Register() {
   const handleSubmit = async () => {
     setError('')
     const { name, district, city, category, phone, email } = form
-    if (!name || (!district && !form.is_national) || !city || !category || !phone || !email) {
+    if (!name || (!district && !form.is_national) || !city || !phone || !email) {
       setError('יש למלא את כל שדות החובה המסומנים ב-*')
       return
     }
@@ -295,7 +295,7 @@ export default function Register() {
               </div>
 
               <div style={{ marginBottom: 16 }}>
-                <label style={lbl}>קטגוריה *</label>
+                <label style={lbl}>קטגוריה</label>
                 <select value={form.category} onChange={e => setForm(f => ({ ...f, category: e.target.value, subcategory: '' }))} style={inp}>
                   <option value="">בחרו קטגוריה</option>
                   {isRehab
