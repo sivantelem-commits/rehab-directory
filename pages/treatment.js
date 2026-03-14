@@ -5,10 +5,10 @@ import Head from 'next/head'
 const DISTRICTS = ['הכל', 'צפון', 'חיפה', 'מרכז', 'תל אביב', 'ירושלים', 'דרום', 'יהודה ושומרון', '🌍 ארצי']
 
 const CATEGORIES = {
-  'בתי"מ': { color: '#e07a50', icon: '🏠', desc: 'בתים מאזנים' },
-  'מחלקות אשפוז': { color: '#c85e32', icon: '🏥', desc: 'אשפוז פסיכיאטרי' },
-  'מרפאות יום': { color: '#f4a27a', icon: '☀️', desc: 'טיפול יומי' },
-  'חדרי מיון': { color: '#b84a2a', icon: '🚨', desc: 'מיון פסיכיאטרי' },
+  'בתים מאזנים': { color: '#0A3040', icon: '🏠', desc: 'בתים מאזנים' },
+  'מחלקות אשפוז': { color: '#0A6080', icon: '🏥', desc: 'אשפוז פסיכיאטרי' },
+  'מרפאות יום': { color: '#0891B2', icon: '☀️', desc: 'טיפול יומי' },
+  'חדרי מיון': { color: '#06B6D4', icon: '🚨', desc: 'מיון פסיכיאטרי' },
 }
 
 const NAV = [['/', '🏠 ראשי'], ['/rehab', '♿ שיקום'], ['/treatment', '🏥 טיפול'], ['/map', '🗺️ מפה'], ['/register', 'הרשמת שירות'], ['/about', 'אודות'], ['/contact', '✉️ צור קשר'], ['/admin', 'ניהול']]
@@ -17,8 +17,8 @@ const NAV = [['/', '🏠 ראשי'], ['/rehab', '♿ שיקום'], ['/treatment'
 const SkeletonCard = () => (
   <div style={{
     background: 'white', borderRadius: 20, padding: '20px',
-    boxShadow: '0 4px 16px rgba(0,0,0,0.06)', border: '1.5px solid #fad4b8',
-    borderTop: '4px solid #fad4b8', minHeight: 200,
+    boxShadow: '0 4px 16px rgba(0,0,0,0.06)', border: '1.5px solid #a0d8e8',
+    borderTop: '4px solid #a0d8e8', minHeight: 200,
   }}>
     <style>{`
       @keyframes shimmer {
@@ -26,7 +26,7 @@ const SkeletonCard = () => (
         100% { background-position: 400px 0 }
       }
       .skel-t {
-        background: linear-gradient(90deg, #fdeede 25%, #fff8f3 50%, #fdeede 75%);
+        background: linear-gradient(90deg, #d0eef8 25%, #f0faff 50%, #d0eef8 75%);
         background-size: 800px 100%;
         animation: shimmer 1.4s infinite;
         border-radius: 8px;
@@ -97,15 +97,15 @@ export default function Treatment() {
   const sel = {
     padding: '9px 16px', borderRadius: '999px', fontSize: 14,
     background: 'white', cursor: 'pointer', outline: 'none',
-    fontFamily: "'Nunito', sans-serif", color: '#c85e32', fontWeight: 600,
-    border: '1.5px solid #f4c4a8',
+    fontFamily: "'Nunito', sans-serif", color: '#0A6080', fontWeight: 600,
+    border: '1.5px solid #a0d8e8',
   }
 
   const districtSel = {
     ...sel,
-    border: `1.5px solid ${isNational ? '#1A3A5C' : '#f4c4a8'}`,
+    border: `1.5px solid ${isNational ? '#1A3A5C' : '#a0d8e8'}`,
     background: isNational ? '#EEF2FF' : 'white',
-    color: isNational ? '#1A3A5C' : '#c85e32',
+    color: isNational ? '#1A3A5C' : '#0A6080',
   }
 
   return (
@@ -124,12 +124,12 @@ export default function Treatment() {
         <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
       </Head>
 
-      <div dir="rtl" style={{ fontFamily: "'Nunito', sans-serif", minHeight: '100vh', background: '#fff8f3' }}>
+      <div dir="rtl" style={{ fontFamily: "'Nunito', sans-serif", minHeight: '100vh', background: '#f0faff' }}>
 
         <header style={{
-          background: 'linear-gradient(135deg, #c85e32, #ee7a50)', color: 'white',
+          background: 'linear-gradient(135deg, #164E63, #0891B2)', color: 'white',
           padding: '10px 20px', display: 'flex', alignItems: 'center',
-          justifyContent: 'space-between', boxShadow: '0 2px 12px rgba(200,94,50,0.2)',
+          justifyContent: 'space-between', boxShadow: '0 2px 12px rgba(22,78,99,0.2)',
           flexWrap: 'wrap', gap: 8,
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
@@ -152,9 +152,9 @@ export default function Treatment() {
           </nav>
         </header>
 
-        <div style={{ background: 'linear-gradient(160deg, #d4693a, #ee7a50)', color: 'white', padding: '40px 20px', textAlign: 'center' }}>
+        <div style={{ background: 'linear-gradient(160deg, #164E63, #0891B2)', color: 'white', padding: '40px 20px', textAlign: 'center' }}>
           <h1 style={{ fontSize: 28, fontWeight: 800, margin: '0 0 8px', letterSpacing: '-0.3px' }}>🏥 שירותי טיפול</h1>
-          <p style={{ fontSize: 15, opacity: 0.85, margin: '0 0 24px', fontWeight: 500 }}>בתי"מ, מחלקות אשפוז, מרפאות יום וחדרי מיון</p>
+          <p style={{ fontSize: 15, opacity: 0.85, margin: '0 0 24px', fontWeight: 500 }}>בתים מאזנים, מחלקות אשפוז, מרפאות יום וחדרי מיון</p>
           <div style={{ maxWidth: 480, margin: '0 auto' }}>
             <input type="text" placeholder="חפשו לפי שם, עיר או תיאור..." value={search}
               onChange={e => setSearch(e.target.value)}
@@ -169,10 +169,10 @@ export default function Treatment() {
 
         {/* CATEGORY FILTERS */}
         <div style={{
-          background: 'white', borderBottom: '1px solid #fad4b8',
+          background: 'white', borderBottom: '1px solid #a0d8e8',
           padding: '16px', display: 'flex', gap: 10, flexWrap: 'wrap', justifyContent: 'center',
         }}>
-          {[['הכל', '#ee7a50', '🔍'], ...Object.entries(CATEGORIES).map(([k, v]) => [k, v.color, v.icon])].map(([cat, col, icon]) => (
+          {[['הכל', '#0891B2', '🔍'], ...Object.entries(CATEGORIES).map(([k, v]) => [k, v.color, v.icon])].map(([cat, col, icon]) => (
             <button key={cat} onClick={() => setCategory(cat)}
               style={{
                 display: 'flex', alignItems: 'center', gap: 8, padding: '9px 18px',
@@ -182,7 +182,7 @@ export default function Treatment() {
                 transition: 'all 0.15s ease',
                 boxShadow: category === cat ? `0 4px 0 ${col}99, 0 6px 16px ${col}44` : 'none',
               }}
-              onMouseEnter={e => { if (category !== cat) e.currentTarget.style.background = '#fff3ee' }}
+              onMouseEnter={e => { if (category !== cat) e.currentTarget.style.background = '#e0f5fb' }}
               onMouseLeave={e => { if (category !== cat) e.currentTarget.style.background = 'white' }}
             >
               <span>{icon}</span><span>{cat}</span>
@@ -192,14 +192,14 @@ export default function Treatment() {
 
         {/* DISTRICT FILTER */}
         <div style={{
-          background: 'white', borderBottom: '1px solid #fad4b8',
+          background: 'white', borderBottom: '1px solid #a0d8e8',
           padding: '12px 20px', display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'center',
         }}>
           <select value={district} onChange={e => setDistrict(e.target.value)} style={districtSel}>
             {DISTRICTS.map(d => <option key={d}>{d}</option>)}
           </select>
 
-          <div style={{ marginRight: 'auto', fontSize: 13, color: '#f4a27a', fontWeight: 600 }}>
+          <div style={{ marginRight: 'auto', fontSize: 13, color: '#0891B2', fontWeight: 600 }}>
             {loading ? 'טוען...' : `${services.length} שירותים`}
           </div>
         </div>
@@ -216,11 +216,11 @@ export default function Treatment() {
               <button
                 onClick={() => { setSearch(''); setDistrict('הכל'); setCategory('הכל') }}
                 style={{
-                  background: 'linear-gradient(160deg, #f4a27a, #ee7a50)', color: 'white', border: 'none',
+                  background: 'linear-gradient(160deg, #0891B2, #164E63)', color: 'white', border: 'none',
                   borderRadius: '999px', padding: '11px 28px', fontWeight: 700, fontSize: 14, cursor: 'pointer',
-                  fontFamily: "'Nunito', sans-serif", boxShadow: '0 4px 0 #c85e32, 0 8px 20px rgba(238,122,80,0.3)',
+                  fontFamily: "'Nunito', sans-serif", boxShadow: '0 4px 0 #0A3040, 0 8px 20px rgba(8,145,178,0.3)',
                 }}
-                onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 7px 0 #c85e32, 0 14px 28px rgba(238,122,80,0.35)' }}
+                onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 7px 0 #0A3040, 0 14px 28px rgba(8,145,178,0.35)' }}
                 onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 4px 0 #c85e32, 0 8px 20px rgba(238,122,80,0.3)' }}
               >נקה פילטרים</button>
             </div>
@@ -232,11 +232,11 @@ export default function Treatment() {
                   <div key={s.id} onClick={() => router.push(`/treatment/${s.id}`)}
                     style={{
                       background: 'white', borderRadius: 20, padding: '20px', cursor: 'pointer',
-                      boxShadow: '0 4px 16px rgba(0,0,0,0.06)', border: '1.5px solid #fad4b8',
+                      boxShadow: '0 4px 16px rgba(0,0,0,0.06)', border: '1.5px solid #a0d8e8',
                       borderTop: `4px solid ${cat.color}`, display: 'flex', flexDirection: 'column',
                       minHeight: 200, transition: 'transform 0.2s, box-shadow 0.2s',
                     }}
-                    onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 10px 28px rgba(238,122,80,0.15)' }}
+                    onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 10px 28px rgba(8,145,178,0.15)' }}
                     onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 4px 16px rgba(0,0,0,0.06)' }}
                   >
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 10 }}>
@@ -271,7 +271,7 @@ export default function Treatment() {
           <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
             style={{
               position: 'fixed', bottom: 24, left: 24, width: 48, height: 48, borderRadius: '50%',
-              background: 'linear-gradient(160deg, #f4a27a, #ee7a50)', color: 'white', border: 'none',
+              background: 'linear-gradient(160deg, #0891B2, #164E63)', color: 'white', border: 'none',
               fontSize: 20, cursor: 'pointer', boxShadow: '0 4px 0 #c85e32, 0 8px 20px rgba(238,122,80,0.35)',
               zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, transition: 'transform 0.2s',
             }}
@@ -281,7 +281,7 @@ export default function Treatment() {
         )}
 
         <footer style={{
-          background: 'linear-gradient(135deg, #c85e32, #d4693a)', color: 'rgba(255,255,255,0.75)',
+          background: 'linear-gradient(135deg, #0A3040, #164E63)', color: 'rgba(255,255,255,0.75)',
           textAlign: 'center', padding: '24px', fontSize: 13, marginTop: 48, fontWeight: 500,
         }}>
           <div style={{ marginBottom: 8 }}>
