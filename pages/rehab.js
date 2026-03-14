@@ -10,8 +10,8 @@ const DISTRICTS = ['הכל', 'צפון', 'חיפה', 'מרכז', 'תל אביב'
 const SkeletonCard = () => (
   <div style={{
     background: 'white', borderRadius: 20, padding: '20px',
-    boxShadow: '0 4px 16px rgba(0,0,0,0.06)', border: '1.5px solid #d4edda',
-    borderTop: '4px solid #d4edda', minHeight: 200,
+    boxShadow: '0 4px 16px rgba(0,0,0,0.06)', border: '1.5px solid #d4b0f0',
+    borderTop: '4px solid #d4b0f0', minHeight: 200,
   }}>
     <style>{`
       @keyframes shimmer {
@@ -19,7 +19,7 @@ const SkeletonCard = () => (
         100% { background-position: 400px 0 }
       }
       .skel-r {
-        background: linear-gradient(90deg, #e8f5ec 25%, #f2faf4 50%, #e8f5ec 75%);
+        background: linear-gradient(90deg, #ede0f8 25%, #f7f0ff 50%, #ede0f8 75%);
         background-size: 800px 100%;
         animation: shimmer 1.4s infinite;
         border-radius: 8px;
@@ -93,15 +93,15 @@ export default function Rehab() {
   const sel = {
     padding: '9px 16px', borderRadius: '999px', fontSize: 14,
     background: 'white', cursor: 'pointer', outline: 'none',
-    fontFamily: "'Nunito', sans-serif", color: '#2d6a4f', fontWeight: 600,
-    border: '1.5px solid #a8d8b0',
+    fontFamily: "'Nunito', sans-serif", color: '#4C0080', fontWeight: 600,
+    border: '1.5px solid #d4b0f0',
   }
 
   const districtSel = {
     ...sel,
-    border: `1.5px solid ${isNational ? '#1A3A5C' : '#a8d8b0'}`,
+    border: `1.5px solid ${isNational ? '#1A3A5C' : '#d4b0f0'}`,
     background: isNational ? '#EEF2FF' : 'white',
-    color: isNational ? '#1A3A5C' : '#2d6a4f',
+    color: isNational ? '#1A3A5C' : '#4C0080',
   }
 
   return (
@@ -120,12 +120,12 @@ export default function Rehab() {
         <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
       </Head>
 
-      <div dir="rtl" style={{ fontFamily: "'Nunito', sans-serif", minHeight: '100vh', background: '#f2faf4' }}>
+      <div dir="rtl" style={{ fontFamily: "'Nunito', sans-serif", minHeight: '100vh', background: '#f7f0ff' }}>
 
         <header style={{
-          background: 'linear-gradient(135deg, #2d6a4f, #4aab78)', color: 'white',
+          background: 'linear-gradient(135deg, #2E0060, #8B00D4)', color: 'white',
           padding: '10px 20px', display: 'flex', alignItems: 'center',
-          justifyContent: 'space-between', boxShadow: '0 2px 12px rgba(45,106,79,0.2)',
+          justifyContent: 'space-between', boxShadow: '0 2px 12px rgba(76,0,128,0.2)',
           flexWrap: 'wrap', gap: 8,
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
@@ -148,7 +148,7 @@ export default function Rehab() {
           </nav>
         </header>
 
-        <div style={{ background: 'linear-gradient(160deg, #3a8a5e, #4aab78)', color: 'white', padding: '40px 20px', textAlign: 'center' }}>
+        <div style={{ background: 'linear-gradient(160deg, #4C0080, #8B00D4)', color: 'white', padding: '40px 20px', textAlign: 'center' }}>
           <h1 style={{ fontSize: 28, fontWeight: 800, margin: '0 0 8px', letterSpacing: '-0.3px' }}>♿ שירותי שיקום</h1>
           <p style={{ fontSize: 15, opacity: 0.85, margin: '0 0 24px', fontWeight: 500 }}>מצאו שירותי שיקום בקהילה לפי אזור וקטגוריה</p>
           <div style={{ maxWidth: 480, margin: '0 auto' }}>
@@ -164,7 +164,7 @@ export default function Rehab() {
         </div>
 
         <div style={{
-          background: 'white', borderBottom: '1px solid #d4edda',
+          background: 'white', borderBottom: '1px solid #d4b0f0',
           padding: '12px 20px', display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'center',
         }}>
           <select value={district} onChange={e => setDistrict(e.target.value)} style={districtSel}>
@@ -182,7 +182,7 @@ export default function Rehab() {
             </select>
           )}
 
-          <div style={{ marginRight: 'auto', fontSize: 13, color: '#7aaa88', fontWeight: 600 }}>
+          <div style={{ marginRight: 'auto', fontSize: 13, color: '#9B00CC', fontWeight: 600 }}>
             {loading ? 'טוען...' : `${services.length} שירותים`}
           </div>
         </div>
@@ -199,9 +199,9 @@ export default function Rehab() {
               <button
                 onClick={() => { setSearch(''); setDistrict('הכל'); setCategory('הכל'); setSubcategory('הכל') }}
                 style={{
-                  background: 'linear-gradient(160deg, #7ec8a0, #4aab78)', color: 'white', border: 'none',
+                  background: 'linear-gradient(160deg, #8B00D4, #4C0080)', color: 'white', border: 'none',
                   borderRadius: '999px', padding: '11px 28px', fontWeight: 700, fontSize: 14, cursor: 'pointer',
-                  fontFamily: "'Nunito', sans-serif", boxShadow: '0 4px 0 #3a8a5e, 0 8px 20px rgba(74,171,120,0.3)',
+                  fontFamily: "'Nunito', sans-serif", boxShadow: '0 4px 0 #2E0060, 0 8px 20px rgba(76,0,128,0.3)',
                 }}
               >נקה פילטרים</button>
             </div>
@@ -220,7 +220,7 @@ export default function Rehab() {
           <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
             style={{
               position: 'fixed', bottom: 24, left: 24, width: 48, height: 48, borderRadius: '50%',
-              background: 'linear-gradient(160deg, #7ec8a0, #4aab78)', color: 'white', border: 'none',
+              background: 'linear-gradient(160deg, #8B00D4, #4C0080)', color: 'white', border: 'none',
               fontSize: 20, cursor: 'pointer', boxShadow: '0 4px 0 #3a8a5e, 0 8px 20px rgba(74,171,120,0.35)',
               zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800,
             }}
@@ -230,7 +230,7 @@ export default function Rehab() {
         )}
 
         <footer style={{
-          background: 'linear-gradient(135deg, #2d6a4f, #3a8a5e)', color: 'rgba(255,255,255,0.75)',
+          background: 'linear-gradient(135deg, #2E0060, #4C0080)', color: 'rgba(255,255,255,0.75)',
           textAlign: 'center', padding: '24px', fontSize: 13, marginTop: 48, fontWeight: 500,
         }}>
           <div style={{ marginBottom: 8 }}>
