@@ -3,7 +3,7 @@ import Head from 'next/head'
 import { CATEGORIES, CATEGORY_NAMES } from '../lib/categories'
 
 const DISTRICTS = ['צפון', 'חיפה', 'מרכז', 'תל אביב', 'ירושלים', 'דרום', 'יהודה ושומרון']
-const TREATMENT_CATEGORIES = ['בתי"מ', 'מחלקות אשפוז', 'מרפאות יום', 'חדרי מיון']
+const TREATMENT_CATEGORIES = ['בתים מאזנים', 'מחלקות אשפוז', 'מרפאות יום', 'חדרי מיון']
 const NAV = [['/', '🏠 ראשי'], ['/rehab', '♿ שיקום'], ['/treatment', '🏥 טיפול'], ['/map', '🗺️ מפה'], ['/register', 'הרשמת שירות'], ['/about', 'אודות'], ['/contact', '✉️ צור קשר'], ['/admin', 'ניהול']]
 
 const emptyForm = { name: '', district: '', city: '', category: '', subcategory: '', description: '', phone: '', email: '', website: '', address: '', is_national: false }
@@ -94,14 +94,14 @@ export default function Register() {
   }
 
   const isRehab = tab === 'rehab'
-  const color = isRehab ? '#4aab78' : '#ee7a50'
-  const darkColor = isRehab ? '#2d6a4f' : '#c85e32'
+  const color = isRehab ? '#8B00D4' : '#0891B2'
+  const darkColor = isRehab ? '#4C0080' : '#164E63'
 
   const inp = {
     width: '100%', padding: '11px 16px', borderRadius: 20,
-    border: `1.5px solid ${isRehab ? '#a8d8b0' : '#FFD4B0'}`,
+    border: `1.5px solid ${isRehab ? '#d4b0f0' : '#a0d8e8'}`,
     fontSize: 14,
-    background: isRehab ? '#f2faf4' : '#FFF8F3',
+    background: isRehab ? '#f7f0ff' : '#f0faff',
     outline: 'none', boxSizing: 'border-box',
     fontFamily: "'Nunito', sans-serif",
   }
@@ -125,7 +125,7 @@ export default function Register() {
         <meta property="og:site_name" content="בריאות נפש בישראל" />
         <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
       </Head>
-      <div dir="rtl" style={{ fontFamily: "'Nunito', sans-serif", minHeight: '100vh', background: isRehab ? '#f2faf4' : '#FFF8F3' }}>
+      <div dir="rtl" style={{ fontFamily: "'Nunito', sans-serif", minHeight: '100vh', background: isRehab ? '#f7f0ff' : '#f0faff' }}>
 
         <header style={{
           background: `linear-gradient(135deg, ${darkColor}, ${color})`,
@@ -171,14 +171,14 @@ export default function Register() {
             <button onClick={() => handleTabChange('rehab')} style={{
               flex: 1, padding: '12px 0', border: 'none', cursor: 'pointer',
               fontFamily: "'Nunito', sans-serif", fontWeight: 800, fontSize: 15,
-              background: isRehab ? 'linear-gradient(160deg, #7ec8a0, #4aab78)' : 'white',
-              color: isRehab ? 'white' : '#4aab78', transition: 'all 0.2s',
+              background: isRehab ? 'linear-gradient(160deg, #8B00D4, #4C0080)' : 'white',
+              color: isRehab ? 'white' : '#8B00D4', transition: 'all 0.2s',
             }}>♿ שיקום</button>
             <button onClick={() => handleTabChange('treatment')} style={{
               flex: 1, padding: '12px 0', border: 'none', cursor: 'pointer',
               fontFamily: "'Nunito', sans-serif", fontWeight: 800, fontSize: 15,
-              background: !isRehab ? 'linear-gradient(160deg, #f4a27a, #ee7a50)' : 'white',
-              color: !isRehab ? 'white' : '#ee7a50', transition: 'all 0.2s',
+              background: !isRehab ? 'linear-gradient(160deg, #0891B2, #164E63)' : 'white',
+              color: !isRehab ? 'white' : '#0891B2', transition: 'all 0.2s',
             }}>🏥 טיפול</button>
           </div>
 
@@ -337,7 +337,7 @@ export default function Register() {
                 disabled={loading}
                 style={{
                   width: '100%',
-                  background: loading ? '#ccc' : `linear-gradient(160deg, ${isRehab ? '#7ec8a0, #4aab78' : '#f4a27a, #ee7a50'})`,
+                  background: loading ? '#ccc' : `linear-gradient(160deg, ${isRehab ? '#8B00D4, #4C0080' : '#0891B2, #164E63'})`,
                   color: 'white', border: 'none', borderRadius: '999px',
                   padding: '14px 0', fontWeight: 800, fontSize: 15,
                   cursor: loading ? 'not-allowed' : 'pointer',
