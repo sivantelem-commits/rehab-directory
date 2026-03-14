@@ -2,14 +2,14 @@ import { useEffect, useState, useRef } from 'react'
 import Head from 'next/head'
 
 const REHAB_COLORS = {
-  'דיור': '#7B2D8B', 'תעסוקה': '#F47B20', 'השכלה': '#1A3A5C',
-  'חברה ופנאי': '#2E7D32', 'ליווי ותמיכה': '#0277BD',
-  'טיפולי שיניים': '#C2185B', 'שירותים נוספים': '#546E7A',
+  'דיור': '#2E0060', 'תעסוקה': '#6A0099', 'השכלה': '#9B00CC',
+  'חברה ופנאי': '#5E35B1', 'ליווי ותמיכה': '#CE66F0',
+  'טיפולי שיניים': '#7800BB', 'שירותים נוספים': '#E099F8',
 }
 
 const TREATMENT_COLORS = {
-  'בתי"מ': '#0277BD', 'מחלקות אשפוז': '#ee7a50',
-  'מרפאות יום': '#2E7D32', 'חדרי מיון': '#C62828',
+  'בתים מאזנים': '#0A3040', 'מחלקות אשפוז': '#1565A8',
+  'מרפאות יום': '#0891B2', 'חדרי מיון': '#06B6D4',
 }
 
 const DISTRICTS = ['הכל', 'צפון', 'חיפה', 'מרכז', 'תל אביב', 'ירושלים', 'דרום', 'יהודה ושומרון']
@@ -183,12 +183,12 @@ export default function MapPage() {
 
           <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
             <button onClick={() => setShowRehab(v => !v)}
-              style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '7px 14px', borderRadius: '999px', border: `2px solid ${showRehab ? '#4aab78' : '#ddd'}`, background: showRehab ? '#f2faf4' : 'white', color: showRehab ? '#2d6a4f' : '#aaa', fontWeight: 700, fontSize: 13, cursor: 'pointer', fontFamily: "'Nunito', sans-serif" }}>
-              <div style={{ width: 10, height: 10, borderRadius: '50%', background: showRehab ? '#4aab78' : '#ddd' }} />
+              style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '7px 14px', borderRadius: '999px', border: `2px solid ${showRehab ? '#8B00D4' : '#ddd'}`, background: showRehab ? '#f7f0ff' : 'white', color: showRehab ? '#4C0080' : '#aaa', fontWeight: 700, fontSize: 13, cursor: 'pointer', fontFamily: "'Nunito', sans-serif" }}>
+              <div style={{ width: 10, height: 10, borderRadius: '50%', background: showRehab ? '#8B00D4' : '#ddd' }} />
               ♿ שיקום
             </button>
             {showRehab && (
-              <select value={rehabCategory} onChange={e => setRehabCategory(e.target.value)} style={{ ...sel, borderColor: '#4aab78' }}>
+              <select value={rehabCategory} onChange={e => setRehabCategory(e.target.value)} style={{ ...sel, borderColor: '#8B00D4' }}>
                 <option value="הכל">כל הקטגוריות</option>
                 {Object.keys(REHAB_COLORS).map(c => <option key={c}>{c}</option>)}
               </select>
@@ -197,12 +197,12 @@ export default function MapPage() {
 
           <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
             <button onClick={() => setShowTreatment(v => !v)}
-              style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '7px 14px', borderRadius: '999px', border: `2px solid ${showTreatment ? '#ee7a50' : '#ddd'}`, background: showTreatment ? '#fff8f3' : 'white', color: showTreatment ? '#c85e32' : '#aaa', fontWeight: 700, fontSize: 13, cursor: 'pointer', fontFamily: "'Nunito', sans-serif" }}>
-              <div style={{ width: 10, height: 10, background: showTreatment ? '#ee7a50' : '#ddd', clipPath: 'polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)' }} />
+              style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '7px 14px', borderRadius: '999px', border: `2px solid ${showTreatment ? '#0891B2' : '#ddd'}`, background: showTreatment ? '#f0faff' : 'white', color: showTreatment ? '#0A6080' : '#aaa', fontWeight: 700, fontSize: 13, cursor: 'pointer', fontFamily: "'Nunito', sans-serif" }}>
+              <div style={{ width: 10, height: 10, background: showTreatment ? '#0891B2' : '#ddd', clipPath: 'polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)' }} />
               🏥 טיפול
             </button>
             {showTreatment && (
-              <select value={treatmentCategory} onChange={e => setTreatmentCategory(e.target.value)} style={{ ...sel, borderColor: '#ee7a50' }}>
+              <select value={treatmentCategory} onChange={e => setTreatmentCategory(e.target.value)} style={{ ...sel, borderColor: '#0891B2' }}>
                 <option value="הכל">כל הקטגוריות</option>
                 {Object.keys(TREATMENT_COLORS).map(c => <option key={c}>{c}</option>)}
               </select>
@@ -268,17 +268,17 @@ export default function MapPage() {
               <div style={{ padding: '10px 12px', display: 'flex', flexDirection: 'column', gap: 8 }}>
                 {showRehab && nationalRehab.length > 0 && (
                   <>
-                    <div style={{ fontSize: 11, fontWeight: 800, color: '#4aab78', textTransform: 'uppercase', letterSpacing: 0.5, marginTop: 4 }}>♿ שיקום</div>
+                    <div style={{ fontSize: 11, fontWeight: 800, color: '#8B00D4', textTransform: 'uppercase', letterSpacing: 0.5, marginTop: 4 }}>♿ שיקום</div>
                     {nationalRehab.map(s => (
                       <div key={s.id}
                         onClick={() => { setSelected({ ...s, type: 'rehab' }); setShowNationalPanel(false) }}
                         style={{ padding: '10px 12px', borderRadius: 12, background: '#f9f9f9', cursor: 'pointer', border: '1.5px solid #eee', transition: 'background 0.1s' }}
-                        onMouseEnter={e => e.currentTarget.style.background = '#f2faf4'}
+                        onMouseEnter={e => e.currentTarget.style.background = '#f7f0ff'}
                         onMouseLeave={e => e.currentTarget.style.background = '#f9f9f9'}
                       >
                         <div style={{ fontWeight: 700, fontSize: 13, color: '#1A3A5C', marginBottom: 2 }}>{s.name}</div>
                         <div style={{ fontSize: 11, color: '#888' }}>
-                          <span style={{ background: '#f2faf4', color: '#2d6a4f', borderRadius: 999, padding: '1px 7px', fontWeight: 600 }}>{s.category}</span>
+                          <span style={{ background: '#f7f0ff', color: '#4C0080', borderRadius: 999, padding: '1px 7px', fontWeight: 600 }}>{s.category}</span>
                           {s.phone && <span style={{ marginRight: 6 }}>· 📞 {s.phone}</span>}
                         </div>
                       </div>
@@ -288,17 +288,17 @@ export default function MapPage() {
 
                 {showTreatment && nationalTreatment.length > 0 && (
                   <>
-                    <div style={{ fontSize: 11, fontWeight: 800, color: '#ee7a50', textTransform: 'uppercase', letterSpacing: 0.5, marginTop: 4 }}>🏥 טיפול</div>
+                    <div style={{ fontSize: 11, fontWeight: 800, color: '#0891B2', textTransform: 'uppercase', letterSpacing: 0.5, marginTop: 4 }}>🏥 טיפול</div>
                     {nationalTreatment.map(s => (
                       <div key={s.id}
                         onClick={() => { setSelected({ ...s, type: 'treatment' }); setShowNationalPanel(false) }}
                         style={{ padding: '10px 12px', borderRadius: 12, background: '#f9f9f9', cursor: 'pointer', border: '1.5px solid #eee', transition: 'background 0.1s' }}
-                        onMouseEnter={e => e.currentTarget.style.background = '#fff8f3'}
+                        onMouseEnter={e => e.currentTarget.style.background = '#f0faff'}
                         onMouseLeave={e => e.currentTarget.style.background = '#f9f9f9'}
                       >
                         <div style={{ fontWeight: 700, fontSize: 13, color: '#1A3A5C', marginBottom: 2 }}>{s.name}</div>
                         <div style={{ fontSize: 11, color: '#888' }}>
-                          <span style={{ background: '#fff8f3', color: '#c85e32', borderRadius: 999, padding: '1px 7px', fontWeight: 600 }}>{s.category}</span>
+                          <span style={{ background: '#f0faff', color: '#0A6080', borderRadius: 999, padding: '1px 7px', fontWeight: 600 }}>{s.category}</span>
                           {s.phone && <span style={{ marginRight: 6 }}>· 📞 {s.phone}</span>}
                         </div>
                       </div>
@@ -339,7 +339,7 @@ export default function MapPage() {
                 <button onClick={() => setSelected(null)} style={{ background: 'none', border: 'none', fontSize: 20, cursor: 'pointer', color: '#aaa', padding: 0 }}>✕</button>
               </div>
               <div style={{ display: 'flex', gap: 6, marginBottom: 10 }}>
-                <span style={{ background: selected.type === 'rehab' ? '#f2faf4' : '#fff8f3', color: selected.type === 'rehab' ? '#2d6a4f' : '#c85e32', borderRadius: '999px', padding: '2px 10px', fontSize: 11, fontWeight: 700 }}>
+                <span style={{ background: selected.type === 'rehab' ? '#f7f0ff' : '#f0faff', color: selected.type === 'rehab' ? '#4C0080' : '#0A6080', borderRadius: '999px', padding: '2px 10px', fontSize: 11, fontWeight: 700 }}>
                   {selected.type === 'rehab' ? '♿' : '🏥'} {selected.category}
                 </span>
                 {selected.is_national && (
@@ -350,7 +350,7 @@ export default function MapPage() {
               </div>
               {selected.description && <div style={{ fontSize: 12, color: '#445', lineHeight: 1.55, marginBottom: 10, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{selected.description}</div>}
               <a href={`/${selected.type === 'rehab' ? 'service' : 'treatment'}/${selected.id}`}
-                style={{ display: 'block', textAlign: 'center', background: selected.type === 'rehab' ? '#4aab78' : '#ee7a50', color: 'white', borderRadius: '999px', padding: '8px 0', fontWeight: 700, fontSize: 13, textDecoration: 'none' }}>
+                style={{ display: 'block', textAlign: 'center', background: selected.type === 'rehab' ? '#8B00D4' : '#0891B2', color: 'white', borderRadius: '999px', padding: '8px 0', fontWeight: 700, fontSize: 13, textDecoration: 'none' }}>
                 לפרטים המלאים ←
               </a>
             </div>
