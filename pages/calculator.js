@@ -55,12 +55,17 @@ function buildApiParams(answers) {
 
   const params = []
 
+  function districtParams(district) {
+    const p = new URLSearchParams()
+    if (district === 'national' || district === null) p.set('national', 'true')
+    else if (district) p.set('district', district)
+    return p
+  }
+
   // תמיד הצג שיקום לפי קטגוריות שנבחרו
   if (rehabGoals.length > 0) {
     rehabGoals.forEach(cat => {
-      const p = new URLSearchParams()
-      if (district === 'national') p.set('national', 'true')
-      else if (district) p.set('district', district)
+      const p = districtParams(district)
       p.set('category', cat)
       params.push({ label: cat, url: `/api/services?${p}`, page: 'rehab' })
     })
@@ -68,17 +73,13 @@ function buildApiParams(answers) {
 
   // טיפול רק אם ביקשו במפורש
   if (wantsTreatment) {
-    const p = new URLSearchParams()
-    if (district === 'national') p.set('national', 'true')
-    else if (district) p.set('district', district)
+    const p = districtParams(district)
     params.push({ label: 'טיפול נפשי', url: `/api/services?${p}`, page: 'treatment' })
   }
 
   // fallback — אם לא נבחרה שום מטרה
   if (params.length === 0) {
-    const p = new URLSearchParams()
-    if (district === 'national') p.set('national', 'true')
-    else if (district) p.set('district', district)
+    const p = districtParams(district)
     params.push({ label: 'שירותי שיקום', url: `/api/services?${p}`, page: 'rehab' })
   }
 
@@ -186,9 +187,9 @@ export default function Calculator() {
       )
       const withResults = fetches.filter(f => f.services.length > 0)
 
-      // אם אין תוצאות לאזור שנבחר — נסה בלי סינון אזור
+      // אם אין תוצאות לאזור שנבחר — נסה בלי סינון אזור אבל שמור על קטגוריה
       if (withResults.length === 0 && finalAnswers.district && finalAnswers.district !== 'national') {
-        const fallbackQueries = buildApiParams({ ...finalAnswers, district: null })
+        const fallbackQueries = buildApiParams({ ...finalAnswers, district: 'national' })
         const fallbackFetches = await Promise.all(
           fallbackQueries.map(q => fetch(q.url).then(r => r.json()).then(data => ({
             label: q.label,
