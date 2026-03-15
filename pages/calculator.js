@@ -185,8 +185,29 @@ export default function Calculator() {
           services: Array.isArray(data) ? data : [],
         })))
       )
-      // סנן קבוצות ריקות
       const withResults = fetches.filter(f => f.services.length > 0)
+
+      // אם אין תוצאות לאזור שנבחר — נסה בלי סינון אזור
+      if (withResults.length === 0 && finalAnswers.district && finalAnswers.district !== 'national') {
+        const fallbackQueries = buildApiParams({ ...finalAnswers, district: null })
+        const fallbackFetches = await Promise.all(
+          fallbackQueries.map(q => fetch(q.url).then(r => r.json()).then(data => ({
+            label: q.label,
+            page: q.page,
+            services: Array.isArray(data) ? data : [],
+          })))
+        )
+        const fallbackResults = fallbackFetches.filter(f => f.services.length > 0)
+        if (fallbackResults.length > 0) {
+          setSalNote(prev =>
+            (prev ? prev + ' ' : '') +
+            `טרם נוספו שירותים באזור ${finalAnswers.district} — מוצגים שירותים מכל הארץ.`
+          )
+          setResults(fallbackResults)
+          return
+        }
+      }
+
       setResults(withResults.length > 0 ? withResults : [])
     } catch {
       setResults([])
