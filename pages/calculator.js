@@ -50,14 +50,13 @@ const STEPS = [
 // ─── בניית פרמטרי חיפוש ───────────────────────────────────
 function buildApiParams(answers) {
   const { sal, goal = [], district } = answers
-  const hasSal = sal === 'yes' || sal === 'unknown'
   const rehabGoals = goal.filter(g => g !== 'treatment')
   const wantsTreatment = goal.includes('treatment')
 
   const params = []
 
-  if (hasSal && rehabGoals.length > 0) {
-    // שיקום — שאילתה לכל קטגוריה שנבחרה
+  // תמיד הצג שיקום לפי קטגוריות שנבחרו
+  if (rehabGoals.length > 0) {
     rehabGoals.forEach(cat => {
       const p = new URLSearchParams()
       if (district === 'national') p.set('national', 'true')
@@ -67,20 +66,20 @@ function buildApiParams(answers) {
     })
   }
 
-  if (!hasSal || wantsTreatment) {
-    // טיפול
+  // טיפול רק אם ביקשו במפורש
+  if (wantsTreatment) {
     const p = new URLSearchParams()
     if (district === 'national') p.set('national', 'true')
     else if (district) p.set('district', district)
-    params.push({ label: 'טיפול', url: `/api/services?${p}&type=treatment`, page: 'treatment' })
+    params.push({ label: 'טיפול נפשי', url: `/api/services?${p}`, page: 'treatment' })
   }
 
-  // fallback — הכל לפי אזור
+  // fallback — אם לא נבחרה שום מטרה
   if (params.length === 0) {
     const p = new URLSearchParams()
     if (district === 'national') p.set('national', 'true')
     else if (district) p.set('district', district)
-    params.push({ label: 'כל השירותים', url: `/api/services?${p}`, page: 'rehab' })
+    params.push({ label: 'שירותי שיקום', url: `/api/services?${p}`, page: 'rehab' })
   }
 
   return params
@@ -173,7 +172,7 @@ export default function Calculator() {
     if (finalAnswers.sal === 'unknown') {
       setSalNote('אם עדיין אין זכאות — פנה לביטוח לאומי ואז למשרד הבריאות לקבלת סל שיקום.')
     } else if (finalAnswers.sal === 'no') {
-      setSalNote('שירותי שיקום מחייבים זכאות. מוצגים כאן גם שירותי טיפול שאינם מחייבים זכאות.')
+      setSalNote('שירותי שיקום בקהילה מחייבים זכאות סל שיקום. לקבלת זכאות פנה לביטוח לאומי ולאחר מכן למשרד הבריאות.')
     }
 
     try {
@@ -324,9 +323,9 @@ export default function Calculator() {
                   marginBottom: 14,
                 }}>
                   <span style={{
-                    background: group.page === 'rehab'
-                      ? `linear-gradient(160deg, #8B00D4, ${DEEP})`
-                      : 'linear-gradient(160deg, #0891B2, #164E63)',
+                    background: group.page === 'treatment'
+                      ? 'linear-gradient(160deg, #0891B2, #164E63)'
+                      : `linear-gradient(160deg, #8B00D4, ${DEEP})`,
                     color: '#fff', fontSize: 12, fontWeight: 700,
                     padding: '4px 14px', borderRadius: 999,
                   }}>
