@@ -52,8 +52,13 @@ export default function Rehab() {
   const [mounted, setMounted] = useState(false)
   const [showTop, setShowTop] = useState(false)
 
-  useEffect(() => { setMounted(true) }, [])
-
+useEffect(() => {
+  setMounted(true)
+  if (router.isReady) {
+    if (router.query.district) setDistrict(router.query.district)
+    if (router.query.category) setCategory(router.query.category)
+  }
+}, [router.isReady, router.query])
   useEffect(() => {
     const handleScroll = () => setShowTop(window.scrollY > 200)
     window.addEventListener('scroll', handleScroll)
