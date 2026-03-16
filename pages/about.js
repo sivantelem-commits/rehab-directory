@@ -1,6 +1,6 @@
 import Head from 'next/head'
 
-const NAV = [['/', '🏠 ראשי'], ['/rehab', '♿ שיקום'], ['/treatment', '🏥 טיפול'], ['/map', '🗺️ מפה'], ['/guide', '📖 מדריך'], ['/register', 'הרשמת שירות'], ['/about', 'אודות'], ['/contact', '✉️ צור קשר'], ['/admin', 'ניהול']]
+const NAV = [['/', '🏠 ראשי'], ['/rehab', '♿ שיקום'], ['/treatment', '🏥 טיפול'], ['/map', '🗺️ מפה'], ['/guide', '📖 מדריך'], ['/register', 'הרשמת שירות'], ['/about', 'אודות'], ['/contact', 'צור קשר'], ['/admin', 'ניהול']]
 
 export default function About() {
   return (
@@ -41,7 +41,7 @@ export default function About() {
         </header>
 
         <div style={{ background: 'linear-gradient(135deg, #1A3A5C, #2A5298)', color: 'white', padding: '48px 20px', textAlign: 'center' }}>
-          <img src='/about-icon.png' alt='אודות' style={{ width: 80, height: 80, objectFit: 'contain', marginBottom: 16, mixBlendMode: 'multiply' }} />
+          <img src='/about-icon.png' alt='אודות' style={{ width: 120, height: 120, objectFit: 'contain', marginBottom: 0, filter: 'invert(1) brightness(10)' }} />
           <h1 style={{ fontSize: 28, fontWeight: 800, margin: '0 0 12px' }}>בריאות נפש בישראל</h1>
           <p style={{ fontSize: 16, opacity: 0.85, maxWidth: 580, margin: '0 auto', lineHeight: 1.8 }}>
             מנגישים את בריאות הנפש
@@ -72,7 +72,7 @@ export default function About() {
             <p style={p}>אם אתם מזהים מידע שגוי או חסר - נשמח לשמוע. ביחד נוכל לבנות מאגר מידע מהימן ועדכני לכל מי שצריך.</p>
             <div style={{ display: 'flex', gap: 10, marginTop: 16, flexWrap: 'wrap' }}>
               <a href="/register" style={btn('#4C0080')}>הרשמת שירות</a>
-              <a href="/contact" style={btn('#1A3A5C')}>✉️ צור קשר</a>
+              <a href="/contact" style={btn('#1A3A5C')}>צור קשר</a>
             </div>
           </Card>
 
@@ -80,7 +80,7 @@ export default function About() {
 
         <footer style={{ background: '#1A3A5C', color: 'rgba(255,255,255,0.7)', textAlign: 'center', padding: '24px', fontSize: 13, marginTop: 16 }}>
           <div style={{ marginBottom: 8 }}>
-            <a href="/contact" style={{ color: 'rgba(255,255,255,0.7)', textDecoration: 'none' }}>✉️ צור קשר</a>
+            <a href="/contact" style={{ color: 'rgba(255,255,255,0.7)', textDecoration: 'none' }}>צור קשר</a>
           </div>
           בריאות נפש בישראל © {new Date().getFullYear()}
         </footer>
