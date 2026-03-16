@@ -57,8 +57,8 @@ function buildApiParams(answers) {
 
   function districtParams(district) {
     const p = new URLSearchParams()
-    if (district === 'national' || district === null) p.set('national', 'true')
-    else if (district) p.set('district', district)
+    // national = הצג הכל ללא סינון אזור
+    if (district && district !== 'national') p.set('district', district)
     return p
   }
 
@@ -189,7 +189,7 @@ export default function Calculator() {
 
       // אם אין תוצאות לאזור שנבחר — נסה בלי סינון אזור אבל שמור על קטגוריה
       if (withResults.length === 0 && finalAnswers.district && finalAnswers.district !== 'national') {
-        const fallbackQueries = buildApiParams({ ...finalAnswers, district: 'national' })
+        const fallbackQueries = buildApiParams({ ...finalAnswers, district: null })
         const fallbackFetches = await Promise.all(
           fallbackQueries.map(q => fetch(q.url).then(r => r.json()).then(data => ({
             label: q.label,
