@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import Head from 'next/head'
 
-const NAV = [['/', '🏠 ראשי'], ['/rehab', '♿ שיקום'], ['/treatment', '🏥 טיפול'], ['/map', '🗺️ מפה'], ['/guide', '📖 מדריך'], ['/register', 'הרשמת שירות'], ['/about', 'אודות'], ['/contact', '✉️ צור קשר'], ['/admin', 'ניהול']]
+const NAV = [['/', '🏠 ראשי'], ['/rehab', '♿ שיקום'], ['/treatment', '🏥 טיפול'], ['/map', '🗺️ מפה'], ['/guide', '📖 מדריך'], ['/register', 'הרשמת שירות'], ['/about', 'אודות'], ['/contact', 'צור קשר'], ['/admin', 'ניהול']]
 
 const TYPES = [
   { value: 'improvement', label: '💡 הצעה לשיפור הפורטל' },
@@ -102,7 +102,7 @@ export default function Contact() {
         </header>
 
         <div style={{ background: 'linear-gradient(135deg, #1A3A5C, #2A5298)', color: 'white', padding: '48px 20px', textAlign: 'center' }}>
-          <div style={{ fontSize: 44, marginBottom: 12 }}>✉️</div>
+          <img src='/contact-icon.png' alt='צור קשר' style={{ width: 80, height: 80, objectFit: 'contain', marginBottom: 12, filter: 'invert(1) brightness(10)' }} />
           <h1 style={{ fontSize: 28, fontWeight: 800, margin: '0 0 10px' }}>צור קשר</h1>
           <p style={{ fontSize: 15, opacity: 0.85, margin: 0, maxWidth: 480, marginInline: 'auto' }}>
             יש לכם הערה, תיקון או רעיון? נשמח לשמוע!
@@ -166,7 +166,7 @@ export default function Contact() {
                 padding: '14px 0', fontWeight: 800, fontSize: 15, cursor: sending ? 'not-allowed' : 'pointer',
                 fontFamily: "'Nunito', sans-serif", boxShadow: sending ? 'none' : '0 4px 16px rgba(26,58,92,0.25)',
               }}>
-                {sending ? 'שולח...' : '📨 שלח פנייה'}
+                {sending ? 'שולח...' : 'שלח פנייה ←'}
               </button>
             </div>
           )}
