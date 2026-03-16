@@ -6,6 +6,7 @@ const supabase = createClient(
 
 export default async function handler(req, res) {
   if (req.method !== 'GET') return res.status(405).end()
+
   const { district, category, subcategory, search, national } = req.query
 
   let query = supabase
@@ -19,11 +20,21 @@ export default async function handler(req, res) {
     query = query.eq('district', district)
   }
 
-  if (category) query = query.eq('category', category)
-  if (subcategory) query = query.eq('subcategory', subcategory)
-  if (search) query = query.or(`name.ilike.%${search}%,city.ilike.%${search}%,description.ilike.%${search}%`)
+  if (category) {
+    // חפש הן בעמודת category הן במערך categories
+    query = query.or(`category.eq.${category},categories.cs.{${category}}`)
+  }
+
+  if (subcategory) {
+    query = query.eq('subcategory', subcategory)
+  }
+
+  if (search) {
+    query = query.or(`name.ilike.%${search}%,city.ilike.%${search}%,description.ilike.%${search}%`)
+  }
 
   const { data, error } = await query.order('created_at', { ascending: false })
+
   if (error) return res.status(500).json({ error: error.message })
   res.status(200).json(data || [])
 }
