@@ -225,31 +225,6 @@ export default function Guide() {
             </Card>
           </div>
 
-          {/* 5 — מילון מושגים */}
-          <div id="glossary">
-            <Card color="#1A3A5C" icon="📚" title="מילון מושגים">
-              <p style={pStyle}>המושגים בבריאות הנפש יכולים להיות מבלבלים. הנה הסבר פשוט לנפוצים שבהם:</p>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-                {[
-                  { term: 'סל שיקום', def: 'תכנית ממשלתית המעניקה שירותי שיקום בקהילה לאנשים עם מגבלה נפשית — דיור, תעסוקה, השכלה ועוד. הזכאות ניתנת ממשרד הבריאות.' },
-                  { term: 'הוסטל שיקומי', def: 'מגורים קבוצתיים עם ליווי מקצועי, לאנשים שצריכים תמיכה בחיי היום-יום אך אינם זקוקים לאשפוז.' },
-                  { term: 'דיור מוגן', def: 'מגורים עצמאיים יותר עם פיקוח מינימלי, לאנשים בשלב מתקדם יותר של שיקום.' },
-                  { term: 'בית מאזן', def: 'מסגרת מגורים טיפולית קצרת מועד, חלופה לאשפוז עבור אנשים במשבר שאינם מסוכנים לעצמם.' },
-                  { term: 'אשפוז יום', def: 'טיפול אינטנסיבי במהלך שעות היום עם חזרה הביתה בערב. מתאים לאנשים שצריכים יותר מטיפול חוץ אך לא אשפוז מלא.' },
-                  { term: 'מרפאת חוץ', def: 'טיפול אמבולטורי — פגישות פרטניות או קבוצתיות עם פסיכיאטר/ית או פסיכולוג/ית מבלי לאשפז.' },
-                  { term: 'סומכת שיקומית', def: 'איש/ת מקצוע המלווה את המטופל בתהליך השיקום — עוזר לתכנן מטרות, לגשת לשירותים ולהתמודד עם קשיים.' },
-                  { term: 'תיאום טיפול', def: 'גורם מקצועי שמתאם בין כל נותני השירות השונים (פסיכיאטר, עו"ס, שיקום) ומוודא רצף טיפולי.' },
-                  { term: 'CBT', def: 'טיפול קוגניטיבי-התנהגותי. שיטת טיפול המתמקדת בזיהוי דפוסי חשיבה ושינוי התנהגויות שליליות.' },
-                  { term: 'DBT', def: 'טיפול דיאלקטי-התנהגותי. מיועד בעיקר להפרעת אישיות גבולית, מלמד כישורי ויסות רגשי.' },
-                  { term: 'אשפוז כפוי', def: 'אשפוז ללא הסכמת המטופל, על פי צו של פסיכיאטר מחוזי, כשיש חשש לסכנה לעצמו או לאחרים.' },
-                  { term: 'ועדה פסיכיאטרית', def: 'ועדה שדנה בבקשות ערר על אשפוז כפוי או שחרור. למטופל הזכות לייצוג ולהשמיע את קולו.' },
-                ].map(({ term, def }) => (
-                  <GlossaryItem key={term} term={term} def={def} open={openSection === term} onToggle={() => setOpenSection(openSection === term ? null : term)} />
-                ))}
-              </div>
-            </Card>
-          </div>
-
           {/* CTA */}
           <div style={{ background: 'linear-gradient(160deg, #2E0060, #8B00D4)', borderRadius: 20, padding: '28px 24px', textAlign: 'center', color: 'white', marginTop: 8 }}>
             <div style={{ fontSize: 36, marginBottom: 10 }}>🧭</div>
@@ -300,30 +275,6 @@ function Card({ color, icon, title, children }) {
         <h2 style={{ fontSize: 18, fontWeight: 800, color, margin: 0 }}>{title}</h2>
       </div>
       {children}
-    </div>
-  )
-}
-
-function GlossaryItem({ term, def, open, onToggle }) {
-  return (
-    <div style={{ borderRadius: 10, overflow: 'hidden', border: '1px solid #e9d5ff' }}>
-      <button
-        onClick={onToggle}
-        style={{
-          width: '100%', display: 'flex', justifyContent: 'space-between',
-          alignItems: 'center', padding: '11px 14px', background: open ? '#f5f3ff' : 'white',
-          border: 'none', cursor: 'pointer', fontFamily: "'Nunito', sans-serif",
-          textAlign: 'right',
-        }}
-      >
-        <span style={{ fontWeight: 700, fontSize: 14, color: '#2E0060' }}>{term}</span>
-        <span style={{ fontSize: 12, color: '#9b88bb', flexShrink: 0, marginRight: 8 }}>{open ? '▲' : '▼'}</span>
-      </button>
-      {open && (
-        <div style={{ padding: '10px 14px 14px', fontSize: 13.5, color: '#445', lineHeight: 1.65, background: '#faf5ff' }}>
-          {def}
-        </div>
-      )}
     </div>
   )
 }
