@@ -63,6 +63,7 @@ export default async function handler(req, res) {
 
   const {
     name, district, city, category, subcategory, categories,
+    age_groups, diagnoses, populations,
     description, phone, email, website, address, is_national
   } = req.body
 
@@ -83,6 +84,9 @@ export default async function handler(req, res) {
     .insert([{
       name, district, city, category, subcategory,
       categories: allCategories,
+      age_groups: Array.isArray(age_groups) ? age_groups : [],
+      diagnoses: Array.isArray(diagnoses) ? diagnoses : [],
+      populations: Array.isArray(populations) ? populations : [],
       description, phone, email, website, address,
       is_national: !!is_national,
       status: 'pending', lat, lng,
