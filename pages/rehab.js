@@ -7,7 +7,7 @@ import { CATEGORIES, CATEGORY_NAMES } from '../lib/categories'
 const DISTRICTS = ['הכל', 'צפון', 'חיפה', 'מרכז', 'תל אביב', 'ירושלים', 'דרום', 'יהודה ושומרון', '🌍 ארצי']
 const AGE_GROUPS = ['ילדים', 'נוער', 'מבוגרים', 'קשישים']
 const DIAGNOSES = ['הפרעות אכילה', 'OCD', 'פוסט טראומה', 'פוסט טראומה מורכבת', 'התמכרויות']
-const POPULATIONS = ['נשים', 'דתי/מסורתי', 'חרדי', 'להט"ב', 'ערבים', 'עולים חדשים']
+const POPULATIONS = ['נשים', 'דתי/מסורתי', 'חרדי', 'להט"ב']
 
 const SkeletonCard = () => (
   <div style={{
