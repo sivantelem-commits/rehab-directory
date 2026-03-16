@@ -7,7 +7,7 @@ const supabase = createClient(
 export default async function handler(req, res) {
   if (req.method !== 'GET') return res.status(405).end()
 
-  const { district, category, subcategory, search, national } = req.query
+  const { district, category, subcategory, search, national, age_group, diagnosis, population } = req.query
 
   let query = supabase
     .from('services')
@@ -27,6 +27,18 @@ export default async function handler(req, res) {
 
   if (subcategory) {
     query = query.eq('subcategory', subcategory)
+  }
+
+  if (age_group) {
+    query = query.contains('age_groups', [age_group])
+  }
+
+  if (diagnosis) {
+    query = query.contains('diagnoses', [diagnosis])
+  }
+
+  if (population) {
+    query = query.contains('populations', [population])
   }
 
   if (search) {
