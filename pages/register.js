@@ -4,11 +4,15 @@ import { CATEGORIES, CATEGORY_NAMES } from '../lib/categories'
 
 const DISTRICTS = ['צפון', 'חיפה', 'מרכז', 'תל אביב', 'ירושלים', 'דרום', 'יהודה ושומרון']
 const TREATMENT_CATEGORIES = ['בתים מאזנים', 'מחלקות אשפוז', 'מרפאות יום', 'חדרי מיון', 'שירותים נוספים']
+const AGE_GROUPS = ['ילדים', 'נוער', 'מבוגרים', 'קשישים']
+const DIAGNOSES = ['הפרעות אכילה', 'OCD', 'פוסט טראומה', 'פוסט טראומה מורכבת', 'התמכרויות']
+const POPULATIONS = ['נשים', 'דתי/מסורתי', 'חרדי', 'להט"ב', 'ערבים', 'עולים חדשים']
+
 const NAV = [['/', '🏠 ראשי'], ['/rehab', '♿ שיקום'], ['/treatment', '🏥 טיפול'], ['/map', '🗺️ מפה'], ['/register', 'הרשמת שירות'], ['/about', 'אודות'], ['/contact', '✉️ צור קשר'], ['/admin', 'ניהול']]
 
 const emptyForm = {
   name: '', district: '', city: '', category: '', subcategory: '',
-  categories: [], description: '', phone: '', email: '',
+  categories: [], age_groups: [], diagnoses: [], populations: [], description: '', phone: '', email: '',
   website: '', address: '', is_national: false
 }
 
@@ -52,6 +56,14 @@ export default function Register() {
     setSuccess(false)
     setDuplicates([])
     setConfirmedNotDuplicate(false)
+  }
+
+  function toggleField(field, value) {
+    setForm(f => {
+      const arr = f[field] || []
+      if (arr.includes(value)) return { ...f, [field]: arr.filter(c => c !== value) }
+      return { ...f, [field]: [...arr, value] }
+    })
   }
 
   function toggleCategory(cat) {
@@ -341,6 +353,72 @@ export default function Register() {
                   )}
                 </div>
               )}
+
+              {/* קבוצות גיל */}
+              <div style={{ marginBottom: 20 }}>
+                <label style={lbl}>
+                  קבוצות גיל
+                  <span style={{ fontWeight: 400, color: '#9ca3af', marginRight: 6 }}>(אופציונלי)</span>
+                </label>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                  {AGE_GROUPS.map(ag => {
+                    const selected = (form.age_groups || []).includes(ag)
+                    return (
+                      <button key={ag} type="button" onClick={() => toggleField('age_groups', ag)} style={{
+                        padding: '6px 14px', borderRadius: '999px', fontSize: 13, fontWeight: 700,
+                        cursor: 'pointer', fontFamily: "'Nunito', sans-serif", transition: 'all 0.15s',
+                        border: `2px solid ${selected ? color : '#e0d0f0'}`,
+                        background: selected ? color : 'white',
+                        color: selected ? 'white' : color,
+                      }}>{ag}</button>
+                    )
+                  })}
+                </div>
+              </div>
+
+              {/* אבחנות */}
+              <div style={{ marginBottom: 20 }}>
+                <label style={lbl}>
+                  אבחנות / התמחויות
+                  <span style={{ fontWeight: 400, color: '#9ca3af', marginRight: 6 }}>(אופציונלי)</span>
+                </label>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                  {DIAGNOSES.map(d => {
+                    const selected = (form.diagnoses || []).includes(d)
+                    return (
+                      <button key={d} type="button" onClick={() => toggleField('diagnoses', d)} style={{
+                        padding: '6px 14px', borderRadius: '999px', fontSize: 13, fontWeight: 700,
+                        cursor: 'pointer', fontFamily: "'Nunito', sans-serif", transition: 'all 0.15s',
+                        border: `2px solid ${selected ? '#0E7490' : '#e0d0f0'}`,
+                        background: selected ? '#0E7490' : 'white',
+                        color: selected ? 'white' : '#0E7490',
+                      }}>{d}</button>
+                    )
+                  })}
+                </div>
+              </div>
+
+              {/* אוכלוסייה */}
+              <div style={{ marginBottom: 20 }}>
+                <label style={lbl}>
+                  אוכלוסייה ייעודית
+                  <span style={{ fontWeight: 400, color: '#9ca3af', marginRight: 6 }}>(אופציונלי)</span>
+                </label>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                  {POPULATIONS.map(p => {
+                    const selected = (form.populations || []).includes(p)
+                    return (
+                      <button key={p} type="button" onClick={() => toggleField('populations', p)} style={{
+                        padding: '6px 14px', borderRadius: '999px', fontSize: 13, fontWeight: 700,
+                        cursor: 'pointer', fontFamily: "'Nunito', sans-serif", transition: 'all 0.15s',
+                        border: `2px solid ${selected ? '#5E35B1' : '#e0d0f0'}`,
+                        background: selected ? '#5E35B1' : 'white',
+                        color: selected ? 'white' : '#5E35B1',
+                      }}>{p}</button>
+                    )
+                  })}
+                </div>
+              </div>
 
               {/* תיאור */}
               <div style={{ marginBottom: 24 }}>
