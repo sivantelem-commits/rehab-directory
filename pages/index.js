@@ -162,6 +162,24 @@ export default function Home() {
           <span style={{ marginRight: 'auto', fontSize: 18, color: '#a855f7' }}>←</span>
         </button>
 
+
+        {/* קישורים תחתונים */}
+        <div style={{
+          display: 'flex', gap: 16, marginTop: 24,
+          justifyContent: 'center', flexWrap: 'wrap',
+        }}>
+          {[
+            ['/guide', '📖 מדריך למטופל'],
+            ['/about', 'אודות'],
+            ['/contact', '✉️ צור קשר'],
+          ].map(([href, label]) => (
+            <a key={href} href={href} style={{
+              fontSize: 13, fontWeight: 600, color: '#9b88bb',
+              textDecoration: 'none', padding: '4px 0',
+            }}>{label}</a>
+          ))}
+        </div>
+
       </div>
     </>
   )
