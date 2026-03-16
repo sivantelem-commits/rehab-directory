@@ -1,10 +1,15 @@
 import { getCategoryColor } from '../lib/categories'
 
+const TREATMENT_CATEGORIES = ['בתים מאזנים', 'מחלקות אשפוז', 'מרפאות יום', 'חדרי מיון', 'שירותים נוספים']
+const TREATMENT_COLOR = '#0891B2'
+
 export default function ServiceCard({ service }) {
-  const color = getCategoryColor(service.category, service.subcategory)
+  const isTreatment = TREATMENT_CATEGORIES.includes(service.category)
+  const color = isTreatment ? TREATMENT_COLOR : getCategoryColor(service.category, service.subcategory)
+
   return (
-    <div style={{ background: 'white', borderRadius: 16, padding: '20px 22px', cursor: 'pointer', boxShadow: '0 4px 16px rgba(0,0,0,0.07)', border: '1.5px solid #d4b0f0', borderTop: `4px solid ${color}`, transition: 'transform 0.15s, box-shadow 0.15s', display: 'flex', flexDirection: 'column', height: '220px' }}
-      onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 8px 24px rgba(76,0,128,0.12)' }}
+    <div style={{ background: 'white', borderRadius: 16, padding: '20px 22px', cursor: 'pointer', boxShadow: '0 4px 16px rgba(0,0,0,0.07)', border: `1.5px solid ${isTreatment ? '#a0d8e8' : '#d4b0f0'}`, borderTop: `4px solid ${color}`, transition: 'transform 0.15s, box-shadow 0.15s', display: 'flex', flexDirection: 'column', height: '220px' }}
+      onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = `0 8px 24px ${isTreatment ? 'rgba(8,145,178,0.12)' : 'rgba(76,0,128,0.12)'}` }}
       onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 4px 16px rgba(0,0,0,0.07)' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 10 }}>
         <div style={{ fontWeight: 700, fontSize: 16, color: '#1A3A5C', lineHeight: 1.3, flex: 1 }}>{service.name}</div>
