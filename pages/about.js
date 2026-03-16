@@ -41,7 +41,7 @@ export default function About() {
         </header>
 
         <div style={{ background: 'linear-gradient(135deg, #1A3A5C, #2A5298)', color: 'white', padding: '48px 20px', textAlign: 'center' }}>
-          <div style={{ fontSize: 52, marginBottom: 16 }}>🧠</div>
+          <img src='/about-icon.png' alt='אודות' style={{ width: 80, height: 80, objectFit: 'contain', marginBottom: 16, mixBlendMode: 'multiply' }} />
           <h1 style={{ fontSize: 28, fontWeight: 800, margin: '0 0 12px' }}>בריאות נפש בישראל</h1>
           <p style={{ fontSize: 16, opacity: 0.85, maxWidth: 580, margin: '0 auto', lineHeight: 1.8 }}>
             מנגישים את בריאות הנפש
