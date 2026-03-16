@@ -102,7 +102,7 @@ export default function Contact() {
         </header>
 
         <div style={{ background: 'linear-gradient(135deg, #1A3A5C, #2A5298)', color: 'white', padding: '48px 20px', textAlign: 'center' }}>
-          <img src='/contact-icon.png' alt='צור קשר' style={{ width: 100, height: 100, objectFit: 'contain', marginBottom: 0, filter: 'invert(1) brightness(10)' }} />
+          <img src='/contact-icon.png' alt='צור קשר' style={{ width: 160, height: 160, objectFit: 'contain', marginBottom: 0, filter: 'invert(1) brightness(10)' }} />
           <h1 style={{ fontSize: 28, fontWeight: 800, margin: '0 0 10px' }}>צור קשר</h1>
           <p style={{ fontSize: 15, opacity: 0.85, margin: 0, maxWidth: 480, marginInline: 'auto' }}>
             יש לכם הערה, תיקון או רעיון? נשמח לשמוע!
