@@ -5,7 +5,9 @@ import ServiceCard from '../components/ServiceCard'
 import { CATEGORIES, CATEGORY_NAMES } from '../lib/categories'
 
 const DISTRICTS = ['הכל', 'צפון', 'חיפה', 'מרכז', 'תל אביב', 'ירושלים', 'דרום', 'יהודה ושומרון', '🌍 ארצי']
-
+const AGE_GROUPS = ['ילדים', 'נוער', 'מבוגרים', 'קשישים']
+const DIAGNOSES = ['הפרעות אכילה', 'OCD', 'פוסט טראומה', 'פוסט טראומה מורכבת', 'התמכרויות']
+const POPULATIONS = ['נשים', 'דתי/מסורתי', 'חרדי', 'להט"ב', 'ערבים', 'עולים חדשים']
 
 const SkeletonCard = () => (
   <div style={{
@@ -48,17 +50,22 @@ export default function Rehab() {
   const [district, setDistrict] = useState('הכל')
   const [category, setCategory] = useState('הכל')
   const [subcategory, setSubcategory] = useState('הכל')
+  const [ageGroup, setAgeGroup] = useState('')
+  const [diagnosis, setDiagnosis] = useState('')
+  const [population, setPopulation] = useState('')
+  const [showMoreFilters, setShowMoreFilters] = useState(false)
   const [debouncedSearch, setDebouncedSearch] = useState('')
   const [mounted, setMounted] = useState(false)
   const [showTop, setShowTop] = useState(false)
 
-useEffect(() => {
-  setMounted(true)
-  if (router.isReady) {
-    if (router.query.district) setDistrict(router.query.district)
-    if (router.query.category) setCategory(router.query.category)
-  }
-}, [router.isReady, router.query])
+  useEffect(() => {
+    setMounted(true)
+    if (router.isReady) {
+      if (router.query.district) setDistrict(router.query.district)
+      if (router.query.category) setCategory(router.query.category)
+    }
+  }, [router.isReady, router.query])
+
   useEffect(() => {
     const handleScroll = () => setShowTop(window.scrollY > 200)
     window.addEventListener('scroll', handleScroll)
@@ -81,30 +88,48 @@ useEffect(() => {
       }
       if (category !== 'הכל') params.set('category', category)
       if (subcategory !== 'הכל') params.set('subcategory', subcategory)
+      if (ageGroup) params.set('age_group', ageGroup)
+      if (diagnosis) params.set('diagnosis', diagnosis)
+      if (population) params.set('population', population)
       if (debouncedSearch) params.set('search', debouncedSearch)
       const res = await fetch(`/api/services?${params}`)
       const data = await res.json()
       setServices(Array.isArray(data) ? data : [])
     } finally { setLoading(false) }
-  }, [district, category, subcategory, debouncedSearch])
+  }, [district, category, subcategory, ageGroup, diagnosis, population, debouncedSearch])
 
   useEffect(() => { fetchServices() }, [fetchServices])
 
   const subcategories = category !== 'הכל' ? ['הכל', ...CATEGORIES[category].subcategories] : []
-  const isNational = district === '🌍 ארצי'
+  const activeExtraFilters = [ageGroup, diagnosis, population].filter(Boolean).length
+
+  function clearAll() {
+    setSearch(''); setDistrict('הכל'); setCategory('הכל'); setSubcategory('הכל')
+    setAgeGroup(''); setDiagnosis(''); setPopulation('')
+  }
 
   if (!mounted) return null
 
+  const filterBtn = (label, active, onClick, color = '#8B00D4') => (
+    <button key={label} onClick={onClick} style={{
+      padding: '6px 14px', borderRadius: '999px', fontSize: 12, fontWeight: 600,
+      border: `1.5px solid ${active ? color : '#e0d0f0'}`,
+      background: active ? color : 'white',
+      color: active ? 'white' : '#555',
+      cursor: 'pointer', fontFamily: "'Nunito', sans-serif", transition: 'all 0.15s',
+    }}>{label}</button>
+  )
+
   return (
     <>
-            <Head>
+      <Head>
         <title>שירותי שיקום בקהילה | בריאות נפש בישראל</title>
-        <meta name="description" content="מאגר שירותי סל שיקום בקהילה – דיור, תעסוקה, השכלה וליווי לפי אזור בישראל. מצאו שירותי שיקום מוכרים לאנשים עם מגבלה נפשית." />
+        <meta name="description" content="מאגר שירותי סל שיקום בקהילה – דיור, תעסוקה, השכלה וליווי לפי אזור בישראל." />
         <meta name="robots" content="index, follow" />
         <link rel="canonical" href="https://rehabdirectoryil.vercel.app/rehab" />
         <meta property="og:type" content="website" />
         <meta property="og:title" content="שירותי שיקום בקהילה | בריאות נפש בישראל" />
-        <meta property="og:description" content="מאגר שירותי סל שיקום בקהילה – דיור, תעסוקה, השכלה וליווי לפי אזור בישראל. מצאו שירותי שיקום מוכרים לאנשים עם מגבלה נפשית." />
+        <meta property="og:description" content="מאגר שירותי סל שיקום בקהילה – דיור, תעסוקה, השכלה וליווי לפי אזור בישראל." />
         <meta property="og:url" content="https://rehabdirectoryil.vercel.app/rehab" />
         <meta property="og:locale" content="he_IL" />
         <meta property="og:site_name" content="בריאות נפש בישראל" />
@@ -139,6 +164,7 @@ useEffect(() => {
           </nav>
         </header>
 
+        {/* Hero + חיפוש */}
         <div style={{ background: 'linear-gradient(160deg, #4C0080, #8B00D4)', color: 'white', padding: '40px 20px', textAlign: 'center' }}>
           <h1 style={{ fontSize: 28, fontWeight: 800, margin: '0 0 8px', letterSpacing: '-0.3px' }}>♿ שירותי שיקום</h1>
           <p style={{ fontSize: 15, opacity: 0.85, margin: '0 0 24px', fontWeight: 500 }}>מצאו שירותי שיקום בקהילה לפי אזור וקטגוריה</p>
@@ -154,7 +180,7 @@ useEffect(() => {
           </div>
         </div>
 
-        {/* שורת מחוז + ספירה */}
+        {/* מחוז */}
         <div style={{
           background: 'white', borderBottom: '1px solid #d4b0f0',
           padding: '10px 16px', display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center',
@@ -168,8 +194,7 @@ useEffect(() => {
                 border: `2px solid ${active ? (isNat ? '#1A3A5C' : '#8B00D4') : '#e0d0f0'}`,
                 background: active ? (isNat ? '#1A3A5C' : '#8B00D4') : 'white',
                 color: active ? 'white' : (isNat ? '#1A3A5C' : '#4C0080'),
-                cursor: 'pointer', fontFamily: "'Nunito', sans-serif",
-                transition: 'all 0.15s',
+                cursor: 'pointer', fontFamily: "'Nunito', sans-serif", transition: 'all 0.15s',
               }}>{d}</button>
             )
           })}
@@ -178,7 +203,7 @@ useEffect(() => {
           </div>
         </div>
 
-        {/* שורת קטגוריות */}
+        {/* קטגוריות */}
         <div style={{
           background: 'white', borderBottom: `1px solid ${category !== 'הכל' ? '#d4b0f0' : '#f0e8ff'}`,
           padding: '10px 16px', display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center',
@@ -202,7 +227,7 @@ useEffect(() => {
           })}
         </div>
 
-        {/* שורת תת-קטגוריות */}
+        {/* תת-קטגוריות */}
         {category !== 'הכל' && subcategories.length > 0 && (
           <div style={{
             background: '#faf5ff', borderBottom: '1px solid #d4b0f0',
@@ -217,13 +242,76 @@ useEffect(() => {
                   border: `1.5px solid ${active ? color : '#d4b0f0'}`,
                   background: active ? `${color}22` : 'white',
                   color: active ? color : '#666',
-                  cursor: 'pointer', fontFamily: "'Nunito', sans-serif",
-                  transition: 'all 0.15s',
+                  cursor: 'pointer', fontFamily: "'Nunito', sans-serif", transition: 'all 0.15s',
                 }}>{s}</button>
               )
             })}
           </div>
         )}
+
+        {/* פילטרים נוספים — גיל / אבחנה / אוכלוסייה */}
+        <div style={{ background: '#fdf8ff', borderBottom: '1px solid #ede0f8' }}>
+          {/* כפתור פתיחה */}
+          <div style={{ padding: '8px 16px', display: 'flex', alignItems: 'center', gap: 8 }}>
+            <button
+              onClick={() => setShowMoreFilters(v => !v)}
+              style={{
+                padding: '6px 16px', borderRadius: '999px', fontSize: 12, fontWeight: 700,
+                border: `1.5px solid ${activeExtraFilters > 0 ? '#8B00D4' : '#d4b0f0'}`,
+                background: activeExtraFilters > 0 ? '#8B00D4' : 'white',
+                color: activeExtraFilters > 0 ? 'white' : '#666',
+                cursor: 'pointer', fontFamily: "'Nunito', sans-serif",
+                display: 'flex', alignItems: 'center', gap: 6,
+              }}
+            >
+              🎯 סינון מתקדם
+              {activeExtraFilters > 0 && (
+                <span style={{
+                  background: 'rgba(255,255,255,0.3)', borderRadius: '999px',
+                  padding: '1px 7px', fontSize: 11,
+                }}>{activeExtraFilters}</span>
+              )}
+              <span style={{ fontSize: 10 }}>{showMoreFilters ? '▲' : '▼'}</span>
+            </button>
+            {activeExtraFilters > 0 && (
+              <button onClick={() => { setAgeGroup(''); setDiagnosis(''); setPopulation('') }} style={{
+                fontSize: 12, color: '#9B00CC', background: 'none', border: 'none',
+                cursor: 'pointer', fontWeight: 600, fontFamily: "'Nunito', sans-serif",
+              }}>✕ נקה</button>
+            )}
+          </div>
+
+          {/* פילטרים מורחבים */}
+          {showMoreFilters && (
+            <div style={{ padding: '4px 16px 14px', display: 'flex', flexDirection: 'column', gap: 10 }}>
+
+              {/* גיל */}
+              <div>
+                <div style={{ fontSize: 11, fontWeight: 700, color: '#9b88bb', marginBottom: 6 }}>קבוצת גיל</div>
+                <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                  {AGE_GROUPS.map(ag => filterBtn(ag, ageGroup === ag, () => setAgeGroup(ageGroup === ag ? '' : ag), '#6B21A8'))}
+                </div>
+              </div>
+
+              {/* אבחנה */}
+              <div>
+                <div style={{ fontSize: 11, fontWeight: 700, color: '#9b88bb', marginBottom: 6 }}>אבחנה / התמחות</div>
+                <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                  {DIAGNOSES.map(d => filterBtn(d, diagnosis === d, () => setDiagnosis(diagnosis === d ? '' : d), '#0E7490'))}
+                </div>
+              </div>
+
+              {/* אוכלוסייה */}
+              <div>
+                <div style={{ fontSize: 11, fontWeight: 700, color: '#9b88bb', marginBottom: 6 }}>אוכלוסייה ייעודית</div>
+                <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                  {POPULATIONS.map(p => filterBtn(p, population === p, () => setPopulation(population === p ? '' : p), '#5E35B1'))}
+                </div>
+              </div>
+
+            </div>
+          )}
+        </div>
 
         <main style={{ maxWidth: 1100, margin: '0 auto', padding: '28px 16px' }}>
           {loading ? (
@@ -234,14 +322,11 @@ useEffect(() => {
             <div style={{ textAlign: 'center', padding: 64, color: '#aaa' }}>
               <div style={{ fontSize: 48, marginBottom: 12 }}>🔍</div>
               <div style={{ fontWeight: 700, fontSize: 18, marginBottom: 8, color: '#555' }}>לא נמצאו שירותים</div>
-              <button
-                onClick={() => { setSearch(''); setDistrict('הכל'); setCategory('הכל'); setSubcategory('הכל') }}
-                style={{
-                  background: 'linear-gradient(160deg, #8B00D4, #4C0080)', color: 'white', border: 'none',
-                  borderRadius: '999px', padding: '11px 28px', fontWeight: 700, fontSize: 14, cursor: 'pointer',
-                  fontFamily: "'Nunito', sans-serif", boxShadow: '0 4px 0 #2E0060, 0 8px 20px rgba(76,0,128,0.3)',
-                }}
-              >נקה פילטרים</button>
+              <button onClick={clearAll} style={{
+                background: 'linear-gradient(160deg, #8B00D4, #4C0080)', color: 'white', border: 'none',
+                borderRadius: '999px', padding: '11px 28px', fontWeight: 700, fontSize: 14, cursor: 'pointer',
+                fontFamily: "'Nunito', sans-serif", boxShadow: '0 4px 0 #2E0060, 0 8px 20px rgba(76,0,128,0.3)',
+              }}>נקה פילטרים</button>
             </div>
           ) : (
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 16, alignItems: 'stretch' }}>
@@ -259,7 +344,7 @@ useEffect(() => {
             style={{
               position: 'fixed', bottom: 24, left: 24, width: 48, height: 48, borderRadius: '50%',
               background: 'linear-gradient(160deg, #8B00D4, #4C0080)', color: 'white', border: 'none',
-              fontSize: 20, cursor: 'pointer', boxShadow: '0 4px 0 #3a8a5e, 0 8px 20px rgba(74,171,120,0.35)',
+              fontSize: 20, cursor: 'pointer', boxShadow: '0 4px 0 #2E0060, 0 8px 20px rgba(76,0,128,0.3)',
               zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800,
             }}
             onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-2px)'}
