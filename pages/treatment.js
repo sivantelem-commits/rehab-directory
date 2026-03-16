@@ -12,8 +12,7 @@ const CATEGORIES = {
   'שירותים נוספים': { color: '#0A6080', icon: '➕', desc: 'שירותים נוספים' },
 }
 
-const NAV = [['/', '🏠 ראשי'], ['/rehab', '♿ שיקום'], ['/treatment', '🏥 טיפול'], ['/map', '🗺️ מפה'], ['/register', 'הרשמת שירות'], ['/about', 'אודות'], ['/contact', '✉️ צור קשר'], ['/admin', 'ניהול']]
-
+const NAV = [['/', '🏠 ראשי'], ['/rehab', '♿ שיקום'], ['/treatment', '🏥 טיפול'], ['/map', '🗺️ מפה'], ['/guide', '📖 מדריך'], ['/register', 'הרשמת שירות'], ['/about', 'אודות'], ['/contact', '✉️ צור קשר'], ['/admin', 'ניהול']]
 
 const SkeletonCard = () => (
   <div style={{
@@ -91,13 +90,11 @@ export default function Treatment() {
 
   useEffect(() => { fetchServices() }, [fetchServices])
 
-  const isNational = district === '🌍 ארצי'
-
   if (!mounted) return null
 
   return (
     <>
-            <Head>
+      <Head>
         <title>שירותי טיפול פסיכיאטרי | בריאות נפש בישראל</title>
         <meta name="description" content="בתים מאזנים, מחלקות אשפוז פסיכיאטרי, מרפאות יום וחדרי מיון בישראל – מצאו שירות טיפולי לפי אזור וקטגוריה." />
         <meta name="robots" content="index, follow" />
@@ -154,7 +151,6 @@ export default function Treatment() {
           </div>
         </div>
 
-        {/* שורת מחוז + ספירה */}
         <div style={{
           background: 'white', borderBottom: '1px solid #a0d8e8',
           padding: '10px 16px', display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center',
@@ -168,8 +164,7 @@ export default function Treatment() {
                 border: `2px solid ${active ? (isNat ? '#1A3A5C' : '#0891B2') : '#c8eaf2'}`,
                 background: active ? (isNat ? '#1A3A5C' : '#0891B2') : 'white',
                 color: active ? 'white' : (isNat ? '#1A3A5C' : '#0A6080'),
-                cursor: 'pointer', fontFamily: "'Nunito', sans-serif",
-                transition: 'all 0.15s',
+                cursor: 'pointer', fontFamily: "'Nunito', sans-serif", transition: 'all 0.15s',
               }}>{d}</button>
             )
           })}
@@ -178,7 +173,6 @@ export default function Treatment() {
           </div>
         </div>
 
-        {/* שורת קטגוריות */}
         <div style={{
           background: 'white', borderBottom: '1px solid #a0d8e8',
           padding: '10px 16px', display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center',
@@ -218,14 +212,12 @@ export default function Treatment() {
                   borderRadius: '999px', padding: '11px 28px', fontWeight: 700, fontSize: 14, cursor: 'pointer',
                   fontFamily: "'Nunito', sans-serif", boxShadow: '0 4px 0 #0A3040, 0 8px 20px rgba(8,145,178,0.3)',
                 }}
-                onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 7px 0 #0A3040, 0 14px 28px rgba(8,145,178,0.35)' }}
-                onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 4px 0 #c85e32, 0 8px 20px rgba(238,122,80,0.3)' }}
               >נקה פילטרים</button>
             </div>
           ) : (
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 16 }}>
               {services.map(s => {
-                const cat = CATEGORIES[s.category] || { color: '#ee7a50', icon: '🏥' }
+                const cat = CATEGORIES[s.category] || { color: '#0891B2', icon: '🏥' }
                 return (
                   <div key={s.id} onClick={() => router.push(`/treatment/${s.id}`)}
                     style={{
@@ -270,8 +262,8 @@ export default function Treatment() {
             style={{
               position: 'fixed', bottom: 24, left: 24, width: 48, height: 48, borderRadius: '50%',
               background: 'linear-gradient(160deg, #0891B2, #164E63)', color: 'white', border: 'none',
-              fontSize: 20, cursor: 'pointer', boxShadow: '0 4px 0 #c85e32, 0 8px 20px rgba(238,122,80,0.35)',
-              zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, transition: 'transform 0.2s',
+              fontSize: 20, cursor: 'pointer', boxShadow: '0 4px 0 #0A3040, 0 8px 20px rgba(8,145,178,0.3)',
+              zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800,
             }}
             onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-2px)'}
             onMouseLeave={e => e.currentTarget.style.transform = 'translateY(0)'}
