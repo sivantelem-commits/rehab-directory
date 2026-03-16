@@ -57,9 +57,12 @@ function buildApiParams(answers) {
 
   function districtParams(district) {
     const p = new URLSearchParams()
-    // national = הצג הכל ללא סינון אזור
     if (district && district !== 'national') p.set('district', district)
     return p
+  }
+
+  function apiUrl(page, p) {
+    return page === 'treatment' ? `/api/treatment?${p}` : `/api/services?${p}`
   }
 
   // תמיד הצג שיקום לפי קטגוריות שנבחרו
@@ -71,10 +74,10 @@ function buildApiParams(answers) {
     })
   }
 
-  // טיפול רק אם ביקשו במפורש
+  // טיפול רק אם ביקשו במפורש — שולח ל-treatment_services
   if (wantsTreatment) {
     const p = districtParams(district)
-    params.push({ label: 'טיפול נפשי', url: `/api/services?${p}`, page: 'treatment' })
+    params.push({ label: 'טיפול נפשי', url: `/api/treatment?${p}`, page: 'treatment' })
   }
 
   // fallback — אם לא נבחרה שום מטרה
