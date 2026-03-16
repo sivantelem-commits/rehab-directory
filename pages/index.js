@@ -20,15 +20,15 @@ export default function Home() {
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'flex-start',
-        padding: '24px',
-        paddingTop: 40,
+        padding: '16px',
+        paddingTop: 24,
       }}>
 
         {/* כותרת */}
-        <div style={{ textAlign: 'center', marginBottom: 52, marginTop: 40 }}>
-          <img src="/logo.png" alt="לוגו" style={{ width: 200, height: 200, objectFit: 'contain', marginBottom: 10, mixBlendMode: 'multiply' }} />
+        <div style={{ textAlign: 'center', marginBottom: 28, marginTop: 16 }}>
+          <img src="/logo.png" alt="לוגו" style={{ width: 'min(160px, 40vw)', height: 'min(160px, 40vw)', objectFit: 'contain', marginBottom: 8, mixBlendMode: 'multiply' }} />
           <h1 style={{
-            fontSize: 32, fontWeight: 800,
+            fontSize: 'clamp(22px, 6vw, 32px)', fontWeight: 800,
             color: '#3d2a6e', margin: '0 0 10px',
             letterSpacing: '-0.3px',
           }}>
@@ -40,13 +40,13 @@ export default function Home() {
         </div>
 
         {/* שני כפתורים ראשיים */}
-        <div style={{ display: 'flex', gap: 32, flexWrap: 'wrap', justifyContent: 'center' }}>
+        <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', justifyContent: 'center' }}>
 
           {/* שיקום */}
           <button
             onClick={() => router.push('/rehab')}
             style={{
-              width: 210, height: 96,
+              width: 'min(210px, 42vw)', height: 88,
               borderRadius: '999px',
               background: 'linear-gradient(160deg, #8B00D4, #4C0080)',
               border: 'none',
@@ -78,7 +78,7 @@ export default function Home() {
           <button
             onClick={() => router.push('/treatment')}
             style={{
-              width: 210, height: 96,
+              width: 'min(210px, 42vw)', height: 88,
               borderRadius: '999px',
               background: 'linear-gradient(160deg, #0891B2, #164E63)',
               border: 'none',
