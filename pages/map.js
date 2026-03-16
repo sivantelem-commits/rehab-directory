@@ -14,7 +14,7 @@ const TREATMENT_COLORS = {
 }
 
 const DISTRICTS = ['הכל', 'צפון', 'חיפה', 'מרכז', 'תל אביב', 'ירושלים', 'דרום', 'יהודה ושומרון']
-const NAV = [['/', '🏠 ראשי'], ['/rehab', '♿ שיקום'], ['/treatment', '🏥 טיפול'], ['/map', '🗺️ מפה'], ['/register', 'הרשמת שירות'], ['/about', 'אודות'], ['/contact', '✉️ צור קשר'], ['/admin', 'ניהול']]
+const NAV = [['/', '🏠 ראשי'], ['/rehab', '♿ שיקום'], ['/treatment', '🏥 טיפול'], ['/map', '🗺️ מפה'], ['/guide', '📖 מדריך'], ['/register', 'הרשמת שירות'], ['/about', 'אודות'], ['/contact', '✉️ צור קשר'], ['/admin', 'ניהול']]
 
 export default function MapPage() {
   const [rehabServices, setRehabServices] = useState([])
@@ -131,7 +131,6 @@ export default function MapPage() {
     (!showNationalOnly || s.is_national)
   ).length
 
-  // שירותים ארציים לפאנל הצד
   const nationalRehab = rehabServices.filter(s =>
     s.is_national &&
     (rehabCategory === 'הכל' || s.category === rehabCategory)
@@ -146,7 +145,7 @@ export default function MapPage() {
 
   return (
     <>
-            <Head>
+      <Head>
         <title>מפת שירותים | בריאות נפש בישראל</title>
         <meta name="description" content="מפה אינטראקטיבית של שירותי שיקום וטיפול פסיכיאטרי בישראל – סננו לפי אזור וקטגוריה." />
         <meta name="robots" content="index, follow" />
@@ -159,6 +158,7 @@ export default function MapPage() {
         <meta property="og:site_name" content="בריאות נפש בישראל" />
         <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
       </Head>
+
       <div dir="rtl" style={{ fontFamily: "'Nunito', sans-serif", minHeight: '100vh', background: '#f5f5f5', display: 'flex', flexDirection: 'column' }}>
 
         <header style={{ background: '#1A3A5C', color: 'white', padding: '10px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxShadow: '0 2px 12px rgba(0,0,0,0.15)', flexWrap: 'wrap', gap: 8 }}>
@@ -171,12 +171,17 @@ export default function MapPage() {
           </div>
           <nav style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
             {NAV.map(([href, label]) => (
-              <a key={href} href={href} style={{ color: 'white', background: 'rgba(255,255,255,0.12)', borderRadius: '999px', padding: '6px 14px', fontWeight: 600, fontSize: 12, border: '1.5px solid rgba(255,255,255,0.25)', textDecoration: 'none' }}>{label}</a>
+              <a key={href} href={href} style={{
+                color: 'white',
+                background: href === '/map' ? 'rgba(255,255,255,0.25)' : 'rgba(255,255,255,0.12)',
+                borderRadius: '999px', padding: '6px 14px', fontWeight: 600, fontSize: 12,
+                border: href === '/map' ? '1.5px solid rgba(255,255,255,0.6)' : '1.5px solid rgba(255,255,255,0.25)',
+                textDecoration: 'none',
+              }}>{label}</a>
             ))}
           </nav>
         </header>
 
-        {/* סרגל פילטרים */}
         <div style={{ background: 'white', borderBottom: '1px solid #e0e0e0', padding: '10px 16px', display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'center' }}>
           <select value={district} onChange={e => setDistrict(e.target.value)} style={sel}>
             {DISTRICTS.map(d => <option key={d}>{d}</option>)}
@@ -210,37 +215,20 @@ export default function MapPage() {
             )}
           </div>
 
-          {/* כפתור ארצי */}
-          <button
-            onClick={() => setShowNationalOnly(v => !v)}
-            style={{
-              display: 'flex', alignItems: 'center', gap: 6,
-              padding: '7px 14px', borderRadius: '999px',
-              border: `2px solid ${showNationalOnly ? '#1A3A5C' : '#ddd'}`,
-              background: showNationalOnly ? '#EEF2FF' : 'white',
-              color: showNationalOnly ? '#1A3A5C' : '#aaa',
-              fontWeight: 700, fontSize: 13, cursor: 'pointer',
-              fontFamily: "'Nunito', sans-serif",
-              transition: 'all 0.15s',
-            }}>
-            🌍 ארצי בלבד
-          </button>
+          <button onClick={() => setShowNationalOnly(v => !v)} style={{
+            display: 'flex', alignItems: 'center', gap: 6, padding: '7px 14px', borderRadius: '999px',
+            border: `2px solid ${showNationalOnly ? '#1A3A5C' : '#ddd'}`,
+            background: showNationalOnly ? '#EEF2FF' : 'white',
+            color: showNationalOnly ? '#1A3A5C' : '#aaa',
+            fontWeight: 700, fontSize: 13, cursor: 'pointer', fontFamily: "'Nunito', sans-serif", transition: 'all 0.15s',
+          }}>🌍 ארצי בלבד</button>
 
-          {/* כפתור פאנל ארצי */}
           {nationalCount > 0 && (
-            <button
-              onClick={() => setShowNationalPanel(v => !v)}
-              style={{
-                display: 'flex', alignItems: 'center', gap: 6,
-                padding: '7px 14px', borderRadius: '999px',
-                border: `2px solid #7B2D8B`,
-                background: showNationalPanel ? '#F3E5F5' : 'white',
-                color: '#7B2D8B',
-                fontWeight: 700, fontSize: 13, cursor: 'pointer',
-                fontFamily: "'Nunito', sans-serif",
-              }}>
-              📋 שירותים ארציים ({nationalCount})
-            </button>
+            <button onClick={() => setShowNationalPanel(v => !v)} style={{
+              display: 'flex', alignItems: 'center', gap: 6, padding: '7px 14px', borderRadius: '999px',
+              border: `2px solid #7B2D8B`, background: showNationalPanel ? '#F3E5F5' : 'white',
+              color: '#7B2D8B', fontWeight: 700, fontSize: 13, cursor: 'pointer', fontFamily: "'Nunito', sans-serif",
+            }}>📋 שירותים ארציים ({nationalCount})</button>
           )}
 
           <div style={{ fontSize: 13, color: '#888', marginRight: 'auto', fontWeight: 600 }}>
@@ -251,32 +239,26 @@ export default function MapPage() {
         <div style={{ position: 'relative', flex: 1, display: 'flex', flexDirection: 'column' }}>
           <div id="main-map" style={{ height: isMobile ? '55vw' : 'calc(100vh - 130px)', minHeight: isMobile ? 260 : undefined, width: '100%' }} />
 
-          {/* פאנל שירותים ארציים */}
           {showNationalPanel && (
             <div style={{
               position: 'absolute', top: 12, right: 12, width: 300,
               maxHeight: 'calc(100vh - 200px)', overflowY: 'auto',
-              background: 'white', borderRadius: 16,
-              boxShadow: '0 8px 32px rgba(0,0,0,0.18)',
-              borderTop: '4px solid #7B2D8B',
-              zIndex: 1000,
+              background: 'white', borderRadius: 16, boxShadow: '0 8px 32px rgba(0,0,0,0.18)',
+              borderTop: '4px solid #7B2D8B', zIndex: 1000,
             }}>
               <div style={{ padding: '14px 16px 10px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #f0f0f0', position: 'sticky', top: 0, background: 'white', borderRadius: '16px 16px 0 0' }}>
                 <div style={{ fontWeight: 800, fontSize: 14, color: '#1A3A5C' }}>🌍 שירותים ארציים</div>
                 <button onClick={() => setShowNationalPanel(false)} style={{ background: 'none', border: 'none', fontSize: 18, cursor: 'pointer', color: '#aaa' }}>✕</button>
               </div>
-
               <div style={{ padding: '10px 12px', display: 'flex', flexDirection: 'column', gap: 8 }}>
                 {showRehab && nationalRehab.length > 0 && (
                   <>
                     <div style={{ fontSize: 11, fontWeight: 800, color: '#8B00D4', textTransform: 'uppercase', letterSpacing: 0.5, marginTop: 4 }}>♿ שיקום</div>
                     {nationalRehab.map(s => (
-                      <div key={s.id}
-                        onClick={() => { setSelected({ ...s, type: 'rehab' }); setShowNationalPanel(false) }}
-                        style={{ padding: '10px 12px', borderRadius: 12, background: '#f9f9f9', cursor: 'pointer', border: '1.5px solid #eee', transition: 'background 0.1s' }}
+                      <div key={s.id} onClick={() => { setSelected({ ...s, type: 'rehab' }); setShowNationalPanel(false) }}
+                        style={{ padding: '10px 12px', borderRadius: 12, background: '#f9f9f9', cursor: 'pointer', border: '1.5px solid #eee' }}
                         onMouseEnter={e => e.currentTarget.style.background = '#f7f0ff'}
-                        onMouseLeave={e => e.currentTarget.style.background = '#f9f9f9'}
-                      >
+                        onMouseLeave={e => e.currentTarget.style.background = '#f9f9f9'}>
                         <div style={{ fontWeight: 700, fontSize: 13, color: '#1A3A5C', marginBottom: 2 }}>{s.name}</div>
                         <div style={{ fontSize: 11, color: '#888' }}>
                           <span style={{ background: '#f7f0ff', color: '#4C0080', borderRadius: 999, padding: '1px 7px', fontWeight: 600 }}>{s.category}</span>
@@ -286,17 +268,14 @@ export default function MapPage() {
                     ))}
                   </>
                 )}
-
                 {showTreatment && nationalTreatment.length > 0 && (
                   <>
                     <div style={{ fontSize: 11, fontWeight: 800, color: '#0891B2', textTransform: 'uppercase', letterSpacing: 0.5, marginTop: 4 }}>🏥 טיפול</div>
                     {nationalTreatment.map(s => (
-                      <div key={s.id}
-                        onClick={() => { setSelected({ ...s, type: 'treatment' }); setShowNationalPanel(false) }}
-                        style={{ padding: '10px 12px', borderRadius: 12, background: '#f9f9f9', cursor: 'pointer', border: '1.5px solid #eee', transition: 'background 0.1s' }}
+                      <div key={s.id} onClick={() => { setSelected({ ...s, type: 'treatment' }); setShowNationalPanel(false) }}
+                        style={{ padding: '10px 12px', borderRadius: 12, background: '#f9f9f9', cursor: 'pointer', border: '1.5px solid #eee' }}
                         onMouseEnter={e => e.currentTarget.style.background = '#f0faff'}
-                        onMouseLeave={e => e.currentTarget.style.background = '#f9f9f9'}
-                      >
+                        onMouseLeave={e => e.currentTarget.style.background = '#f9f9f9'}>
                         <div style={{ fontWeight: 700, fontSize: 13, color: '#1A3A5C', marginBottom: 2 }}>{s.name}</div>
                         <div style={{ fontSize: 11, color: '#888' }}>
                           <span style={{ background: '#f0faff', color: '#0A6080', borderRadius: 999, padding: '1px 7px', fontWeight: 600 }}>{s.category}</span>
@@ -306,7 +285,6 @@ export default function MapPage() {
                     ))}
                   </>
                 )}
-
                 {nationalRehab.length === 0 && nationalTreatment.length === 0 && (
                   <div style={{ textAlign: 'center', padding: '20px 0', color: '#aaa', fontSize: 13 }}>אין שירותים ארציים</div>
                 )}
@@ -314,7 +292,6 @@ export default function MapPage() {
             </div>
           )}
 
-          {/* popup שירות נבחר */}
           {selected && (
             <div style={{
               position: isMobile ? 'relative' : 'absolute',
@@ -323,9 +300,7 @@ export default function MapPage() {
               left: isMobile ? undefined : 16,
               maxWidth: isMobile ? '100%' : 360,
               margin: isMobile ? '0' : '0 auto',
-              background: 'white',
-              borderRadius: isMobile ? 0 : 16,
-              padding: '16px',
+              background: 'white', borderRadius: isMobile ? 0 : 16, padding: '16px',
               boxShadow: '0 8px 32px rgba(0,0,0,0.2)',
               borderTop: `4px solid ${selected.type === 'rehab' ? (REHAB_COLORS[selected.category] || '#4aab78') : (TREATMENT_COLORS[selected.category] || '#ee7a50')}`,
               zIndex: 1000,
@@ -344,12 +319,14 @@ export default function MapPage() {
                   {selected.type === 'rehab' ? '♿' : '🏥'} {selected.category}
                 </span>
                 {selected.is_national && (
-                  <span style={{ background: '#EEF2FF', color: '#1A3A5C', borderRadius: '999px', padding: '2px 10px', fontSize: 11, fontWeight: 700 }}>
-                    🌍 פריסה ארצית
-                  </span>
+                  <span style={{ background: '#EEF2FF', color: '#1A3A5C', borderRadius: '999px', padding: '2px 10px', fontSize: 11, fontWeight: 700 }}>🌍 פריסה ארצית</span>
                 )}
               </div>
-              {selected.description && <div style={{ fontSize: 12, color: '#445', lineHeight: 1.55, marginBottom: 10, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{selected.description}</div>}
+              {selected.description && (
+                <div style={{ fontSize: 12, color: '#445', lineHeight: 1.55, marginBottom: 10, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                  {selected.description}
+                </div>
+              )}
               <a href={`/${selected.type === 'rehab' ? 'service' : 'treatment'}/${selected.id}`}
                 style={{ display: 'block', textAlign: 'center', background: selected.type === 'rehab' ? '#8B00D4' : '#0891B2', color: 'white', borderRadius: '999px', padding: '8px 0', fontWeight: 700, fontSize: 13, textDecoration: 'none' }}>
                 לפרטים המלאים ←
