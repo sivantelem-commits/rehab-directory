@@ -40,13 +40,13 @@ export default function Home() {
         </div>
 
         {/* שני כפתורים ראשיים */}
-        <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', justifyContent: 'center' }}>
+        <div style={{ display: 'flex', gap: 16, flexDirection: 'column', alignItems: 'center' }}>
 
           {/* שיקום */}
           <button
             onClick={() => router.push('/rehab')}
             style={{
-              width: 'min(210px, 42vw)', height: 88,
+              width: 'min(420px, 90vw)', height: 88,
               borderRadius: '999px',
               background: 'linear-gradient(160deg, #8B00D4, #4C0080)',
               border: 'none',
@@ -78,7 +78,7 @@ export default function Home() {
           <button
             onClick={() => router.push('/treatment')}
             style={{
-              width: 'min(210px, 42vw)', height: 88,
+              width: 'min(420px, 90vw)', height: 88,
               borderRadius: '999px',
               background: 'linear-gradient(160deg, #0891B2, #164E63)',
               border: 'none',
