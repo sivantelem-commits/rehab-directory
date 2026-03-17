@@ -8,7 +8,7 @@ const AGE_GROUPS = ['צעירים', 'מבוגרים', 'קשישים']
 const DIAGNOSES = ['הפרעות אכילה', 'OCD', 'פוסט טראומה', 'פוסט טראומה מורכבת', 'התמכרויות']
 const POPULATIONS = ['נשים', 'דתי/מסורתי', 'חרדי', 'להט"ב']
 
-const NAV = [['/', 'ראשי'], ['/rehab', 'שיקום'], ['/treatment', 'טיפול'], ['/map', 'מפה'], ['/guide', 'מדריך'], ['/register', 'הרשמת שירות'], ['/about', 'אודות'], ['/contact', 'צור קשר'], ['/admin', 'ניהול']]
+const NAV = [['/', 'ראשי'], ['/rehab', 'שיקום'], ['/treatment', 'טיפול'], ['/map', 'מפה'], ['/register', 'הוספת שירות'], ['/about', 'אודות'], ['/contact', 'צור קשר'], ['/admin', 'ניהול']]
 
 const emptyForm = {
   name: '', district: '', city: '', category: '', subcategory: '',
@@ -125,12 +125,12 @@ export default function Register() {
   return (
     <>
       <Head>
-        <title>הרשמת שירות | בריאות נפש בישראל</title>
+        <title>הוספת שירות | בריאות נפש בישראל</title>
         <meta name="description" content="הוסיפו שירות שיקום או טיפול פסיכיאטרי למאגר הלאומי." />
         <meta name="robots" content="index, follow" />
         <link rel="canonical" href="https://rehabdirectoryil.vercel.app/register" />
         <meta property="og:type" content="website" />
-        <meta property="og:title" content="הרשמת שירות | בריאות נפש בישראל" />
+        <meta property="og:title" content="הוספת שירות | בריאות נפש בישראל" />
         <meta property="og:description" content="הוסיפו שירות שיקום או טיפול פסיכיאטרי למאגר הלאומי." />
         <meta property="og:url" content="https://rehabdirectoryil.vercel.app/register" />
         <meta property="og:locale" content="he_IL" />
@@ -150,7 +150,7 @@ export default function Register() {
             <img src="/logo.png" alt="לוגו" style={{ width: 44, height: 44, objectFit: 'contain', filter: 'brightness(0) invert(1)' }} />
             <div>
               <div style={{ fontWeight: 800, fontSize: 18 }}>בריאות נפש בישראל</div>
-              <div style={{ fontSize: 11, opacity: 0.8 }}>הרשמת שירות</div>
+              <div style={{ fontSize: 11, opacity: 0.8 }}>הוספת שירות</div>
             </div>
           </div>
           <a href="/calculator" style={{
@@ -179,8 +179,8 @@ export default function Register() {
           background: `linear-gradient(160deg, ${darkColor}, ${color})`,
           color: 'white', padding: '32px 20px', textAlign: 'center',
         }}>
-          <img src='/register-icon.png' alt='הרשמת שירות' style={{ width: 160, height: 160, objectFit: 'contain', marginBottom: 0, filter: 'invert(1) brightness(10)' }} />
-          <h1 style={{ fontSize: 24, fontWeight: 800, margin: '0 0 8px' }}>הרשמת שירות חדש</h1>
+          <img src='/register-icon.png' alt='הוספת שירות' style={{ width: 160, height: 160, objectFit: 'contain', marginBottom: 0, filter: 'invert(1) brightness(10)' }} />
+          <h1 style={{ fontSize: 24, fontWeight: 800, margin: '0 0 8px' }}>הוספת שירות חדש</h1>
           <p style={{ fontSize: 14, opacity: 0.85, margin: 0 }}>לאחר אישור האדמין השירות יופיע במאגר</p>
         </div>
 
