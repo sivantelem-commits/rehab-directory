@@ -9,7 +9,7 @@ const DEEP = '#4C0080'
 const STEPS = [
   {
     id: 'distress',
-    question: 'עד כמה המצוקה הנפשית משפיעה עליך כרגע?',
+    question: 'איך הקושי הנפשי משפיע על חיי היומיום שלך כרגע?',
     multi: false,
     scale: true,
     options: [
@@ -45,6 +45,29 @@ const STEPS = [
       { label: 'חברה / פנאי', value: 'social', scores: { rehab: 1 } },
       { label: 'מגורים עצמאיים', value: 'housing', scores: { rehab: 2 } },
       { label: 'התנהלות יום-יומית', value: 'daily', scores: { rehab: 2 } },
+    ],
+  },
+  {
+    id: 'age_group',
+    question: 'מה קבוצת הגיל שלך?',
+    multi: false,
+    options: [
+      { label: 'צעירים (18–30)', value: 'צעירים', scores: {} },
+      { label: 'מבוגרים (31–65)', value: 'מבוגרים', scores: {} },
+      { label: 'קשישים (65+)', value: 'קשישים', scores: {} },
+    ],
+  },
+  {
+    id: 'population',
+    question: 'האם שייך/ת לאוכלוסייה ייעודית?',
+    hint: 'אופציונלי — יעזור למצוא שירותים מותאמים',
+    multi: false,
+    options: [
+      { label: 'נשים', value: 'נשים', scores: {} },
+      { label: 'דתי/מסורתי', value: 'דתי/מסורתי', scores: {} },
+      { label: 'חרדי', value: 'חרדי', scores: {} },
+      { label: 'להט"ב', value: 'להט"ב', scores: {} },
+      { label: 'לא רלוונטי', value: 'none', scores: {} },
     ],
   },
   {
@@ -304,7 +327,14 @@ export default function Calculator() {
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14 }}>
                   <span style={{ background: group.page === 'treatment' ? 'linear-gradient(160deg, #0891B2, #164E63)' : `linear-gradient(160deg, #8B00D4, ${DEEP})`, color: '#fff', fontSize: 12, fontWeight: 700, padding: '4px 14px', borderRadius: 999 }}>{group.label}</span>
                   <span style={{ fontSize: 13, color: '#9ca3af', fontWeight: 600 }}>{group.services.length} שירותים</span>
-                  <a href={group.page === 'rehab' ? '/rehab' : '/treatment'} style={{ marginRight: 'auto', fontSize: 13, color: PURPLE, fontWeight: 700, textDecoration: 'none' }}>ראה הכל ←</a>
+                  <a href={(() => {
+                    if (group.page !== 'rehab') return '/treatment';
+                    const p = new URLSearchParams();
+                    if (answers.age_group && answers.age_group !== 'none') p.set('age_group', answers.age_group);
+                    if (answers.population && answers.population !== 'none') p.set('population', answers.population);
+                    const qs = p.toString();
+                    return qs ? '/rehab?' + qs : '/rehab';
+                  })()} style={{ marginRight: 'auto', fontSize: 13, color: PURPLE, fontWeight: 700, textDecoration: 'none' }}>ראה הכל ←</a>
                 </div>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 16 }}>
                   {group.services.slice(0, 6).map(s => (
