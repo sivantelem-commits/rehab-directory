@@ -65,7 +65,7 @@ export default function Guide() {
         {/* Hero */}
         <div style={{
           background: 'linear-gradient(135deg, #1A3A5C, #2A5298)',
-          color: 'white', padding: '48px 20px', textAlign: 'center',
+          color: 'white', padding: '16px 20px 32px', textAlign: 'center',
         }}>
           <img src='/guide-logo.png' alt='מדריך' style={{ width: 220, height: 220, objectFit: 'contain', marginBottom: -40, filter: 'invert(1) brightness(10)' }} />
           <h1 style={{ fontSize: 28, fontWeight: 800, margin: '0 0 10px' }}>מדריך למטופל</h1>
