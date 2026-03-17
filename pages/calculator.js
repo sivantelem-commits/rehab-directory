@@ -139,7 +139,7 @@ function ProgressBar({ current, total }) {
   return (
     <div style={{ display: 'flex', gap: 6, marginBottom: 8 }}>
       {Array.from({ length: total }).map((_, i) => (
-        <div key={i} style={{ flex: 1, height: 3, borderRadius: 2, background: i < current - 1 ? DEEP : i === current - 1 ? '#A855F7' : '#e5e7eb', transition: 'background 0.3s' }} />
+        <div key={i} style={{ flex: 1, height: 3, borderRadius: 2, background: i < current - 1 ? '#1A3A5C' : i === current - 1 ? '#2A5298' : '#e5e7eb', transition: 'background 0.3s' }} />
       ))}
     </div>
   )
@@ -150,8 +150,8 @@ function OptionBtn({ label, selected, onClick }) {
     <button type="button" onClick={onClick} style={{
       display: 'flex', alignItems: 'center', padding: '12px 16px', borderRadius: 12,
       cursor: 'pointer', textAlign: 'right', width: '100%',
-      border: selected ? `1.5px solid ${PURPLE}` : '1px solid #e5e7eb',
-      background: selected ? '#f5f3ff' : '#fff', transition: 'all 0.15s',
+      border: selected ? `1.5px solid #1A3A5C` : '1px solid #e5e7eb',
+      background: selected ? '#EFF6FF' : '#fff', transition: 'all 0.15s',
       fontFamily: "'Nunito', sans-serif",
     }}>
       <span style={{ fontSize: 14, fontWeight: 600, color: '#1f2937' }}>{label}</span>
@@ -165,8 +165,8 @@ function ScaleBtn({ label, index, selected, onClick }) {
     <button type="button" onClick={onClick} style={{
       flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center',
       padding: '10px 4px', borderRadius: 12, cursor: 'pointer',
-      border: selected ? `1.5px solid ${PURPLE}` : '1px solid #e5e7eb',
-      background: selected ? '#f5f3ff' : '#fff', transition: 'all 0.15s',
+      border: selected ? `1.5px solid #1A3A5C` : '1px solid #e5e7eb',
+      background: selected ? '#EFF6FF' : '#fff', transition: 'all 0.15s',
       fontFamily: "'Nunito', sans-serif",
     }}>
       <div style={{ width: 14, height: 14, borderRadius: '50%', background: colors[index], marginBottom: 6 }} />
@@ -248,11 +248,11 @@ export default function Calculator() {
   if (step === 0) return (
     <Page title="מחשבון איתור מסלול">
       <div style={{ maxWidth: 560, margin: '0 auto', padding: '48px 16px' }}>
-        <div style={{ background: '#fff', borderRadius: 20, border: '1px solid #e9d5ff', padding: '40px 28px', textAlign: 'center', boxShadow: '0 4px 24px rgba(76,0,128,0.08)' }}>
+        <div style={{ background: '#fff', borderRadius: 20, border: '1px solid #BFDBFE', padding: '40px 28px', textAlign: 'center', boxShadow: '0 4px 24px rgba(76,0,128,0.08)' }}>
           <div style={{ fontSize: 52, marginBottom: 16 }}>🧭</div>
           <h1 style={{ fontSize: 24, fontWeight: 800, color: '#3d2a6e', marginBottom: 10 }}>מחשבון איתור מסלול</h1>
           <p style={{ fontSize: 15, color: '#6b7280', lineHeight: 1.7, marginBottom: 12 }}>7 שאלות קצרות — וקבל המלצה מותאמת אישית.</p>
-          <p style={{ fontSize: 12, color: '#9ca3af', lineHeight: 1.6, marginBottom: 28, padding: '10px 14px', background: '#f9fafb', borderRadius: 10 }}>
+          <p style={{ fontSize: 12, color: '#6b7280', lineHeight: 1.6, marginBottom: 28, padding: '10px 14px', background: '#f9fafb', borderRadius: 10 }}>
             הכלי אינו אבחון ואינו מחליף איש מקצוע. הוא מסייע בכיוון ראשוני בלבד.<br />
             אם יש מצוקה חריפה או סיכון מיידי — יש לפנות בדחיפות לגורם רפואי.
           </p>
@@ -265,7 +265,7 @@ export default function Calculator() {
   if (loading) return (
     <Page title="מחפש שירותים...">
       <div style={{ maxWidth: 560, margin: '0 auto', padding: '80px 16px', textAlign: 'center' }}>
-        <div style={{ width: 40, height: 40, borderRadius: '50%', border: `3px solid #e9d5ff`, borderTopColor: PURPLE, animation: 'spin 0.8s linear infinite', margin: '0 auto 20px' }} />
+        <div style={{ width: 40, height: 40, borderRadius: '50%', border: `3px solid #BFDBFE`, borderTopColor: '#2A5298', animation: 'spin 0.8s linear infinite', margin: '0 auto 20px' }} />
         <p style={{ color: '#9b88bb', fontWeight: 600 }}>מחפש שירותים מתאימים...</p>
         <style>{`@keyframes spin { to { transform: rotate(360deg) } }`}</style>
       </div>
@@ -394,8 +394,8 @@ function Page({ title, children }) {
         <title>{title} | בריאות נפש בישראל</title>
         <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
       </Head>
-      <div dir="rtl" style={{ fontFamily: "'Nunito', sans-serif", minHeight: '100vh', background: '#f7f3ff' }}>
-        <header style={{ background: 'linear-gradient(135deg, #2E0060, #8B00D4)', color: 'white', padding: '10px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 8, boxShadow: '0 2px 12px rgba(76,0,128,0.2)' }}>
+      <div dir="rtl" style={{ fontFamily: "'Nunito', sans-serif", minHeight: '100vh', background: '#F0F7FF' }}>
+        <header style={{ background: '#1A3A5C', color: 'white', padding: '10px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 8, boxShadow: '0 2px 12px rgba(0,0,0,0.15)' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
             <img src="/logo.png" alt="לוגו" style={{ width: 44, height: 44, objectFit: 'contain', filter: 'brightness(0) invert(1)' }} />
             <div>
@@ -404,13 +404,13 @@ function Page({ title, children }) {
             </div>
           </div>
           <nav style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-            {[['/', 'ראשי'], ['/rehab', 'שיקום'], ['/treatment', 'טיפול'], ['/map', 'מפה'], ['/guide', 'מדריך'], ['/about', 'אודות'], ['/contact', 'צור קשר']].map(([href, label]) => (
+            {[['/', 'ראשי'], ['/rehab', 'שיקום'], ['/treatment', 'טיפול'], ['/map', 'מפה'], ['/about', 'אודות'], ['/contact', 'צור קשר']].map(([href, label]) => (
               <a key={href} href={href} style={{ color: 'white', background: href === '/calculator' ? 'rgba(255,255,255,0.25)' : 'rgba(255,255,255,0.1)', borderRadius: '999px', padding: '6px 14px', fontWeight: 600, fontSize: 12, border: '1.5px solid rgba(255,255,255,0.2)', textDecoration: 'none' }}>{label}</a>
             ))}
           </nav>
         </header>
         {children}
-        <footer style={{ background: 'linear-gradient(135deg, #2E0060, #4C0080)', color: 'rgba(255,255,255,0.75)', textAlign: 'center', padding: '24px', fontSize: 13, marginTop: 48, fontWeight: 500 }}>
+        <footer style={{ background: '#1A3A5C', color: 'rgba(255,255,255,0.75)', textAlign: 'center', padding: '24px', fontSize: 13, marginTop: 48, fontWeight: 500 }}>
           בריאות נפש בישראל © 2026
         </footer>
       </div>
