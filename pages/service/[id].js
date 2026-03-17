@@ -31,10 +31,11 @@ export default function ServicePage() {
     fetch(`/api/services?id=${id}`)
       .then(r => r.json())
       .then(data => {
-        const found = Array.isArray(data) ? data.find(s => s.id === id) : null
-        setService(found || null)
+        // API מחזיר אובייקט בודד כשמחפשים לפי id
+        setService(Array.isArray(data) ? data.find(s => s.id === id) : (data?.id ? data : null))
         setLoading(false)
       })
+      .catch(() => setLoading(false))
   }, [id])
 
   const copyLink = () => {
