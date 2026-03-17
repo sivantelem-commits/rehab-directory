@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import Head from 'next/head'
 
-const NAV = [['/', 'ראשי'], ['/rehab', 'שיקום'], ['/treatment', 'טיפול'], ['/map', 'מפה'], ['/guide', 'מדריך'], ['/register', 'הרשמת שירות'], ['/about', 'אודות'], ['/contact', 'צור קשר'], ['/admin', 'ניהול']]
+const NAV = [['/', 'ראשי'], ['/rehab', 'שיקום'], ['/treatment', 'טיפול'], ['/map', 'מפה'], ['/register', 'הרשמת שירות'], ['/about', 'אודות'], ['/contact', 'צור קשר'], ['/admin', 'ניהול']]
 
 const PURPLE = '#4C0080'
 const CYAN = '#0891B2'
@@ -243,7 +243,7 @@ export default function Guide() {
           </div>
 
           {/* CTA */}
-          <div style={{ background: 'linear-gradient(160deg, #2E0060, #8B00D4)', borderRadius: 20, padding: '28px 24px', textAlign: 'center', color: 'white', marginTop: 8 }}>
+          <div style={{ background: 'linear-gradient(135deg, #1A3A5C, #2A5298)', borderRadius: 20, padding: '28px 24px', textAlign: 'center', color: 'white', marginTop: 8 }}>
             <div style={{ fontSize: 36, marginBottom: 10 }}>🧭</div>
             <div style={{ fontWeight: 800, fontSize: 18, marginBottom: 8 }}>מוכנים למצוא מסגרת מתאימה?</div>
             <div style={{ fontSize: 14, opacity: 0.85, marginBottom: 20, lineHeight: 1.6 }}>
@@ -259,6 +259,11 @@ export default function Guide() {
                 padding: '11px 24px', fontWeight: 800, fontSize: 14, textDecoration: 'none',
                 border: '1.5px solid rgba(255,255,255,0.4)',
               }}>♿ חיפוש שירותי שיקום</a>
+              <a href="/treatment" style={{
+                background: 'rgba(255,255,255,0.15)', color: 'white', borderRadius: '999px',
+                padding: '11px 24px', fontWeight: 800, fontSize: 14, textDecoration: 'none',
+                border: '1.5px solid rgba(255,255,255,0.4)',
+              }}>🏥 חיפוש שירותי טיפול</a>
             </div>
           </div>
 
