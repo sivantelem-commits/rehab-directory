@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import Head from 'next/head'
 
-const NAV = [['/', '🏠 ראשי'], ['/rehab', '♿ שיקום'], ['/treatment', '🏥 טיפול'], ['/map', '🗺️ מפה'], ['/guide', '📖 מדריך'], ['/register', 'הרשמת שירות'], ['/about', 'אודות'], ['/contact', '✉️ צור קשר'], ['/admin', 'ניהול']]
+const NAV = [['/', '🏠 ראשי'], ['/rehab', '♿ שיקום'], ['/treatment', '🏥 טיפול'], ['/map', '🗺️ מפה'], ['/guide', '📖 מדריך'], ['/register', 'הרשמת שירות'], ['/about', 'אודות'], ['/contact', 'צור קשר'], ['/admin', 'ניהול']]
 
 const PURPLE = '#4C0080'
 const CYAN = '#0891B2'
@@ -58,7 +58,7 @@ export default function Guide() {
           background: 'linear-gradient(160deg, #2E0060, #8B00D4)',
           color: 'white', padding: '48px 20px', textAlign: 'center',
         }}>
-          <div style={{ fontSize: 52, marginBottom: 12 }}>📖</div>
+          <img src='/guide-logo.png' alt='מדריך' style={{ width: 160, height: 160, objectFit: 'contain', marginBottom: 0, filter: 'invert(1) brightness(10)' }} />
           <h1 style={{ fontSize: 28, fontWeight: 800, margin: '0 0 10px' }}>מדריך למטופל</h1>
           <p style={{ fontSize: 15, opacity: 0.85, maxWidth: 560, margin: '0 auto', lineHeight: 1.8 }}>
             כל מה שצריך לדעת לפני שמתחילים — בשפה פשוטה וברורה
@@ -253,7 +253,7 @@ export default function Guide() {
           padding: '24px', fontSize: 13, marginTop: 48, fontWeight: 500,
         }}>
           <div style={{ marginBottom: 8 }}>
-            <a href="/contact" style={{ color: 'rgba(255,255,255,0.7)', textDecoration: 'none' }}>✉️ צור קשר</a>
+            <a href="/contact" style={{ color: 'rgba(255,255,255,0.7)', textDecoration: 'none' }}>צור קשר</a>
           </div>
           בריאות נפש בישראל © 2026
         </footer>
