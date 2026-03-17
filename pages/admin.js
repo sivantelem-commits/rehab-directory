@@ -153,7 +153,7 @@ export default function Admin() {
         await fetch('/api/admin/approve-email', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', adminkey: adminKey },
-          body: JSON.stringify({ serviceName: service.name, serviceEmail: service.email }),
+          body: JSON.stringify({ serviceName: service.name, serviceEmail: service.email, contactEmail: service.contact_email }),
         })
       }
     }
@@ -220,7 +220,7 @@ export default function Admin() {
       await fetch('/api/admin/reject-email', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', adminkey: adminKey },
-        body: JSON.stringify({ serviceEmail: rejectEmailModal.email, serviceName: rejectEmailModal.name, reason: rejectReason }),
+        body: JSON.stringify({ serviceEmail: rejectEmailModal.email, contactEmail: rejectEmailModal.contactEmail, serviceName: rejectEmailModal.name, reason: rejectReason }),
       })
       setRejectEmailModal(null)
       setRejectReason('')
@@ -525,7 +525,7 @@ export default function Admin() {
                                 <button onClick={() => openEdit(s, 'services')} style={{ background: '#EEF2FF', color: '#1A3A5C', border: '1.5px solid #C5D0F0', borderRadius: 20, padding: '8px 18px', fontWeight: 700, fontSize: 13, cursor: 'pointer' }}>✏️ ערוך</button>
                                 <button onClick={() => setLocationService({ ...s, _table: 'services' })} style={{ background: s.lat ? '#E8F5E9' : '#FFF3E0', color: s.lat ? '#2E7D32' : '#6B21A8', border: `1.5px solid ${s.lat ? '#A5D6A7' : '#d4b0f0'}`, borderRadius: 20, padding: '8px 18px', fontWeight: 700, fontSize: 13, cursor: 'pointer' }}>📍 {s.lat ? 'עדכן מיקום' : 'הוסף מיקום'}</button>
                                 <button onClick={() => updateStatus(s.id, 'rejected')} style={{ background: '#FFF0F0', color: '#C62828', border: '1.5px solid #FFCDD2', borderRadius: 20, padding: '8px 18px', fontWeight: 700, fontSize: 13, cursor: 'pointer' }}>✕ דחה</button>
-                                {s.email && <button onClick={() => { updateStatus(s.id, 'rejected'); setRejectEmailModal({ name: s.name, email: s.email }) }} style={{ background: '#FFF0F0', color: '#C62828', border: '1.5px solid #FFCDD2', borderRadius: 20, padding: '8px 18px', fontWeight: 700, fontSize: 13, cursor: 'pointer' }}>✕ דחה + מייל</button>}
+                                {s.email && <button onClick={() => { updateStatus(s.id, 'rejected'); setRejectEmailModal({ name: s.name, email: s.email, contactEmail: s.contact_email }) }} style={{ background: '#FFF0F0', color: '#C62828', border: '1.5px solid #FFCDD2', borderRadius: 20, padding: '8px 18px', fontWeight: 700, fontSize: 13, cursor: 'pointer' }}>✕ דחה + מייל</button>}
                               </div>
                             </div>
                           )
@@ -635,7 +635,7 @@ export default function Admin() {
                                   <button onClick={() => updateTreatmentStatus(s.id, 'approved')} style={{ background: '#0891B2', color: 'white', border: 'none', borderRadius: 20, padding: '7px 16px', fontWeight: 700, fontSize: 13, cursor: 'pointer' }}>✓ אשר</button>
                                   <button onClick={() => openEdit(s, 'treatment')} style={{ background: '#EEF2FF', color: '#1A3A5C', border: '1.5px solid #C5D0F0', borderRadius: 20, padding: '7px 16px', fontWeight: 700, fontSize: 13, cursor: 'pointer' }}>✏️ ערוך</button>
                                   <button onClick={() => updateTreatmentStatus(s.id, 'rejected')} style={{ background: '#FFF0F0', color: '#C62828', border: '1.5px solid #FFCDD2', borderRadius: 20, padding: '7px 16px', fontWeight: 700, fontSize: 13, cursor: 'pointer' }}>✕ דחה</button>
-                                  {s.email && <button onClick={() => { updateTreatmentStatus(s.id, 'rejected'); setRejectEmailModal({ name: s.name, email: s.email }) }} style={{ background: '#FFF0F0', color: '#C62828', border: '1.5px solid #FFCDD2', borderRadius: 20, padding: '7px 16px', fontWeight: 700, fontSize: 13, cursor: 'pointer' }}>✕ דחה + מייל</button>}
+                                  {s.email && <button onClick={() => { updateTreatmentStatus(s.id, 'rejected'); setRejectEmailModal({ name: s.name, email: s.email, contactEmail: s.contact_email }) }} style={{ background: '#FFF0F0', color: '#C62828', border: '1.5px solid #FFCDD2', borderRadius: 20, padding: '7px 16px', fontWeight: 700, fontSize: 13, cursor: 'pointer' }}>✕ דחה + מייל</button>}
                                 </>
                               ) : (
                                 <>
@@ -666,7 +666,7 @@ export default function Admin() {
                   <button onClick={() => setRejectEmailModal(null)} style={{ background: 'none', border: 'none', fontSize: 22, cursor: 'pointer', color: '#aaa' }}>✕</button>
                 </div>
                 <div style={{ fontSize: 13, color: '#666', marginBottom: 16 }}>
-                  שליחת מייל אל <strong>{rejectEmailModal.email}</strong> בנוגע לבקשת <strong>{rejectEmailModal.name}</strong>
+                  שליחת מייל אל <strong>{rejectEmailModal.contactEmail || rejectEmailModal.email}</strong> בנוגע לבקשת <strong>{rejectEmailModal.name}</strong>
                 </div>
                 <div style={{ marginBottom: 16 }}>
                   <label style={{ display: 'block', fontSize: 13, fontWeight: 700, color: '#1A3A5C', marginBottom: 6 }}>סיבת הדחייה <span style={{ fontWeight: 400, color: '#aaa' }}>(אופציונלי)</span></label>
