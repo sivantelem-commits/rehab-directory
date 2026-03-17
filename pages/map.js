@@ -169,13 +169,16 @@ export default function MapPage() {
               <div style={{ fontSize: 11, opacity: 0.75 }}>מפת שירותים</div>
             </div>
           </div>
-          <nav style={{ display: 'flex', gap: 6, flexWrap: 'wrap', alignItems: 'center' }}>
-            <a href="/calculator" style={{
-              background: 'rgba(255,255,150,0.25)', border: '1.5px solid rgba(255,255,150,0.7)',
-              color: 'white', borderRadius: '999px', padding: '6px 16px',
-              fontWeight: 800, fontSize: 12, textDecoration: 'none',
-              display: 'inline-flex', alignItems: 'center', gap: 5, whiteSpace: 'nowrap',
-            }}>🧭 מחשבון מסלול</a>
+          <a href="/calculator" style={{
+            background: 'rgba(255,255,200,0.18)', border: '1.5px solid rgba(255,255,150,0.5)',
+            color: 'white', borderRadius: '999px', padding: '8px 18px',
+            fontWeight: 800, fontSize: 13, textDecoration: 'none',
+            display: 'flex', alignItems: 'center', gap: 6, whiteSpace: 'nowrap',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+          }}>
+            🧭 מחשבון מסלול
+          </a>
+          <nav style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
             {NAV.map(([href, label]) => (
               <a key={href} href={href} style={{
                 color: 'white',
