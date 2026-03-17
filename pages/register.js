@@ -103,7 +103,7 @@ export default function Register() {
         const d = await res.json()
         setError(d.error || 'שגיאה בשליחה')
       }
-    } catch { setError('שגיאת רשת') }
+    } catch (err) { setError('שגיאת רשת: ' + (err?.message || String(err))) }
     finally { setLoading(false) }
   }
 
