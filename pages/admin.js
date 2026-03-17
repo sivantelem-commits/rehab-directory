@@ -5,7 +5,7 @@ import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveCo
 
 const DISTRICTS = ['צפון', 'חיפה', 'מרכז', 'תל אביב', 'ירושלים', 'דרום', 'יהודה ושומרון']
 const TREATMENT_CATEGORIES = ['בתים מאזנים', 'מחלקות אשפוז', 'מרפאות יום', 'חדרי מיון']
-const TREATMENT_COLORS = { 'בתים מאזנים': '#0277BD', 'מחלקות אשפוז': '#7B2D8B', 'מרפאות יום': '#2E7D32', 'חדרי מיון': '#C62828' }
+const TREATMENT_COLORS = { 'בתים מאזנים': '#0A3040', 'מחלקות אשפוז': '#0A6080', 'מרפאות יום': '#0891B2', 'חדרי מיון': '#06B6D4', 'שירותים נוספים': '#0A6080' }
 
 const CATEGORY_BG_COLORS = {
   'דיור': 'FFF3E5F5', 'תעסוקה': 'FFFFF3E0', 'השכלה': 'FFE3F2FD',
@@ -13,8 +13,8 @@ const CATEGORY_BG_COLORS = {
   'טיפולי שיניים': 'FFFCE4EC', 'שירותים נוספים': 'FFECEFF1',
 }
 const CATEGORY_TEXT_COLORS = {
-  'דיור': 'FF7B2D8B', 'תעסוקה': 'FFF47B20', 'השכלה': 'FF1A3A5C',
-  'חברה ופנאי': 'FF2E7D32', 'ליווי ותמיכה': 'FF0277BD',
+  'דיור': 'FF4C0080', 'תעסוקה': 'FF9B00CC', 'השכלה': 'FF1A3A5C',
+  'חברה ופנאי': 'FF5E35B1', 'ליווי ותמיכה': 'FF0891B2',
   'טיפולי שיניים': 'FFC2185B', 'שירותים נוספים': 'FF546E7A',
 }
 
@@ -300,9 +300,9 @@ export default function Admin() {
         { header: 'תאריך הוספה', key: 'created_at', width: 16 },
       ]
       const CAT_COLORS = {
-        'בתים מאזנים': { bg: 'FFE3F2FD', text: 'FF0277BD' },
+        'בתים מאזנים': { bg: 'FFE3F2FD', text: 'FF0891B2' },
         'מחלקות אשפוז': { bg: 'FFF3E5F5', text: 'FF7B2D8B' },
-        'מרפאות יום': { bg: 'FFE8F5E9', text: 'FF2E7D32' },
+        'מרפאות יום': { bg: 'FFE8F5E9', text: 'FF164E63' },
         'חדרי מיון': { bg: 'FFFFEBEE', text: 'FFC62828' },
       }
       const headerRow = ws.getRow(1)
@@ -341,7 +341,7 @@ export default function Admin() {
     } finally { setExporting(false) }
   }
 
-  const inp = { width: '100%', padding: '10px 14px', borderRadius: 12, border: '1.5px solid #FFD4B0', fontSize: 14, background: '#FFF8F3', outline: 'none', boxSizing: 'border-box', fontFamily: 'inherit' }
+  const inp = { width: '100%', padding: '10px 14px', borderRadius: 12, border: `1.5px solid ${editForm._table === 'treatment' ? '#a0d8e8' : '#d4b0f0'}`, fontSize: 14, background: editForm._table === 'treatment' ? '#f0faff' : '#f7f0ff', outline: 'none', boxSizing: 'border-box', fontFamily: 'inherit' }
   const lbl = { display: 'block', fontSize: 13, fontWeight: 700, color: '#1A3A5C', marginBottom: 5 }
   const isTreatmentEdit = editForm._table === 'treatment'
   const editSubcategories = (!isTreatmentEdit && editForm.category) ? CATEGORIES[editForm.category]?.subcategories || [] : []
@@ -385,18 +385,18 @@ export default function Admin() {
               <input type="password" placeholder="סיסמת אדמין" value={password}
                 onChange={e => setPassword(e.target.value)}
                 onKeyDown={e => e.key === 'Enter' && login()}
-                style={{ width: '100%', padding: '12px 16px', borderRadius: 20, border: '1.5px solid #FFD4B0', fontSize: 15, textAlign: 'center', letterSpacing: 4, marginBottom: 10, background: '#FFF8F3', outline: 'none', boxSizing: 'border-box' }} />
+                style={{ width: '100%', padding: '12px 16px', borderRadius: 20, border: '1.5px solid #C5D0F0', fontSize: 15, textAlign: 'center', letterSpacing: 4, marginBottom: 10, background: '#F0F7FF', outline: 'none', boxSizing: 'border-box' }} />
               {loginError && <div style={{ color: '#C62828', fontSize: 13, marginBottom: 8 }}>{loginError}</div>}
-              <button onClick={login} style={{ width: '100%', background: '#F47B20', color: 'white', border: 'none', borderRadius: 20, padding: '12px 0', fontWeight: 700, fontSize: 15, cursor: 'pointer' }}>כניסה</button>
+              <button onClick={login} style={{ width: '100%', background: '#1A3A5C', color: 'white', border: 'none', borderRadius: 20, padding: '12px 0', fontWeight: 700, fontSize: 15, cursor: 'pointer' }}>כניסה</button>
             </div>
           ) : (
             <>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: 12, marginBottom: 28 }}>
                 {[
-                  ['♿', 'שיקום פעילים', approved.length, '#F47B20'],
-                  ['⏳', 'שיקום ממתינים', pending.length, '#E65100'],
-                  ['🏥', 'טיפול פעילים', approvedTreatment.length, '#0277BD'],
-                  ['⏳', 'טיפול ממתינים', pendingTreatment.length, '#01579B'],
+                  ['♿', 'שיקום פעילים', approved.length, '#8B00D4'],
+                  ['⏳', 'שיקום ממתינים', pending.length, '#6B21A8'],
+                  ['🏥', 'טיפול פעילים', approvedTreatment.length, '#0891B2'],
+                  ['⏳', 'טיפול ממתינים', pendingTreatment.length, '#164E63'],
                 ].map(([icon, label, val, color]) => (
                   <div key={label} style={{ background: 'white', borderRadius: 16, padding: '14px 16px', display: 'flex', alignItems: 'center', gap: 10, borderRight: `5px solid ${color}`, boxShadow: '0 4px 16px rgba(0,0,0,0.07)' }}>
                     <span style={{ fontSize: 22 }}>{icon}</span>
@@ -410,10 +410,10 @@ export default function Admin() {
 
               <div style={{ display: 'flex', gap: 12, marginBottom: 24, flexWrap: 'wrap' }}>
                 {[
-                  ['rehab', '♿ שיקום', '#F47B20'],
-                  ['treatment', '🏥 טיפול', '#0277BD'],
-                  ['duplicates', '🔁 כפילויות', '#7B2D8B'],
-                  ['stats', '📊 סטטיסטיקות', '#2E7D32'],
+                  ['rehab', '♿ שיקום', '#8B00D4'],
+                  ['treatment', '🏥 טיפול', '#0891B2'],
+                  ['duplicates', '🔁 כפילויות', '#5E35B1'],
+                  ['stats', '📊 סטטיסטיקות', '#2A5298'],
                 ].map(([id, label, color]) => (
                   <button key={id} onClick={() => { setSection(id); if (id === 'duplicates') fetchDuplicates(adminKey) }}
                     style={{ flex: 1, minWidth: 120, padding: '14px 0', borderRadius: 16, fontWeight: 800, fontSize: 15, background: section === id ? color : 'white', color: section === id ? 'white' : color, border: `2px solid ${color}`, cursor: 'pointer', boxShadow: section === id ? `0 4px 16px ${color}44` : 'none' }}>
@@ -423,7 +423,7 @@ export default function Admin() {
               </div>
 
               {loading ? (
-                <div style={{ textAlign: 'center', padding: 48, color: '#F47B20' }}>טוען...</div>
+                <div style={{ textAlign: 'center', padding: 48, color: '#8B00D4' }}>טוען...</div>
               ) : section === 'stats' ? (
                 <StatsTab stats={stats} />
               ) : section === 'duplicates' ? (
@@ -448,12 +448,12 @@ export default function Admin() {
                     <div style={{ display: 'flex', gap: 8 }}>
                       {[['pending', `⏳ ממתינים (${pending.length})`], ['approved', `✅ פעילים (${approved.length})`]].map(([id, label]) => (
                         <button key={id} onClick={() => setRehabTab(id)}
-                          style={{ padding: '9px 18px', borderRadius: 20, fontWeight: 700, fontSize: 13, background: rehabTab === id ? '#F47B20' : 'white', color: rehabTab === id ? 'white' : '#F47B20', border: rehabTab === id ? 'none' : '1.5px solid #FFD4B0', cursor: 'pointer' }}>
+                          style={{ padding: '9px 18px', borderRadius: 20, fontWeight: 700, fontSize: 13, background: rehabTab === id ? '#8B00D4' : 'white', color: rehabTab === id ? 'white' : '#8B00D4', border: rehabTab === id ? 'none' : '1.5px solid #d4b0f0', cursor: 'pointer' }}>
                           {label}
                         </button>
                       ))}
                     </div>
-                    <button onClick={() => setShowExportRehab(true)} style={{ background: '#2E7D32', color: 'white', border: 'none', borderRadius: 20, padding: '9px 18px', fontWeight: 700, fontSize: 13, cursor: 'pointer' }}>
+                    <button onClick={() => setShowExportRehab(true)} style={{ background: '#164E63', color: 'white', border: 'none', borderRadius: 20, padding: '9px 18px', fontWeight: 700, fontSize: 13, cursor: 'pointer' }}>
                       📥 ייצוא לאקסל
                     </button>
                   </div>
@@ -484,8 +484,9 @@ export default function Admin() {
                                 {s.email && <span>✉️ {s.email}</span>}
                               </div>
                               <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-                                <button onClick={() => updateStatus(s.id, 'approved')} style={{ background: '#F47B20', color: 'white', border: 'none', borderRadius: 20, padding: '8px 18px', fontWeight: 700, fontSize: 13, cursor: 'pointer' }}>✓ אשר</button>
+                                <button onClick={() => updateStatus(s.id, 'approved')} style={{ background: '#8B00D4', color: 'white', border: 'none', borderRadius: 20, padding: '8px 18px', fontWeight: 700, fontSize: 13, cursor: 'pointer' }}>✓ אשר</button>
                                 <button onClick={() => openEdit(s, 'services')} style={{ background: '#EEF2FF', color: '#1A3A5C', border: '1.5px solid #C5D0F0', borderRadius: 20, padding: '8px 18px', fontWeight: 700, fontSize: 13, cursor: 'pointer' }}>✏️ ערוך</button>
+                                <button onClick={() => setLocationService({ ...s, _table: 'services' })} style={{ background: s.lat ? '#E8F5E9' : '#FFF3E0', color: s.lat ? '#2E7D32' : '#6B21A8', border: `1.5px solid ${s.lat ? '#A5D6A7' : '#d4b0f0'}`, borderRadius: 20, padding: '8px 18px', fontWeight: 700, fontSize: 13, cursor: 'pointer' }}>📍 {s.lat ? 'עדכן מיקום' : 'הוסף מיקום'}</button>
                                 <button onClick={() => updateStatus(s.id, 'rejected')} style={{ background: '#FFF0F0', color: '#C62828', border: '1.5px solid #FFCDD2', borderRadius: 20, padding: '8px 18px', fontWeight: 700, fontSize: 13, cursor: 'pointer' }}>✕ דחה</button>
                               </div>
                             </div>
@@ -497,9 +498,9 @@ export default function Admin() {
                     <>
                       <div style={{ display: 'flex', gap: 10, marginBottom: 14, flexWrap: 'wrap', alignItems: 'center' }}>
                         <input placeholder="חיפוש..." value={rehabSearch} onChange={e => setRehabSearch(e.target.value)}
-                          style={{ flex: 1, minWidth: 180, padding: '8px 14px', borderRadius: 20, border: '1.5px solid #FFD4B0', fontSize: 13, outline: 'none', fontFamily: 'inherit', background: '#FFF8F3' }} />
+                          style={{ flex: 1, minWidth: 180, padding: '8px 14px', borderRadius: 20, border: '1.5px solid #d4b0f0', fontSize: 13, outline: 'none', fontFamily: 'inherit', background: '#f7f0ff' }} />
                         <select value={rehabSort} onChange={e => setRehabSort(e.target.value)}
-                          style={{ padding: '8px 14px', borderRadius: 20, border: '1.5px solid #FFD4B0', fontSize: 13, background: '#FFF8F3', fontFamily: 'inherit', cursor: 'pointer' }}>
+                          style={{ padding: '8px 14px', borderRadius: 20, border: '1.5px solid #d4b0f0', fontSize: 13, background: '#f7f0ff', fontFamily: 'inherit', cursor: 'pointer' }}>
                           <option value="date">מיון: תאריך</option>
                           <option value="name">מיון: שם</option>
                           <option value="district">מיון: מחוז</option>
@@ -521,9 +522,10 @@ export default function Admin() {
                                 {s.name} {s.is_national && <span title="פריסה ארצית">🌍</span>}
                               </div>
                               <div style={{ fontSize: 12, color: '#aaa', marginBottom: 6 }}>📍 {s.city} · {s.category}{s.subcategory ? ` › ${s.subcategory}` : ''}</div>
-                              {!s.lat && <div style={{ fontSize: 11, color: '#F47B20', marginBottom: 6 }}>⚠️ אין מיקום במפה</div>}
+                              {!s.lat && <div style={{ fontSize: 11, color: '#8B00D4', marginBottom: 6 }}>⚠️ אין מיקום במפה</div>}
                               <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
                                 <button onClick={() => openEdit(s, 'services')} style={{ background: '#EEF2FF', color: '#1A3A5C', border: '1.5px solid #C5D0F0', borderRadius: 20, padding: '5px 12px', fontSize: 12, cursor: 'pointer', fontWeight: 600 }}>✏️ ערוך</button>
+                                <button onClick={() => setLocationService({ ...s, _table: 'services' })} style={{ background: s.lat ? '#f0fff4' : '#f7f0ff', color: s.lat ? '#2E7D32' : '#6B21A8', border: `1.5px solid ${s.lat ? '#A5D6A7' : '#d4b0f0'}`, borderRadius: 20, padding: '5px 12px', fontSize: 12, cursor: 'pointer', fontWeight: 600 }}>📍 {s.lat ? 'עדכן מיקום' : 'הוסף מיקום'}</button>
                                 <button onClick={() => deleteService(s.id)} style={{ background: 'none', border: '1.5px solid #FFCDD2', color: '#C62828', borderRadius: 20, padding: '5px 12px', fontSize: 12, cursor: 'pointer', fontWeight: 600 }}>🗑️ מחק</button>
                               </div>
                             </div>
@@ -540,12 +542,12 @@ export default function Admin() {
                     <div style={{ display: 'flex', gap: 8 }}>
                       {[['pending', `⏳ ממתינים (${pendingTreatment.length})`], ['approved', `✅ פעילים (${approvedTreatment.length})`]].map(([id, label]) => (
                         <button key={id} onClick={() => setTreatmentTab(id)}
-                          style={{ padding: '9px 18px', borderRadius: 20, fontWeight: 700, fontSize: 13, background: treatmentTab === id ? '#0277BD' : 'white', color: treatmentTab === id ? 'white' : '#0277BD', border: treatmentTab === id ? 'none' : '1.5px solid #B3D4E8', cursor: 'pointer' }}>
+                          style={{ padding: '9px 18px', borderRadius: 20, fontWeight: 700, fontSize: 13, background: treatmentTab === id ? '#0891B2' : 'white', color: treatmentTab === id ? 'white' : '#0891B2', border: treatmentTab === id ? 'none' : '1.5px solid #a0d8e8', cursor: 'pointer' }}>
                           {label}
                         </button>
                       ))}
                     </div>
-                    <button onClick={() => setShowExportTreatment(true)} style={{ background: '#2E7D32', color: 'white', border: 'none', borderRadius: 20, padding: '9px 18px', fontWeight: 700, fontSize: 13, cursor: 'pointer' }}>
+                    <button onClick={() => setShowExportTreatment(true)} style={{ background: '#164E63', color: 'white', border: 'none', borderRadius: 20, padding: '9px 18px', fontWeight: 700, fontSize: 13, cursor: 'pointer' }}>
                       📥 ייצוא לאקסל
                     </button>
                   </div>
@@ -576,7 +578,7 @@ export default function Admin() {
                   ) : (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
                       {filtered.map(s => {
-                        const color = TREATMENT_COLORS[s.category] || '#0277BD'
+                        const color = TREATMENT_COLORS[s.category] || '#0891B2'
                         return (
                           <div key={s.id} style={{ background: 'white', borderRadius: 14, padding: '16px', boxShadow: '0 2px 8px rgba(0,0,0,0.06)', borderRight: `4px solid ${color}` }}>
                             <div style={{ fontWeight: 700, fontSize: 15, color: '#1A3A5C', marginBottom: 4 }}>
@@ -592,14 +594,14 @@ export default function Admin() {
                             <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
                               {treatmentTab === 'pending' ? (
                                 <>
-                                  <button onClick={() => updateTreatmentStatus(s.id, 'approved')} style={{ background: '#0277BD', color: 'white', border: 'none', borderRadius: 20, padding: '7px 16px', fontWeight: 700, fontSize: 13, cursor: 'pointer' }}>✓ אשר</button>
+                                  <button onClick={() => updateTreatmentStatus(s.id, 'approved')} style={{ background: '#0891B2', color: 'white', border: 'none', borderRadius: 20, padding: '7px 16px', fontWeight: 700, fontSize: 13, cursor: 'pointer' }}>✓ אשר</button>
                                   <button onClick={() => openEdit(s, 'treatment')} style={{ background: '#EEF2FF', color: '#1A3A5C', border: '1.5px solid #C5D0F0', borderRadius: 20, padding: '7px 16px', fontWeight: 700, fontSize: 13, cursor: 'pointer' }}>✏️ ערוך</button>
                                   <button onClick={() => updateTreatmentStatus(s.id, 'rejected')} style={{ background: '#FFF0F0', color: '#C62828', border: '1.5px solid #FFCDD2', borderRadius: 20, padding: '7px 16px', fontWeight: 700, fontSize: 13, cursor: 'pointer' }}>✕ דחה</button>
                                 </>
                               ) : (
                                 <>
                                   <button onClick={() => openEdit(s, 'treatment')} style={{ background: '#EEF2FF', color: '#1A3A5C', border: '1.5px solid #C5D0F0', borderRadius: 20, padding: '5px 12px', fontSize: 12, cursor: 'pointer', fontWeight: 600 }}>✏️ ערוך</button>
-                                  <button onClick={() => setLocationService({ ...s, _table: 'treatment' })} style={{ background: s.lat ? '#E8F5E9' : '#FFF3E0', color: s.lat ? '#2E7D32' : '#E65100', border: `1.5px solid ${s.lat ? '#A5D6A7' : '#FFCC80'}`, borderRadius: 20, padding: '5px 12px', fontSize: 12, cursor: 'pointer', fontWeight: 600 }}>📍 {s.lat ? 'עדכן מיקום' : 'הוסף מיקום'}</button>
+                                  <button onClick={() => setLocationService({ ...s, _table: 'treatment' })} style={{ background: s.lat ? '#E8F5E9' : '#FFF3E0', color: s.lat ? '#2E7D32' : '#6B21A8', border: `1.5px solid ${s.lat ? '#A5D6A7' : '#d4b0f0'}`, borderRadius: 20, padding: '5px 12px', fontSize: 12, cursor: 'pointer', fontWeight: 600 }}>📍 {s.lat ? 'עדכן מיקום' : 'הוסף מיקום'}</button>
                                   <button onClick={() => deleteTreatmentService(s.id)} style={{ background: 'none', border: '1.5px solid #FFCDD2', color: '#C62828', borderRadius: 20, padding: '5px 12px', fontSize: 12, cursor: 'pointer', fontWeight: 600 }}>🗑️ מחק</button>
                                 </>
                               )}
@@ -618,10 +620,10 @@ export default function Admin() {
         {showExportRehab && (
           <div onClick={() => setShowExportRehab(false)} style={{ position: 'fixed', inset: 0, background: 'rgba(26,58,92,0.6)', zIndex: 200, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
             <div onClick={e => e.stopPropagation()} style={{ background: 'white', borderRadius: 20, maxWidth: 480, width: '100%', boxShadow: '0 24px 64px rgba(0,0,0,0.25)' }}>
-              <div style={{ height: 7, background: '#2E7D32', borderRadius: '20px 20px 0 0' }} />
+              <div style={{ height: 7, background: '#4C0080', borderRadius: '20px 20px 0 0' }} />
               <div style={{ padding: '24px 20px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
-                  <h2 style={{ margin: 0, fontSize: 18, fontWeight: 800, color: '#1A3A5C' }}>📥 ייצוא שיקום לאקסל</h2>
+                  <h2 style={{ margin: 0, fontSize: 18, fontWeight: 800, color: '#4C0080' }}>📥 ייצוא שיקום לאקסל</h2>
                   <button onClick={() => setShowExportRehab(false)} style={{ background: 'none', border: 'none', fontSize: 22, cursor: 'pointer', color: '#aaa' }}>✕</button>
                 </div>
                 {[['status', 'סטטוס', [['', 'הכל'], ['approved', 'פעילים'], ['pending', 'ממתינים'], ['rejected', 'נדחו']]], ['district', 'מחוז', [['', 'כל המחוזות'], ...DISTRICTS.map(d => [d, d])]], ['category', 'קטגוריה', [['', 'כל הקטגוריות'], ...CATEGORY_NAMES.map(c => [c, c])]]].map(([key, label, opts]) => (
@@ -642,7 +644,7 @@ export default function Admin() {
                   </div>
                 )}
                 <div style={{ display: 'flex', gap: 10, marginTop: 8 }}>
-                  <button onClick={exportRehabToExcel} disabled={exporting} style={{ flex: 1, background: '#2E7D32', color: 'white', border: 'none', borderRadius: 20, padding: '12px 0', fontWeight: 700, fontSize: 14, cursor: exporting ? 'not-allowed' : 'pointer' }}>
+                  <button onClick={exportRehabToExcel} disabled={exporting} style={{ flex: 1, background: '#4C0080', color: 'white', border: 'none', borderRadius: 20, padding: '12px 0', fontWeight: 700, fontSize: 14, cursor: exporting ? 'not-allowed' : 'pointer' }}>
                     {exporting ? 'מייצא...' : '📥 הורד אקסל'}
                   </button>
                   <button onClick={() => setShowExportRehab(false)} style={{ flex: 1, background: '#EEF2FF', color: '#1A3A5C', border: '1.5px solid #C5D0F0', borderRadius: 20, padding: '12px 0', fontWeight: 700, fontSize: 14, cursor: 'pointer' }}>ביטול</button>
@@ -655,10 +657,10 @@ export default function Admin() {
         {showExportTreatment && (
           <div onClick={() => setShowExportTreatment(false)} style={{ position: 'fixed', inset: 0, background: 'rgba(26,58,92,0.6)', zIndex: 200, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
             <div onClick={e => e.stopPropagation()} style={{ background: 'white', borderRadius: 20, maxWidth: 480, width: '100%', boxShadow: '0 24px 64px rgba(0,0,0,0.25)' }}>
-              <div style={{ height: 7, background: '#2E7D32', borderRadius: '20px 20px 0 0' }} />
+              <div style={{ height: 7, background: '#0891B2', borderRadius: '20px 20px 0 0' }} />
               <div style={{ padding: '24px 20px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
-                  <h2 style={{ margin: 0, fontSize: 18, fontWeight: 800, color: '#0277BD' }}>📥 ייצוא טיפול לאקסל</h2>
+                  <h2 style={{ margin: 0, fontSize: 18, fontWeight: 800, color: '#0891B2' }}>📥 ייצוא טיפול לאקסל</h2>
                   <button onClick={() => setShowExportTreatment(false)} style={{ background: 'none', border: 'none', fontSize: 22, cursor: 'pointer', color: '#aaa' }}>✕</button>
                 </div>
                 {[['status', 'סטטוס', [['', 'הכל'], ['approved', 'פעילים'], ['pending', 'ממתינים'], ['rejected', 'נדחו']]], ['district', 'מחוז', [['', 'כל המחוזות'], ...DISTRICTS.map(d => [d, d])]], ['category', 'קטגוריה', [['', 'כל הקטגוריות'], ...TREATMENT_CATEGORIES.map(c => [c, c])]]].map(([key, label, opts]) => (
@@ -670,7 +672,7 @@ export default function Admin() {
                   </div>
                 ))}
                 <div style={{ display: 'flex', gap: 10, marginTop: 8 }}>
-                  <button onClick={exportTreatmentToExcel} disabled={exporting} style={{ flex: 1, background: '#2E7D32', color: 'white', border: 'none', borderRadius: 20, padding: '12px 0', fontWeight: 700, fontSize: 14, cursor: exporting ? 'not-allowed' : 'pointer' }}>
+                  <button onClick={exportTreatmentToExcel} disabled={exporting} style={{ flex: 1, background: '#0891B2', color: 'white', border: 'none', borderRadius: 20, padding: '12px 0', fontWeight: 700, fontSize: 14, cursor: exporting ? 'not-allowed' : 'pointer' }}>
                     {exporting ? 'מייצא...' : '📥 הורד אקסל'}
                   </button>
                   <button onClick={() => setShowExportTreatment(false)} style={{ flex: 1, background: '#EEF2FF', color: '#1A3A5C', border: '1.5px solid #C5D0F0', borderRadius: 20, padding: '12px 0', fontWeight: 700, fontSize: 14, cursor: 'pointer' }}>ביטול</button>
@@ -684,7 +686,7 @@ export default function Admin() {
         {editingService && (
           <div onClick={() => setEditingService(null)} style={{ position: 'fixed', inset: 0, background: 'rgba(26,58,92,0.6)', zIndex: 200, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
             <div onClick={e => e.stopPropagation()} style={{ background: 'white', borderRadius: 20, maxWidth: 560, width: '100%', maxHeight: '90vh', overflowY: 'auto', boxShadow: '0 24px 64px rgba(0,0,0,0.25)' }}>
-              <div style={{ height: 7, background: isTreatmentEdit ? '#0277BD' : '#F47B20', borderRadius: '20px 20px 0 0' }} />
+              <div style={{ height: 7, background: isTreatmentEdit ? '#0891B2' : '#8B00D4', borderRadius: '20px 20px 0 0' }} />
               <div style={{ padding: '24px 20px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
                   <h2 style={{ margin: 0, fontSize: 18, fontWeight: 800, color: '#1A3A5C' }}>
@@ -734,7 +736,7 @@ export default function Admin() {
                   <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
                     {['צעירים', 'מבוגרים', 'קשישים'].map(ag => {
                       const sel = (editForm.age_groups || []).includes(ag)
-                      return <button key={ag} type="button" onClick={() => toggleEditArray('age_groups', ag)} style={{ padding: '5px 14px', borderRadius: '999px', fontSize: 12, fontWeight: 700, cursor: 'pointer', border: `1.5px solid ${sel ? '#F47B20' : '#FFD4B0'}`, background: sel ? '#F47B20' : 'white', color: sel ? 'white' : '#555', fontFamily: 'inherit' }}>{ag}</button>
+                      return <button key={ag} type="button" onClick={() => toggleEditArray('age_groups', ag)} style={{ padding: '5px 14px', borderRadius: '999px', fontSize: 12, fontWeight: 700, cursor: 'pointer', border: `1.5px solid ${sel ? '#8B00D4' : '#d4b0f0'}`, background: sel ? '#8B00D4' : 'white', color: sel ? 'white' : '#555', fontFamily: 'inherit' }}>{ag}</button>
                     })}
                   </div>
                 </div>
@@ -777,13 +779,13 @@ export default function Admin() {
                       type="checkbox"
                       checked={editForm.is_national || false}
                       onChange={e => setEditForm(f => ({ ...f, is_national: e.target.checked }))}
-                      style={{ width: 18, height: 18, accentColor: '#F47B20', cursor: 'pointer' }}
+                      style={{ width: 18, height: 18, accentColor: '#8B00D4', cursor: 'pointer' }}
                     />
                     <span style={{ fontSize: 14, fontWeight: 700, color: '#1A3A5C' }}>🌍 פריסה ארצית</span>
                   </label>
                 </div>
                 <div style={{ display: 'flex', gap: 10 }}>
-                  <button onClick={saveEdit} disabled={saving} style={{ flex: 1, background: isTreatmentEdit ? '#0277BD' : '#F47B20', color: 'white', border: 'none', borderRadius: 20, padding: '12px 0', fontWeight: 700, fontSize: 14, cursor: saving ? 'not-allowed' : 'pointer' }}>
+                  <button onClick={saveEdit} disabled={saving} style={{ flex: 1, background: isTreatmentEdit ? '#0891B2' : '#8B00D4', color: 'white', border: 'none', borderRadius: 20, padding: '12px 0', fontWeight: 700, fontSize: 14, cursor: saving ? 'not-allowed' : 'pointer' }}>
                     {saving ? 'שומר...' : '💾 שמור'}
                   </button>
                   <button onClick={() => setEditingService(null)} style={{ flex: 1, background: '#EEF2FF', color: '#1A3A5C', border: '1.5px solid #C5D0F0', borderRadius: 20, padding: '12px 0', fontWeight: 700, fontSize: 14, cursor: 'pointer' }}>ביטול</button>
@@ -826,7 +828,7 @@ function DuplicatesTab({ duplicates, loading, onDismiss, onDelete }) {
       {duplicates.map((pair, i) => {
         if (pair.dismissed) return null
         const typeLabel = pair.a._type === 'rehab' ? '♿ שיקום' : '🏥 טיפול'
-        const typeColor = pair.a._type === 'rehab' ? '#F47B20' : '#0277BD'
+        const typeColor = pair.a._type === 'rehab' ? '#8B00D4' : '#0891B2'
         return (
           <div key={i} style={{
             background: 'white', borderRadius: 16, padding: '18px',
@@ -872,8 +874,8 @@ function DuplicatesTab({ duplicates, loading, onDismiss, onDelete }) {
 
 function StatsTab({ stats }) {
   const [activeTab, setActiveTab] = useState('rehab')
-  if (!stats) return <div style={{ textAlign: 'center', padding: 48, color: '#F47B20' }}>טוען סטטיסטיקות...</div>
-  const COLORS = ['#7B2D8B','#F47B20','#1A3A5C','#2E7D32','#0277BD','#C2185B','#546E7A']
+  if (!stats) return <div style={{ textAlign: 'center', padding: 48, color: '#8B00D4' }}>טוען סטטיסטיקות...</div>
+  const COLORS = ['#8B00D4','#4C0080','#6B21A8','#0891B2','#164E63','#5E35B1','#CE66F0']
   const districts = ['צפון','חיפה','מרכז','תל אביב','ירושלים','דרום','יהודה ושומרון']
   const isRehab = activeTab === 'rehab'
   const byCategory = isRehab ? stats.byCategory : stats.byCategoryTreatment
@@ -885,7 +887,7 @@ function StatsTab({ stats }) {
 
       <div style={{ fontWeight: 800, fontSize: 16, color: '#1A3A5C' }}>♿ סטטיסטיקות שיקום</div>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: 12 }}>
-        {[['סה"כ שירותים', stats.total, '#1A3A5C', '📋'], ['פעילים', stats.approved, '#2E7D32', '✅'], ['ממתינים', stats.pending, '#F47B20', '⏳'], ['נדחו', stats.rejected, '#C62828', '❌']].map(([label, val, color, icon]) => (
+        {[['סה"כ שירותים', stats.total, '#1A3A5C', '📋'], ['פעילים', stats.approved, '#8B00D4', '✅'], ['ממתינים', stats.pending, '#6B21A8', '⏳'], ['נדחו', stats.rejected, '#C62828', '❌']].map(([label, val, color, icon]) => (
           <div key={label} style={{ background: 'white', borderRadius: 16, padding: '18px 16px', textAlign: 'center', boxShadow: '0 4px 16px rgba(0,0,0,0.07)', borderTop: `4px solid ${color}` }}>
             <div style={{ fontSize: 28, marginBottom: 6 }}>{icon}</div>
             <div style={{ fontSize: 32, fontWeight: 800, color }}>{val}</div>
@@ -894,9 +896,9 @@ function StatsTab({ stats }) {
         ))}
       </div>
 
-      <div style={{ fontWeight: 800, fontSize: 16, color: '#ee7a50' }}>🏥 סטטיסטיקות טיפול</div>
+      <div style={{ fontWeight: 800, fontSize: 16, color: '#0891B2' }}>🏥 סטטיסטיקות טיפול</div>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: 12 }}>
-        {[['סה"כ שירותים', stats.totalTreatment, '#1A3A5C', '📋'], ['פעילים', stats.approvedTreatment, '#2E7D32', '✅'], ['ממתינים', stats.pendingTreatment, '#ee7a50', '⏳'], ['נדחו', stats.rejectedTreatment, '#C62828', '❌']].map(([label, val, color, icon]) => (
+        {[['סה"כ שירותים', stats.totalTreatment, '#1A3A5C', '📋'], ['פעילים', stats.approvedTreatment, '#0891B2', '✅'], ['ממתינים', stats.pendingTreatment, '#164E63', '⏳'], ['נדחו', stats.rejectedTreatment, '#C62828', '❌']].map(([label, val, color, icon]) => (
           <div key={label} style={{ background: 'white', borderRadius: 16, padding: '18px 16px', textAlign: 'center', boxShadow: '0 4px 16px rgba(0,0,0,0.07)', borderTop: `4px solid ${color}` }}>
             <div style={{ fontSize: 28, marginBottom: 6 }}>{icon}</div>
             <div style={{ fontSize: 32, fontWeight: 800, color }}>{val}</div>
@@ -907,7 +909,7 @@ function StatsTab({ stats }) {
 
       <div style={{ display: 'flex', gap: 8 }}>
         <button onClick={() => setActiveTab('rehab')} style={{ padding: '8px 20px', borderRadius: 999, fontWeight: 700, fontSize: 13, cursor: 'pointer', background: isRehab ? '#1A3A5C' : 'white', color: isRehab ? 'white' : '#1A3A5C', border: '2px solid #1A3A5C', fontFamily: "'Nunito', sans-serif" }}>♿ שיקום</button>
-        <button onClick={() => setActiveTab('treatment')} style={{ padding: '8px 20px', borderRadius: 999, fontWeight: 700, fontSize: 13, cursor: 'pointer', background: !isRehab ? '#ee7a50' : 'white', color: !isRehab ? 'white' : '#ee7a50', border: '2px solid #ee7a50', fontFamily: "'Nunito', sans-serif" }}>🏥 טיפול</button>
+        <button onClick={() => setActiveTab('treatment')} style={{ padding: '8px 20px', borderRadius: 999, fontWeight: 700, fontSize: 13, cursor: 'pointer', background: !isRehab ? '#0891B2' : 'white', color: !isRehab ? 'white' : '#0891B2', border: '2px solid #0891B2', fontFamily: "'Nunito', sans-serif" }}>🏥 טיפול</button>
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(340px, 1fr))', gap: 20 }}>
@@ -944,7 +946,7 @@ function StatsTab({ stats }) {
             <tr style={{ background: '#1A3A5C', color: 'white' }}>
               <th style={{ padding: '10px 14px', textAlign: 'right' }}>קטגוריה</th>
               {districts.map(d => <th key={d} style={{ padding: '10px', textAlign: 'center', whiteSpace: 'nowrap' }}>{d}</th>)}
-              <th style={{ padding: '10px 14px', textAlign: 'center', background: '#F47B20' }}>סה"כ</th>
+              <th style={{ padding: '10px 14px', textAlign: 'center', background: '#4C0080' }}>סה"כ</th>
             </tr>
           </thead>
           <tbody>
@@ -959,7 +961,7 @@ function StatsTab({ stats }) {
                       {(crossTable[cat] || {})[d] || '–'}
                     </td>
                   ))}
-                  <td style={{ padding: '10px 14px', textAlign: 'center', fontWeight: 800, color: '#F47B20' }}>{total}</td>
+                  <td style={{ padding: '10px 14px', textAlign: 'center', fontWeight: 800, color: '#4C0080' }}>{total}</td>
                 </tr>
               )
             })}
@@ -1027,7 +1029,7 @@ function LocationPicker({ service, onSave, onClose }) {
   return (
     <div onClick={onClose} style={{ position: 'fixed', inset: 0, background: 'rgba(26,58,92,0.6)', zIndex: 300, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
       <div onClick={e => e.stopPropagation()} style={{ background: 'white', borderRadius: 20, maxWidth: 600, width: '100%', boxShadow: '0 24px 64px rgba(0,0,0,0.25)' }}>
-        <div style={{ height: 7, background: '#F47B20', borderRadius: '20px 20px 0 0' }} />
+        <div style={{ height: 7, background: '#1A3A5C', borderRadius: '20px 20px 0 0' }} />
         <div style={{ padding: '16px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
             <div>
@@ -1042,7 +1044,7 @@ function LocationPicker({ service, onSave, onClose }) {
               placeholder="הכניסו כתובת מלאה, למשל: רחוב הרצל 5, רמת ישי"
               style={{ flex: 1, padding: '10px 14px', borderRadius: 20, border: '1.5px solid #FFD4B0', fontSize: 14, outline: 'none', fontFamily: 'inherit' }} />
             <button onClick={searchAddress} disabled={searching}
-              style={{ background: '#F47B20', color: 'white', border: 'none', borderRadius: 20, padding: '10px 18px', fontWeight: 700, fontSize: 13, cursor: searching ? 'not-allowed' : 'pointer', whiteSpace: 'nowrap' }}>
+              style={{ background: '#1A3A5C', color: 'white', border: 'none', borderRadius: 20, padding: '10px 18px', fontWeight: 700, fontSize: 13, cursor: searching ? 'not-allowed' : 'pointer', whiteSpace: 'nowrap' }}>
               {searching ? 'מחפש...' : '🔍 חפש'}
             </button>
           </div>
@@ -1051,7 +1053,7 @@ function LocationPicker({ service, onSave, onClose }) {
           <div id="location-map" style={{ height: 300, borderRadius: 12, overflow: 'hidden', marginBottom: 12 }} />
           {coords && <div style={{ fontSize: 11, color: '#888', marginBottom: 10, textAlign: 'center' }}>{coords[0].toFixed(5)}, {coords[1].toFixed(5)}</div>}
           <div style={{ display: 'flex', gap: 10 }}>
-            <button onClick={() => onSave(coords[0], coords[1])} style={{ flex: 1, background: '#F47B20', color: 'white', border: 'none', borderRadius: 20, padding: '12px 0', fontWeight: 700, fontSize: 14, cursor: 'pointer' }}>💾 שמור מיקום</button>
+            <button onClick={() => onSave(coords[0], coords[1])} style={{ flex: 1, background: '#1A3A5C', color: 'white', border: 'none', borderRadius: 20, padding: '12px 0', fontWeight: 700, fontSize: 14, cursor: 'pointer' }}>💾 שמור מיקום</button>
             <button onClick={onClose} style={{ flex: 1, background: '#EEF2FF', color: '#1A3A5C', border: '1.5px solid #C5D0F0', borderRadius: 20, padding: '12px 0', fontWeight: 700, fontSize: 14, cursor: 'pointer' }}>ביטול</button>
           </div>
         </div>
