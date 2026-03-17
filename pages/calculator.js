@@ -177,7 +177,8 @@ export default function Calculator() {
     setLoading(true)
     const res = calcResult(finalAnswers)
     setResult(res)
-    if (finalAnswers.sal === 'unknown') setSalNote('אם עדיין אין זכאות — פנה לביטוח לאומי ואז למשרד הבריאות לקבלת סל שיקום.')
+    if (finalAnswers.sal === 'unknown') setSalNote({ text: 'אם עדיין אין זכאות — ניתן לפנות לביטוח לאומי ואז לוועדת קופ"ח לקבלת סל שיקום.', link: 'https://www.btl.gov.il/ZcuyotAsdience/MitmoddiNefesh/Pages/SalSIkomMisradBrieot.aspx', linkText: 'למידע על סל שיקום ←' })
+    if (finalAnswers.sal === 'no') setSalNote({ text: 'שירותי סל שיקום מיועדים למי שעבר ועדת זכאות בקופת החולים. אם עדיין לא עברת — אפשר להתחיל בתהליך.', link: 'https://www.btl.gov.il/ZcuyotAsdience/MitmoddiNefesh/Pages/SalSIkomMisradBrieot.aspx', linkText: 'איך מוציאים סל שיקום? ←' })
     const queries = buildSearchQueries(res.recommendation, finalAnswers)
     try {
       const fetches = await Promise.all(queries.map(q => fetch(q.url).then(r => r.json()).then(data => ({ label: q.label, page: q.page, services: Array.isArray(data) ? data : [] }))))
@@ -185,7 +186,7 @@ export default function Calculator() {
       if (withResults.length === 0 && finalAnswers.district) {
         const fb = await Promise.all(buildSearchQueries(res.recommendation, { ...finalAnswers, district: null }).map(q => fetch(q.url).then(r => r.json()).then(data => ({ label: q.label, page: q.page, services: Array.isArray(data) ? data : [] }))))
         const fbR = fb.filter(f => f.services.length > 0)
-        if (fbR.length > 0) { setSalNote(p => (p ? p + ' ' : '') + 'טרם נוספו שירותים באזור זה — מוצגים שירותים מכל הארץ.'); setServices(fbR); return }
+        if (fbR.length > 0) { setSalNote(p => p ? { ...p, text: p.text + ' טרם נוספו שירותים באזור זה — מוצגים שירותים מכל הארץ.' } : { text: 'טרם נוספו שירותים באזור זה — מוצגים שירותים מכל הארץ.' }); setServices(fbR); return }
       }
       setServices(withResults.length > 0 ? withResults : [])
     } catch { setServices([]) }
@@ -250,7 +251,18 @@ export default function Calculator() {
                 <strong>מה כדאי לבדוק: </strong>{result.selectedNeeds.join(', ')}
               </div>
             )}
-            {salNote && <div style={{ background: 'rgba(255,255,255,0.7)', borderRadius: 10, padding: '10px 14px', fontSize: 13, color: '#92400e' }}>💡 {salNote}</div>}
+            {salNote && (
+              <div style={{ background: 'rgba(255,255,255,0.7)', borderRadius: 10, padding: '10px 14px', fontSize: 13, color: '#92400e', display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 10 }}>
+                <span>💡 {salNote.text}</span>
+                {salNote.link && (
+                  <a href={salNote.link} target="_blank" rel="noreferrer" style={{
+                    display: 'inline-block', padding: '5px 14px', borderRadius: '999px',
+                    background: '#f59e0b', color: 'white', fontWeight: 700,
+                    fontSize: 12, textDecoration: 'none', whiteSpace: 'nowrap',
+                  }}>{salNote.linkText}</a>
+                )}
+              </div>
+            )}
           </div>
           <div style={{ marginBottom: 12, display: 'flex', alignItems: 'center', gap: 12 }}>
             <h2 style={{ fontSize: 18, fontWeight: 800, color: '#3d2a6e', margin: 0 }}>{total > 0 ? `נמצאו ${total} שירותים מתאימים` : 'לא נמצאו שירותים כרגע'}</h2>
