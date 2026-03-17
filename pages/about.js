@@ -1,6 +1,6 @@
 import Head from 'next/head'
 
-const NAV = [['/', 'ראשי'], ['/rehab', 'שיקום'], ['/treatment', 'טיפול'], ['/map', 'מפה'], ['/guide', 'מדריך'], ['/register', 'הרשמת שירות'], ['/about', 'אודות'], ['/contact', 'צור קשר'], ['/admin', 'ניהול']]
+const NAV = [['/', 'ראשי'], ['/rehab', 'שיקום'], ['/treatment', 'טיפול'], ['/map', 'מפה'], ['/register', 'הוספת שירות'], ['/about', 'אודות'], ['/contact', 'צור קשר'], ['/admin', 'ניהול']]
 
 export default function About() {
   return (
@@ -80,7 +80,7 @@ export default function About() {
             <p style={p}>הפורטל נבנה בעזרת אנשים כמוכם. אם אתם מנהלים שירות בריאות נפש ותרצו שיופיע כאן, תוכלו להירשם דרך טופס ההרשמה. כל שירות עובר בדיקה לפני שמתפרסם.</p>
             <p style={p}>אם אתם מזהים מידע שגוי או חסר - נשמח לשמוע. ביחד נוכל לבנות מאגר מידע מהימן ועדכני לכל מי שצריך.</p>
             <div style={{ display: 'flex', gap: 10, marginTop: 16, flexWrap: 'wrap' }}>
-              <a href="/register" style={btn('#4C0080')}>הרשמת שירות</a>
+              <a href="/register" style={btn('#4C0080')}>הוספת שירות</a>
               <a href="/contact" style={btn('#1A3A5C')}>צור קשר</a>
             </div>
           </Card>
