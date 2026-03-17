@@ -170,7 +170,14 @@ export default function Admin() {
 
   const openEdit = (service, table = 'services') => {
     setEditingService(service)
-    setEditForm({ ...service, _table: table })
+    setEditForm({
+      ...service,
+      _table: table,
+      age_groups: service.age_groups || [],
+      diagnoses: service.diagnoses || [],
+      populations: service.populations || [],
+      categories: service.categories || [],
+    })
   }
 
   const toggleEditArray = (field, value) => {
