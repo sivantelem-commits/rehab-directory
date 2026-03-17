@@ -5,14 +5,14 @@ import Head from 'next/head'
 const DISTRICTS = ['הכל', 'צפון', 'חיפה', 'מרכז', 'תל אביב', 'ירושלים', 'דרום', 'יהודה ושומרון', '🌍 ארצי']
 
 const CATEGORIES = {
-  'בתים מאזנים': { color: '#0A3040', icon: '🏠', desc: 'בתים מאזנים' },
-  'מחלקות אשפוז': { color: '#0A6080', icon: '🏥', desc: 'אשפוז פסיכיאטרי' },
-  'מרפאות יום': { color: '#0891B2', icon: '☀️', desc: 'טיפול יומי' },
-  'חדרי מיון': { color: '#06B6D4', icon: '🚨', desc: 'מיון פסיכיאטרי' },
-  'שירותים נוספים': { color: '#0A6080', icon: '➕', desc: 'שירותים נוספים' },
+  'בתים מאזנים': { color: '#0A3040' },
+  'מחלקות אשפוז': { color: '#0A6080' },
+  'מרפאות יום': { color: '#0891B2' },
+  'חדרי מיון': { color: '#06B6D4' },
+  'שירותים נוספים': { color: '#0A6080' },
 }
 
-const NAV = [['/', '🏠 ראשי'], ['/rehab', '♿ שיקום'], ['/treatment', '🏥 טיפול'], ['/map', '🗺️ מפה'], ['/guide', '📖 מדריך'], ['/register', 'הרשמת שירות'], ['/about', 'אודות'], ['/contact', 'צור קשר'], ['/admin', 'ניהול']]
+const NAV = [['/', 'ראשי'], ['/rehab', 'שיקום'], ['/treatment', 'טיפול'], ['/map', 'מפה'], ['/guide', 'מדריך'], ['/register', 'הרשמת שירות'], ['/about', 'אודות'], ['/contact', 'צור קשר'], ['/admin', 'ניהול']]
 
 const SkeletonCard = () => (
   <div style={{
@@ -178,11 +178,10 @@ export default function Treatment() {
           background: 'white', borderBottom: '1px solid #a0d8e8',
           padding: '10px 16px', display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center',
         }}>
-          {[['הכל', '#0891B2', '🔍'], ...Object.entries(CATEGORIES).map(([k, v]) => [k, v.color, v.icon])].map(([name, color, icon]) => {
+          {[['הכל', '#0891B2'], ...Object.entries(CATEGORIES).map(([k, v]) => [k, v.color])].map(([name, color]) => {
             const active = category === name
             return (
               <button key={name} onClick={() => setCategory(name)} style={{
-                display: 'flex', alignItems: 'center', gap: 6,
                 padding: '7px 16px', borderRadius: '999px', fontSize: 13, fontWeight: 700,
                 border: `2px solid ${active ? color : '#c8eaf2'}`,
                 background: active ? color : 'white',
@@ -191,7 +190,7 @@ export default function Treatment() {
                 transition: 'all 0.15s',
                 boxShadow: active ? `0 3px 0 ${color}99` : 'none',
               }}>
-                <span>{icon}</span><span>{name}</span>
+                {name}
               </button>
             )
           })}
