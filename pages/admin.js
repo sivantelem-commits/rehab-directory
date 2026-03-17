@@ -50,6 +50,8 @@ export default function Admin() {
   const [stats, setStats] = useState(null)
   const [duplicates, setDuplicates] = useState([])
   const [loadingDuplicates, setLoadingDuplicates] = useState(false)
+  const [history, setHistory] = useState([])
+  const [loadingHistory, setLoadingHistory] = useState(false)
 
   useEffect(() => { setMounted(true) }, [])
 
@@ -122,6 +124,14 @@ export default function Admin() {
     } finally {
       setLoadingDuplicates(false)
     }
+  }
+
+  const fetchHistory = async (key) => {
+    setLoadingHistory(true)
+    try {
+      const res = await fetch('/api/admin/history', { headers: { adminkey: key } })
+      setHistory(await res.json())
+    } finally { setLoadingHistory(false) }
   }
 
   useEffect(() => {
@@ -421,8 +431,9 @@ export default function Admin() {
                   ['treatment', '🏥 טיפול', '#0891B2'],
                   ['duplicates', '🔁 כפילויות', '#5E35B1'],
                   ['stats', '📊 סטטיסטיקות', '#2A5298'],
+                  ['history', '📝 היסטוריה', '#5E35B1'],
                 ].map(([id, label, color]) => (
-                  <button key={id} onClick={() => { setSection(id); if (id === 'duplicates') fetchDuplicates(adminKey) }}
+                  <button key={id} onClick={() => { setSection(id); if (id === 'duplicates') fetchDuplicates(adminKey); if (id === 'history') fetchHistory(adminKey) }}
                     style={{ flex: 1, minWidth: 120, padding: '14px 0', borderRadius: 16, fontWeight: 800, fontSize: 15, background: section === id ? color : 'white', color: section === id ? 'white' : color, border: `2px solid ${color}`, cursor: 'pointer', boxShadow: section === id ? `0 4px 16px ${color}44` : 'none' }}>
                     {label}
                   </button>
@@ -433,6 +444,8 @@ export default function Admin() {
                 <div style={{ textAlign: 'center', padding: 48, color: '#8B00D4' }}>טוען...</div>
               ) : section === 'stats' ? (
                 <StatsTab stats={stats} />
+              ) : section === 'history' ? (
+                <HistoryTab history={history} loading={loadingHistory} />
               ) : section === 'duplicates' ? (
                 <DuplicatesTab
                   duplicates={duplicates}
@@ -871,6 +884,58 @@ function DuplicatesTab({ duplicates, loading, onDismiss, onDelete }) {
                 </div>
               ))}
               <div style={{ textAlign: 'center', fontSize: 20, color: '#7B2D8B', paddingTop: 20 }}>🔁</div>
+            </div>
+          </div>
+        )
+      })}
+    </div>
+  )
+}
+
+
+function HistoryTab({ history, loading }) {
+  const FIELD_NAMES = {
+    name: 'שם', district: 'מחוז', city: 'עיר', category: 'קטגוריה', subcategory: 'תת-קטגוריה',
+    description: 'תיאור', phone: 'טלפון', email: 'מייל', website: 'אתר', address: 'כתובת',
+    is_national: 'פריסה ארצית', age_groups: 'קבוצות גיל', diagnoses: 'אבחנות',
+    populations: 'אוכלוסייה', categories: 'קטגוריות נוספות'
+  }
+  if (loading) return <div style={{ textAlign: 'center', padding: 48, color: '#5E35B1' }}>טוען היסטוריה...</div>
+  if (!history.length) return (
+    <div style={{ textAlign: 'center', padding: 52, color: '#aaa' }}>
+      <div style={{ fontSize: 40, marginBottom: 10 }}>📝</div>
+      <div style={{ fontWeight: 600 }}>אין היסטוריית שינויים עדיין</div>
+    </div>
+  )
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+      {history.map((entry, i) => {
+        const changes = entry.changes || {}
+        const keys = Object.keys(changes)
+        const isRehab = entry.table_name === 'services'
+        const color = isRehab ? '#8B00D4' : '#0891B2'
+        return (
+          <div key={i} style={{ background: 'white', borderRadius: 14, padding: '16px', boxShadow: '0 2px 8px rgba(0,0,0,0.06)', borderRight: `4px solid ${color}` }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 10, flexWrap: 'wrap', gap: 6 }}>
+              <div>
+                <span style={{ fontWeight: 700, fontSize: 14, color: '#1A3A5C' }}>{entry.service_name}</span>
+                <span style={{ marginRight: 8, fontSize: 11, background: `${color}22`, color, padding: '2px 8px', borderRadius: 20, fontWeight: 600 }}>{isRehab ? 'שיקום' : 'טיפול'}</span>
+              </div>
+              <span style={{ fontSize: 11, color: '#aaa' }}>{new Date(entry.changed_at).toLocaleString('he-IL')}</span>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+              {keys.map(key => (
+                <div key={key} style={{ fontSize: 12, background: '#f9f9f9', borderRadius: 8, padding: '8px 10px' }}>
+                  <span style={{ fontWeight: 700, color: '#555' }}>{FIELD_NAMES[key] || key}: </span>
+                  <span style={{ color: '#C62828', textDecoration: 'line-through', marginLeft: 6 }}>
+                    {Array.isArray(changes[key].before) ? (changes[key].before.join(', ') || '—') : String(changes[key].before ?? '—')}
+                  </span>
+                  <span style={{ margin: '0 6px', color: '#aaa' }}>→</span>
+                  <span style={{ color: '#2E7D32', fontWeight: 600 }}>
+                    {Array.isArray(changes[key].after) ? (changes[key].after.join(', ') || '—') : String(changes[key].after ?? '—')}
+                  </span>
+                </div>
+              ))}
             </div>
           </div>
         )
