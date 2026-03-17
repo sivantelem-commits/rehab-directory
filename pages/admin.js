@@ -36,6 +36,10 @@ export default function Admin() {
   const [editingService, setEditingService] = useState(null)
   const [editForm, setEditForm] = useState({})
   const [saving, setSaving] = useState(false)
+  const [rehabSearch, setRehabSearch] = useState('')
+  const [rehabSort, setRehabSort] = useState('date')
+  const [treatmentSearch, setTreatmentSearch] = useState('')
+  const [treatmentSort, setTreatmentSort] = useState('date')
   const [locationService, setLocationService] = useState(null)
   const [mounted, setMounted] = useState(false)
   const [showExportRehab, setShowExportRehab] = useState(false)
@@ -167,6 +171,13 @@ export default function Admin() {
   const openEdit = (service, table = 'services') => {
     setEditingService(service)
     setEditForm({ ...service, _table: table })
+  }
+
+  const toggleEditArray = (field, value) => {
+    setEditForm(f => {
+      const arr = f[field] || []
+      return arr.includes(value) ? { ...f, [field]: arr.filter(x => x !== value) } : { ...f, [field]: [...arr, value] }
+    })
   }
 
   const saveEdit = async () => {
@@ -483,11 +494,26 @@ export default function Admin() {
                       </div>
                     )
                   ) : (
-                    approved.length === 0 ? (
-                      <div style={{ textAlign: 'center', padding: 52, color: '#aaa' }}>אין שירותים פעילים</div>
-                    ) : (
+                    <>
+                      <div style={{ display: 'flex', gap: 10, marginBottom: 14, flexWrap: 'wrap', alignItems: 'center' }}>
+                        <input placeholder="חיפוש..." value={rehabSearch} onChange={e => setRehabSearch(e.target.value)}
+                          style={{ flex: 1, minWidth: 180, padding: '8px 14px', borderRadius: 20, border: '1.5px solid #FFD4B0', fontSize: 13, outline: 'none', fontFamily: 'inherit', background: '#FFF8F3' }} />
+                        <select value={rehabSort} onChange={e => setRehabSort(e.target.value)}
+                          style={{ padding: '8px 14px', borderRadius: 20, border: '1.5px solid #FFD4B0', fontSize: 13, background: '#FFF8F3', fontFamily: 'inherit', cursor: 'pointer' }}>
+                          <option value="date">מיון: תאריך</option>
+                          <option value="name">מיון: שם</option>
+                          <option value="district">מיון: מחוז</option>
+                        </select>
+                      </div>
+                    {(() => {
+                      const filtered = approved
+                        .filter(s => !rehabSearch || s.name?.includes(rehabSearch) || s.city?.includes(rehabSearch) || s.district?.includes(rehabSearch))
+                        .sort((a,b) => rehabSort === 'name' ? (a.name||'').localeCompare(b.name||'') : rehabSort === 'district' ? (a.district||'').localeCompare(b.district||'') : new Date(b.created_at) - new Date(a.created_at))
+                      return filtered.length === 0 ? (
+                        <div style={{ textAlign: 'center', padding: 52, color: '#aaa' }}>אין תוצאות</div>
+                      ) : (
                       <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                        {approved.map(s => {
+                        {filtered.map(s => {
                           const color = getCategoryColor(s.category, s.subcategory)
                           return (
                             <div key={s.id} style={{ background: 'white', borderRadius: 14, padding: '14px 16px', boxShadow: '0 2px 8px rgba(0,0,0,0.06)', borderRight: `4px solid ${color}` }}>
@@ -504,7 +530,8 @@ export default function Admin() {
                           )
                         })}
                       </div>
-                    )
+                      )})()}
+                    </>
                   )}
                 </div>
               ) : (
@@ -523,14 +550,32 @@ export default function Admin() {
                     </button>
                   </div>
 
-                  {(treatmentTab === 'pending' ? pendingTreatment : approvedTreatment).length === 0 ? (
+                  {treatmentTab === 'approved' && (
+                    <div style={{ display: 'flex', gap: 10, marginBottom: 14, flexWrap: 'wrap', alignItems: 'center' }}>
+                      <input placeholder="חיפוש..." value={treatmentSearch} onChange={e => setTreatmentSearch(e.target.value)}
+                        style={{ flex: 1, minWidth: 180, padding: '8px 14px', borderRadius: 20, border: '1.5px solid #B3D4E8', fontSize: 13, outline: 'none', fontFamily: 'inherit', background: '#f0faff' }} />
+                      <select value={treatmentSort} onChange={e => setTreatmentSort(e.target.value)}
+                        style={{ padding: '8px 14px', borderRadius: 20, border: '1.5px solid #B3D4E8', fontSize: 13, background: '#f0faff', fontFamily: 'inherit', cursor: 'pointer' }}>
+                        <option value="date">מיון: תאריך</option>
+                        <option value="name">מיון: שם</option>
+                        <option value="district">מיון: מחוז</option>
+                      </select>
+                    </div>
+                  )}
+                  {(() => {
+                    const base = treatmentTab === 'pending' ? pendingTreatment : approvedTreatment
+                    const filtered = treatmentTab === 'approved'
+                      ? base.filter(s => !treatmentSearch || s.name?.includes(treatmentSearch) || s.city?.includes(treatmentSearch) || s.district?.includes(treatmentSearch))
+                          .sort((a,b) => treatmentSort === 'name' ? (a.name||'').localeCompare(b.name||'') : treatmentSort === 'district' ? (a.district||'').localeCompare(b.district||'') : new Date(b.created_at) - new Date(a.created_at))
+                      : base
+                    return filtered.length === 0 ? (
                     <div style={{ textAlign: 'center', padding: 52, color: '#aaa' }}>
                       <div style={{ fontSize: 40, marginBottom: 10 }}>🎉</div>
                       <div style={{ fontWeight: 600 }}>אין שירותים</div>
                     </div>
                   ) : (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-                      {(treatmentTab === 'pending' ? pendingTreatment : approvedTreatment).map(s => {
+                      {filtered.map(s => {
                         const color = TREATMENT_COLORS[s.category] || '#0277BD'
                         return (
                           <div key={s.id} style={{ background: 'white', borderRadius: 14, padding: '16px', boxShadow: '0 2px 8px rgba(0,0,0,0.06)', borderRight: `4px solid ${color}` }}>
@@ -563,7 +608,7 @@ export default function Admin() {
                         )
                       })}
                     </div>
-                  )}
+                  )})()}
                 </div>
               )}
             </>
@@ -683,6 +728,49 @@ export default function Admin() {
                   <textarea value={editForm.description || ''} onChange={e => setEditForm(f => ({ ...f, description: e.target.value }))} rows={4} style={{ ...inp, resize: 'vertical', borderRadius: 12 }} />
                 </div>
                 {/* ✅ checkbox פריסה ארצית */}
+                {/* קבוצות גיל */}
+                <div style={{ marginBottom: 14 }}>
+                  <label style={{ display: 'block', fontSize: 13, fontWeight: 700, color: '#1A3A5C', marginBottom: 6 }}>קבוצות גיל</label>
+                  <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                    {['צעירים', 'מבוגרים', 'קשישים'].map(ag => {
+                      const sel = (editForm.age_groups || []).includes(ag)
+                      return <button key={ag} type="button" onClick={() => toggleEditArray('age_groups', ag)} style={{ padding: '5px 14px', borderRadius: '999px', fontSize: 12, fontWeight: 700, cursor: 'pointer', border: `1.5px solid ${sel ? '#F47B20' : '#FFD4B0'}`, background: sel ? '#F47B20' : 'white', color: sel ? 'white' : '#555', fontFamily: 'inherit' }}>{ag}</button>
+                    })}
+                  </div>
+                </div>
+                {/* אבחנות */}
+                <div style={{ marginBottom: 14 }}>
+                  <label style={{ display: 'block', fontSize: 13, fontWeight: 700, color: '#1A3A5C', marginBottom: 6 }}>אבחנות / התמחויות</label>
+                  <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                    {['הפרעות אכילה', 'OCD', 'פוסט טראומה', 'פוסט טראומה מורכבת', 'התמכרויות'].map(d => {
+                      const sel = (editForm.diagnoses || []).includes(d)
+                      return <button key={d} type="button" onClick={() => toggleEditArray('diagnoses', d)} style={{ padding: '5px 14px', borderRadius: '999px', fontSize: 12, fontWeight: 700, cursor: 'pointer', border: `1.5px solid ${sel ? '#0E7490' : '#c8eaf2'}`, background: sel ? '#0E7490' : 'white', color: sel ? 'white' : '#0E7490', fontFamily: 'inherit' }}>{d}</button>
+                    })}
+                  </div>
+                </div>
+                {/* אוכלוסייה */}
+                <div style={{ marginBottom: 14 }}>
+                  <label style={{ display: 'block', fontSize: 13, fontWeight: 700, color: '#1A3A5C', marginBottom: 6 }}>אוכלוסייה ייעודית</label>
+                  <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                    {['נשים', 'דתי/מסורתי', 'חרדי', 'להט"ב'].map(p => {
+                      const sel = (editForm.populations || []).includes(p)
+                      return <button key={p} type="button" onClick={() => toggleEditArray('populations', p)} style={{ padding: '5px 14px', borderRadius: '999px', fontSize: 12, fontWeight: 700, cursor: 'pointer', border: `1.5px solid ${sel ? '#5E35B1' : '#e0d0f0'}`, background: sel ? '#5E35B1' : 'white', color: sel ? 'white' : '#5E35B1', fontFamily: 'inherit' }}>{p}</button>
+                    })}
+                  </div>
+                </div>
+                {/* קטגוריות נוספות — רק שיקום */}
+                {!isTreatmentEdit && (
+                  <div style={{ marginBottom: 14 }}>
+                    <label style={{ display: 'block', fontSize: 13, fontWeight: 700, color: '#1A3A5C', marginBottom: 6 }}>קטגוריות נוספות</label>
+                    <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                      {CATEGORY_NAMES.filter(c => c !== editForm.category).map(cat => {
+                        const sel = (editForm.categories || []).includes(cat)
+                        const catColor = getCategoryColor(cat)
+                        return <button key={cat} type="button" onClick={() => toggleEditArray('categories', cat)} style={{ padding: '5px 14px', borderRadius: '999px', fontSize: 12, fontWeight: 700, cursor: 'pointer', border: `1.5px solid ${sel ? catColor : '#e0d0f0'}`, background: sel ? catColor : 'white', color: sel ? 'white' : catColor, fontFamily: 'inherit' }}>{cat}</button>
+                      })}
+                    </div>
+                  </div>
+                )}
                 <div style={{ marginBottom: 22 }}>
                   <label style={{ display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer' }}>
                     <input
