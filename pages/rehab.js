@@ -152,7 +152,7 @@ export default function Rehab() {
             </div>
           </div>
           <nav style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-            {[['/', '🏠 ראשי'], ['/rehab', '♿ שיקום'], ['/treatment', '🏥 טיפול'], ['/map', '🗺️ מפה'], ['/guide', '📖 מדריך'], ['/register', 'הרשמת שירות'], ['/about', 'אודות'], ['/contact', 'צור קשר'], ['/admin', 'ניהול']].map(([href, label]) => (
+            {[['/', 'ראשי'], ['/rehab', 'שיקום'], ['/treatment', 'טיפול'], ['/map', 'מפה'], ['/guide', 'מדריך'], ['/register', 'הרשמת שירות'], ['/about', 'אודות'], ['/contact', 'צור קשר'], ['/admin', 'ניהול']].map(([href, label]) => (
               <a key={href} href={href} style={{
                 color: 'white',
                 background: href === '/rehab' ? 'rgba(255,255,255,0.25)' : 'rgba(255,255,255,0.1)',
