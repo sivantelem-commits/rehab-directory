@@ -72,6 +72,33 @@ export default function ServicePage() {
         <meta name="robots" content="index, follow" />
         <link rel="canonical" href={pageUrl} />
         <meta property="og:type" content="website" />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "LocalBusiness",
+              "name": service.name,
+              "description": service.description || undefined,
+              "address": {
+                "@type": "PostalAddress",
+                "addressLocality": service.city,
+                "addressRegion": service.district || undefined,
+                "addressCountry": "IL"
+              },
+              "telephone": service.phone || undefined,
+              "email": service.email || undefined,
+              "url": service.website || pageUrl,
+            },
+            {
+              "@type": "BreadcrumbList",
+              "itemListElement": [
+                { "@type": "ListItem", "position": 1, "name": "בריאות נפש בישראל", "item": "https://rehabdirectoryil.vercel.app" },
+                { "@type": "ListItem", "position": 2, "name": "שירותי שיקום", "item": "https://rehabdirectoryil.vercel.app/rehab" },
+                { "@type": "ListItem", "position": 3, "name": service.name, "item": pageUrl },
+              ]
+            }
+          ]
+        }) }} />
         <meta property="og:title" content={`${service.name} – ${service.city} | בריאות נפש בישראל`} />
         <meta property="og:description" content={pageDesc} />
         <meta property="og:url" content={pageUrl} />
