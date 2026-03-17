@@ -13,7 +13,8 @@ const NAV = [['/', 'ראשי'], ['/rehab', 'שיקום'], ['/treatment', 'טיפ
 const emptyForm = {
   name: '', district: '', city: '', category: '', subcategory: '',
   categories: [], age_groups: [], diagnoses: [], populations: [], description: '', phone: '', email: '',
-  website: '', address: '', is_national: false
+  website: '', address: '', is_national: false,
+  contact_name: '', contact_role: '', contact_phone: ''
 }
 
 export default function Register() {
@@ -77,7 +78,7 @@ export default function Register() {
   async function handleSubmit() {
     setError('')
     const { name, district, city, phone, email } = form
-    if (!name || (!district && !form.is_national) || !city || !phone || !email) {
+    if (!name || (!district && !form.is_national) || !city || !phone || !email || !form.contact_name || !form.contact_phone) {
       setError('יש למלא את כל שדות החובה המסומנים ב-*')
       return
     }
@@ -94,8 +95,10 @@ export default function Register() {
         body: JSON.stringify(form),
       })
       if (res.ok) {
+        setEditForm && setEditForm({})
+        const submittedName = form.name
         setSuccess(true)
-        setForm(emptyForm)
+        setForm(f => ({ ...emptyForm, submittedName }))
         setDuplicates([])
       } else {
         const d = await res.json()
@@ -205,17 +208,30 @@ export default function Register() {
 
           {success ? (
             <div style={{
-              background: 'white', borderRadius: 20, padding: 40, textAlign: 'center',
-              border: `2px solid ${color}`, boxShadow: `0 4px 20px ${color}33`,
+              background: 'white', borderRadius: 20, padding: '40px 32px', textAlign: 'center',
+              border: `2px solid ${color}`, boxShadow: `0 8px 32px ${color}22`,
             }}>
-              <div style={{ fontSize: 52, marginBottom: 14 }}>✅</div>
-              <div style={{ fontSize: 20, fontWeight: 700, color: darkColor, marginBottom: 8 }}>הבקשה נשלחה בהצלחה!</div>
-              <div style={{ fontSize: 14, color: '#666', lineHeight: 1.6 }}>השירות ממתין לאישור ויופיע במאגר בקרוב.</div>
-              <button onClick={() => setSuccess(false)} style={{
-                marginTop: 22, background: color, color: 'white', border: 'none',
-                borderRadius: 20, padding: '11px 32px', fontWeight: 700, fontSize: 14,
-                cursor: 'pointer', fontFamily: "'Nunito', sans-serif",
-              }}>הוספת שירות נוסף</button>
+              <div style={{ fontSize: 64, marginBottom: 16 }}>🎉</div>
+              <div style={{ fontSize: 22, fontWeight: 800, color: darkColor, marginBottom: 12 }}>הבקשה נשלחה בהצלחה!</div>
+              <div style={{ background: isRehab ? '#f7f0ff' : '#f0faff', borderRadius: 14, padding: '20px 24px', marginBottom: 24, textAlign: 'right' }}>
+                <div style={{ fontSize: 14, color: '#444', lineHeight: 1.9 }}>
+                  <div>✅ המסגרת <strong>{form.submittedName}</strong> תוצג באתר בקרוב לאחר אישור</div>
+                  <div>⏳ קצת סבלנות — הצוות שלנו בודק כל בקשה לפני הפרסום</div>
+                  <div>📞 אם יהיה צורך בבירורים, ניצור איתך קשר דרך הפרטים שמסרת</div>
+                </div>
+              </div>
+              <div style={{ display: 'flex', gap: 10, justifyContent: 'center', flexWrap: 'wrap' }}>
+                <button onClick={() => setSuccess(false)} style={{
+                  background: color, color: 'white', border: 'none',
+                  borderRadius: 20, padding: '11px 28px', fontWeight: 700, fontSize: 14,
+                  cursor: 'pointer', fontFamily: "'Nunito', sans-serif",
+                }}>➕ הוספת שירות נוסף</button>
+                <a href="/" style={{
+                  background: 'white', color: darkColor, border: `1.5px solid ${color}`,
+                  borderRadius: 20, padding: '11px 28px', fontWeight: 700, fontSize: 14,
+                  textDecoration: 'none', display: 'inline-block',
+                }}>🏠 חזרה לדף הבית</a>
+              </div>
             </div>
           ) : (
             <div style={{
@@ -426,6 +442,26 @@ export default function Register() {
                       }}>{p}</button>
                     )
                   })}
+                </div>
+              </div>
+
+              {/* פרטי איש קשר */}
+              <div style={{ marginBottom: 20, background: isRehab ? '#f7f0ff' : '#f0faff', borderRadius: 14, padding: '16px 16px 4px', border: `1.5px solid ${isRehab ? '#d4b0f0' : '#a0d8e8'}` }}>
+                <div style={{ fontSize: 13, fontWeight: 800, color: darkColor, marginBottom: 14 }}>👤 פרטי איש קשר לבירורים</div>
+                <div style={{ marginBottom: 14 }}>
+                  <label style={lbl}>שם איש הקשר *</label>
+                  <input type="text" placeholder="שם מלא" value={form.contact_name}
+                    onChange={e => setForm(f => ({ ...f, contact_name: e.target.value }))} style={inp} />
+                </div>
+                <div style={{ marginBottom: 14 }}>
+                  <label style={lbl}>תפקיד <span style={{ fontWeight: 400, color: '#9ca3af', marginRight: 6 }}>(אופציונלי)</span></label>
+                  <input type="text" placeholder="למשל: מנהל, רכזת, עו&quot;ס..." value={form.contact_role}
+                    onChange={e => setForm(f => ({ ...f, contact_role: e.target.value }))} style={inp} />
+                </div>
+                <div style={{ marginBottom: 14 }}>
+                  <label style={lbl}>טלפון לבירורים *</label>
+                  <input type="tel" placeholder="מספר טלפון ישיר" value={form.contact_phone}
+                    onChange={e => setForm(f => ({ ...f, contact_phone: e.target.value }))} style={inp} />
                 </div>
               </div>
 
