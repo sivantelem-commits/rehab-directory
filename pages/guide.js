@@ -16,6 +16,14 @@ export default function Guide() {
         <meta name="description" content="מדריך למטופל – מה ההבדל בין שיקום לטיפול, איך מקבלים זכאות לסל שיקום, זכויות המטופל, מה לשאול לפני קבלה ומילון מושגים." />
         <meta name="robots" content="index, follow" />
         <link rel="canonical" href="https://rehabdirectoryil.vercel.app/guide" />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "בריאות נפש בישראל", "item": "https://rehabdirectoryil.vercel.app" },
+            { "@type": "ListItem", "position": 2, "name": "מדריך למטופל", "item": "https://rehabdirectoryil.vercel.app/guide" }
+          ]
+        }) }} />
         <meta property="og:type" content="website" />
         <meta property="og:title" content="מדריך למטופל | בריאות נפש בישראל" />
         <meta property="og:description" content="מדריך למטופל – מה ההבדל בין שיקום לטיפול, איך מקבלים זכאות לסל שיקום, זכויות המטופל ומילון מושגים." />
