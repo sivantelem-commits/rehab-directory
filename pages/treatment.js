@@ -136,7 +136,7 @@ export default function Treatment() {
           </nav>
         </header>
 
-        <div style={{ background: 'linear-gradient(160deg, #164E63, #0891B2)', color: 'white', padding: '40px 20px', textAlign: 'center' }}>
+        <div style={{ background: 'linear-gradient(160deg, #164E63, #0891B2)', color: 'white', padding: '16px 20px', textAlign: 'center' }}>
           <img src='/treatment-logo.png' alt='טיפול' style={{ width: 220, height: 220, objectFit: 'contain', marginBottom: -40, filter: 'invert(1) brightness(10)' }} />
           <h1 style={{ fontSize: 28, fontWeight: 800, margin: '0 0 8px', letterSpacing: '-0.3px' }}>שירותי טיפול</h1>
           <p style={{ fontSize: 15, opacity: 0.85, margin: '0 0 24px', fontWeight: 500 }}>בתים מאזנים, מחלקות אשפוז, מרפאות יום, חדרי מיון ועוד</p>
