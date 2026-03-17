@@ -11,12 +11,19 @@ const resend = new Resend(process.env.RESEND_API_KEY)
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).end()
 
- const { name, district, city, category, description, phone, email, website, address, is_national } = req.body
+ const { name, district, city, category, description, phone, email, website, address, is_national,
+  age_groups, diagnoses, populations, contact_name, contact_role, contact_phone } = req.body
 if (!name || (!district && !is_national) || !city || !category || !phone || !email) {
   return res.status(400).json({ error: 'שדות חובה חסרים' })
 }
 const { data, error } = await supabase.from('treatment_services').insert([{
   name, district, city, category, description, phone, email, website, address, is_national: !!is_national,
+  age_groups: Array.isArray(age_groups) ? age_groups : [],
+  diagnoses: Array.isArray(diagnoses) ? diagnoses : [],
+  populations: Array.isArray(populations) ? populations : [],
+  contact_name: contact_name || null,
+  contact_role: contact_role || null,
+  contact_phone: contact_phone || null,
   status: 'pending',
 }]).select()
 if (error) return res.status(500).json({ error: error.message })
@@ -34,6 +41,8 @@ if (error) return res.status(500).json({ error: error.message })
         <p><strong>עיר:</strong> ${city}, ${district}</p>
         <p><strong>טלפון:</strong> ${phone}</p>
         <p><strong>מייל:</strong> ${email}</p>
+        <p><strong>איש קשר:</strong> ${contact_name || '—'}${contact_role ? ` (${contact_role})` : ''}</p>
+        <p><strong>טלפון לבירורים:</strong> ${contact_phone || '—'}</p>
         ${website ? `<p><strong>אתר:</strong> ${website}</p>` : ''}
         ${description ? `<p><strong>תיאור:</strong> ${description}</p>` : ''}
         <a href="https://rehabdirectoryil.vercel.app/admin" style="background:#0277BD;color:white;padding:10px 20px;border-radius:20px;text-decoration:none;display:inline-block;margin-top:16px;">
