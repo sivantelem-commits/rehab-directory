@@ -10,7 +10,7 @@ const CATEGORIES = {
   'שירותים נוספים': { color: '#0A6080', icon: '➕' },
 }
 
-const NAV = [['/', '🏠 ראשי'], ['/rehab', '♿ שיקום'], ['/treatment', '🏥 טיפול'], ['/map', '🗺️ מפה'], ['/register', 'הוספת שירות'], ['/about', 'אודות'], ['/contact', '✉️ צור קשר'], ['/admin', 'ניהול']]
+const NAV = [['/', 'ראשי'], ['/rehab', 'שיקום'], ['/treatment', 'טיפול'], ['/map', 'מפה'], ['/register', 'הוספת שירות'], ['/about', 'אודות'], ['/contact', 'צור קשר'], ['/admin', 'ניהול']]
 const BASE_URL = 'https://rehabdirectoryil.vercel.app'
 
 export default function TreatmentServicePage() {
