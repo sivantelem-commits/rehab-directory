@@ -177,7 +177,13 @@ export default function Calculator() {
     setLoading(true)
     const res = calcResult(finalAnswers)
     setResult(res)
-    if (finalAnswers.sal === 'unknown') setSalNote({ text: 'אם עדיין אין זכאות — ניתן לפנות לביטוח הלאומי לקבלת סל שיקום.', link: 'https://www.gov.il/he/service/rehabilitation-support-package', linkText: 'למידע על סל שיקום ←' })
+    if (finalAnswers.sal === 'unknown') setSalNote({
+      text: 'אם עדיין אין זכאות לסל שיקום, יש לפנות לביטוח הלאומי להגשת תביעת נכות ולאחר מכן להגיש בקשה לסל שיקום.',
+      links: [
+        { href: 'https://www.btl.gov.il/benefits/Disability/Pages/%D7%94%D7%96%D7%9B%D7%90%D7%99%D7%9D%20%D7%9C%D7%A7%D7%A6%D7%91%D7%AA%20%D7%A0%D7%9B%D7%95%D7%AA%20%D7%97%D7%95%D7%93%D7%A9%D7%99%D7%AA.aspx', label: 'להגשת תביעה בביטוח הלאומי ←' },
+        { href: 'https://www.gov.il/he/service/rehabilitation-support-package', label: 'לתהליך הוצאת סל שיקום ←' },
+      ]
+    })
     if (finalAnswers.sal === 'no') setSalNote({
       text: 'שירותי סל שיקום מיועדים למי שקיבל 40% ומעלה על רקע נפשי בביטוח הלאומי.',
       links: [
