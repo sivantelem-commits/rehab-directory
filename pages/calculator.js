@@ -177,8 +177,8 @@ export default function Calculator() {
     setLoading(true)
     const res = calcResult(finalAnswers)
     setResult(res)
-    if (finalAnswers.sal === 'unknown') setSalNote({ text: 'אם עדיין אין זכאות — ניתן לפנות לביטוח לאומי ואז לוועדת קופ"ח לקבלת סל שיקום.', link: 'https://www.btl.gov.il/ZcuyotAsdience/MitmoddiNefesh/Pages/SalSIkomMisradBrieot.aspx', linkText: 'למידע על סל שיקום ←' })
-    if (finalAnswers.sal === 'no') setSalNote({ text: 'שירותי סל שיקום מיועדים למי שעבר ועדת זכאות בקופת החולים. אם עדיין לא עברת — אפשר להתחיל בתהליך.', link: 'https://www.btl.gov.il/ZcuyotAsdience/MitmoddiNefesh/Pages/SalSIkomMisradBrieot.aspx', linkText: 'איך מוציאים סל שיקום? ←' })
+    if (finalAnswers.sal === 'unknown') setSalNote({ text: 'אם עדיין אין זכאות — ניתן לפנות לביטוח הלאומי לקבלת סל שיקום.', link: 'https://www.gov.il/he/service/rehabilitation-support-package', linkText: 'למידע על סל שיקום ←' })
+    if (finalAnswers.sal === 'no') setSalNote({ text: 'שירותי סל שיקום מיועדים למי שעבר ועדת זכאות בביטוח הלאומי. אם עדיין לא עברת — אפשר להתחיל בתהליך.', link: 'https://www.gov.il/he/service/rehabilitation-support-package', linkText: 'איך מוציאים סל שיקום? ←' })
     const queries = buildSearchQueries(res.recommendation, finalAnswers)
     try {
       const fetches = await Promise.all(queries.map(q => fetch(q.url).then(r => r.json()).then(data => ({ label: q.label, page: q.page, services: Array.isArray(data) ? data : [] }))))
