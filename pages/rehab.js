@@ -5,7 +5,7 @@ import ServiceCard from '../components/ServiceCard'
 import { CATEGORIES, CATEGORY_NAMES } from '../lib/categories'
 
 const DISTRICTS = ['הכל', 'צפון', 'חיפה', 'מרכז', 'תל אביב', 'ירושלים', 'דרום', 'יהודה ושומרון', '🌍 ארצי']
-const AGE_GROUPS = ['ילדים', 'נוער', 'מבוגרים', 'קשישים']
+const AGE_GROUPS = ['צעירים', 'מבוגרים', 'קשישים']
 const DIAGNOSES = ['הפרעות אכילה', 'OCD', 'פוסט טראומה', 'פוסט טראומה מורכבת', 'התמכרויות']
 const POPULATIONS = ['נשים', 'דתי/מסורתי', 'חרדי', 'להט"ב']
 
@@ -63,6 +63,8 @@ export default function Rehab() {
     if (router.isReady) {
       if (router.query.district) setDistrict(router.query.district)
       if (router.query.category) setCategory(router.query.category)
+      if (router.query.age_group) setAgeGroup(router.query.age_group)
+      if (router.query.population) setPopulation(router.query.population)
     }
   }, [router.isReady, router.query])
 
