@@ -58,7 +58,7 @@ export default function Guide() {
           background: 'linear-gradient(160deg, #2E0060, #8B00D4)',
           color: 'white', padding: '48px 20px', textAlign: 'center',
         }}>
-          <img src='/guide-logo.png' alt='מדריך' style={{ width: 160, height: 160, objectFit: 'contain', marginBottom: 0, filter: 'invert(1) brightness(10)' }} />
+          <img src='/guide-logo.png' alt='מדריך' style={{ width: 220, height: 220, objectFit: 'contain', marginBottom: -40, filter: 'invert(1) brightness(10)' }} />
           <h1 style={{ fontSize: 28, fontWeight: 800, margin: '0 0 10px' }}>מדריך למטופל</h1>
           <p style={{ fontSize: 15, opacity: 0.85, maxWidth: 560, margin: '0 auto', lineHeight: 1.8 }}>
             כל מה שצריך לדעת לפני שמתחילים — בשפה פשוטה וברורה
