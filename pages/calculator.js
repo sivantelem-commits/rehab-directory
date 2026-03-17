@@ -8,19 +8,6 @@ const DEEP = '#4C0080'
 
 const STEPS = [
   {
-    id: 'reason',
-    question: 'מה הסיבה העיקרית שבגללה את/ה מחפש/ת עזרה עכשיו?',
-    multi: false,
-    options: [
-      { label: 'מצוקה נפשית / חרדה / דיכאון / משבר', value: 'distress', scores: { treatment: 2 } },
-      { label: 'קושי בתפקוד יום-יומי', value: 'functional', scores: { rehab: 2 } },
-      { label: 'בדידות / קושי חברתי', value: 'social', scores: { rehab: 1 } },
-      { label: 'קושי בעבודה / לימודים', value: 'work', scores: { rehab: 2 } },
-      { label: 'קושי במגורים / עצמאות', value: 'housing', scores: { rehab: 2 } },
-      { label: 'לא בטוח/ה, רוצה להבין מה יכול להתאים', value: 'unsure', scores: {} },
-    ],
-  },
-  {
     id: 'distress',
     question: 'עד כמה המצוקה הנפשית משפיעה עליך כרגע?',
     multi: false,
@@ -228,7 +215,7 @@ export default function Calculator() {
         <div style={{ background: '#fff', borderRadius: 20, border: '1px solid #e9d5ff', padding: '40px 28px', textAlign: 'center', boxShadow: '0 4px 24px rgba(76,0,128,0.08)' }}>
           <div style={{ fontSize: 52, marginBottom: 16 }}>🧭</div>
           <h1 style={{ fontSize: 24, fontWeight: 800, color: '#3d2a6e', marginBottom: 10 }}>מחשבון איתור מסלול</h1>
-          <p style={{ fontSize: 15, color: '#6b7280', lineHeight: 1.7, marginBottom: 12 }}>6 שאלות קצרות — וקבל המלצה מותאמת אישית.</p>
+          <p style={{ fontSize: 15, color: '#6b7280', lineHeight: 1.7, marginBottom: 12 }}>5 שאלות קצרות — וקבל המלצה מותאמת אישית.</p>
           <p style={{ fontSize: 12, color: '#9ca3af', lineHeight: 1.6, marginBottom: 28, padding: '10px 14px', background: '#f9fafb', borderRadius: 10 }}>
             הכלי אינו אבחון ואינו מחליף איש מקצוע. הוא מסייע בכיוון ראשוני בלבד.<br />
             אם יש מצוקה חריפה או סיכון מיידי — יש לפנות בדחיפות לגורם רפואי.
