@@ -3,8 +3,9 @@ export default async function handler(req, res) {
   if (adminKey !== process.env.ADMIN_PASSWORD) return res.status(401).json({ error: 'Unauthorized' })
   if (req.method !== 'POST') return res.status(405).end()
 
-  const { serviceEmail, serviceName, reason } = req.body
-  if (!serviceEmail) return res.status(400).json({ error: 'Missing email' })
+  const { serviceEmail, contactEmail, serviceName, reason } = req.body
+  const toEmail = contactEmail || serviceEmail
+  if (!toEmail) return res.status(400).json({ error: 'Missing email' })
 
   try {
     await fetch('https://api.resend.com/emails', {
@@ -12,7 +13,7 @@ export default async function handler(req, res) {
       headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${process.env.RESEND_API_KEY}` },
       body: JSON.stringify({
         from: 'onboarding@resend.dev',
-        to: serviceEmail,
+        to: toEmail,
         subject: `עדכון בנוגע לבקשתך – ${serviceName}`,
         html: `
           <div dir="rtl" style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
