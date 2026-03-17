@@ -41,7 +41,9 @@ async function sendAdminNotification(service) {
                   🏷️ ${service.category}${service.subcategory ? ` › ${service.subcategory}` : ''}
                   ${service.categories?.length ? `<br/>📂 קטגוריות נוספות: ${service.categories.join(', ')}` : ''}<br/>
                   📞 ${service.phone || '—'}<br/>
-                  ✉️ ${service.email || '—'}
+                  ✉️ ${service.email || '—'}<br/>
+                  👤 איש קשר: ${service.contact_name || '—'}${service.contact_role ? ` (${service.contact_role})` : ''}<br/>
+                  📱 טלפון לבירורים: ${service.contact_phone || '—'}
                 </p>
               </div>
               ${service.description ? `<p style="color: #334; font-size: 14px; line-height: 1.6;">${service.description}</p>` : ''}
@@ -64,7 +66,8 @@ export default async function handler(req, res) {
   const {
     name, district, city, category, subcategory, categories,
     age_groups, diagnoses, populations,
-    description, phone, email, website, address, is_national
+    description, phone, email, website, address, is_national,
+    contact_name, contact_role, contact_phone
   } = req.body
 
   if (!name || (!district && !is_national) || !city || !phone || !email) {
@@ -89,6 +92,9 @@ export default async function handler(req, res) {
       populations: Array.isArray(populations) ? populations : [],
       description, phone, email, website, address,
       is_national: !!is_national,
+      contact_name: contact_name || null,
+      contact_role: contact_role || null,
+      contact_phone: contact_phone || null,
       status: 'pending', lat, lng,
     }])
     .select()
@@ -96,6 +102,6 @@ export default async function handler(req, res) {
 
   if (error) return res.status(500).json({ error: error.message })
 
-  await sendAdminNotification({ name, district, city, category, subcategory, categories, description, phone, email })
+  await sendAdminNotification({ name, district, city, category, subcategory, categories, description, phone, email, contact_name, contact_role, contact_phone })
   res.status(201).json(data)
 }
