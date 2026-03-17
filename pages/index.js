@@ -69,7 +69,7 @@ export default function Home() {
             onMouseDown={e => e.currentTarget.style.transform = 'translateY(2px)'}
             onMouseUp={e => e.currentTarget.style.transform = 'translateY(-5px)'}
           >
-            <span style={{ fontSize: 28 }}>♿</span>
+            <img src='/rehab-logo.png' alt='שיקום' style={{ width: 48, height: 48, objectFit: 'contain', filter: 'invert(1) brightness(10)' }} />
             <span style={{ fontSize: 18, fontWeight: 800 }}>שיקום</span>
             <span style={{ fontSize: 11, fontWeight: 500, opacity: 0.8 }}>סל שיקום בקהילה</span>
           </button>
@@ -101,7 +101,7 @@ export default function Home() {
             onMouseDown={e => e.currentTarget.style.transform = 'translateY(2px)'}
             onMouseUp={e => e.currentTarget.style.transform = 'translateY(-5px)'}
           >
-            <span style={{ fontSize: 28 }}>🏥</span>
+            <img src='/treatment-logo.png' alt='טיפול' style={{ width: 48, height: 48, objectFit: 'contain', filter: 'invert(1) brightness(10)' }} />
             <span style={{ fontSize: 18, fontWeight: 800 }}>טיפול</span>
             <span style={{ fontSize: 11, fontWeight: 500, opacity: 0.8 }}>בתים מאזנים, אשפוז ומרפאות</span>
           </button>
@@ -171,7 +171,7 @@ export default function Home() {
           {[
             ['/guide', '📖 מדריך למטופל'],
             ['/about', 'אודות'],
-            ['/contact', '✉️ צור קשר'],
+            ['/contact', 'צור קשר'],
           ].map(([href, label]) => (
             <a key={href} href={href} style={{
               fontSize: 13, fontWeight: 600, color: '#9b88bb',
