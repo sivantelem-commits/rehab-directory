@@ -95,7 +95,6 @@ export default function Register() {
         body: JSON.stringify(form),
       })
       if (res.ok) {
-        setEditForm && setEditForm({})
         const submittedName = form.name
         setSuccess(true)
         setForm(f => ({ ...emptyForm, submittedName }))
