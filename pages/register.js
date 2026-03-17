@@ -4,7 +4,7 @@ import { CATEGORIES, CATEGORY_NAMES } from '../lib/categories'
 
 const DISTRICTS = ['צפון', 'חיפה', 'מרכז', 'תל אביב', 'ירושלים', 'דרום', 'יהודה ושומרון']
 const TREATMENT_CATEGORIES = ['בתים מאזנים', 'מחלקות אשפוז', 'מרפאות יום', 'חדרי מיון', 'שירותים נוספים']
-const AGE_GROUPS = ['ילדים', 'נוער', 'מבוגרים', 'קשישים']
+const AGE_GROUPS = ['צעירים', 'מבוגרים', 'קשישים']
 const DIAGNOSES = ['הפרעות אכילה', 'OCD', 'פוסט טראומה', 'פוסט טראומה מורכבת', 'התמכרויות']
 const POPULATIONS = ['נשים', 'דתי/מסורתי', 'חרדי', 'להט"ב']
 
