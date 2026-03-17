@@ -12,7 +12,7 @@ const CATEGORIES = {
   'שירותים נוספים': { color: '#0A6080', icon: '➕', desc: 'שירותים נוספים' },
 }
 
-const NAV = [['/', '🏠 ראשי'], ['/rehab', '♿ שיקום'], ['/treatment', '🏥 טיפול'], ['/map', '🗺️ מפה'], ['/guide', '📖 מדריך'], ['/register', 'הרשמת שירות'], ['/about', 'אודות'], ['/contact', '✉️ צור קשר'], ['/admin', 'ניהול']]
+const NAV = [['/', '🏠 ראשי'], ['/rehab', '♿ שיקום'], ['/treatment', '🏥 טיפול'], ['/map', '🗺️ מפה'], ['/guide', '📖 מדריך'], ['/register', 'הרשמת שירות'], ['/about', 'אודות'], ['/contact', 'צור קשר'], ['/admin', 'ניהול']]
 
 const SkeletonCard = () => (
   <div style={{
@@ -137,7 +137,8 @@ export default function Treatment() {
         </header>
 
         <div style={{ background: 'linear-gradient(160deg, #164E63, #0891B2)', color: 'white', padding: '40px 20px', textAlign: 'center' }}>
-          <h1 style={{ fontSize: 28, fontWeight: 800, margin: '0 0 8px', letterSpacing: '-0.3px' }}>🏥 שירותי טיפול</h1>
+          <img src='/treatment-logo.png' alt='טיפול' style={{ width: 160, height: 160, objectFit: 'contain', marginBottom: 0, filter: 'invert(1) brightness(10)' }} />
+          <h1 style={{ fontSize: 28, fontWeight: 800, margin: '0 0 8px', letterSpacing: '-0.3px' }}>שירותי טיפול</h1>
           <p style={{ fontSize: 15, opacity: 0.85, margin: '0 0 24px', fontWeight: 500 }}>בתים מאזנים, מחלקות אשפוז, מרפאות יום, חדרי מיון ועוד</p>
           <div style={{ maxWidth: 480, margin: '0 auto' }}>
             <input type="text" placeholder="חפשו לפי שם, עיר או תיאור..." value={search}
@@ -248,7 +249,7 @@ export default function Treatment() {
                     }}>{s.description}</div>
                     <div style={{ display: 'flex', gap: 12, fontSize: 13, color: cat.color, flexWrap: 'wrap', marginTop: 12, fontWeight: 600 }}>
                       {s.phone && <span>📞 {s.phone}</span>}
-                      {s.email && <span>✉️ {s.email}</span>}
+                      {s.email && <span> {s.email}</span>}
                     </div>
                   </div>
                 )
@@ -275,7 +276,7 @@ export default function Treatment() {
           textAlign: 'center', padding: '24px', fontSize: 13, marginTop: 48, fontWeight: 500,
         }}>
           <div style={{ marginBottom: 8 }}>
-            <a href="/contact" style={{ color: 'rgba(255,255,255,0.7)', textDecoration: 'none' }}>✉️ צור קשר</a>
+            <a href="/contact" style={{ color: 'rgba(255,255,255,0.7)', textDecoration: 'none' }}>צור קשר</a>
           </div>
           בריאות נפש בישראל © 2026
         </footer>
