@@ -3,6 +3,9 @@ import { useRouter } from 'next/router'
 import Head from 'next/head'
 
 const DISTRICTS = ['הכל', 'צפון', 'חיפה', 'מרכז', 'תל אביב', 'ירושלים', 'דרום', 'יהודה ושומרון', '🌍 ארצי']
+const AGE_GROUPS = ['צעירים', 'מבוגרים', 'קשישים']
+const DIAGNOSES = ['הפרעות אכילה', 'OCD', 'פוסט טראומה', 'פוסט טראומה מורכבת', 'התמכרויות']
+const POPULATIONS = ['נשים', 'דתי/מסורתי', 'חרדי', 'להט"ב']
 
 const CATEGORIES = {
   'בתים מאזנים': { color: '#0A3040' },
@@ -54,6 +57,10 @@ export default function Treatment() {
   const [search, setSearch] = useState('')
   const [district, setDistrict] = useState('הכל')
   const [category, setCategory] = useState('הכל')
+  const [ageGroup, setAgeGroup] = useState('')
+  const [diagnosis, setDiagnosis] = useState('')
+  const [population, setPopulation] = useState('')
+  const [showMoreFilters, setShowMoreFilters] = useState(false)
   const [debouncedSearch, setDebouncedSearch] = useState('')
   const [mounted, setMounted] = useState(false)
   const [showTop, setShowTop] = useState(false)
@@ -81,14 +88,36 @@ export default function Treatment() {
         params.set('district', district)
       }
       if (category !== 'הכל') params.set('category', category)
+      if (ageGroup) params.set('age_group', ageGroup)
+      if (diagnosis) params.set('diagnosis', diagnosis)
+      if (population) params.set('population', population)
       if (debouncedSearch) params.set('search', debouncedSearch)
       const res = await fetch(`/api/treatment?${params}`)
       const data = await res.json()
       setServices(Array.isArray(data) ? data : [])
     } finally { setLoading(false) }
-  }, [district, category, debouncedSearch])
+  }, [district, category, ageGroup, diagnosis, population, debouncedSearch])
 
   useEffect(() => { fetchServices() }, [fetchServices])
+
+  const activeExtraFilters = [ageGroup, diagnosis, population].filter(Boolean).length
+
+  function clearAll() {
+    setSearch(''); setDistrict('הכל'); setCategory('הכל')
+    setAgeGroup(''); setDiagnosis(''); setPopulation('')
+  }
+
+  const COLOR = '#0891B2'
+
+  const filterBtn = (label, active, onClick) => (
+    <button key={label} onClick={onClick} style={{
+      padding: '6px 14px', borderRadius: '999px', fontSize: 12, fontWeight: 600,
+      border: `1.5px solid ${active ? COLOR : '#c8eaf2'}`,
+      background: active ? COLOR : 'white',
+      color: active ? 'white' : '#555',
+      cursor: 'pointer', fontFamily: "'Nunito', sans-serif", transition: 'all 0.15s',
+    }}>{label}</button>
+  )
 
   if (!mounted) return null
 
@@ -152,6 +181,7 @@ export default function Treatment() {
           </div>
         </div>
 
+        {/* מחוז */}
         <div style={{
           background: 'white', borderBottom: '1px solid #a0d8e8',
           padding: '10px 16px', display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center',
@@ -162,23 +192,24 @@ export default function Treatment() {
             return (
               <button key={d} onClick={() => setDistrict(d)} style={{
                 padding: '7px 14px', borderRadius: '999px', fontSize: 13, fontWeight: 600,
-                border: `2px solid ${active ? (isNat ? '#1A3A5C' : '#0891B2') : '#c8eaf2'}`,
-                background: active ? (isNat ? '#1A3A5C' : '#0891B2') : 'white',
+                border: `2px solid ${active ? (isNat ? '#1A3A5C' : COLOR) : '#c8eaf2'}`,
+                background: active ? (isNat ? '#1A3A5C' : COLOR) : 'white',
                 color: active ? 'white' : (isNat ? '#1A3A5C' : '#0A6080'),
                 cursor: 'pointer', fontFamily: "'Nunito', sans-serif", transition: 'all 0.15s',
               }}>{d}</button>
             )
           })}
-          <div style={{ marginRight: 'auto', fontSize: 13, color: '#0891B2', fontWeight: 600 }}>
+          <div style={{ marginRight: 'auto', fontSize: 13, color: COLOR, fontWeight: 600 }}>
             {loading ? 'טוען...' : `${services.length} שירותים`}
           </div>
         </div>
 
+        {/* קטגוריות */}
         <div style={{
           background: 'white', borderBottom: '1px solid #a0d8e8',
           padding: '10px 16px', display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center',
         }}>
-          {[['הכל', '#0891B2'], ...Object.entries(CATEGORIES).map(([k, v]) => [k, v.color])].map(([name, color]) => {
+          {[['הכל', COLOR], ...Object.entries(CATEGORIES).map(([k, v]) => [k, v.color])].map(([name, color]) => {
             const active = category === name
             return (
               <button key={name} onClick={() => setCategory(name)} style={{
@@ -189,11 +220,61 @@ export default function Treatment() {
                 cursor: 'pointer', fontFamily: "'Nunito', sans-serif",
                 transition: 'all 0.15s',
                 boxShadow: active ? `0 3px 0 ${color}99` : 'none',
-              }}>
-                {name}
-              </button>
+              }}>{name}</button>
             )
           })}
+        </div>
+
+        {/* סינון מתקדם */}
+        <div style={{ background: '#f0faff', borderBottom: '1px solid #c8eaf2' }}>
+          <div style={{ padding: '8px 16px', display: 'flex', alignItems: 'center', gap: 8 }}>
+            <button
+              onClick={() => setShowMoreFilters(v => !v)}
+              style={{
+                padding: '6px 16px', borderRadius: '999px', fontSize: 12, fontWeight: 700,
+                border: `1.5px solid ${activeExtraFilters > 0 ? COLOR : '#c8eaf2'}`,
+                background: activeExtraFilters > 0 ? COLOR : 'white',
+                color: activeExtraFilters > 0 ? 'white' : '#666',
+                cursor: 'pointer', fontFamily: "'Nunito', sans-serif",
+                display: 'flex', alignItems: 'center', gap: 6,
+              }}
+            >
+              🎯 סינון מתקדם
+              {activeExtraFilters > 0 && (
+                <span style={{ background: 'rgba(255,255,255,0.3)', borderRadius: '999px', padding: '1px 7px', fontSize: 11 }}>{activeExtraFilters}</span>
+              )}
+              <span style={{ fontSize: 10 }}>{showMoreFilters ? '▲' : '▼'}</span>
+            </button>
+            {activeExtraFilters > 0 && (
+              <button onClick={() => { setAgeGroup(''); setDiagnosis(''); setPopulation('') }} style={{
+                fontSize: 12, color: COLOR, background: 'none', border: 'none',
+                cursor: 'pointer', fontWeight: 600, fontFamily: "'Nunito', sans-serif",
+              }}>✕ נקה</button>
+            )}
+          </div>
+
+          {showMoreFilters && (
+            <div style={{ padding: '4px 16px 14px', display: 'flex', flexDirection: 'column', gap: 10 }}>
+              <div>
+                <div style={{ fontSize: 11, fontWeight: 700, color: '#6b99aa', marginBottom: 6 }}>קבוצת גיל</div>
+                <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                  {AGE_GROUPS.map(ag => filterBtn(ag, ageGroup === ag, () => setAgeGroup(ageGroup === ag ? '' : ag)))}
+                </div>
+              </div>
+              <div>
+                <div style={{ fontSize: 11, fontWeight: 700, color: '#6b99aa', marginBottom: 6 }}>אבחנה / התמחות</div>
+                <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                  {DIAGNOSES.map(d => filterBtn(d, diagnosis === d, () => setDiagnosis(diagnosis === d ? '' : d)))}
+                </div>
+              </div>
+              <div>
+                <div style={{ fontSize: 11, fontWeight: 700, color: '#6b99aa', marginBottom: 6 }}>אוכלוסייה ייעודית</div>
+                <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                  {POPULATIONS.map(p => filterBtn(p, population === p, () => setPopulation(population === p ? '' : p)))}
+                </div>
+              </div>
+            </div>
+          )}
         </div>
 
         <main style={{ maxWidth: 1100, margin: '0 auto', padding: '28px 16px' }}>
@@ -205,19 +286,16 @@ export default function Treatment() {
             <div style={{ textAlign: 'center', padding: 64, color: '#aaa' }}>
               <div style={{ fontSize: 48, marginBottom: 12 }}>🔍</div>
               <div style={{ fontWeight: 700, fontSize: 18, marginBottom: 8, color: '#555' }}>לא נמצאו שירותים</div>
-              <button
-                onClick={() => { setSearch(''); setDistrict('הכל'); setCategory('הכל') }}
-                style={{
-                  background: 'linear-gradient(160deg, #0891B2, #164E63)', color: 'white', border: 'none',
-                  borderRadius: '999px', padding: '11px 28px', fontWeight: 700, fontSize: 14, cursor: 'pointer',
-                  fontFamily: "'Nunito', sans-serif", boxShadow: '0 4px 0 #0A3040, 0 8px 20px rgba(8,145,178,0.3)',
-                }}
-              >נקה פילטרים</button>
+              <button onClick={clearAll} style={{
+                background: 'linear-gradient(160deg, #0891B2, #164E63)', color: 'white', border: 'none',
+                borderRadius: '999px', padding: '11px 28px', fontWeight: 700, fontSize: 14, cursor: 'pointer',
+                fontFamily: "'Nunito', sans-serif", boxShadow: '0 4px 0 #0A3040, 0 8px 20px rgba(8,145,178,0.3)',
+              }}>נקה פילטרים</button>
             </div>
           ) : (
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 16 }}>
               {services.map(s => {
-                const cat = CATEGORIES[s.category] || { color: '#0891B2', icon: '🏥' }
+                const cat = CATEGORIES[s.category] || { color: COLOR }
                 return (
                   <div key={s.id} onClick={() => router.push(`/treatment/${s.id}`)}
                     style={{
@@ -234,7 +312,7 @@ export default function Treatment() {
                       <span style={{
                         background: cat.color, color: 'white', borderRadius: '999px',
                         padding: '3px 12px', fontSize: 11, fontWeight: 700, whiteSpace: 'nowrap', marginRight: 8,
-                      }}>{cat.icon} {s.category}</span>
+                      }}>{s.category}</span>
                     </div>
                     <div style={{ fontSize: 13, color: '#aaa', marginBottom: 8, fontWeight: 500, display: 'flex', alignItems: 'center', gap: 6 }}>
                       📍 {s.city}{s.district ? `, ${s.district}` : ''}
