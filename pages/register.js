@@ -445,26 +445,6 @@ export default function Register() {
                 </div>
               </div>
 
-              {/* פרטי איש קשר */}
-              <div style={{ marginBottom: 20, background: isRehab ? '#f7f0ff' : '#f0faff', borderRadius: 14, padding: '16px 16px 4px', border: `1.5px solid ${isRehab ? '#d4b0f0' : '#a0d8e8'}` }}>
-                <div style={{ fontSize: 13, fontWeight: 800, color: darkColor, marginBottom: 14 }}>👤 פרטי איש קשר לבירורים</div>
-                <div style={{ marginBottom: 14 }}>
-                  <label style={lbl}>שם איש הקשר *</label>
-                  <input type="text" placeholder="שם מלא" value={form.contact_name}
-                    onChange={e => setForm(f => ({ ...f, contact_name: e.target.value }))} style={inp} />
-                </div>
-                <div style={{ marginBottom: 14 }}>
-                  <label style={lbl}>תפקיד <span style={{ fontWeight: 400, color: '#9ca3af', marginRight: 6 }}>(אופציונלי)</span></label>
-                  <input type="text" placeholder="למשל: מנהל, רכזת, עו&quot;ס..." value={form.contact_role}
-                    onChange={e => setForm(f => ({ ...f, contact_role: e.target.value }))} style={inp} />
-                </div>
-                <div style={{ marginBottom: 14 }}>
-                  <label style={lbl}>טלפון לבירורים *</label>
-                  <input type="tel" placeholder="מספר טלפון ישיר" value={form.contact_phone}
-                    onChange={e => setForm(f => ({ ...f, contact_phone: e.target.value }))} style={inp} />
-                </div>
-              </div>
-
               {/* תיאור */}
               <div style={{ marginBottom: 24 }}>
                 <label style={lbl}>תיאור השירות</label>
@@ -475,6 +455,29 @@ export default function Register() {
                   rows={4}
                   style={{ ...inp, resize: 'vertical', fontFamily: 'inherit', borderRadius: 12 }}
                 />
+              </div>
+
+              {/* פרטי איש קשר */}
+              <div style={{ marginBottom: 24, background: isRehab ? '#f7f0ff' : '#f0faff', borderRadius: 14, padding: '18px 16px 8px', border: `1.5px solid ${isRehab ? '#d4b0f0' : '#a0d8e8'}` }}>
+                <div style={{ fontSize: 13, fontWeight: 800, color: darkColor, marginBottom: 4 }}>👤 פרטי איש קשר לבירורים</div>
+                <div style={{ fontSize: 12, color: '#888', marginBottom: 14, lineHeight: 1.6, background: 'rgba(255,255,255,0.6)', borderRadius: 8, padding: '8px 10px' }}>
+                  🔒 פרטים אלו <strong>לא יפורסמו באתר</strong> — הם מיועדים לצוות האתר בלבד למקרה שיידרשו בירורים לפני אישור הרישום.
+                </div>
+                <div style={{ marginBottom: 14 }}>
+                  <label style={lbl}>שם איש הקשר *</label>
+                  <input type="text" placeholder="שם מלא" value={form.contact_name}
+                    onChange={e => setForm(f => ({ ...f, contact_name: e.target.value }))} style={inp} />
+                </div>
+                <div style={{ marginBottom: 14 }}>
+                  <label style={lbl}>תפקיד <span style={{ fontWeight: 400, color: '#9ca3af', marginRight: 6 }}>(אופציונלי)</span></label>
+                  <input type="text" placeholder='למשל: מנהל, רכזת, עו"ס...' value={form.contact_role}
+                    onChange={e => setForm(f => ({ ...f, contact_role: e.target.value }))} style={inp} />
+                </div>
+                <div style={{ marginBottom: 14 }}>
+                  <label style={lbl}>טלפון לבירורים *</label>
+                  <input type="tel" placeholder="מספר טלפון ישיר" value={form.contact_phone}
+                    onChange={e => setForm(f => ({ ...f, contact_phone: e.target.value }))} style={inp} />
+                </div>
               </div>
 
               {error && (
