@@ -1,7 +1,7 @@
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 
-const NAV = [['/', '🏠 ראשי'], ['/rehab', '♿ שיקום'], ['/treatment', '🏥 טיפול'], ['/map', '🗺️ מפה'], ['/register', 'הרשמת שירות'], ['/about', 'אודות'], ['/contact', '✉️ צור קשר']]
+const NAV = [['/', '🏠 ראשי'], ['/rehab', '♿ שיקום'], ['/treatment', '🏥 טיפול'], ['/map', '🗺️ מפה'], ['/register', 'הוספת שירות'], ['/about', 'אודות'], ['/contact', '✉️ צור קשר']]
 
 export default function Custom404() {
   const router = useRouter()
@@ -96,7 +96,7 @@ export default function Custom404() {
             <div style={{ marginTop: 40, padding: '24px', background: 'white', borderRadius: 16, border: '1.5px solid #C5D0F0', boxShadow: '0 2px 12px rgba(26,58,92,0.06)' }}>
               <div style={{ fontSize: 13, fontWeight: 700, color: '#1A3A5C', marginBottom: 14 }}>אולי חיפשת את...</div>
               <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', justifyContent: 'center' }}>
-                {[['♿ שיקום בקהילה', '/rehab'], ['🏥 שירותי טיפול', '/treatment'], ['🗺️ מפת שירותים', '/map'], ['➕ הרשמת שירות', '/register']].map(([label, href]) => (
+                {[['♿ שיקום בקהילה', '/rehab'], ['🏥 שירותי טיפול', '/treatment'], ['🗺️ מפת שירותים', '/map'], ['➕ הוספת שירות', '/register']].map(([label, href]) => (
                   <a key={href} href={href} style={{
                     background: '#F0F4FF', color: '#1A3A5C', borderRadius: '999px',
                     padding: '8px 16px', fontSize: 13, fontWeight: 600,
