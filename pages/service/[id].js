@@ -29,9 +29,9 @@ export default function ServicePage() {
   useEffect(() => {
     if (!id) return
     fetch(`/api/services?id=${id}`)
-      .then(r => r.json())
+      .then(r => r.ok ? r.json() : null)
       .then(data => {
-        // API מחזיר אובייקט בודד כשמחפשים לפי id
+        if (!data) { setLoading(false); return }
         setService(Array.isArray(data) ? data.find(s => s.id === id) : (data?.id ? data : null))
         setLoading(false)
       })
