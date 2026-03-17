@@ -25,10 +25,10 @@ export default function Guide() {
         <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
       </Head>
 
-      <div dir="rtl" style={{ fontFamily: "'Nunito', sans-serif", minHeight: '100vh', background: '#f7f3ff' }}>
+      <div dir="rtl" style={{ fontFamily: "'Nunito', sans-serif", minHeight: '100vh', background: '#F0F7FF' }}>
 
         <header style={{
-          background: 'linear-gradient(135deg, #2E0060, #8B00D4)', color: 'white',
+          background: '#1A3A5C', color: 'white',
           padding: '10px 20px', display: 'flex', alignItems: 'center',
           justifyContent: 'space-between', boxShadow: '0 2px 12px rgba(76,0,128,0.2)',
           flexWrap: 'wrap', gap: 8,
@@ -53,7 +53,7 @@ export default function Guide() {
             {NAV.map(([href, label]) => (
               <a key={href} href={href} style={{
                 color: 'white',
-                background: href === '/guide' ? 'rgba(255,255,255,0.25)' : 'rgba(255,255,255,0.1)',
+                background: href === '/guide' ? 'rgba(255,255,255,0.25)' : 'rgba(255,255,255,0.12)',
                 borderRadius: '999px', padding: '6px 14px', fontWeight: 600, fontSize: 12,
                 border: href === '/guide' ? '1.5px solid rgba(255,255,255,0.6)' : '1.5px solid rgba(255,255,255,0.2)',
                 textDecoration: 'none',
@@ -64,7 +64,7 @@ export default function Guide() {
 
         {/* Hero */}
         <div style={{
-          background: 'linear-gradient(160deg, #2E0060, #8B00D4)',
+          background: 'linear-gradient(135deg, #1A3A5C, #2A5298)',
           color: 'white', padding: '48px 20px', textAlign: 'center',
         }}>
           <img src='/guide-logo.png' alt='מדריך' style={{ width: 220, height: 220, objectFit: 'contain', marginBottom: -40, filter: 'invert(1) brightness(10)' }} />
@@ -75,7 +75,7 @@ export default function Guide() {
         </div>
 
         {/* תפריט קפיצה מהיר */}
-        <div style={{ background: 'white', borderBottom: '1px solid #e9d5ff', padding: '14px 20px' }}>
+        <div style={{ background: 'white', borderBottom: '1px solid #BFDBFE', padding: '14px 20px' }}>
           <div style={{ maxWidth: 740, margin: '0 auto', display: 'flex', gap: 8, flexWrap: 'wrap' }}>
             {[
               ['#diff', 'שיקום vs טיפול'],
@@ -86,7 +86,7 @@ export default function Guide() {
             ].map(([href, label]) => (
               <a key={href} href={href} style={{
                 padding: '6px 14px', borderRadius: '999px', fontSize: 12, fontWeight: 700,
-                background: '#f5f3ff', color: PURPLE, textDecoration: 'none',
+                background: '#EFF6FF', color: '#1A3A5C', textDecoration: 'none',
                 border: '1.5px solid #e9d5ff',
               }}>{label}</a>
             ))}
@@ -99,8 +99,8 @@ export default function Guide() {
           <div id="diff">
             <Card color={PURPLE} icon="⚖️" title="מה ההבדל בין שיקום לטיפול?">
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14, marginBottom: 16 }}>
-                <div style={{ background: '#f5f3ff', borderRadius: 12, padding: '16px 14px', borderTop: `3px solid ${PURPLE}` }}>
-                  <div style={{ fontWeight: 800, fontSize: 14, color: PURPLE, marginBottom: 10 }}>♿ שיקום</div>
+                <div style={{ background: '#EFF6FF', borderRadius: 12, padding: '16px 14px', borderTop: '3px solid #1A3A5C' }}>
+                  <div style={{ fontWeight: 800, fontSize: 14, color: '#1A3A5C', marginBottom: 10 }}>♿ שיקום</div>
                   <ul style={ulStyle}>
                     <li>מיועד לאנשים עם <strong>זכאות לסל שיקום</strong></li>
                     <li>מטרה: חזרה לחיים עצמאיים ומלאים</li>
@@ -160,9 +160,9 @@ export default function Guide() {
                 ))}
               </div>
 
-              <div style={{ background: '#f5f3ff', borderRadius: 10, padding: '12px 14px', fontSize: 13, color: '#4C0080', lineHeight: 1.6 }}>
+              <div style={{ background: '#EFF6FF', borderRadius: 10, padding: '12px 14px', fontSize: 13, color: '#4C0080', lineHeight: 1.6 }}>
                 📞 <strong>מרכז מידע ביטוח לאומי:</strong> *6050 &nbsp;|&nbsp;
-                🌐 <a href="https://www.btl.gov.il" target="_blank" rel="noopener noreferrer" style={{ color: PURPLE }}>btl.gov.il</a>
+                🌐 <a href="https://www.btl.gov.il" target="_blank" rel="noopener noreferrer" style={{ color: '#1A3A5C' }}>btl.gov.il</a>
               </div>
             </Card>
           </div>
@@ -243,7 +243,7 @@ export default function Guide() {
             </div>
             <div style={{ display: 'flex', gap: 10, justifyContent: 'center', flexWrap: 'wrap' }}>
               <a href="/calculator" style={{
-                background: 'white', color: PURPLE, borderRadius: '999px',
+                background: 'white', color: '#1A3A5C', borderRadius: '999px',
                 padding: '11px 24px', fontWeight: 800, fontSize: 14, textDecoration: 'none',
               }}>🧭 מחשבון איתור מסלול</a>
               <a href="/rehab" style={{
@@ -257,7 +257,7 @@ export default function Guide() {
         </main>
 
         <footer style={{
-          background: 'linear-gradient(135deg, #2E0060, #4C0080)',
+          background: '#1A3A5C',
           color: 'rgba(255,255,255,0.75)', textAlign: 'center',
           padding: '24px', fontSize: 13, marginTop: 48, fontWeight: 500,
         }}>
