@@ -152,7 +152,7 @@ export default function Rehab() {
             </div>
           </div>
           <nav style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-            {[['/', '🏠 ראשי'], ['/rehab', '♿ שיקום'], ['/treatment', '🏥 טיפול'], ['/map', '🗺️ מפה'], ['/guide', '📖 מדריך'], ['/register', 'הרשמת שירות'], ['/about', 'אודות'], ['/contact', '✉️ צור קשר'], ['/admin', 'ניהול']].map(([href, label]) => (
+            {[['/', '🏠 ראשי'], ['/rehab', '♿ שיקום'], ['/treatment', '🏥 טיפול'], ['/map', '🗺️ מפה'], ['/guide', '📖 מדריך'], ['/register', 'הרשמת שירות'], ['/about', 'אודות'], ['/contact', 'צור קשר'], ['/admin', 'ניהול']].map(([href, label]) => (
               <a key={href} href={href} style={{
                 color: 'white',
                 background: href === '/rehab' ? 'rgba(255,255,255,0.25)' : 'rgba(255,255,255,0.1)',
@@ -166,7 +166,8 @@ export default function Rehab() {
 
         {/* Hero + חיפוש */}
         <div style={{ background: 'linear-gradient(160deg, #4C0080, #8B00D4)', color: 'white', padding: '40px 20px', textAlign: 'center' }}>
-          <h1 style={{ fontSize: 28, fontWeight: 800, margin: '0 0 8px', letterSpacing: '-0.3px' }}>♿ שירותי שיקום</h1>
+          <img src='/rehab-logo.png' alt='שיקום' style={{ width: 220, height: 220, objectFit: 'contain', marginBottom: -40, filter: 'invert(1) brightness(10)' }} />
+          <h1 style={{ fontSize: 28, fontWeight: 800, margin: '0 0 8px', letterSpacing: '-0.3px' }}>שירותי שיקום</h1>
           <p style={{ fontSize: 15, opacity: 0.85, margin: '0 0 24px', fontWeight: 500 }}>מצאו שירותי שיקום בקהילה לפי אזור וקטגוריה</p>
           <div style={{ maxWidth: 480, margin: '0 auto' }}>
             <input type="text" placeholder="חפשו לפי שם, עיר או תיאור..." value={search}
@@ -357,7 +358,7 @@ export default function Rehab() {
           textAlign: 'center', padding: '24px', fontSize: 13, marginTop: 48, fontWeight: 500,
         }}>
           <div style={{ marginBottom: 8 }}>
-            <a href="/contact" style={{ color: 'rgba(255,255,255,0.7)', textDecoration: 'none' }}>✉️ צור קשר</a>
+            <a href="/contact" style={{ color: 'rgba(255,255,255,0.7)', textDecoration: 'none' }}>צור קשר</a>
           </div>
           בריאות נפש בישראל © 2026
         </footer>
