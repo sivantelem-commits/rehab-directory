@@ -9,11 +9,21 @@ export default async function handler(req, res) {
     return res.status(401).json({ error: 'Unauthorized' })
   }
   if (req.method !== 'PATCH') return res.status(405).end()
-  const { id, table, name, district, city, category, subcategory, description, phone, email, website, address } = req.body
+  const { id, table, name, district, city, category, subcategory, categories,
+          description, phone, email, website, address, is_national,
+          age_groups, diagnoses, populations } = req.body
   const tableName = table === 'treatment' ? 'treatment_services' : 'services'
   const { data, error } = await supabase
     .from(tableName)
-    .update({ name, district, city, category, subcategory, description, phone, email, website, address, updated_at: new Date().toISOString() })
+    .update({
+      name, district, city, category, subcategory, description,
+      phone, email, website, address, is_national,
+      age_groups: age_groups || [],
+      diagnoses: diagnoses || [],
+      populations: populations || [],
+      ...(table !== 'treatment' && { categories: categories || [] }),
+      updated_at: new Date().toISOString()
+    })
     .eq('id', id)
     .select()
     .single()
