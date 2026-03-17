@@ -14,7 +14,7 @@ const emptyForm = {
   name: '', district: '', city: '', category: '', subcategory: '',
   categories: [], age_groups: [], diagnoses: [], populations: [], description: '', phone: '', email: '',
   website: '', address: '', is_national: false,
-  contact_name: '', contact_role: '', contact_phone: ''
+  contact_name: '', contact_role: '', contact_phone: '', contact_email: ''
 }
 
 export default function Register() {
@@ -476,6 +476,11 @@ export default function Register() {
                   <label style={lbl}>טלפון לבירורים *</label>
                   <input type="tel" placeholder="מספר טלפון ישיר" value={form.contact_phone}
                     onChange={e => setForm(f => ({ ...f, contact_phone: e.target.value }))} style={inp} />
+                </div>
+                <div style={{ marginBottom: 14 }}>
+                  <label style={lbl}>מייל לבירורים <span style={{ fontWeight: 400, color: '#9ca3af', marginRight: 6 }}>(אופציונלי — אם שונה ממייל השירות)</span></label>
+                  <input type="email" placeholder="כתובת מייל ישירה" value={form.contact_email}
+                    onChange={e => setForm(f => ({ ...f, contact_email: e.target.value }))} style={inp} />
                 </div>
               </div>
 
