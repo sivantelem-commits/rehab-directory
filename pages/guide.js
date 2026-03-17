@@ -247,7 +247,7 @@ export default function Guide() {
             <div style={{ fontSize: 36, marginBottom: 10 }}>🧭</div>
             <div style={{ fontWeight: 800, fontSize: 18, marginBottom: 8 }}>מוכנים למצוא מסגרת מתאימה?</div>
             <div style={{ fontSize: 14, opacity: 0.85, marginBottom: 20, lineHeight: 1.6 }}>
-              ענו על 3 שאלות קצרות וקבלו המלצה על שירותים קיימים
+              ענו על 7 שאלות קצרות וקבלו המלצה על שירותים קיימים
             </div>
             <div style={{ display: 'flex', gap: 10, justifyContent: 'center', flexWrap: 'wrap' }}>
               <a href="/calculator" style={{
