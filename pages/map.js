@@ -163,13 +163,19 @@ export default function MapPage() {
 
         <header style={{ background: '#1A3A5C', color: 'white', padding: '10px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxShadow: '0 2px 12px rgba(0,0,0,0.15)', flexWrap: 'wrap', gap: 8 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-            <img src="/map-logo.png" alt="מפה" style={{ width: 44, height: 44, objectFit: 'contain', filter: 'invert(1) brightness(10)' }} />
+            <img src="/logo.png" alt="לוגו" style={{ width: 44, height: 44, objectFit: 'contain', filter: 'brightness(0) invert(1)' }} />
             <div>
               <div style={{ fontWeight: 800, fontSize: 18 }}>בריאות נפש בישראל</div>
               <div style={{ fontSize: 11, opacity: 0.75 }}>מפת שירותים</div>
             </div>
           </div>
-          <nav style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+          <nav style={{ display: 'flex', gap: 6, flexWrap: 'wrap', alignItems: 'center' }}>
+            <a href="/calculator" style={{
+              background: 'rgba(255,255,150,0.25)', border: '1.5px solid rgba(255,255,150,0.7)',
+              color: 'white', borderRadius: '999px', padding: '6px 16px',
+              fontWeight: 800, fontSize: 12, textDecoration: 'none',
+              display: 'inline-flex', alignItems: 'center', gap: 5, whiteSpace: 'nowrap',
+            }}>🧭 מחשבון מסלול</a>
             {NAV.map(([href, label]) => (
               <a key={href} href={href} style={{
                 color: 'white',
