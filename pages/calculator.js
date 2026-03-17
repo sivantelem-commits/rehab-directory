@@ -475,7 +475,7 @@ function Page({ title, children }) {
             </div>
           </div>
           <nav style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-            {[['/', '🏠 ראשי'], ['/rehab', '♿ שיקום'], ['/treatment', '🏥 טיפול'], ['/map', '🗺️ מפה'], ['/guide', '📖 מדריך'], ['/about', 'אודות'], ['/contact', '✉️ צור קשר']].map(([href, label]) => (
+            {[['/', 'ראשי'], ['/rehab', 'שיקום'], ['/treatment', 'טיפול'], ['/map', 'מפה'], ['/guide', 'מדריך'], ['/about', 'אודות'], ['/contact', 'צור קשר']].map(([href, label]) => (
               <a key={href} href={href} style={{
                 color: 'white',
                 background: href === '/calculator' ? 'rgba(255,255,255,0.25)' : 'rgba(255,255,255,0.1)',
