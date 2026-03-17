@@ -169,7 +169,6 @@ export default function Home() {
           justifyContent: 'center', flexWrap: 'wrap',
         }}>
           {[
-            ['/guide', '📖 מדריך למטופל'],
             ['/about', 'אודות'],
             ['/contact', 'צור קשר'],
           ].map(([href, label]) => (
