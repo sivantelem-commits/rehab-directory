@@ -13,6 +13,16 @@ export default function ServicePage() {
   const [loading, setLoading] = useState(true)
   const [mounted, setMounted] = useState(false)
   const [copied, setCopied] = useState(false)
+  const [backUrl, setBackUrl] = useState('/rehab')
+
+  useEffect(() => {
+    // שמור את הדף הקודם כדי לחזור אליו עם הפילטרים
+    if (document.referrer && document.referrer.includes(window.location.host)) {
+      setBackUrl(document.referrer.replace(window.location.origin, ''))
+    } else if (window.history.length > 1) {
+      setBackUrl(null) // יחזיר אחורה
+    }
+  }, [])
 
   useEffect(() => { setMounted(true) }, [])
 
@@ -134,12 +144,12 @@ export default function ServicePage() {
 
         {/* breadcrumb + חזרה */}
         <div style={{ background: 'linear-gradient(160deg, #4C0080, #8B00D4)', padding: '12px 20px', display: 'flex', alignItems: 'center', gap: 8 }}>
-          <button onClick={() => router.push('/rehab')} style={{
+          <button onClick={() => backUrl ? router.push(backUrl) : router.back()} style={{
             background: 'rgba(255,255,255,0.15)', border: '1.5px solid rgba(255,255,255,0.3)',
             color: 'white', borderRadius: '999px', padding: '6px 14px',
             cursor: 'pointer', fontSize: 13, fontWeight: 600,
             fontFamily: "'Nunito', sans-serif",
-          }}>♿ שיקום</button>
+          }}>← חזרה לרשימה</button>
           <span style={{ color: 'rgba(255,255,255,0.5)', fontSize: 14 }}>←</span>
           <span style={{ color: 'rgba(255,255,255,0.9)', fontSize: 13, fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: 200 }}>{service.name}</span>
         </div>
