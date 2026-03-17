@@ -6,9 +6,9 @@ export default async function handler(req, res) {
     return res.status(401).json({ error: 'Unauthorized' })
   }
 
-  const { serviceName, serviceEmail } = req.body
-
-  if (!serviceEmail) return res.status(400).json({ error: 'Missing email' })
+  const { serviceName, serviceEmail, contactEmail } = req.body
+  const toEmail = contactEmail || serviceEmail
+  if (!toEmail) return res.status(400).json({ error: 'Missing email' })
 
   try {
     const response = await fetch('https://api.resend.com/emails', {
@@ -19,7 +19,7 @@ export default async function handler(req, res) {
       },
       body: JSON.stringify({
         from: 'onboarding@resend.dev',
-        to: serviceEmail,
+        to: toEmail,
         subject: `✅ הבקשה שלכם אושרה – מאגר שירותי סל שיקום`,
         html: `
           <div dir="rtl" style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
