@@ -178,7 +178,13 @@ export default function Calculator() {
     const res = calcResult(finalAnswers)
     setResult(res)
     if (finalAnswers.sal === 'unknown') setSalNote({ text: 'אם עדיין אין זכאות — ניתן לפנות לביטוח הלאומי לקבלת סל שיקום.', link: 'https://www.gov.il/he/service/rehabilitation-support-package', linkText: 'למידע על סל שיקום ←' })
-    if (finalAnswers.sal === 'no') setSalNote({ text: 'שירותי סל שיקום מיועדים למי שעבר ועדת זכאות בביטוח הלאומי. אם עדיין לא עברת — אפשר להתחיל בתהליך.', link: 'https://www.gov.il/he/service/rehabilitation-support-package', linkText: 'איך מוציאים סל שיקום? ←' })
+    if (finalAnswers.sal === 'no') setSalNote({
+      text: 'שירותי סל שיקום מיועדים למי שקיבל 40% ומעלה על רקע נפשי בביטוח הלאומי.',
+      links: [
+        { href: 'https://www.btl.gov.il/benefits/Disability/Pages/%D7%94%D7%96%D7%9B%D7%90%D7%99%D7%9D%20%D7%9C%D7%A7%D7%A6%D7%91%D7%AA%20%D7%A0%D7%9B%D7%95%D7%AA%20%D7%97%D7%95%D7%93%D7%A9%D7%99%D7%AA.aspx', label: 'להגשת תביעה בביטוח הלאומי ←' },
+        { href: 'https://www.gov.il/he/service/rehabilitation-support-package', label: 'לתהליך הוצאת סל שיקום ←' },
+      ]
+    })
     const queries = buildSearchQueries(res.recommendation, finalAnswers)
     try {
       const fetches = await Promise.all(queries.map(q => fetch(q.url).then(r => r.json()).then(data => ({ label: q.label, page: q.page, services: Array.isArray(data) ? data : [] }))))
@@ -254,6 +260,13 @@ export default function Calculator() {
             {salNote && (
               <div style={{ background: 'rgba(255,255,255,0.7)', borderRadius: 10, padding: '10px 14px', fontSize: 13, color: '#92400e', display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 10 }}>
                 <span>💡 {salNote.text}</span>
+                {salNote.links && salNote.links.map(l => (
+                  <a key={l.href} href={l.href} target="_blank" rel="noreferrer" style={{
+                    display: 'inline-block', padding: '5px 14px', borderRadius: '999px',
+                    background: '#f59e0b', color: 'white', fontWeight: 700,
+                    fontSize: 12, textDecoration: 'none', whiteSpace: 'nowrap',
+                  }}>{l.label}</a>
+                ))}
                 {salNote.link && (
                   <a href={salNote.link} target="_blank" rel="noreferrer" style={{
                     display: 'inline-block', padding: '5px 14px', borderRadius: '999px',
