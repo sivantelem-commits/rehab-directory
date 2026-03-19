@@ -1,5 +1,4 @@
 import { Html, Head, Main, NextScript } from 'next/document'
-
 export default function Document() {
   return (
     <Html lang="he" dir="rtl">
@@ -17,6 +16,14 @@ export default function Document() {
         <meta name="twitter:title" content="בריאות נפש בישראל" />
         <meta name="twitter:description" content="הנגשת בריאות הנפש בישראל – מצאו שירותי שיקום וטיפול לפי אזור" />
         <link rel="icon" href="/logo.png" />
+        {/* Google Analytics */}
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-CL2BJ9Q4X3" />
+        <script dangerouslySetInnerHTML={{ __html: `
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-CL2BJ9Q4X3');
+        `}} />
       </Head>
       <body>
         <Main />
