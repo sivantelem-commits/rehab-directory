@@ -69,6 +69,22 @@ const STEPS = [
     ],
   },
   {
+    id: 'district',
+    question: 'באיזה אזור?',
+    hint: 'ניתן לבחור יותר מאחד',
+    multi: true,
+    options: [
+      { label: 'צפון', value: 'צפון', scores: {} },
+      { label: 'חיפה', value: 'חיפה', scores: {} },
+      { label: 'מרכז', value: 'מרכז', scores: {} },
+      { label: 'תל אביב', value: 'תל אביב', scores: {} },
+      { label: 'ירושלים', value: 'ירושלים', scores: {} },
+      { label: 'דרום', value: 'דרום', scores: {} },
+      { label: 'יהודה ושומרון', value: 'יהודה ושומרון', scores: {} },
+      { label: 'לא משנה / ארצי', value: 'national', scores: {} },
+    ],
+  },
+  {
     id: 'sal',
     question: 'האם יש הכרה בסל שיקום / נכות נפשית?',
     hint: 'סל שיקום ניתן בדרך כלל מגיל 18 עם 40% נכות נפשית ומעלה',
@@ -103,15 +119,24 @@ function calcResult(answers) {
 }
 
 function buildSearchQueries(recommendation, answers) {
-  const district = answers.district || null
+  const districtRaw = answers.district || []
+  const isNational = Array.isArray(districtRaw) ? districtRaw.includes('national') : districtRaw === 'national'
+  const districts = Array.isArray(districtRaw) ? districtRaw.filter(d => d !== 'national') : (districtRaw ? [districtRaw] : [])
   const needs = answers.needs || []
   const queries = []
-  function p(cat, page) {
+  // בניית queries — אם יש כמה מחוזות, שולחים בקשה לכל אחד בנפרד
+  function buildForDistrict(d, cat, page) {
     const params = new URLSearchParams()
-    if (district) params.set('district', district)
+    if (d) params.set('district', d)
     if (cat) params.set('category', cat)
     if (answers.age) params.set('age_group', answers.age)
     return { label: cat || (page === 'treatment' ? 'טיפול נפשי' : 'שירותי שיקום'), url: `/api/${page === 'treatment' ? 'treatment' : 'services'}?${params}`, page }
+  }
+  function p(cat, page) {
+    if (isNational || districts.length === 0) return buildForDistrict(null, cat, page)
+    if (districts.length === 1) return buildForDistrict(districts[0], cat, page)
+    // מחוזות מרובים — מחזיר את הראשון, הנוספים יתווספו בהמשך
+    return buildForDistrict(districts[0], cat, page)
   }
   if (recommendation === 'treatment' || recommendation === 'combined') queries.push(p(null, 'treatment'))
   if (recommendation === 'rehab' || recommendation === 'combined') {
@@ -191,10 +216,41 @@ export default function Calculator() {
     if (finalAnswers.sal === 'unknown') setSalNote('אם עדיין אין זכאות — פנה לביטוח לאומי ואז למשרד הבריאות לקבלת סל שיקום.')
     const queries = buildSearchQueries(res.recommendation, finalAnswers)
     try {
-      const fetches = await Promise.all(queries.map(q => fetch(q.url).then(r => r.json()).then(data => ({ label: q.label, page: q.page, services: Array.isArray(data) ? data : [] }))))
-      const withResults = fetches.filter(f => f.services.length > 0)
-      if (withResults.length === 0 && finalAnswers.district) {
-        const fb = await Promise.all(buildSearchQueries(res.recommendation, { ...finalAnswers, district: null }).map(q => fetch(q.url).then(r => r.json()).then(data => ({ label: q.label, page: q.page, services: Array.isArray(data) ? data : [] }))))
+      // אם יש מחוזות מרובים — שולחים בקשה לכל מחוז ומאחדים תוצאות
+      const districtRaw = finalAnswers.district || []
+      const isNational = Array.isArray(districtRaw) ? districtRaw.includes('national') : districtRaw === 'national'
+      const selectedDistricts = Array.isArray(districtRaw) ? districtRaw.filter(d => d !== 'national') : (districtRaw ? [districtRaw] : [])
+
+      let allFetches = []
+      if (isNational || selectedDistricts.length === 0) {
+        allFetches = await Promise.all(queries.map(q => fetch(q.url).then(r => r.json()).then(data => ({ label: q.label, page: q.page, services: Array.isArray(data) ? data : [] }))))
+      } else if (selectedDistricts.length === 1) {
+        allFetches = await Promise.all(queries.map(q => fetch(q.url).then(r => r.json()).then(data => ({ label: q.label, page: q.page, services: Array.isArray(data) ? data : [] }))))
+      } else {
+        // מחוזות מרובים — שולחים לכל מחוז ומאחדים
+        const multiResults = await Promise.all(
+          selectedDistricts.flatMap(d =>
+            queries.map(q => {
+              const url = new URL(q.url, 'http://x')
+              url.searchParams.set('district', d)
+              return fetch(url.pathname + url.search).then(r => r.json()).then(data => ({ label: q.label, page: q.page, services: Array.isArray(data) ? data : [] }))
+            })
+          )
+        )
+        // מאחד לפי label+page ומסיר כפילויות
+        const merged = {}
+        multiResults.forEach(r => {
+          const key = `${r.page}_${r.label}`
+          if (!merged[key]) merged[key] = { label: r.label, page: r.page, services: [] }
+          const existingIds = new Set(merged[key].services.map(s => s.id))
+          r.services.forEach(s => { if (!existingIds.has(s.id)) { merged[key].services.push(s); existingIds.add(s.id) } })
+        })
+        allFetches = Object.values(merged)
+      }
+
+      const withResults = allFetches.filter(f => f.services.length > 0)
+      if (withResults.length === 0 && selectedDistricts.length > 0 && !isNational) {
+        const fb = await Promise.all(buildSearchQueries(res.recommendation, { ...finalAnswers, district: [] }).map(q => fetch(q.url).then(r => r.json()).then(data => ({ label: q.label, page: q.page, services: Array.isArray(data) ? data : [] }))))
         const fbR = fb.filter(f => f.services.length > 0)
         if (fbR.length > 0) { setSalNote(p => (p ? p + ' ' : '') + 'טרם נוספו שירותים באזור זה — מוצגים שירותים מכל הארץ.'); setServices(fbR); return }
       }
@@ -226,7 +282,7 @@ export default function Calculator() {
         <div style={{ background: '#fff', borderRadius: 20, border: '1px solid #e9d5ff', padding: '40px 28px', textAlign: 'center', boxShadow: '0 4px 24px rgba(76,0,128,0.08)' }}>
           <div style={{ fontSize: 52, marginBottom: 16 }}>🧭</div>
           <h1 style={{ fontSize: 24, fontWeight: 800, color: '#3d2a6e', marginBottom: 10 }}>מחשבון איתור מסלול</h1>
-          <p style={{ fontSize: 15, color: '#6b7280', lineHeight: 1.7, marginBottom: 12 }}>6 שאלות קצרות — וקבל המלצה מותאמת אישית.</p>
+          <p style={{ fontSize: 15, color: '#6b7280', lineHeight: 1.7, marginBottom: 12 }}>8 שאלות קצרות — וקבל המלצה מותאמת אישית.</p>
           <p style={{ fontSize: 12, color: '#9ca3af', lineHeight: 1.6, marginBottom: 28, padding: '10px 14px', background: '#f9fafb', borderRadius: 10 }}>
             הכלי אינו אבחון ואינו מחליף איש מקצוע. הוא מסייע בכיוון ראשוני בלבד.<br />
             אם יש מצוקה חריפה או סיכון מיידי — יש לפנות בדחיפות לגורם רפואי.
