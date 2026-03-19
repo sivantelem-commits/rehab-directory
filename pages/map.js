@@ -27,47 +27,6 @@ const DISTRICT_CENTERS = {
 }
 const NAV = [['/', 'ראשי'], ['/rehab', 'שיקום'], ['/treatment', 'טיפול'], ['/map', 'מפה'], ['/guide', 'מדריך'], ['/register', 'הוספת שירות'], ['/about', 'אודות'], ['/contact', 'צור קשר'], ['/admin', 'ניהול']]
 
-
-// ─── פונקציית SVG עוגה ───────────────────────────────────
-function buildPieSVG(colors, size) {
-  const r = size / 2
-  const n = colors.length
-  if (n === 1) {
-    return '<svg width="' + size + '" height="' + size + '" xmlns="http://www.w3.org/2000/svg"><circle cx="' + r + '" cy="' + r + '" r="' + (r-1) + '" fill="' + colors[0] + '" stroke="white" stroke-width="2"/></svg>'
-  }
-  const sliceAngle = (2 * Math.PI) / n
-  let paths = ''
-  for (let i = 0; i < n; i++) {
-    const startAngle = i * sliceAngle - Math.PI / 2
-    const endAngle = startAngle + sliceAngle
-    const x1 = r + (r - 1) * Math.cos(startAngle)
-    const y1 = r + (r - 1) * Math.sin(startAngle)
-    const x2 = r + (r - 1) * Math.cos(endAngle)
-    const y2 = r + (r - 1) * Math.sin(endAngle)
-    const large = sliceAngle > Math.PI ? 1 : 0
-    paths += '<path d="M' + r + ',' + r + ' L' + x1.toFixed(2) + ',' + y1.toFixed(2) + ' A' + (r-1) + ',' + (r-1) + ' 0 ' + large + ',1 ' + x2.toFixed(2) + ',' + y2.toFixed(2) + ' Z" fill="' + colors[i] + '"/>'
-  }
-  return '<svg width="' + size + '" height="' + size + '" xmlns="http://www.w3.org/2000/svg"><circle cx="' + r + '" cy="' + r + '" r="' + (r-1) + '" fill="white"/>' + paths + '<circle cx="' + r + '" cy="' + r + '" r="' + (r-1) + '" fill="none" stroke="white" stroke-width="2"/></svg>'
-}
-
-function buildRehabMarkerIcon(L, s, isNational) {
-  const allCats = [...new Set([s.category, ...(s.categories || [])])].filter(Boolean).filter(c => REHAB_COLORS[c])
-  const colors = allCats.length > 0 ? allCats.map(c => REHAB_COLORS[c]) : ['#888888']
-  const size = isNational ? 22 : 16
-  const svg = buildPieSVG(colors, size)
-  const encoded = encodeURIComponent(svg)
-  if (isNational) {
-    return L.divIcon({
-      html: '<div style="position:relative;width:30px;height:30px"><img src="data:image/svg+xml,' + encoded + '" width="' + size + '" height="' + size + '" style="border-radius:50%;box-shadow:0 2px 8px rgba(0,0,0,0.35)"/><div style="position:absolute;top:-6px;right:-6px;font-size:11px;line-height:1">🌍</div></div>',
-      className: '', iconSize: [30, 30], iconAnchor: [15, 15],
-    })
-  }
-  return L.divIcon({
-    html: '<img src="data:image/svg+xml,' + encoded + '" width="' + size + '" height="' + size + '" style="border-radius:50%;box-shadow:0 2px 6px rgba(0,0,0,0.3)"/>',
-    className: '', iconSize: [size, size], iconAnchor: [size/2, size/2],
-  })
-}
-
 export default function MapPage() {
   const [rehabServices, setRehabServices] = useState([])
   const [treatmentServices, setTreatmentServices] = useState([])
@@ -149,7 +108,19 @@ export default function MapPage() {
       })
 
       filteredRehab.forEach(s => {
-        const icon = buildRehabMarkerIcon(L, s, s.is_national)
+        const color = REHAB_COLORS[s.category] || '#4aab78'
+        const isNational = s.is_national
+        const icon = L.divIcon({
+          html: isNational
+            ? `<div style="position:relative;width:20px;height:20px">
+                <div style="width:18px;height:18px;border-radius:50%;background:${color};border:2.5px solid white;box-shadow:0 2px 8px rgba(0,0,0,0.35)"></div>
+                <div style="position:absolute;top:-6px;right:-6px;font-size:11px;line-height:1">🌍</div>
+               </div>`
+            : `<div style="width:14px;height:14px;border-radius:50%;background:${color};border:2px solid white;box-shadow:0 2px 6px rgba(0,0,0,0.3)"></div>`,
+          className: '',
+          iconSize: isNational ? [20, 20] : [14, 14],
+          iconAnchor: isNational ? [10, 10] : [7, 7],
+        })
         const marker = L.marker([s.lat, s.lng], { icon }).addTo(mapRef.current)
         marker.on('click', () => setSelected({ ...s, type: 'rehab' }))
         markersRef.current.push(marker)
@@ -406,12 +377,10 @@ export default function MapPage() {
                 </div>
                 <button onClick={() => setSelected(null)} style={{ background: 'none', border: 'none', fontSize: 20, cursor: 'pointer', color: '#aaa', padding: 0 }}>✕</button>
               </div>
-              <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap', marginBottom: 10 }}>
-                {[...new Set([selected.category, ...(selected.categories || [])])].filter(Boolean).map((cat, i) => {
-                  const colorMap = selected.type === 'rehab' ? REHAB_COLORS : TREATMENT_COLORS
-                  const color = colorMap[cat] || '#888'
-                  return <span key={i} style={{ background: color + '22', color, borderRadius: '999px', padding: '2px 10px', fontSize: 11, fontWeight: 700 }}>{i === 0 ? (selected.type === 'rehab' ? '♿ ' : '🏥 ') : '+ '}{cat}</span>
-                })}
+              <div style={{ display: 'flex', gap: 6, marginBottom: 10 }}>
+                <span style={{ background: selected.type === 'rehab' ? '#f7f0ff' : '#f0faff', color: selected.type === 'rehab' ? '#4C0080' : '#0A6080', borderRadius: '999px', padding: '2px 10px', fontSize: 11, fontWeight: 700 }}>
+                  {selected.type === 'rehab' ? '♿' : '🏥'} {selected.category}
+                </span>
                 {selected.is_national && (
                   <span style={{ background: '#EEF2FF', color: '#1A3A5C', borderRadius: '999px', padding: '2px 10px', fontSize: 11, fontWeight: 700 }}>🌍 פריסה ארצית</span>
                 )}
