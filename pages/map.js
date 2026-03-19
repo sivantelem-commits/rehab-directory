@@ -14,7 +14,17 @@ const TREATMENT_COLORS = {
 }
 
 const DISTRICTS = ['הכל', 'צפון', 'חיפה', 'מרכז', 'תל אביב', 'ירושלים', 'דרום', 'יהודה ושומרון']
-const NAV = [['/', 'ראשי'], ['/rehab', 'שיקום'], ['/treatment', 'טיפול'], ['/map', 'מפה'], ['/register', 'הוספת שירות'], ['/about', 'אודות'], ['/contact', 'צור קשר'], ['/admin', 'ניהול']]
+
+const DISTRICT_CENTERS = {
+  'צפון':           [32.89, 35.50],
+  'חיפה':           [32.81, 34.99],
+  'מרכז':           [32.08, 34.88],
+  'תל אביב':        [32.07, 34.78],
+  'ירושלים':        [31.78, 35.22],
+  'דרום':           [31.25, 34.79],
+  'יהודה ושומרון':  [31.95, 35.27],
+}
+const NAV = [['/', 'ראשי'], ['/rehab', 'שיקום'], ['/treatment', 'טיפול'], ['/map', 'מפה'], ['/guide', 'מדריך'], ['/register', 'הרשמת שירות'], ['/about', 'אודות'], ['/contact', 'צור קשר'], ['/admin', 'ניהול']]
 
 export default function MapPage() {
   const [rehabServices, setRehabServices] = useState([])
@@ -73,6 +83,29 @@ export default function MapPage() {
     )
 
     if (showRehab) {
+      // שירותים איזוריים ללא מיקום — הצג בנקודות מרכז המחוז
+      rehabServices.filter(s =>
+        !s.lat && s.districts && s.districts.length > 0 &&
+        (rehabCategory === 'הכל' || s.category === rehabCategory) &&
+        (district === 'הכל' || s.districts.includes(district)) &&
+        (!showNationalOnly || s.is_national)
+      ).forEach(s => {
+        s.districts.forEach(d => {
+          const center = DISTRICT_CENTERS[d]
+          if (!center) return
+          const color = REHAB_COLORS[s.category] || '#4aab78'
+          const icon = L.divIcon({
+            html: `<div style="position:relative;width:28px;height:28px"><div style="width:26px;height:26px;border-radius:50%;background:white;border:3px solid ${color};box-shadow:0 2px 8px rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center"><div style="width:14px;height:14px;border-radius:50%;background:${color}"></div></div><div style="position:absolute;top:-8px;right:-8px;font-size:12px;line-height:1">🗺️</div></div>`,
+            className: '',
+            iconSize: [28, 28],
+            iconAnchor: [14, 14],
+          })
+          const marker = L.marker(center, { icon }).addTo(mapRef.current)
+          marker.on('click', () => setSelected({ ...s, type: 'rehab', _districtLabel: d }))
+          markersRef.current.push(marker)
+        })
+      })
+
       filteredRehab.forEach(s => {
         const color = REHAB_COLORS[s.category] || '#4aab78'
         const isNational = s.is_national
@@ -94,6 +127,29 @@ export default function MapPage() {
     }
 
     if (showTreatment) {
+      // שירותים איזוריים ללא מיקום — הצג בנקודות מרכז המחוז
+      treatmentServices.filter(s =>
+        !s.lat && s.districts && s.districts.length > 0 &&
+        (treatmentCategory === 'הכל' || s.category === treatmentCategory) &&
+        (district === 'הכל' || s.districts.includes(district)) &&
+        (!showNationalOnly || s.is_national)
+      ).forEach(s => {
+        s.districts.forEach(d => {
+          const center = DISTRICT_CENTERS[d]
+          if (!center) return
+          const color = TREATMENT_COLORS[s.category] || '#ee7a50'
+          const icon = L.divIcon({
+            html: `<div style="position:relative;width:28px;height:28px"><div style="width:26px;height:26px;clip-path:polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);background:white;box-shadow:0 2px 8px rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center;border:3px solid ${color}"><div style="width:14px;height:14px;clip-path:polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);background:${color}"></div></div><div style="position:absolute;top:-8px;right:-8px;font-size:12px;line-height:1">🗺️</div></div>`,
+            className: '',
+            iconSize: [28, 28],
+            iconAnchor: [14, 14],
+          })
+          const marker = L.marker(center, { icon }).addTo(mapRef.current)
+          marker.on('click', () => setSelected({ ...s, type: 'treatment', _districtLabel: d }))
+          markersRef.current.push(marker)
+        })
+      })
+
       filteredTreatment.forEach(s => {
         const color = TREATMENT_COLORS[s.category] || '#ee7a50'
         const isNational = s.is_national
@@ -163,21 +219,12 @@ export default function MapPage() {
 
         <header style={{ background: '#1A3A5C', color: 'white', padding: '10px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxShadow: '0 2px 12px rgba(0,0,0,0.15)', flexWrap: 'wrap', gap: 8 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-            <img src="/logo.png" alt="לוגו" style={{ width: 44, height: 44, objectFit: 'contain', filter: 'brightness(0) invert(1)' }} />
+            <img src="/map-logo.png" alt="מפה" style={{ width: 44, height: 44, objectFit: 'contain', filter: 'invert(1) brightness(10)' }} />
             <div>
               <div style={{ fontWeight: 800, fontSize: 18 }}>בריאות נפש בישראל</div>
               <div style={{ fontSize: 11, opacity: 0.75 }}>מפת שירותים</div>
             </div>
           </div>
-          <a href="/calculator" style={{
-            background: 'rgba(255,255,200,0.18)', border: '1.5px solid rgba(255,255,150,0.5)',
-            color: 'white', borderRadius: '999px', padding: '8px 18px',
-            fontWeight: 800, fontSize: 13, textDecoration: 'none',
-            display: 'flex', alignItems: 'center', gap: 6, whiteSpace: 'nowrap',
-            boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
-          }}>
-            🧭 מחשבון מסלול
-          </a>
           <nav style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
             {NAV.map(([href, label]) => (
               <a key={href} href={href} style={{
@@ -319,7 +366,7 @@ export default function MapPage() {
                   <div style={{ fontWeight: 700, fontSize: 15, color: '#1A3A5C' }}>
                     {selected.name} {selected.is_national && <span title="פריסה ארצית">🌍</span>}
                   </div>
-                  <div style={{ fontSize: 12, color: '#888', marginTop: 2 }}>📍 {selected.city}{selected.district ? `, ${selected.district}` : ''}</div>
+                  <div style={{ fontSize: 12, color: '#888', marginTop: 2 }}>📍 {selected.city}{selected.district ? `, ${selected.district}` : ''}{selected._districtLabel && <span style={{ marginRight: 6, background: '#EEF2FF', color: '#1A3A5C', borderRadius: 999, padding: '1px 7px', fontSize: 11 }}>🗺️ שירות איזורי — {selected._districtLabel}</span>}</div>
                 </div>
                 <button onClick={() => setSelected(null)} style={{ background: 'none', border: 'none', fontSize: 20, cursor: 'pointer', color: '#aaa', padding: 0 }}>✕</button>
               </div>
