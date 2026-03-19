@@ -156,7 +156,7 @@ export default function Home() {
           <div style={{ textAlign: 'right' }}>
             <div style={{ fontSize: 16, fontWeight: 800 }}>מחשבון איתור מסלול</div>
             <div style={{ fontSize: 12, fontWeight: 500, color: '#9b88bb', marginTop: 2 }}>
-              7 שאלות קצרות — וקבל המלצה מותאמת אישית
+              8 שאלות קצרות — וקבל המלצה מותאמת אישית
             </div>
           </div>
           <span style={{ marginRight: 'auto', fontSize: 18, color: '#a855f7' }}>←</span>
@@ -169,6 +169,7 @@ export default function Home() {
           justifyContent: 'center', flexWrap: 'wrap',
         }}>
           {[
+            ['/guide', '📖 מדריך למטופל'],
             ['/about', 'אודות'],
             ['/contact', 'צור קשר'],
           ].map(([href, label]) => (
