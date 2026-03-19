@@ -58,7 +58,7 @@ function buildPieSVG(colors, size = 22) {
 
 // ─── בניית אייקון סמן לשירות ────────────────────────────
 function buildMarkerIcon(L, s, colorMap, isNational) {
-  const allCats = [s.category, ...(s.categories || [])].filter(Boolean).filter(c => colorMap[c])
+  const allCats = [...new Set([s.category, ...(s.categories || [])])].filter(Boolean).filter(c => colorMap[c])
   const colors = allCats.length > 0 ? allCats.map(c => colorMap[c]) : ['#888888']
   const size = isNational ? 22 : 18
   const svg = buildPieSVG(colors, size)
@@ -151,7 +151,7 @@ export default function MapPage() {
         s.districts.forEach(d => {
           const center = DISTRICT_CENTERS[d]
           if (!center) return
-          const allCats = [s.category, ...(s.categories || [])].filter(Boolean).filter(c => REHAB_COLORS[c])
+          const allCats = [...new Set([s.category, ...(s.categories || [])])].filter(Boolean).filter(c => REHAB_COLORS[c])
           const colors = allCats.length > 0 ? allCats.map(c => REHAB_COLORS[c]) : ['#4aab78']
           const svg = buildPieSVG(colors, 22)
           const encoded = encodeURIComponent(svg)
