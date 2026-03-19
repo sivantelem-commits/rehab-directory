@@ -437,7 +437,7 @@ export default function MapPage() {
 
               {/* כל הקטגוריות */}
               <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap', marginBottom: 10 }}>
-                {[selected.category, ...(selected.categories || [])].filter(Boolean).map((cat, i) => {
+                {[...new Set([selected.category, ...(selected.categories || [])])].filter(Boolean).map((cat, i) => {
                   const colorMap = selected.type === 'rehab' ? REHAB_COLORS : TREATMENT_COLORS
                   const color = colorMap[cat] || '#888'
                   return (
