@@ -1,6 +1,6 @@
 import { getCategoryColor } from '../lib/categories'
 
-const TREATMENT_CATEGORIES = ['בתים מאזנים', 'מחלקות אשפוז', 'מרפאות יום', 'חדרי מיון', 'שירותים נוספים']
+const TREATMENT_CATEGORIES = ['בתים מאזנים', 'מחלקות אשפוז', 'מרפאות יום', 'חדרי מיון', 'אשפוז בית', 'שירותים נוספים']
 const TREATMENT_COLOR = '#0891B2'
 
 export default function ServiceCard({ service }) {
