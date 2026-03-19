@@ -25,7 +25,7 @@ const DISTRICT_CENTERS = {
   'דרום':           [31.25, 34.79],
   'יהודה ושומרון':  [31.95, 35.27],
 }
-const NAV = [['/', 'ראשי'], ['/rehab', 'שיקום'], ['/treatment', 'טיפול'], ['/map', 'מפה'], ['/guide', 'מדריך'], ['/register', 'הרשמת שירות'], ['/about', 'אודות'], ['/contact', 'צור קשר'], ['/admin', 'ניהול']]
+const NAV = [['/', 'ראשי'], ['/rehab', 'שיקום'], ['/treatment', 'טיפול'], ['/map', 'מפה'], ['/guide', 'מדריך'], ['/register', 'הוספת שירות'], ['/about', 'אודות'], ['/contact', 'צור קשר'], ['/admin', 'ניהול']]
 
 export default function MapPage() {
   const [rehabServices, setRehabServices] = useState([])
