@@ -11,7 +11,7 @@ const POPULATIONS = ['נשים', 'דתי/מסורתי', 'חרדי', 'להט"ב']
 const NAV = [['/', 'ראשי'], ['/rehab', 'שיקום'], ['/treatment', 'טיפול'], ['/map', 'מפה'], ['/register', 'הוספת שירות'], ['/about', 'אודות'], ['/contact', 'צור קשר'], ['/admin', 'ניהול']]
 
 const emptyForm = {
-  name: '', district: '', city: '', category: '', subcategory: '',
+  name: '', district: '', districts: [], city: '', category: '', subcategory: '',
   categories: [], age_groups: [], diagnoses: [], populations: [], description: '', phone: '', email: '',
   website: '', address: '', is_national: false,
   contact_name: '', contact_role: '', contact_phone: '', contact_email: ''
@@ -27,6 +27,7 @@ export default function Register() {
   const [duplicates, setDuplicates] = useState([])
   const [checkingDuplicates, setCheckingDuplicates] = useState(false)
   const [confirmedNotDuplicate, setConfirmedNotDuplicate] = useState(false)
+  const [multiDistrict, setMultiDistrict] = useState(false)
   const debounceRef = useRef(null)
 
   useEffect(() => { setMounted(true) }, [])
@@ -53,6 +54,7 @@ export default function Register() {
   function handleTabChange(newTab) {
     setTab(newTab)
     setForm(emptyForm)
+    setMultiDistrict(false)
     setError('')
     setSuccess(false)
     setDuplicates([])
@@ -77,8 +79,9 @@ export default function Register() {
 
   async function handleSubmit() {
     setError('')
-    const { name, district, city, phone, email } = form
-    if (!name || (!district && !form.is_national) || !city || !phone || !email || !form.contact_name || !form.contact_phone) {
+    const { name, city, phone, email } = form
+    const hasDistrict = form.is_national || (multiDistrict ? form.districts.length > 0 : form.district)
+    if (!name || !hasDistrict || !city || !phone || !email || !form.contact_name || !form.contact_phone) {
       setError('יש למלא את כל שדות החובה המסומנים ב-*')
       return
     }
@@ -89,16 +92,23 @@ export default function Register() {
     setLoading(true)
     try {
       const endpoint = tab === 'rehab' ? '/api/submit' : '/api/submit-treatment'
+      const payload = {
+        ...form,
+        // אם multi-district — שמור מערך; אחרת שמור מחוז בודד
+        districts: multiDistrict ? form.districts : (form.district ? [form.district] : []),
+        district: multiDistrict ? (form.districts[0] || '') : form.district,
+      }
       const res = await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form),
+        body: JSON.stringify(payload),
       })
       if (res.ok) {
         const submittedName = form.name
         setSuccess(true)
         setForm(f => ({ ...emptyForm, submittedName }))
         setDuplicates([])
+        setMultiDistrict(false)
       } else {
         const d = await res.json()
         setError(d.error || 'שגיאה בשליחה')
@@ -153,15 +163,6 @@ export default function Register() {
               <div style={{ fontSize: 11, opacity: 0.8 }}>הוספת שירות</div>
             </div>
           </div>
-          <a href="/calculator" style={{
-            background: 'rgba(255,255,200,0.18)', border: '1.5px solid rgba(255,255,150,0.5)',
-            color: 'white', borderRadius: '999px', padding: '8px 18px',
-            fontWeight: 800, fontSize: 13, textDecoration: 'none',
-            display: 'flex', alignItems: 'center', gap: 6, whiteSpace: 'nowrap',
-            boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
-          }}>
-            🧭 מחשבון מסלול
-          </a>
           <nav style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
             {NAV.map(([href, label]) => (
               <a key={href} href={href} style={{
@@ -175,10 +176,7 @@ export default function Register() {
           </nav>
         </header>
 
-        <div style={{
-          background: `linear-gradient(160deg, ${darkColor}, ${color})`,
-          color: 'white', padding: '32px 20px', textAlign: 'center',
-        }}>
+        <div style={{ background: `linear-gradient(160deg, ${darkColor}, ${color})`, color: 'white', padding: '32px 20px', textAlign: 'center' }}>
           <img src='/register-icon.png' alt='הוספת שירות' style={{ width: 160, height: 160, objectFit: 'contain', marginBottom: 0, filter: 'invert(1) brightness(10)' }} />
           <h1 style={{ fontSize: 24, fontWeight: 800, margin: '0 0 8px' }}>הוספת שירות חדש</h1>
           <p style={{ fontSize: 14, opacity: 0.85, margin: 0 }}>לאחר אישור האדמין השירות יופיע במאגר</p>
@@ -186,30 +184,13 @@ export default function Register() {
 
         <main style={{ maxWidth: 620, margin: '0 auto', padding: '28px 16px' }}>
 
-          {/* טאב שיקום/טיפול */}
-          <div style={{
-            display: 'flex', borderRadius: '999px', overflow: 'hidden',
-            border: `2px solid ${color}`, marginBottom: 24, background: 'white',
-          }}>
-            <button onClick={() => handleTabChange('rehab')} style={{
-              flex: 1, padding: '12px 0', border: 'none', cursor: 'pointer',
-              fontFamily: "'Nunito', sans-serif", fontWeight: 800, fontSize: 15,
-              background: isRehab ? 'linear-gradient(160deg, #8B00D4, #4C0080)' : 'white',
-              color: isRehab ? 'white' : '#8B00D4', transition: 'all 0.2s',
-            }}>♿ שיקום</button>
-            <button onClick={() => handleTabChange('treatment')} style={{
-              flex: 1, padding: '12px 0', border: 'none', cursor: 'pointer',
-              fontFamily: "'Nunito', sans-serif", fontWeight: 800, fontSize: 15,
-              background: !isRehab ? 'linear-gradient(160deg, #0891B2, #164E63)' : 'white',
-              color: !isRehab ? 'white' : '#0891B2', transition: 'all 0.2s',
-            }}>🏥 טיפול</button>
+          <div style={{ display: 'flex', borderRadius: '999px', overflow: 'hidden', border: `2px solid ${color}`, marginBottom: 24, background: 'white' }}>
+            <button onClick={() => handleTabChange('rehab')} style={{ flex: 1, padding: '12px 0', border: 'none', cursor: 'pointer', fontFamily: "'Nunito', sans-serif", fontWeight: 800, fontSize: 15, background: isRehab ? 'linear-gradient(160deg, #8B00D4, #4C0080)' : 'white', color: isRehab ? 'white' : '#8B00D4', transition: 'all 0.2s' }}>♿ שיקום</button>
+            <button onClick={() => handleTabChange('treatment')} style={{ flex: 1, padding: '12px 0', border: 'none', cursor: 'pointer', fontFamily: "'Nunito', sans-serif", fontWeight: 800, fontSize: 15, background: !isRehab ? 'linear-gradient(160deg, #0891B2, #164E63)' : 'white', color: !isRehab ? 'white' : '#0891B2', transition: 'all 0.2s' }}>🏥 טיפול</button>
           </div>
 
           {success ? (
-            <div style={{
-              background: 'white', borderRadius: 20, padding: '40px 32px', textAlign: 'center',
-              border: `2px solid ${color}`, boxShadow: `0 8px 32px ${color}22`,
-            }}>
+            <div style={{ background: 'white', borderRadius: 20, padding: '40px 32px', textAlign: 'center', border: `2px solid ${color}`, boxShadow: `0 8px 32px ${color}22` }}>
               <div style={{ fontSize: 64, marginBottom: 16 }}>🎉</div>
               <div style={{ fontSize: 22, fontWeight: 800, color: darkColor, marginBottom: 12 }}>הבקשה נשלחה בהצלחה!</div>
               <div style={{ background: isRehab ? '#f7f0ff' : '#f0faff', borderRadius: 14, padding: '20px 24px', marginBottom: 24, textAlign: 'right' }}>
@@ -220,38 +201,20 @@ export default function Register() {
                 </div>
               </div>
               <div style={{ display: 'flex', gap: 10, justifyContent: 'center', flexWrap: 'wrap' }}>
-                <button onClick={() => setSuccess(false)} style={{
-                  background: color, color: 'white', border: 'none',
-                  borderRadius: 20, padding: '11px 28px', fontWeight: 700, fontSize: 14,
-                  cursor: 'pointer', fontFamily: "'Nunito', sans-serif",
-                }}>➕ הוספת שירות נוסף</button>
-                <a href="/" style={{
-                  background: 'white', color: darkColor, border: `1.5px solid ${color}`,
-                  borderRadius: 20, padding: '11px 28px', fontWeight: 700, fontSize: 14,
-                  textDecoration: 'none', display: 'inline-block',
-                }}>🏠 חזרה לדף הבית</a>
+                <button onClick={() => setSuccess(false)} style={{ background: color, color: 'white', border: 'none', borderRadius: 20, padding: '11px 28px', fontWeight: 700, fontSize: 14, cursor: 'pointer', fontFamily: "'Nunito', sans-serif" }}>➕ הוספת שירות נוסף</button>
+                <a href="/" style={{ background: 'white', color: darkColor, border: `1.5px solid ${color}`, borderRadius: 20, padding: '11px 28px', fontWeight: 700, fontSize: 14, textDecoration: 'none', display: 'inline-block' }}>חזרה לדף הבית</a>
               </div>
             </div>
           ) : (
-            <div style={{
-              background: 'white', borderRadius: 20, padding: '24px 20px',
-              boxShadow: `0 4px 20px ${color}22`,
-              border: `1.5px solid ${isRehab ? '#d4b0f0' : '#a0d8e8'}`,
-            }}>
+            <div style={{ background: 'white', borderRadius: 20, padding: '24px 20px', boxShadow: `0 4px 20px ${color}22`, border: `1.5px solid ${isRehab ? '#d4b0f0' : '#a0d8e8'}` }}>
 
               {/* שם */}
               <div style={{ marginBottom: 16 }}>
                 <label style={lbl}>שם השירות *</label>
                 <div style={{ position: 'relative' }}>
-                  <input
-                    type="text" placeholder="שם המרכז / השירות"
-                    value={form.name}
+                  <input type="text" placeholder="שם המרכז / השירות" value={form.name}
                     onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
-                    style={{
-                      ...inp,
-                      border: `1.5px solid ${duplicates.length > 0 && !confirmedNotDuplicate ? '#F59E0B' : isRehab ? '#d4b0f0' : '#a0d8e8'}`,
-                      paddingLeft: 40,
-                    }}
+                    style={{ ...inp, border: `1.5px solid ${duplicates.length > 0 && !confirmedNotDuplicate ? '#F59E0B' : isRehab ? '#d4b0f0' : '#a0d8e8'}`, paddingLeft: 40 }}
                   />
                   {checkingDuplicates && <div style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', fontSize: 12, color: '#aaa' }}>🔍</div>}
                   {!checkingDuplicates && duplicates.length > 0 && !confirmedNotDuplicate && <div style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', fontSize: 14 }}>⚠️</div>}
@@ -293,21 +256,64 @@ export default function Register() {
                 </div>
               ))}
 
-              {/* מחוז */}
-              <div style={{ marginBottom: 16 }}>
+              {/* אזור פריסה */}
+              <div style={{ marginBottom: 20 }}>
+                <label style={lbl}>אזור פריסה *</label>
+
+                {/* פריסה ארצית */}
                 <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13.5, fontWeight: 700, color: darkColor, marginBottom: 10, cursor: 'pointer' }}>
                   <input type="checkbox" checked={form.is_national}
-                    onChange={e => setForm(f => ({ ...f, is_national: e.target.checked, district: e.target.checked ? '' : f.district }))}
+                    onChange={e => setForm(f => ({ ...f, is_national: e.target.checked, district: '', districts: [] }))}
                     style={{ width: 18, height: 18, cursor: 'pointer' }} />
-                  פריסה ארצית
+                  פריסה ארצית (כל הארץ)
                 </label>
+
                 {!form.is_national && (
                   <>
-                    <label style={lbl}>מחוז *</label>
-                    <select value={form.district} onChange={e => setForm(f => ({ ...f, district: e.target.value }))} style={inp}>
-                      <option value="">בחרו מחוז</option>
-                      {DISTRICTS.map(d => <option key={d}>{d}</option>)}
-                    </select>
+                    {/* אזור איזורי */}
+                    <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, fontWeight: 600, color: '#6b7280', marginBottom: 10, cursor: 'pointer' }}>
+                      <input type="checkbox" checked={multiDistrict}
+                        onChange={e => {
+                          setMultiDistrict(e.target.checked)
+                          setForm(f => ({ ...f, district: '', districts: [] }))
+                        }}
+                        style={{ width: 16, height: 16, cursor: 'pointer' }} />
+                      פריסה איזורית (יותר ממחוז אחד)
+                    </label>
+
+                    {multiDistrict ? (
+                      // Multi-select מחוזות
+                      <div>
+                        <div style={{ fontSize: 12, color: '#9ca3af', marginBottom: 8, fontWeight: 600 }}>
+                          סמנו את כל המחוזות שהשירות נותן מענה להם *
+                        </div>
+                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                          {DISTRICTS.map(d => {
+                            const selected = (form.districts || []).includes(d)
+                            return (
+                              <button key={d} type="button" onClick={() => toggleField('districts', d)} style={{
+                                padding: '7px 16px', borderRadius: '999px', fontSize: 13, fontWeight: 700,
+                                cursor: 'pointer', fontFamily: "'Nunito', sans-serif", transition: 'all 0.15s',
+                                border: `2px solid ${selected ? color : '#e0d0f0'}`,
+                                background: selected ? color : 'white',
+                                color: selected ? 'white' : darkColor,
+                              }}>{d}</button>
+                            )
+                          })}
+                        </div>
+                        {(form.districts || []).length > 0 && (
+                          <div style={{ fontSize: 12, color: '#9b88bb', marginTop: 8, fontWeight: 600 }}>
+                            ✓ נבחרו: {form.districts.join(', ')}
+                          </div>
+                        )}
+                      </div>
+                    ) : (
+                      // Select מחוז בודד
+                      <select value={form.district} onChange={e => setForm(f => ({ ...f, district: e.target.value }))} style={inp}>
+                        <option value="">בחרו מחוז</option>
+                        {DISTRICTS.map(d => <option key={d}>{d}</option>)}
+                      </select>
+                    )}
                   </>
                 )}
               </div>
@@ -315,14 +321,9 @@ export default function Register() {
               {/* קטגוריה ראשית */}
               <div style={{ marginBottom: 16 }}>
                 <label style={lbl}>קטגוריה ראשית</label>
-                <select value={form.category}
-                  onChange={e => setForm(f => ({ ...f, category: e.target.value, subcategory: '' }))}
-                  style={inp}>
+                <select value={form.category} onChange={e => setForm(f => ({ ...f, category: e.target.value, subcategory: '' }))} style={inp}>
                   <option value="">בחרו קטגוריה</option>
-                  {isRehab
-                    ? CATEGORY_NAMES.map(c => <option key={c}>{c}</option>)
-                    : TREATMENT_CATEGORIES.map(c => <option key={c}>{c}</option>)
-                  }
+                  {isRehab ? CATEGORY_NAMES.map(c => <option key={c}>{c}</option>) : TREATMENT_CATEGORIES.map(c => <option key={c}>{c}</option>)}
                 </select>
               </div>
 
@@ -330,116 +331,58 @@ export default function Register() {
               {isRehab && subcategories.length > 0 && (
                 <div style={{ marginBottom: 16 }}>
                   <label style={lbl}>תת קטגוריה</label>
-                  <select value={form.subcategory}
-                    onChange={e => setForm(f => ({ ...f, subcategory: e.target.value }))}
-                    style={inp}>
+                  <select value={form.subcategory} onChange={e => setForm(f => ({ ...f, subcategory: e.target.value }))} style={inp}>
                     <option value="">בחרו תת קטגוריה</option>
                     {subcategories.map(s => <option key={s}>{s}</option>)}
                   </select>
                 </div>
               )}
 
-              {/* קטגוריות נוספות — multi select */}
+              {/* קטגוריות נוספות */}
               {isRehab && (
                 <div style={{ marginBottom: 20 }}>
-                  <label style={lbl}>
-                    קטגוריות נוספות
-                    <span style={{ fontWeight: 400, color: '#9ca3af', marginRight: 6 }}>(אופציונלי — אם השירות עוסק בכמה תחומים)</span>
-                  </label>
+                  <label style={lbl}>קטגוריות נוספות <span style={{ fontWeight: 400, color: '#9ca3af', marginRight: 6 }}>(אופציונלי)</span></label>
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
                     {CATEGORY_NAMES.filter(c => c !== form.category).map(cat => {
                       const selected = (form.categories || []).includes(cat)
                       const catColor = CATEGORIES[cat]?.color || color
                       return (
-                        <button
-                          key={cat}
-                          type="button"
-                          onClick={() => toggleCategory(cat)}
-                          style={{
-                            padding: '6px 14px', borderRadius: '999px', fontSize: 13,
-                            fontWeight: 700, cursor: 'pointer',
-                            border: `2px solid ${selected ? catColor : '#e0d0f0'}`,
-                            background: selected ? catColor : 'white',
-                            color: selected ? 'white' : catColor,
-                            fontFamily: "'Nunito', sans-serif",
-                            transition: 'all 0.15s',
-                          }}
-                        >
-                          {cat}
-                        </button>
+                        <button key={cat} type="button" onClick={() => toggleCategory(cat)} style={{ padding: '6px 14px', borderRadius: '999px', fontSize: 13, fontWeight: 700, cursor: 'pointer', border: `2px solid ${selected ? catColor : '#e0d0f0'}`, background: selected ? catColor : 'white', color: selected ? 'white' : catColor, fontFamily: "'Nunito', sans-serif", transition: 'all 0.15s' }}>{cat}</button>
                       )
                     })}
                   </div>
-                  {(form.categories || []).length > 0 && (
-                    <div style={{ fontSize: 12, color: '#9b88bb', marginTop: 8, fontWeight: 600 }}>
-                      ✓ נבחרו: {form.categories.join(', ')}
-                    </div>
-                  )}
                 </div>
               )}
 
-              {/* קבוצות גיל */}
+              {/* גיל */}
               <div style={{ marginBottom: 20 }}>
-                <label style={lbl}>
-                  קבוצות גיל
-                  <span style={{ fontWeight: 400, color: '#9ca3af', marginRight: 6 }}>(אופציונלי)</span>
-                </label>
+                <label style={lbl}>קבוצות גיל <span style={{ fontWeight: 400, color: '#9ca3af', marginRight: 6 }}>(אופציונלי)</span></label>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
                   {AGE_GROUPS.map(ag => {
                     const selected = (form.age_groups || []).includes(ag)
-                    return (
-                      <button key={ag} type="button" onClick={() => toggleField('age_groups', ag)} style={{
-                        padding: '6px 14px', borderRadius: '999px', fontSize: 13, fontWeight: 700,
-                        cursor: 'pointer', fontFamily: "'Nunito', sans-serif", transition: 'all 0.15s',
-                        border: `2px solid ${selected ? color : '#e0d0f0'}`,
-                        background: selected ? color : 'white',
-                        color: selected ? 'white' : color,
-                      }}>{ag}</button>
-                    )
+                    return <button key={ag} type="button" onClick={() => toggleField('age_groups', ag)} style={{ padding: '6px 14px', borderRadius: '999px', fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: "'Nunito', sans-serif", transition: 'all 0.15s', border: `2px solid ${selected ? color : '#e0d0f0'}`, background: selected ? color : 'white', color: selected ? 'white' : color }}>{ag}</button>
                   })}
                 </div>
               </div>
 
               {/* אבחנות */}
               <div style={{ marginBottom: 20 }}>
-                <label style={lbl}>
-                  אבחנות / התמחויות
-                  <span style={{ fontWeight: 400, color: '#9ca3af', marginRight: 6 }}>(אופציונלי)</span>
-                </label>
+                <label style={lbl}>אבחנות / התמחויות <span style={{ fontWeight: 400, color: '#9ca3af', marginRight: 6 }}>(אופציונלי)</span></label>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
                   {DIAGNOSES.map(d => {
                     const selected = (form.diagnoses || []).includes(d)
-                    return (
-                      <button key={d} type="button" onClick={() => toggleField('diagnoses', d)} style={{
-                        padding: '6px 14px', borderRadius: '999px', fontSize: 13, fontWeight: 700,
-                        cursor: 'pointer', fontFamily: "'Nunito', sans-serif", transition: 'all 0.15s',
-                        border: `2px solid ${selected ? '#0E7490' : '#e0d0f0'}`,
-                        background: selected ? '#0E7490' : 'white',
-                        color: selected ? 'white' : '#0E7490',
-                      }}>{d}</button>
-                    )
+                    return <button key={d} type="button" onClick={() => toggleField('diagnoses', d)} style={{ padding: '6px 14px', borderRadius: '999px', fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: "'Nunito', sans-serif", transition: 'all 0.15s', border: `2px solid ${selected ? '#0E7490' : '#e0d0f0'}`, background: selected ? '#0E7490' : 'white', color: selected ? 'white' : '#0E7490' }}>{d}</button>
                   })}
                 </div>
               </div>
 
               {/* אוכלוסייה */}
               <div style={{ marginBottom: 20 }}>
-                <label style={lbl}>
-                  אוכלוסייה ייעודית
-                  <span style={{ fontWeight: 400, color: '#9ca3af', marginRight: 6 }}>(אופציונלי)</span>
-                </label>
+                <label style={lbl}>אוכלוסייה ייעודית <span style={{ fontWeight: 400, color: '#9ca3af', marginRight: 6 }}>(אופציונלי)</span></label>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
                   {POPULATIONS.map(p => {
                     const selected = (form.populations || []).includes(p)
-                    return (
-                      <button key={p} type="button" onClick={() => toggleField('populations', p)} style={{
-                        padding: '6px 14px', borderRadius: '999px', fontSize: 13, fontWeight: 700,
-                        cursor: 'pointer', fontFamily: "'Nunito', sans-serif", transition: 'all 0.15s',
-                        border: `2px solid ${selected ? '#5E35B1' : '#e0d0f0'}`,
-                        background: selected ? '#5E35B1' : 'white',
-                        color: selected ? 'white' : '#5E35B1',
-                      }}>{p}</button>
-                    )
+                    return <button key={p} type="button" onClick={() => toggleField('populations', p)} style={{ padding: '6px 14px', borderRadius: '999px', fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: "'Nunito', sans-serif", transition: 'all 0.15s', border: `2px solid ${selected ? '#5E35B1' : '#e0d0f0'}`, background: selected ? '#5E35B1' : 'white', color: selected ? 'white' : '#5E35B1' }}>{p}</button>
                   })}
                 </div>
               </div>
@@ -447,56 +390,39 @@ export default function Register() {
               {/* תיאור */}
               <div style={{ marginBottom: 24 }}>
                 <label style={lbl}>תיאור השירות</label>
-                <textarea
-                  placeholder={`תארו את שירותי ה${isRehab ? 'שיקום' : 'טיפול'} שאתם מציעים...`}
-                  value={form.description}
-                  onChange={e => setForm(f => ({ ...f, description: e.target.value }))}
-                  rows={4}
-                  style={{ ...inp, resize: 'vertical', fontFamily: 'inherit', borderRadius: 12 }}
-                />
+                <textarea placeholder={`תארו את שירותי ה${isRehab ? 'שיקום' : 'טיפול'} שאתם מציעים...`} value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} rows={4} style={{ ...inp, resize: 'vertical', fontFamily: 'inherit', borderRadius: 12 }} />
               </div>
 
               {/* פרטי איש קשר */}
               <div style={{ marginBottom: 24, background: isRehab ? '#f7f0ff' : '#f0faff', borderRadius: 14, padding: '18px 16px 8px', border: `1.5px solid ${isRehab ? '#d4b0f0' : '#a0d8e8'}` }}>
                 <div style={{ fontSize: 13, fontWeight: 800, color: darkColor, marginBottom: 4 }}>👤 פרטי איש קשר לבירורים</div>
                 <div style={{ fontSize: 12, color: '#888', marginBottom: 14, lineHeight: 1.6, background: 'rgba(255,255,255,0.6)', borderRadius: 8, padding: '8px 10px' }}>
-                  🔒 פרטים אלו <strong>לא יפורסמו באתר</strong> — הם מיועדים לצוות האתר בלבד למקרה שיידרשו בירורים לפני אישור הרישום.
+                  🔒 פרטים אלו <strong>לא יפורסמו באתר</strong> — מיועדים לצוות האתר בלבד.
                 </div>
                 <div style={{ marginBottom: 14 }}>
                   <label style={lbl}>שם איש הקשר *</label>
-                  <input type="text" placeholder="שם מלא" value={form.contact_name}
-                    onChange={e => setForm(f => ({ ...f, contact_name: e.target.value }))} style={inp} />
+                  <input type="text" placeholder="שם מלא" value={form.contact_name} onChange={e => setForm(f => ({ ...f, contact_name: e.target.value }))} style={inp} />
                 </div>
                 <div style={{ marginBottom: 14 }}>
                   <label style={lbl}>תפקיד <span style={{ fontWeight: 400, color: '#9ca3af', marginRight: 6 }}>(אופציונלי)</span></label>
-                  <input type="text" placeholder='למשל: מנהל, רכזת, עו"ס...' value={form.contact_role}
-                    onChange={e => setForm(f => ({ ...f, contact_role: e.target.value }))} style={inp} />
+                  <input type="text" placeholder='למשל: מנהל, רכזת, עו"ס...' value={form.contact_role} onChange={e => setForm(f => ({ ...f, contact_role: e.target.value }))} style={inp} />
                 </div>
                 <div style={{ marginBottom: 14 }}>
                   <label style={lbl}>טלפון לבירורים *</label>
-                  <input type="tel" placeholder="מספר טלפון ישיר" value={form.contact_phone}
-                    onChange={e => setForm(f => ({ ...f, contact_phone: e.target.value }))} style={inp} />
+                  <input type="tel" placeholder="מספר טלפון ישיר" value={form.contact_phone} onChange={e => setForm(f => ({ ...f, contact_phone: e.target.value }))} style={inp} />
                 </div>
                 <div style={{ marginBottom: 14 }}>
-                  <label style={lbl}>מייל לבירורים <span style={{ fontWeight: 400, color: '#9ca3af', marginRight: 6 }}>(אופציונלי — אם שונה ממייל השירות)</span></label>
-                  <input type="email" placeholder="כתובת מייל ישירה" value={form.contact_email}
-                    onChange={e => setForm(f => ({ ...f, contact_email: e.target.value }))} style={inp} />
+                  <label style={lbl}>מייל לבירורים <span style={{ fontWeight: 400, color: '#9ca3af', marginRight: 6 }}>(אופציונלי)</span></label>
+                  <input type="email" placeholder="כתובת מייל ישירה" value={form.contact_email} onChange={e => setForm(f => ({ ...f, contact_email: e.target.value }))} style={inp} />
                 </div>
               </div>
 
-              {error && (
-                <div style={{ background: '#FFF0F0', border: '1px solid #FFCDD2', borderRadius: 12, padding: '10px 16px', fontSize: 14, color: '#C62828', marginBottom: 16 }}>
-                  ⚠️ {error}
-                </div>
-              )}
+              {error && <div style={{ background: '#FFF0F0', border: '1px solid #FFCDD2', borderRadius: 12, padding: '10px 16px', fontSize: 14, color: '#C62828', marginBottom: 16 }}>⚠️ {error}</div>}
 
               <button onClick={handleSubmit} disabled={loading} style={{
-                width: '100%',
-                background: loading ? '#ccc' : `linear-gradient(160deg, ${isRehab ? '#8B00D4, #4C0080' : '#0891B2, #164E63'})`,
-                color: 'white', border: 'none', borderRadius: '999px',
-                padding: '14px 0', fontWeight: 800, fontSize: 15,
-                cursor: loading ? 'not-allowed' : 'pointer',
-                fontFamily: "'Nunito', sans-serif",
+                width: '100%', background: loading ? '#ccc' : `linear-gradient(160deg, ${isRehab ? '#8B00D4, #4C0080' : '#0891B2, #164E63'})`,
+                color: 'white', border: 'none', borderRadius: '999px', padding: '14px 0', fontWeight: 800, fontSize: 15,
+                cursor: loading ? 'not-allowed' : 'pointer', fontFamily: "'Nunito', sans-serif",
                 boxShadow: loading ? 'none' : `0 4px 0 ${darkColor}, 0 8px 20px ${color}44`,
               }}>
                 {loading ? 'שולח...' : 'שליחת בקשה לאישור ←'}
@@ -505,11 +431,7 @@ export default function Register() {
           )}
         </main>
 
-        <footer style={{
-          background: `linear-gradient(135deg, ${darkColor}, ${color})`,
-          color: 'rgba(255,255,255,0.75)', textAlign: 'center',
-          padding: '24px', fontSize: 13, marginTop: 48, fontWeight: 500,
-        }}>
+        <footer style={{ background: `linear-gradient(135deg, ${darkColor}, ${color})`, color: 'rgba(255,255,255,0.75)', textAlign: 'center', padding: '24px', fontSize: 13, marginTop: 48, fontWeight: 500 }}>
           <div style={{ marginBottom: 8 }}>
             <a href="/contact" style={{ color: 'rgba(255,255,255,0.7)', textDecoration: 'none' }}>צור קשר</a>
           </div>
