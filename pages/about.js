@@ -1,6 +1,6 @@
 import Head from 'next/head'
 
-const NAV = [['/', 'ראשי'], ['/rehab', 'שיקום'], ['/treatment', 'טיפול'], ['/map', 'מפה'], ['/register', 'הוספת שירות'], ['/about', 'אודות'], ['/contact', 'צור קשר'], ['/admin', 'ניהול']]
+const NAV = [['/', 'ראשי'], ['/rehab', 'שיקום'], ['/treatment', 'טיפול'], ['/map', 'מפה'], ['/guide', 'מדריך'], ['/register', 'הוספת שירות'], ['/about', 'אודות'], ['/contact', 'צור קשר'], ['/admin', 'ניהול']]
 
 export default function About() {
   return (
@@ -27,15 +27,6 @@ export default function About() {
               <div style={{ fontSize: 11, opacity: 0.75 }}>אודות הפורטל</div>
             </div>
           </div>
-          <a href="/calculator" style={{
-            background: 'rgba(255,255,200,0.18)', border: '1.5px solid rgba(255,255,150,0.5)',
-            color: 'white', borderRadius: '999px', padding: '8px 18px',
-            fontWeight: 800, fontSize: 13, textDecoration: 'none',
-            display: 'flex', alignItems: 'center', gap: 6, whiteSpace: 'nowrap',
-            boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
-          }}>
-            🧭 מחשבון מסלול
-          </a>
           <nav style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
             {NAV.map(([href, label]) => (
               <a key={href} href={href} style={{
@@ -90,6 +81,8 @@ export default function About() {
         <footer style={{ background: '#1A3A5C', color: 'rgba(255,255,255,0.7)', textAlign: 'center', padding: '24px', fontSize: 13, marginTop: 16 }}>
           <div style={{ marginBottom: 8 }}>
             <a href="/contact" style={{ color: 'rgba(255,255,255,0.7)', textDecoration: 'none' }}>צור קשר</a>
+            <span style={{ margin: '0 8px', opacity: 0.4 }}>·</span>
+            <a href="/legal" style={{ color: 'rgba(255,255,255,0.7)', textDecoration: 'none' }}>תנאי שימוש</a>
           </div>
           בריאות נפש בישראל © {new Date().getFullYear()}
         </footer>
