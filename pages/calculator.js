@@ -380,7 +380,7 @@ export default function Calculator() {
             </div>
           )}
           <div style={{ display: 'flex', gap: 8, marginTop: 20, justifyContent: 'flex-end' }}>
-            <button type="button" onClick={back} style={{ padding: '9px 18px', fontSize: 13, fontWeight: 700, color: '#6b7280', cursor: 'pointer', border: '1px solid #e5e7eb', borderRadius: '999px', background: 'transparent', fontFamily: "'Nunito', sans-serif" }}>← חזרה</button>
+            <button type="button" onClick={back} style={{ padding: '9px 18px', fontSize: 13, fontWeight: 700, color: '#6b7280', cursor: 'pointer', border: '1px solid #e5e7eb', borderRadius: '999px', background: 'transparent', fontFamily: "'Nunito', sans-serif" }}>חזרה →</button>
             <button type="button" onClick={next} disabled={!isReady} style={btnStyle(!isReady)}>{step === STEPS.length ? '← הצג שירותים מתאימים' : '← המשך'}</button>
           </div>
         </div>
