@@ -289,6 +289,8 @@ export default function Treatment() {
         <footer style={{ background: 'linear-gradient(135deg, #0A3040, #164E63)', color: 'rgba(255,255,255,0.75)', textAlign: 'center', padding: '24px', fontSize: 13, marginTop: 48, fontWeight: 500 }}>
           <div style={{ marginBottom: 8 }}>
             <a href="/contact" style={{ color: 'rgba(255,255,255,0.7)', textDecoration: 'none' }}>צור קשר</a>
+            <span style={{ margin: '0 8px', opacity: 0.4 }}>·</span>
+            <a href="/legal" style={{ color: 'rgba(255,255,255,0.7)', textDecoration: 'none' }}>תנאי שימוש</a>
           </div>
           בריאות נפש בישראל © 2026
         </footer>
