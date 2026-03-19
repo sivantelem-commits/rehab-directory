@@ -417,6 +417,7 @@ function Page({ title, children }) {
         </header>
         {children}
         <footer style={{ background: 'linear-gradient(135deg, #2E0060, #4C0080)', color: 'rgba(255,255,255,0.75)', textAlign: 'center', padding: '24px', fontSize: 13, marginTop: 48, fontWeight: 500 }}>
+          <a href="/legal" style={{ color: "rgba(255,255,255,0.7)", textDecoration: "none", fontSize: 12, display: "block", marginBottom: 6 }}>תנאי שימוש ומדיניות פרטיות</a>
           בריאות נפש בישראל © 2026
         </footer>
       </div>
