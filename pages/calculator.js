@@ -9,7 +9,7 @@ const DEEP = '#4C0080'
 const STEPS = [
   {
     id: 'distress',
-    question: 'איך הקושי הנפשי משפיע על חיי היומיום שלך כרגע?',
+    question: 'עד כמה המצוקה הנפשית משפיעה עליך כרגע?',
     multi: false,
     scale: true,
     options: [
@@ -18,6 +18,16 @@ const STEPS = [
       { label: 'בינוני', value: 3, scores: { treatment: 1, combined: 1 } },
       { label: 'הרבה', value: 4, scores: { treatment: 2 } },
       { label: 'מאוד', value: 5, scores: { treatment: 3 } },
+    ],
+  },
+  {
+    id: 'age',
+    question: 'מה טווח הגיל?',
+    multi: false,
+    options: [
+      { label: 'צעירים (18–35)', value: 'צעירים', scores: {} },
+      { label: 'מבוגרים (35–65)', value: 'מבוגרים', scores: {} },
+      { label: 'קשישים (65+)', value: 'קשישים', scores: {} },
     ],
   },
   {
@@ -45,29 +55,6 @@ const STEPS = [
       { label: 'חברה / פנאי', value: 'social', scores: { rehab: 1 } },
       { label: 'מגורים עצמאיים', value: 'housing', scores: { rehab: 2 } },
       { label: 'התנהלות יום-יומית', value: 'daily', scores: { rehab: 2 } },
-    ],
-  },
-  {
-    id: 'age_group',
-    question: 'מה קבוצת הגיל שלך?',
-    multi: false,
-    options: [
-      { label: 'צעירים (18–30)', value: 'צעירים', scores: {} },
-      { label: 'מבוגרים (31–65)', value: 'מבוגרים', scores: {} },
-      { label: 'קשישים (65+)', value: 'קשישים', scores: {} },
-    ],
-  },
-  {
-    id: 'population',
-    question: 'האם שייך/ת לאוכלוסייה ייעודית?',
-    hint: 'אופציונלי — יעזור למצוא שירותים מותאמים',
-    multi: false,
-    options: [
-      { label: 'נשים', value: 'נשים', scores: {} },
-      { label: 'דתי/מסורתי', value: 'דתי/מסורתי', scores: {} },
-      { label: 'חרדי', value: 'חרדי', scores: {} },
-      { label: 'להט"ב', value: 'להט"ב', scores: {} },
-      { label: 'לא רלוונטי', value: 'none', scores: {} },
     ],
   },
   {
@@ -123,6 +110,7 @@ function buildSearchQueries(recommendation, answers) {
     const params = new URLSearchParams()
     if (district) params.set('district', district)
     if (cat) params.set('category', cat)
+    if (answers.age) params.set('age_group', answers.age)
     return { label: cat || (page === 'treatment' ? 'טיפול נפשי' : 'שירותי שיקום'), url: `/api/${page === 'treatment' ? 'treatment' : 'services'}?${params}`, page }
   }
   if (recommendation === 'treatment' || recommendation === 'combined') queries.push(p(null, 'treatment'))
@@ -139,7 +127,7 @@ function ProgressBar({ current, total }) {
   return (
     <div style={{ display: 'flex', gap: 6, marginBottom: 8 }}>
       {Array.from({ length: total }).map((_, i) => (
-        <div key={i} style={{ flex: 1, height: 3, borderRadius: 2, background: i < current - 1 ? '#1A3A5C' : i === current - 1 ? '#2A5298' : '#e5e7eb', transition: 'background 0.3s' }} />
+        <div key={i} style={{ flex: 1, height: 3, borderRadius: 2, background: i < current - 1 ? DEEP : i === current - 1 ? '#A855F7' : '#e5e7eb', transition: 'background 0.3s' }} />
       ))}
     </div>
   )
@@ -150,8 +138,8 @@ function OptionBtn({ label, selected, onClick }) {
     <button type="button" onClick={onClick} style={{
       display: 'flex', alignItems: 'center', padding: '12px 16px', borderRadius: 12,
       cursor: 'pointer', textAlign: 'right', width: '100%',
-      border: selected ? `1.5px solid #1A3A5C` : '1px solid #e5e7eb',
-      background: selected ? '#EFF6FF' : '#fff', transition: 'all 0.15s',
+      border: selected ? `1.5px solid ${PURPLE}` : '1px solid #e5e7eb',
+      background: selected ? '#f5f3ff' : '#fff', transition: 'all 0.15s',
       fontFamily: "'Nunito', sans-serif",
     }}>
       <span style={{ fontSize: 14, fontWeight: 600, color: '#1f2937' }}>{label}</span>
@@ -165,8 +153,8 @@ function ScaleBtn({ label, index, selected, onClick }) {
     <button type="button" onClick={onClick} style={{
       flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center',
       padding: '10px 4px', borderRadius: 12, cursor: 'pointer',
-      border: selected ? `1.5px solid #1A3A5C` : '1px solid #e5e7eb',
-      background: selected ? '#EFF6FF' : '#fff', transition: 'all 0.15s',
+      border: selected ? `1.5px solid ${PURPLE}` : '1px solid #e5e7eb',
+      background: selected ? '#f5f3ff' : '#fff', transition: 'all 0.15s',
       fontFamily: "'Nunito', sans-serif",
     }}>
       <div style={{ width: 14, height: 14, borderRadius: '50%', background: colors[index], marginBottom: 6 }} />
@@ -200,20 +188,7 @@ export default function Calculator() {
     setLoading(true)
     const res = calcResult(finalAnswers)
     setResult(res)
-    if (finalAnswers.sal === 'unknown') setSalNote({
-      text: 'אם עדיין אין זכאות לסל שיקום, יש לפנות לביטוח הלאומי להגשת תביעת נכות ולאחר מכן להגיש בקשה לסל שיקום.',
-      links: [
-        { href: 'https://www.btl.gov.il/benefits/Disability/Pages/%D7%94%D7%96%D7%9B%D7%90%D7%99%D7%9D%20%D7%9C%D7%A7%D7%A6%D7%91%D7%AA%20%D7%A0%D7%9B%D7%95%D7%AA%20%D7%97%D7%95%D7%93%D7%A9%D7%99%D7%AA.aspx', label: 'להגשת תביעה בביטוח הלאומי ←' },
-        { href: 'https://www.gov.il/he/service/rehabilitation-support-package', label: 'לתהליך הוצאת סל שיקום ←' },
-      ]
-    })
-    if (finalAnswers.sal === 'no') setSalNote({
-      text: 'שירותי סל שיקום מיועדים למי שקיבל 40% ומעלה על רקע נפשי בביטוח הלאומי.',
-      links: [
-        { href: 'https://www.btl.gov.il/benefits/Disability/Pages/%D7%94%D7%96%D7%9B%D7%90%D7%99%D7%9D%20%D7%9C%D7%A7%D7%A6%D7%91%D7%AA%20%D7%A0%D7%9B%D7%95%D7%AA%20%D7%97%D7%95%D7%93%D7%A9%D7%99%D7%AA.aspx', label: 'להגשת תביעה בביטוח הלאומי ←' },
-        { href: 'https://www.gov.il/he/service/rehabilitation-support-package', label: 'לתהליך הוצאת סל שיקום ←' },
-      ]
-    })
+    if (finalAnswers.sal === 'unknown') setSalNote('אם עדיין אין זכאות — פנה לביטוח לאומי ואז למשרד הבריאות לקבלת סל שיקום.')
     const queries = buildSearchQueries(res.recommendation, finalAnswers)
     try {
       const fetches = await Promise.all(queries.map(q => fetch(q.url).then(r => r.json()).then(data => ({ label: q.label, page: q.page, services: Array.isArray(data) ? data : [] }))))
@@ -221,7 +196,7 @@ export default function Calculator() {
       if (withResults.length === 0 && finalAnswers.district) {
         const fb = await Promise.all(buildSearchQueries(res.recommendation, { ...finalAnswers, district: null }).map(q => fetch(q.url).then(r => r.json()).then(data => ({ label: q.label, page: q.page, services: Array.isArray(data) ? data : [] }))))
         const fbR = fb.filter(f => f.services.length > 0)
-        if (fbR.length > 0) { setSalNote(p => p ? { ...p, text: p.text + ' טרם נוספו שירותים באזור זה — מוצגים שירותים מכל הארץ.' } : { text: 'טרם נוספו שירותים באזור זה — מוצגים שירותים מכל הארץ.' }); setServices(fbR); return }
+        if (fbR.length > 0) { setSalNote(p => (p ? p + ' ' : '') + 'טרם נוספו שירותים באזור זה — מוצגים שירותים מכל הארץ.'); setServices(fbR); return }
       }
       setServices(withResults.length > 0 ? withResults : [])
     } catch { setServices([]) }
@@ -248,11 +223,11 @@ export default function Calculator() {
   if (step === 0) return (
     <Page title="מחשבון איתור מסלול">
       <div style={{ maxWidth: 560, margin: '0 auto', padding: '48px 16px' }}>
-        <div style={{ background: '#fff', borderRadius: 20, border: '1px solid #BFDBFE', padding: '40px 28px', textAlign: 'center', boxShadow: '0 4px 24px rgba(76,0,128,0.08)' }}>
+        <div style={{ background: '#fff', borderRadius: 20, border: '1px solid #e9d5ff', padding: '40px 28px', textAlign: 'center', boxShadow: '0 4px 24px rgba(76,0,128,0.08)' }}>
           <div style={{ fontSize: 52, marginBottom: 16 }}>🧭</div>
           <h1 style={{ fontSize: 24, fontWeight: 800, color: '#3d2a6e', marginBottom: 10 }}>מחשבון איתור מסלול</h1>
-          <p style={{ fontSize: 15, color: '#6b7280', lineHeight: 1.7, marginBottom: 12 }}>7 שאלות קצרות — וקבל המלצה מותאמת אישית.</p>
-          <p style={{ fontSize: 12, color: '#6b7280', lineHeight: 1.6, marginBottom: 28, padding: '10px 14px', background: '#f9fafb', borderRadius: 10 }}>
+          <p style={{ fontSize: 15, color: '#6b7280', lineHeight: 1.7, marginBottom: 12 }}>6 שאלות קצרות — וקבל המלצה מותאמת אישית.</p>
+          <p style={{ fontSize: 12, color: '#9ca3af', lineHeight: 1.6, marginBottom: 28, padding: '10px 14px', background: '#f9fafb', borderRadius: 10 }}>
             הכלי אינו אבחון ואינו מחליף איש מקצוע. הוא מסייע בכיוון ראשוני בלבד.<br />
             אם יש מצוקה חריפה או סיכון מיידי — יש לפנות בדחיפות לגורם רפואי.
           </p>
@@ -265,7 +240,7 @@ export default function Calculator() {
   if (loading) return (
     <Page title="מחפש שירותים...">
       <div style={{ maxWidth: 560, margin: '0 auto', padding: '80px 16px', textAlign: 'center' }}>
-        <div style={{ width: 40, height: 40, borderRadius: '50%', border: `3px solid #BFDBFE`, borderTopColor: '#2A5298', animation: 'spin 0.8s linear infinite', margin: '0 auto 20px' }} />
+        <div style={{ width: 40, height: 40, borderRadius: '50%', border: `3px solid #e9d5ff`, borderTopColor: PURPLE, animation: 'spin 0.8s linear infinite', margin: '0 auto 20px' }} />
         <p style={{ color: '#9b88bb', fontWeight: 600 }}>מחפש שירותים מתאימים...</p>
         <style>{`@keyframes spin { to { transform: rotate(360deg) } }`}</style>
       </div>
@@ -286,25 +261,7 @@ export default function Calculator() {
                 <strong>מה כדאי לבדוק: </strong>{result.selectedNeeds.join(', ')}
               </div>
             )}
-            {salNote && (
-              <div style={{ background: 'rgba(255,255,255,0.7)', borderRadius: 10, padding: '10px 14px', fontSize: 13, color: '#92400e', display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 10 }}>
-                <span>💡 {salNote.text}</span>
-                {salNote.links && salNote.links.map(l => (
-                  <a key={l.href} href={l.href} target="_blank" rel="noreferrer" style={{
-                    display: 'inline-block', padding: '5px 14px', borderRadius: '999px',
-                    background: '#f59e0b', color: 'white', fontWeight: 700,
-                    fontSize: 12, textDecoration: 'none', whiteSpace: 'nowrap',
-                  }}>{l.label}</a>
-                ))}
-                {salNote.link && (
-                  <a href={salNote.link} target="_blank" rel="noreferrer" style={{
-                    display: 'inline-block', padding: '5px 14px', borderRadius: '999px',
-                    background: '#f59e0b', color: 'white', fontWeight: 700,
-                    fontSize: 12, textDecoration: 'none', whiteSpace: 'nowrap',
-                  }}>{salNote.linkText}</a>
-                )}
-              </div>
-            )}
+            {salNote && <div style={{ background: 'rgba(255,255,255,0.7)', borderRadius: 10, padding: '10px 14px', fontSize: 13, color: '#92400e' }}>💡 {salNote}</div>}
           </div>
           <div style={{ marginBottom: 12, display: 'flex', alignItems: 'center', gap: 12 }}>
             <h2 style={{ fontSize: 18, fontWeight: 800, color: '#3d2a6e', margin: 0 }}>{total > 0 ? `נמצאו ${total} שירותים מתאימים` : 'לא נמצאו שירותים כרגע'}</h2>
@@ -327,14 +284,7 @@ export default function Calculator() {
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14 }}>
                   <span style={{ background: group.page === 'treatment' ? 'linear-gradient(160deg, #0891B2, #164E63)' : `linear-gradient(160deg, #8B00D4, ${DEEP})`, color: '#fff', fontSize: 12, fontWeight: 700, padding: '4px 14px', borderRadius: 999 }}>{group.label}</span>
                   <span style={{ fontSize: 13, color: '#9ca3af', fontWeight: 600 }}>{group.services.length} שירותים</span>
-                  <a href={(() => {
-                    if (group.page !== 'rehab') return '/treatment';
-                    const p = new URLSearchParams();
-                    if (answers.age_group && answers.age_group !== 'none') p.set('age_group', answers.age_group);
-                    if (answers.population && answers.population !== 'none') p.set('population', answers.population);
-                    const qs = p.toString();
-                    return qs ? '/rehab?' + qs : '/rehab';
-                  })()} style={{ marginRight: 'auto', fontSize: 13, color: PURPLE, fontWeight: 700, textDecoration: 'none' }}>ראה הכל ←</a>
+                  <a href={group.page === 'rehab' ? '/rehab' : '/treatment'} style={{ marginRight: 'auto', fontSize: 13, color: PURPLE, fontWeight: 700, textDecoration: 'none' }}>ראה הכל ←</a>
                 </div>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 16 }}>
                   {group.services.slice(0, 6).map(s => (
@@ -394,8 +344,8 @@ function Page({ title, children }) {
         <title>{title} | בריאות נפש בישראל</title>
         <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
       </Head>
-      <div dir="rtl" style={{ fontFamily: "'Nunito', sans-serif", minHeight: '100vh', background: '#F0F7FF' }}>
-        <header style={{ background: '#1A3A5C', color: 'white', padding: '10px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 8, boxShadow: '0 2px 12px rgba(0,0,0,0.15)' }}>
+      <div dir="rtl" style={{ fontFamily: "'Nunito', sans-serif", minHeight: '100vh', background: '#f7f3ff' }}>
+        <header style={{ background: 'linear-gradient(135deg, #2E0060, #8B00D4)', color: 'white', padding: '10px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 8, boxShadow: '0 2px 12px rgba(76,0,128,0.2)' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
             <img src="/logo.png" alt="לוגו" style={{ width: 44, height: 44, objectFit: 'contain', filter: 'brightness(0) invert(1)' }} />
             <div>
@@ -404,13 +354,13 @@ function Page({ title, children }) {
             </div>
           </div>
           <nav style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-            {[['/', 'ראשי'], ['/rehab', 'שיקום'], ['/treatment', 'טיפול'], ['/map', 'מפה'], ['/about', 'אודות'], ['/contact', 'צור קשר']].map(([href, label]) => (
+            {[['/', 'ראשי'], ['/rehab', 'שיקום'], ['/treatment', 'טיפול'], ['/map', 'מפה'], ['/guide', 'מדריך'], ['/about', 'אודות'], ['/contact', 'צור קשר']].map(([href, label]) => (
               <a key={href} href={href} style={{ color: 'white', background: href === '/calculator' ? 'rgba(255,255,255,0.25)' : 'rgba(255,255,255,0.1)', borderRadius: '999px', padding: '6px 14px', fontWeight: 600, fontSize: 12, border: '1.5px solid rgba(255,255,255,0.2)', textDecoration: 'none' }}>{label}</a>
             ))}
           </nav>
         </header>
         {children}
-        <footer style={{ background: '#1A3A5C', color: 'rgba(255,255,255,0.75)', textAlign: 'center', padding: '24px', fontSize: 13, marginTop: 48, fontWeight: 500 }}>
+        <footer style={{ background: 'linear-gradient(135deg, #2E0060, #4C0080)', color: 'rgba(255,255,255,0.75)', textAlign: 'center', padding: '24px', fontSize: 13, marginTop: 48, fontWeight: 500 }}>
           בריאות נפש בישראל © 2026
         </footer>
       </div>
