@@ -17,7 +17,6 @@ export default async function handler(req, res) {
   if (national === 'true') {
     query = query.eq('is_national', true)
   } else if (district) {
-    // חפש הן בעמודת district הן במערך districts
     query = query.or(`district.eq.${district},districts.cs.{${district}}`)
   }
 
@@ -30,15 +29,16 @@ export default async function handler(req, res) {
   }
 
   if (age_group) {
-    query = query.contains('age_groups', [age_group])
+    // הצג שירות אם: סימן את הגיל המבוקש, או לא סימן גיל בכלל
+    query = query.or(`age_groups.cs.{${age_group}},age_groups.eq.{}`)
   }
 
   if (diagnosis) {
-    query = query.contains('diagnoses', [diagnosis])
+    query = query.or(`diagnoses.cs.{${diagnosis}},diagnoses.eq.{}`)
   }
 
   if (population) {
-    query = query.contains('populations', [population])
+    query = query.or(`populations.cs.{${population}},populations.eq.{}`)
   }
 
   if (search) {
