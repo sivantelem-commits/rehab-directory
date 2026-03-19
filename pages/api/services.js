@@ -7,15 +7,7 @@ const supabase = createClient(
 export default async function handler(req, res) {
   if (req.method !== 'GET') return res.status(405).end()
 
-  const { district, category, subcategory, search, national, age_group, diagnosis, population, id } = req.query
-
-  // שאילתה לשירות בודד לפי id
-  if (id) {
-    const { data, error } = await supabase.from('services').select('*').eq('id', id).maybeSingle()
-    if (error) return res.status(500).json({ error: error.message })
-    if (!data) return res.status(404).json({ error: 'Service not found' })
-    return res.status(200).json(data)
-  }
+  const { district, category, subcategory, search, national, age_group, diagnosis, population } = req.query
 
   let query = supabase
     .from('services')
@@ -25,11 +17,11 @@ export default async function handler(req, res) {
   if (national === 'true') {
     query = query.eq('is_national', true)
   } else if (district) {
-    query = query.eq('district', district)
+    // חפש הן בעמודת district הן במערך districts
+    query = query.or(`district.eq.${district},districts.cs.{${district}}`)
   }
 
   if (category) {
-    // חפש הן בעמודת category הן במערך categories
     query = query.or(`category.eq.${category},categories.cs.{${category}}`)
   }
 
