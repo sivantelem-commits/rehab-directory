@@ -4,8 +4,8 @@ import { CATEGORIES, CATEGORY_NAMES, getCategoryColor } from '../lib/categories'
 import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts'
 
 const DISTRICTS = ['צפון', 'חיפה', 'מרכז', 'תל אביב', 'ירושלים', 'דרום', 'יהודה ושומרון']
-const TREATMENT_CATEGORIES = ['בתים מאזנים', 'מחלקות אשפוז', 'מרפאות יום', 'חדרי מיון']
-const TREATMENT_COLORS = { 'בתים מאזנים': '#0A3040', 'מחלקות אשפוז': '#0A6080', 'מרפאות יום': '#0891B2', 'חדרי מיון': '#06B6D4', 'שירותים נוספים': '#0A6080' }
+const TREATMENT_CATEGORIES = ['בתים מאזנים', 'מחלקות אשפוז', 'מרפאות יום', 'חדרי מיון', 'אשפוז בית', 'שירותים נוספים']
+const TREATMENT_COLORS = { 'בתים מאזנים': '#0A3040', 'מחלקות אשפוז': '#0A6080', 'מרפאות יום': '#0891B2', 'חדרי מיון': '#06B6D4', 'אשפוז בית': '#0E7490', 'שירותים נוספים': '#0A6080' }
 
 const CATEGORY_BG_COLORS = {
   'דיור': 'FFF3E5F5', 'תעסוקה': 'FFFFF3E0', 'השכלה': 'FFE3F2FD',
