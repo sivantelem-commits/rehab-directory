@@ -161,12 +161,14 @@ export default function MapPage() {
     if (showRehab) {
       // שירותים איזוריים ללא מיקום — הצג בנקודות מרכז המחוז
       rehabServices.filter(s =>
-        !s.lat && s.districts && s.districts.length > 0 &&
-        (rehabCategory === 'הכל' || s.category === rehabCategory) &&
-        (district === 'הכל' || s.districts.includes(district)) &&
+        !s.lat && !s.is_national &&
+        ((s.districts && s.districts.length > 0) || s.district) &&
+        (rehabCategory === 'הכל' || s.category === rehabCategory || (s.categories || []).includes(rehabCategory)) &&
+        (district === 'הכל' || (s.districts || []).includes(district) || s.district === district) &&
         (!showNationalOnly || s.is_national)
       ).forEach(s => {
-        s.districts.forEach(d => {
+        const allDistricts = [...new Set([...(s.districts || []), ...(s.district ? [s.district] : [])])]
+        allDistricts.forEach(d => {
           const center = DISTRICT_CENTERS[d]
           if (!center) return
           const color = REHAB_COLORS[s.category] || '#4aab78'
@@ -193,12 +195,14 @@ export default function MapPage() {
     if (showTreatment) {
       // שירותים איזוריים ללא מיקום — הצג בנקודות מרכז המחוז
       treatmentServices.filter(s =>
-        !s.lat && s.districts && s.districts.length > 0 &&
+        !s.lat && !s.is_national &&
+        ((s.districts && s.districts.length > 0) || s.district) &&
         (treatmentCategory === 'הכל' || s.category === treatmentCategory) &&
-        (district === 'הכל' || s.districts.includes(district)) &&
+        (district === 'הכל' || (s.districts || []).includes(district) || s.district === district) &&
         (!showNationalOnly || s.is_national)
       ).forEach(s => {
-        s.districts.forEach(d => {
+        const allDistricts = [...new Set([...(s.districts || []), ...(s.district ? [s.district] : [])])]
+        allDistricts.forEach(d => {
           const center = DISTRICT_CENTERS[d]
           if (!center) return
           const color = TREATMENT_COLORS[s.category] || '#ee7a50'
