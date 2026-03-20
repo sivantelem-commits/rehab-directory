@@ -184,10 +184,21 @@ export default function MapPage() {
         })
       })
 
-      // בניית רשימת נקודות לשיקום: רגילות + מרכזי מחוז לשירותים איזוריים
-      const rehabPoints = [...filteredRehab]
+      // בניית רשימת נקודות לשיקום
+      // שירותים עם מיקום + שירותים איזוריים עם מיקום → spiral יחד
+      const rehabWithLat = [...filteredRehab]
+      // שירותים איזוריים עם מיקום → גם עיגול איזורי במרכז המחוז
+      filteredRehab.filter(s => s.is_regional).forEach(s => {
+        const allDistricts = [...new Set([...(s.districts || []), ...(s.district ? [s.district] : [])])]
+        allDistricts.forEach(d => {
+          const center = DISTRICT_CENTERS[d]
+          if (!center) return
+          rehabWithLat.push({ ...s, lat: center[0], lng: center[1], _districtLabel: d, _isRegionalPin: true })
+        })
+      })
+      // שירותים איזוריים ללא מיקום → רק עיגול איזורי
       rehabServices.filter(s =>
-        s.is_regional &&
+        !s.lat && s.is_regional &&
         ((s.districts && s.districts.length > 0) || s.district) &&
         (rehabCategory === 'הכל' || s.category === rehabCategory || (s.categories || []).includes(rehabCategory)) &&
         (district === 'הכל' || (s.districts || []).includes(district) || s.district === district) &&
@@ -197,11 +208,11 @@ export default function MapPage() {
         allDistricts.forEach(d => {
           const center = DISTRICT_CENTERS[d]
           if (!center) return
-          rehabPoints.push({ ...s, lat: center[0], lng: center[1], _districtLabel: d, _isRegionalPin: true })
+          rehabWithLat.push({ ...s, lat: center[0], lng: center[1], _districtLabel: d, _isRegionalPin: true })
         })
       })
 
-      applySpiral(rehabPoints).forEach(s => {
+      applySpiral(rehabWithLat).forEach(s => {
         if (s._isRegionalPin) {
           const baseIcon = buildRehabMarkerIcon(L, s, s.is_national)
           const baseHtml = baseIcon.options.html
