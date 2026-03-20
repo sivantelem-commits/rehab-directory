@@ -16,15 +16,6 @@ const TREATMENT_COLORS = {
 
 const DISTRICTS = ['הכל', 'צפון', 'חיפה', 'מרכז', 'תל אביב', 'ירושלים', 'דרום', 'יהודה ושומרון']
 
-const DISTRICT_CENTERS = {
-  'צפון':           [32.89, 35.50],
-  'חיפה':           [32.81, 34.99],
-  'מרכז':           [32.08, 34.88],
-  'תל אביב':        [32.07, 34.78],
-  'ירושלים':        [31.78, 35.22],
-  'דרום':           [31.25, 34.79],
-  'יהודה ושומרון':  [31.95, 35.27],
-}
 const NAV = [['/', 'ראשי'], ['/rehab', 'שיקום'], ['/treatment', 'טיפול'], ['/map', 'מפה'], ['/guide', 'מדריך'], ['/register', 'הוספת שירות'], ['/about', 'אודות'], ['/contact', 'צור קשר'], ['/admin', 'ניהול']]
 
 
@@ -139,6 +130,16 @@ export default function MapPage() {
     if (!mapRef.current) {
       mapRef.current = L.map('main-map').setView([31.5, 34.8], 8)
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(mapRef.current)
+    }
+
+    const DISTRICT_CENTERS = {
+      'צפון': [32.89, 35.50],
+      'חיפה': [32.81, 34.99],
+      'מרכז': [32.08, 34.88],
+      'תל אביב': [32.07, 34.78],
+      'ירושלים': [31.78, 35.22],
+      'דרום': [31.25, 34.79],
+      'יהודה ושומרון': [31.95, 35.27],
     }
 
     markersRef.current.forEach(m => m.remove())
