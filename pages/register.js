@@ -82,7 +82,7 @@ export default function Register() {
       return
     }
     if (duplicates.length > 0 && !confirmedNotDuplicate) {
-      setError('נמצאו שירותים דומים — אנא אשרו שזהו שירות שונה לפני השליחה')
+      setError('נמצאו שירותים דומים - אנא אשרו שזהו שירות שונה לפני השליחה')
       return
     }
     setLoading(true)
@@ -315,12 +315,12 @@ export default function Register() {
                 </div>
               )}
 
-              {/* קטגוריות נוספות — multi select */}
+              {/* קטגוריות נוספות - multi select */}
               {isRehab && (
                 <div style={{ marginBottom: 20 }}>
                   <label style={lbl}>
                     קטגוריות נוספות
-                    <span style={{ fontWeight: 400, color: '#9ca3af', marginRight: 6 }}>(אופציונלי — אם השירות עוסק בכמה תחומים)</span>
+                    <span style={{ fontWeight: 400, color: '#9ca3af', marginRight: 6 }}>(אופציונלי - אם השירות עוסק בכמה תחומים)</span>
                   </label>
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
                     {CATEGORY_NAMES.filter(c => c !== form.category).map(cat => {
