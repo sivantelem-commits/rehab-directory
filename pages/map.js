@@ -415,14 +415,16 @@ export default function MapPage() {
 
           {selected && (
             <div style={{
-              position: isMobile ? 'relative' : 'absolute',
-              bottom: isMobile ? undefined : 16,
-              right: isMobile ? undefined : 16,
-              left: isMobile ? undefined : 16,
+              position: 'absolute',
+              bottom: 0,
+              right: 0,
+              left: 0,
               maxWidth: isMobile ? '100%' : 360,
-              margin: isMobile ? '0' : '0 auto',
-              background: 'white', borderRadius: isMobile ? 0 : 16, padding: '16px',
-              boxShadow: '0 8px 32px rgba(0,0,0,0.2)',
+              margin: isMobile ? '0' : '0 16px 16px auto',
+              background: 'white',
+              borderRadius: isMobile ? '16px 16px 0 0' : 16,
+              padding: '16px',
+              boxShadow: '0 -4px 24px rgba(0,0,0,0.18)',
               borderTop: `4px solid ${selected.type === 'rehab' ? (REHAB_COLORS[selected.category] || '#4aab78') : (TREATMENT_COLORS[selected.category] || '#ee7a50')}`,
               zIndex: 1000,
             }}>
