@@ -148,11 +148,11 @@ export default function MapPage() {
         (!showNationalOnly || s.is_national)
       ).forEach(s => {
         if (s.lat) {
-          // שירות עם מיקום — מופיע פעם אחת בדיוק במיקום האמיתי שלו
+          // שירות עם מיקום - מופיע פעם אחת בדיוק במיקום האמיתי שלו
           // אם הוא איזורי, מסמנים כדי שיקבל 🗺️
           rehabToPlace.push({ ...s, _isRegionalPin: s.is_regional || false })
         } else {
-          // שירות ללא מיקום — מופיע במרכז כל מחוז שלו עם 🗺️
+          // שירות ללא מיקום - מופיע במרכז כל מחוז שלו עם 🗺️
           const allDistricts = [...new Set([...(s.districts || []), ...(s.district ? [s.district] : [])])]
           allDistricts.forEach(d => {
             const center = DISTRICT_CENTERS[d]
@@ -190,11 +190,11 @@ export default function MapPage() {
         (!showNationalOnly || s.is_national)
       ).forEach(s => {
         if (s.lat) {
-          // שירות עם מיקום — מופיע פעם אחת בדיוק במיקום האמיתי שלו
+          // שירות עם מיקום - מופיע פעם אחת בדיוק במיקום האמיתי שלו
           // אם הוא איזורי, מסמנים כדי שיקבל 🗺️
           treatmentToPlace.push({ ...s, _isRegionalPin: s.is_regional || false })
         } else {
-          // שירות ללא מיקום — מופיע במרכז כל מחוז שלו עם 🗺️
+          // שירות ללא מיקום - מופיע במרכז כל מחוז שלו עם 🗺️
           const allDistricts = [...new Set([...(s.districts || []), ...(s.district ? [s.district] : [])])]
           allDistricts.forEach(d => {
             const center = DISTRICT_CENTERS[d]
@@ -435,7 +435,7 @@ export default function MapPage() {
                   <div style={{ fontWeight: 700, fontSize: 15, color: '#1A3A5C' }}>
                     {selected.name} {selected.is_national && <span title="פריסה ארצית">🌍</span>}
                   </div>
-                  <div style={{ fontSize: 12, color: '#888', marginTop: 2 }}>📍 {selected.city}{selected.district ? `, ${selected.district}` : ''}{selected._districtLabel && <span style={{ marginRight: 6, background: '#EEF2FF', color: '#1A3A5C', borderRadius: 999, padding: '1px 7px', fontSize: 11 }}>🗺️ שירות איזורי — {selected._districtLabel}</span>}</div>
+                  <div style={{ fontSize: 12, color: '#888', marginTop: 2 }}>📍 {selected.city}{selected.district ? `, ${selected.district}` : ''}{selected._districtLabel && <span style={{ marginRight: 6, background: '#EEF2FF', color: '#1A3A5C', borderRadius: 999, padding: '1px 7px', fontSize: 11 }}>🗺️ שירות איזורי - {selected._districtLabel}</span>}</div>
                 </div>
                 <button onClick={() => setSelected(null)} style={{ background: 'none', border: 'none', fontSize: 20, cursor: 'pointer', color: '#aaa', padding: 0 }}>✕</button>
               </div>
