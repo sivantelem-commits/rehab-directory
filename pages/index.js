@@ -77,14 +77,14 @@ export default function Home() {
           <span style={{ fontSize: 22 }}>🧭</span>
           <div style={{ textAlign: 'right' }}>
             <div style={{ fontSize: 16, fontWeight: 800 }}>מחשבון איתור מסלול</div>
-            <div style={{ fontSize: 12, fontWeight: 500, color: '#9b88bb', marginTop: 2 }}>8 שאלות קצרות — וקבל המלצה מותאמת אישית</div>
+            <div style={{ fontSize: 12, fontWeight: 500, color: '#9b88bb', marginTop: 2 }}>8 שאלות קצרות - וקבל המלצה מותאמת אישית</div>
           </div>
           <span style={{ marginRight: 'auto', fontSize: 18, color: '#a855f7' }}>←</span>
         </button>
 
         {/* הערת מאגר */}
         <div style={{ marginTop: 28, maxWidth: 460, textAlign: 'center', fontSize: 12, color: '#b8a8d0', lineHeight: 1.7, fontWeight: 500, padding: '12px 16px', background: 'rgba(255,255,255,0.5)', borderRadius: 12, border: '1px solid #e9d5ff' }}>
-          המאגר נבנה על סמך הרשמת השירותים — ייתכן שיש שירותים שטרם נוספו.
+          המאגר נבנה על סמך הרשמת השירותים - ייתכן שיש שירותים שטרם נוספו.
           <br/>
           <a href="/register" style={{ color: '#8B00D4', fontWeight: 700, textDecoration: 'none' }}>הוספת שירות ←</a>
         </div>
