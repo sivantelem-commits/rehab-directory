@@ -178,18 +178,8 @@ export default function MapPage() {
       })
 
       // בניית רשימת נקודות לשיקום
-      // שירותים עם מיקום + שירותים איזוריים עם מיקום → spiral יחד
       const rehabWithLat = [...filteredRehab]
-      // שירותים איזוריים עם מיקום → גם עיגול איזורי במרכז המחוז
-      filteredRehab.filter(s => s.is_regional).forEach(s => {
-        const allDistricts = [...new Set([...(s.districts || []), ...(s.district ? [s.district] : [])])]
-        allDistricts.forEach(d => {
-          const center = ({'צפון':[32.89,35.50],'חיפה':[32.81,34.99],'מרכז':[32.08,34.88],'תל אביב':[32.07,34.78],'ירושלים':[31.78,35.22],'דרום':[31.25,34.79],'יהודה ושומרון':[31.95,35.27]})[d]
-          if (!center) return
-          rehabWithLat.push({ ...s, lat: center[0], lng: center[1], _districtLabel: d, _isRegionalPin: true })
-        })
-      })
-      // שירותים איזוריים ללא מיקום → רק עיגול איזורי
+      // שירותים איזוריים ללא מיקום → עיגול איזורי במרכז המחוז
       rehabServices.filter(s =>
         !s.lat && s.is_regional &&
         ((s.districts && s.districts.length > 0) || s.district) &&
