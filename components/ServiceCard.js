@@ -1,10 +1,12 @@
 import { getCategoryColor } from '../lib/categories'
+import { BasketButton } from './ServiceBasket'
 const TREATMENT_CATEGORIES = ['בתים מאזנים', 'מחלקות אשפוז', 'מרפאות יום', 'חדרי מיון', 'אשפוז בית', 'שירותים נוספים']
 const TREATMENT_COLOR = '#0891B2'
 export default function ServiceCard({ service }) {
   const isTreatment = TREATMENT_CATEGORIES.includes(service.category)
   const color = isTreatment ? TREATMENT_COLOR : getCategoryColor(service.category, service.subcategory)
-  // קטגוריות נוספות — ללא כפילות עם הראשית
+  const serviceWithType = { ...service, type: isTreatment ? 'treatment' : 'rehab' }
+  // קטגוריות נוספות - ללא כפילות עם הראשית
   const extraCats = (service.categories || []).filter(c => c && c !== service.category)
   return (
     <div style={{ background: 'white', borderRadius: 16, padding: '20px 22px', cursor: 'pointer', boxShadow: '0 4px 16px rgba(0,0,0,0.07)', border: `1.5px solid ${isTreatment ? '#a0d8e8' : '#d4b0f0'}`, borderTop: `4px solid ${color}`, transition: 'transform 0.15s, box-shadow 0.15s', display: 'flex', flexDirection: 'column', height: '220px' }}
@@ -13,7 +15,10 @@ export default function ServiceCard({ service }) {
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 10 }}>
         <div style={{ fontWeight: 700, fontSize: 16, color: '#1A3A5C', lineHeight: 1.3, flex: 1 }}>{service.name}</div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 4, alignItems: 'flex-end' }}>
-          <span style={{ background: color, color: 'white', borderRadius: 20, padding: '3px 10px', fontSize: 11, fontWeight: 700, whiteSpace: 'nowrap' }}>{service.category}</span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+            <BasketButton service={serviceWithType} />
+            <span style={{ background: color, color: 'white', borderRadius: 20, padding: '3px 10px', fontSize: 11, fontWeight: 700, whiteSpace: 'nowrap' }}>{service.category}</span>
+          </div>
           {service.subcategory && service.subcategory !== service.category && (
             <span style={{ background: `${color}22`, color, borderRadius: 20, padding: '2px 8px', fontSize: 10, fontWeight: 600, whiteSpace: 'nowrap' }}>{service.subcategory}</span>
           )}
