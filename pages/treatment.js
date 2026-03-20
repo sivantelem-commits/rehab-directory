@@ -175,7 +175,7 @@ export default function Treatment() {
           </div>
         </div>
 
-        {/* מחוז — multi select */}
+        {/* מחוז - multi select */}
         <div style={{ background: 'white', borderBottom: '1px solid #a0d8e8', padding: '10px 16px', display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
           <button onClick={clearDistricts} style={{ padding: '7px 14px', borderRadius: '999px', fontSize: 13, fontWeight: 600, border: `2px solid ${selectedDistricts.length === 0 && !national ? COLOR : '#c8eaf2'}`, background: selectedDistricts.length === 0 && !national ? COLOR : 'white', color: selectedDistricts.length === 0 && !national ? 'white' : '#0A6080', cursor: 'pointer', fontFamily: "'Nunito', sans-serif", transition: 'all 0.15s' }}>הכל</button>
 
