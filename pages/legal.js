@@ -50,7 +50,7 @@ export default function Legal() {
             <SubTitle>מצבי חירום</SubTitle>
             <div style={{ background: '#FFF3E0', border: '1.5px solid #FFB74D', borderRadius: 12, padding: '14px 16px', marginBottom: 16 }}>
               <P style={{ margin: 0, fontWeight: 600, color: '#E65100' }}>
-                ⚠️ אם אתם במצב חירום נפשי או בסכנה מיידית — אל תסתמכו על האתר. פנו מיד לחדר מיון, לקו לבריאות הנפש <strong>1201</strong>, או לחירום <strong>101</strong>.
+                ⚠️ אם אתם במצב חירום נפשי או בסכנה מיידית - אל תסתמכו על האתר. פנו מיד לחדר מיון, לקו לבריאות הנפש <strong>1201</strong>, או לחירום <strong>101</strong>.
               </P>
             </div>
 
