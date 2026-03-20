@@ -8,7 +8,7 @@ export default async function handler(req, res) {
   if (adminKey !== process.env.ADMIN_PASSWORD) return res.status(401).json({ error: 'Unauthorized' })
   if (req.method !== 'PATCH') return res.status(405).end()
   const { id, table, name, district, districts, city, category, subcategory, categories,
-          description, phone, email, website, address, is_national,
+          description, phone, email, website, address, is_national, is_regional,
           age_groups, diagnoses, populations } = req.body
   const tableName = table === 'treatment' ? 'treatment_services' : 'services'
   const { data: before } = await supabase.from(tableName).select('*').eq('id', id).single()
@@ -16,6 +16,7 @@ export default async function handler(req, res) {
     name, district, city, category, subcategory, description,
     phone, email, website, address, is_national,
     districts: districts || [],
+    is_regional: !!is_regional,
     age_groups: age_groups || [],
     diagnoses: diagnoses || [],
     populations: populations || [],
@@ -25,7 +26,7 @@ export default async function handler(req, res) {
   const { data, error } = await supabase.from(tableName).update(updates).eq('id', id).select().single()
   if (error) return res.status(500).json({ error: error.message })
   if (before) {
-    const TRACKED = ['name','district','districts','city','category','subcategory','description','phone','email','website','address','is_national','age_groups','diagnoses','populations','categories']
+    const TRACKED = ['name','district','districts','city','category','subcategory','description','phone','email','website','address','is_national','is_regional','age_groups','diagnoses','populations','categories']
     const changes = {}
     for (const key of TRACKED) {
       const bv = JSON.stringify(before[key] ?? null)
