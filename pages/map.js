@@ -149,7 +149,8 @@ export default function MapPage() {
       ).forEach(s => {
         if (s.lat) {
           // שירות עם מיקום — מופיע פעם אחת בדיוק במיקום האמיתי שלו
-          rehabToPlace.push({ ...s })
+          // אם הוא איזורי, מסמנים כדי שיקבל 🗺️
+          rehabToPlace.push({ ...s, _isRegionalPin: s.is_regional || false })
         } else {
           // שירות ללא מיקום — מופיע במרכז כל מחוז שלו עם 🗺️
           const allDistricts = [...new Set([...(s.districts || []), ...(s.district ? [s.district] : [])])]
@@ -190,7 +191,8 @@ export default function MapPage() {
       ).forEach(s => {
         if (s.lat) {
           // שירות עם מיקום — מופיע פעם אחת בדיוק במיקום האמיתי שלו
-          treatmentToPlace.push({ ...s })
+          // אם הוא איזורי, מסמנים כדי שיקבל 🗺️
+          treatmentToPlace.push({ ...s, _isRegionalPin: s.is_regional || false })
         } else {
           // שירות ללא מיקום — מופיע במרכז כל מחוז שלו עם 🗺️
           const allDistricts = [...new Set([...(s.districts || []), ...(s.district ? [s.district] : [])])]
