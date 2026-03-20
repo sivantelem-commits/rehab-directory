@@ -40,11 +40,11 @@ async function sendAdminNotification(service) {
                   📍 ${service.city}, ${service.district || 'ארצי'}<br/>
                   🏷️ ${service.category}${service.subcategory ? ` › ${service.subcategory}` : ''}
                   ${service.categories?.length ? `<br/>📂 קטגוריות נוספות: ${service.categories.join(', ')}` : ''}<br/>
-                  📞 ${service.phone || '—'}<br/>
-                  ✉️ ${service.email || '—'}<br/>
-                  👤 איש קשר: ${service.contact_name || '—'}${service.contact_role ? ` (${service.contact_role})` : ''}<br/>
-                  📱 טלפון לבירורים: ${service.contact_phone || '—'}<br/>
-                  ✉️ מייל לבירורים: ${service.contact_email || '—'}
+                  📞 ${service.phone || '-'}<br/>
+                  ✉️ ${service.email || '-'}<br/>
+                  👤 איש קשר: ${service.contact_name || '-'}${service.contact_role ? ` (${service.contact_role})` : ''}<br/>
+                  📱 טלפון לבירורים: ${service.contact_phone || '-'}<br/>
+                  ✉️ מייל לבירורים: ${service.contact_email || '-'}
                 </p>
               </div>
               ${service.description ? `<p style="color: #334; font-size: 14px; line-height: 1.6;">${service.description}</p>` : ''}
@@ -77,7 +77,7 @@ export default async function handler(req, res) {
 
   const { lat, lng } = await geocode(city, address)
 
-  // בנה מערך קטגוריות מלא — הקטגוריה הראשית + הנוספות
+  // בנה מערך קטגוריות מלא - הקטגוריה הראשית + הנוספות
   const allCategories = Array.from(new Set([
     ...(category ? [category] : []),
     ...(Array.isArray(categories) ? categories : []),
