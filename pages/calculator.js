@@ -213,10 +213,10 @@ export default function Calculator() {
     setLoading(true)
     const res = calcResult(finalAnswers)
     setResult(res)
-    if (finalAnswers.sal === 'unknown') setSalNote('אם עדיין אין זכאות — פנה לביטוח לאומי ואז למשרד הבריאות לקבלת סל שיקום.')
+    if (finalAnswers.sal === 'unknown') setSalNote('אם עדיין אין זכאות - פנה לביטוח לאומי ואז למשרד הבריאות לקבלת סל שיקום.')
     const queries = buildSearchQueries(res.recommendation, finalAnswers)
     try {
-      // אם יש מחוזות מרובים — שולחים בקשה לכל מחוז ומאחדים תוצאות
+      // אם יש מחוזות מרובים - שולחים בקשה לכל מחוז ומאחדים תוצאות
       const districtRaw = finalAnswers.district || []
       const isNational = Array.isArray(districtRaw) ? districtRaw.includes('national') : districtRaw === 'national'
       const selectedDistricts = Array.isArray(districtRaw) ? districtRaw.filter(d => d !== 'national') : (districtRaw ? [districtRaw] : [])
@@ -227,7 +227,7 @@ export default function Calculator() {
       } else if (selectedDistricts.length === 1) {
         allFetches = await Promise.all(queries.map(q => fetch(q.url).then(r => r.json()).then(data => ({ label: q.label, page: q.page, services: Array.isArray(data) ? data : [] }))))
       } else {
-        // מחוזות מרובים — שולחים לכל מחוז ומאחדים
+        // מחוזות מרובים - שולחים לכל מחוז ומאחדים
         const multiResults = await Promise.all(
           selectedDistricts.flatMap(d =>
             queries.map(q => {
@@ -252,7 +252,7 @@ export default function Calculator() {
       if (withResults.length === 0 && selectedDistricts.length > 0 && !isNational) {
         const fb = await Promise.all(buildSearchQueries(res.recommendation, { ...finalAnswers, district: [] }).map(q => fetch(q.url).then(r => r.json()).then(data => ({ label: q.label, page: q.page, services: Array.isArray(data) ? data : [] }))))
         const fbR = fb.filter(f => f.services.length > 0)
-        if (fbR.length > 0) { setSalNote(p => (p ? p + ' ' : '') + 'טרם נוספו שירותים באזור זה — מוצגים שירותים מכל הארץ.'); setServices(fbR); return }
+        if (fbR.length > 0) { setSalNote(p => (p ? p + ' ' : '') + 'טרם נוספו שירותים באזור זה - מוצגים שירותים מכל הארץ.'); setServices(fbR); return }
       }
       setServices(withResults.length > 0 ? withResults : [])
     } catch { setServices([]) }
@@ -282,10 +282,10 @@ export default function Calculator() {
         <div style={{ background: '#fff', borderRadius: 20, border: '1px solid #e9d5ff', padding: '40px 28px', textAlign: 'center', boxShadow: '0 4px 24px rgba(76,0,128,0.08)' }}>
           <div style={{ fontSize: 52, marginBottom: 16 }}>🧭</div>
           <h1 style={{ fontSize: 24, fontWeight: 800, color: '#3d2a6e', marginBottom: 10 }}>מחשבון איתור מסלול</h1>
-          <p style={{ fontSize: 15, color: '#6b7280', lineHeight: 1.7, marginBottom: 12 }}>8 שאלות קצרות — וקבל המלצה מותאמת אישית.</p>
+          <p style={{ fontSize: 15, color: '#6b7280', lineHeight: 1.7, marginBottom: 12 }}>8 שאלות קצרות - וקבל המלצה מותאמת אישית.</p>
           <p style={{ fontSize: 12, color: '#9ca3af', lineHeight: 1.6, marginBottom: 28, padding: '10px 14px', background: '#f9fafb', borderRadius: 10 }}>
             הכלי אינו אבחון ואינו מחליף איש מקצוע. הוא מסייע בכיוון ראשוני בלבד.<br />
-            אם יש מצוקה חריפה או סיכון מיידי — יש לפנות בדחיפות לגורם רפואי.
+            אם יש מצוקה חריפה או סיכון מיידי - יש לפנות בדחיפות לגורם רפואי.
           </p>
           <button type="button" onClick={next} style={btnStyle()}>← בואו נתחיל</button>
         </div>
