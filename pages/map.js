@@ -184,6 +184,32 @@ export default function MapPage() {
         })
       })
 
+      // שירותים עם מיקום שסומנו כ"איזוריים" — יוצגו גם בנקודות מרכז המחוז
+      rehabServices.filter(s =>
+        s.lat && s.is_regional &&
+        ((s.districts && s.districts.length > 0) || s.district) &&
+        (rehabCategory === 'הכל' || s.category === rehabCategory || (s.categories || []).includes(rehabCategory)) &&
+        (district === 'הכל' || (s.districts || []).includes(district) || s.district === district) &&
+        (!showNationalOnly || s.is_national)
+      ).forEach(s => {
+        const allDistricts = [...new Set([...(s.districts || []), ...(s.district ? [s.district] : [])])]
+        allDistricts.forEach(d => {
+          const center = DISTRICT_CENTERS[d]
+          if (!center) return
+          const allCats = [...new Set([s.category, ...(s.categories || [])])].filter(Boolean).filter(c => REHAB_COLORS[c])
+          const colors = allCats.length > 0 ? allCats.map(c => REHAB_COLORS[c]) : ['#4aab78']
+          const svg = buildPieSVG(colors, 22)
+          const encoded = encodeURIComponent(svg)
+          const icon = L.divIcon({
+            html: '<div style="position:relative;width:32px;height:32px"><img src="data:image/svg+xml,' + encoded + '" width="22" height="22" style="border-radius:50%;box-shadow:0 2px 8px rgba(0,0,0,0.3)"/><div style="position:absolute;top:-8px;right:-8px;font-size:12px;line-height:1">🗺️</div></div>',
+            className: '', iconSize: [32, 32], iconAnchor: [16, 16],
+          })
+          const marker = L.marker(center, { icon }).addTo(mapRef.current)
+          marker.on('click', () => setSelected({ ...s, type: 'rehab', _districtLabel: d }))
+          markersRef.current.push(marker)
+        })
+      })
+
       applySpiral(filteredRehab).forEach(s => {
         const icon = buildRehabMarkerIcon(L, s, s.is_national)
         const marker = L.marker([s.lat, s.lng], { icon }).addTo(mapRef.current)
@@ -211,6 +237,31 @@ export default function MapPage() {
             className: '',
             iconSize: [28, 28],
             iconAnchor: [14, 14],
+          })
+          const marker = L.marker(center, { icon }).addTo(mapRef.current)
+          marker.on('click', () => setSelected({ ...s, type: 'treatment', _districtLabel: d }))
+          markersRef.current.push(marker)
+        })
+      })
+
+      // שירותי טיפול עם מיקום שסומנו כ"איזוריים"
+      treatmentServices.filter(s =>
+        s.lat && s.is_regional &&
+        ((s.districts && s.districts.length > 0) || s.district) &&
+        (treatmentCategory === 'הכל' || s.category === treatmentCategory) &&
+        (district === 'הכל' || (s.districts || []).includes(district) || s.district === district) &&
+        (!showNationalOnly || s.is_national)
+      ).forEach(s => {
+        const allDistricts = [...new Set([...(s.districts || []), ...(s.district ? [s.district] : [])])]
+        allDistricts.forEach(d => {
+          const center = DISTRICT_CENTERS[d]
+          if (!center) return
+          const color = TREATMENT_COLORS[s.category] || '#ee7a50'
+          const svg = buildPieSVG([color], 22)
+          const encoded = encodeURIComponent(svg)
+          const icon = L.divIcon({
+            html: '<div style="position:relative;width:32px;height:32px"><img src="data:image/svg+xml,' + encoded + '" width="22" height="22" style="clip-path:polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);box-shadow:0 2px 8px rgba(0,0,0,0.3)"/><div style="position:absolute;top:-8px;right:-8px;font-size:12px;line-height:1">🗺️</div></div>',
+            className: '', iconSize: [32, 32], iconAnchor: [16, 16],
           })
           const marker = L.marker(center, { icon }).addTo(mapRef.current)
           marker.on('click', () => setSelected({ ...s, type: 'treatment', _districtLabel: d }))
