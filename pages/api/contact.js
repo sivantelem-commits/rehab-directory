@@ -36,7 +36,7 @@ async function sendContactNotification({ type, name, email, message, serviceName
               <div style="background: #F8F9FF; border-right: 4px solid #1A3A5C; padding: 16px; border-radius: 8px; margin-bottom: 20px;">
                 <p style="margin: 0; color: #333; font-size: 14px; line-height: 1.8;">
                   👤 <strong>שם:</strong> ${name || 'אנונימי'}<br/>
-                  ✉️ <strong>מייל:</strong> ${email || '—'}
+                  ✉️ <strong>מייל:</strong> ${email || '-'}
                   ${serviceName ? `<br/>🔍 <strong>שירות:</strong> ${serviceName}` : ''}
                 </p>
               </div>
@@ -73,7 +73,7 @@ export default async function handler(req, res) {
 
   if (error) {
     console.error('Supabase error:', error)
-    // ממשיכים גם אם השמירה נכשלה — עדיין שולחים מייל
+    // ממשיכים גם אם השמירה נכשלה - עדיין שולחים מייל
   }
 
   await sendContactNotification({ type, name, email, message, serviceName })
