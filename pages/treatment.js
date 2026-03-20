@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/router'
 import Head from 'next/head'
+import { BasketPanel, BasketButton } from '../components/ServiceBasket'
 
 const DISTRICTS = ['צפון', 'חיפה', 'מרכז', 'תל אביב', 'ירושלים', 'דרום', 'יהודה ושומרון']
 const AGE_GROUPS = ['צעירים', 'מבוגרים', 'קשישים']
@@ -261,7 +262,10 @@ export default function Treatment() {
                   >
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 10 }}>
                       <div style={{ fontWeight: 700, fontSize: 16, color: '#3a1a0a', flex: 1 }}>{s.name}</div>
-                      <span style={{ background: cat.color, color: 'white', borderRadius: '999px', padding: '3px 12px', fontSize: 11, fontWeight: 700, whiteSpace: 'nowrap', marginRight: 8 }}>{s.category}</span>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                        <BasketButton service={{ ...s, type: 'treatment' }} />
+                        <span style={{ background: cat.color, color: 'white', borderRadius: '999px', padding: '3px 12px', fontSize: 11, fontWeight: 700, whiteSpace: 'nowrap', marginRight: 8 }}>{s.category}</span>
+                      </div>
                     </div>
                     <div style={{ fontSize: 13, color: '#aaa', marginBottom: 8, fontWeight: 500, display: 'flex', alignItems: 'center', gap: 6 }}>
                       📍 {s.city}{s.district ? `, ${s.district}` : ''}
@@ -285,6 +289,8 @@ export default function Treatment() {
             onMouseLeave={e => e.currentTarget.style.transform = 'translateY(0)'}
           >↑</button>
         )}
+
+        <BasketPanel />
 
         <footer style={{ background: 'linear-gradient(135deg, #0A3040, #164E63)', color: 'rgba(255,255,255,0.75)', textAlign: 'center', padding: '24px', fontSize: 13, marginTop: 48, fontWeight: 500 }}>
           <div style={{ marginBottom: 8 }}>
