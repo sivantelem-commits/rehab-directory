@@ -225,6 +225,18 @@ export default function Admin() {
     setLocationService(null); fetchAll(adminKey)
   }
 
+  const clearLocation = async (id, table) => {
+    if (!confirm('להסיר את המיקום מהמפה?')) return
+    const isTreatment = table === 'treatment'
+    const endpoint = isTreatment ? '/api/admin/treatment-services' : '/api/admin/services'
+    await fetch(endpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', adminkey: adminKey },
+      body: JSON.stringify({ id, lat: null, lng: null }),
+    })
+    fetchAll(adminKey)
+  }
+
   const exportRehabToExcel = async () => {
     setExporting(true)
     try {
@@ -470,6 +482,7 @@ export default function Admin() {
                                 <button onClick={() => updateStatus(s.id, 'approved')} style={{ background: '#8B00D4', color: 'white', border: 'none', borderRadius: 20, padding: '8px 18px', fontWeight: 700, fontSize: 13, cursor: 'pointer' }}>✓ אשר</button>
                                 <button onClick={() => openEdit(s, 'services')} style={{ background: '#EEF2FF', color: '#1A3A5C', border: '1.5px solid #C5D0F0', borderRadius: 20, padding: '8px 18px', fontWeight: 700, fontSize: 13, cursor: 'pointer' }}>✏️ ערוך</button>
                                 <button onClick={() => setLocationService({ ...s, _table: 'services' })} style={{ background: s.lat ? '#E8F5E9' : '#FFF3E0', color: s.lat ? '#2E7D32' : '#6B21A8', border: `1.5px solid ${s.lat ? '#A5D6A7' : '#d4b0f0'}`, borderRadius: 20, padding: '8px 18px', fontWeight: 700, fontSize: 13, cursor: 'pointer' }}>📍 {s.lat ? 'עדכן מיקום' : 'הוסף מיקום'}</button>
+                                {s.lat && <button onClick={() => clearLocation(s.id, 'services')} style={{ background: '#FFF3E0', color: '#C62828', border: '1.5px solid #FFCCBC', borderRadius: 20, padding: '8px 18px', fontWeight: 700, fontSize: 13, cursor: 'pointer' }}>🗑️ הסר מיקום</button>}
                                 <button onClick={() => updateStatus(s.id, 'rejected')} style={{ background: '#FFF0F0', color: '#C62828', border: '1.5px solid #FFCDD2', borderRadius: 20, padding: '8px 18px', fontWeight: 700, fontSize: 13, cursor: 'pointer' }}>✕ דחה</button>
                                 {s.email && <button onClick={() => { updateStatus(s.id, 'rejected'); setRejectEmailModal({ name: s.name, email: s.email, contactEmail: s.contact_email }) }} style={{ background: '#FFF0F0', color: '#C62828', border: '1.5px solid #FFCDD2', borderRadius: 20, padding: '8px 18px', fontWeight: 700, fontSize: 13, cursor: 'pointer' }}>✕ דחה + מייל</button>}
                               </div>
@@ -504,6 +517,7 @@ export default function Admin() {
                                   <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
                                     <button onClick={() => openEdit(s, 'services')} style={{ background: '#EEF2FF', color: '#1A3A5C', border: '1.5px solid #C5D0F0', borderRadius: 20, padding: '5px 12px', fontSize: 12, cursor: 'pointer', fontWeight: 600 }}>✏️ ערוך</button>
                                     <button onClick={() => setLocationService({ ...s, _table: 'services' })} style={{ background: s.lat ? '#f0fff4' : '#f7f0ff', color: s.lat ? '#2E7D32' : '#6B21A8', border: `1.5px solid ${s.lat ? '#A5D6A7' : '#d4b0f0'}`, borderRadius: 20, padding: '5px 12px', fontSize: 12, cursor: 'pointer', fontWeight: 600 }}>📍 {s.lat ? 'עדכן מיקום' : 'הוסף מיקום'}</button>
+                                    {s.lat && <button onClick={() => clearLocation(s.id, 'services')} style={{ background: '#FFF3E0', color: '#C62828', border: '1.5px solid #FFCCBC', borderRadius: 20, padding: '5px 12px', fontSize: 12, cursor: 'pointer', fontWeight: 600 }}>🗑️ הסר מיקום</button>}
                                     <button onClick={() => deleteService(s.id)} style={{ background: 'none', border: '1.5px solid #FFCDD2', color: '#C62828', borderRadius: 20, padding: '5px 12px', fontSize: 12, cursor: 'pointer', fontWeight: 600 }}>🗑️ מחק</button>
                                   </div>
                                 </div>
@@ -570,6 +584,7 @@ export default function Admin() {
                                   <>
                                     <button onClick={() => openEdit(s, 'treatment')} style={{ background: '#EEF2FF', color: '#1A3A5C', border: '1.5px solid #C5D0F0', borderRadius: 20, padding: '5px 12px', fontSize: 12, cursor: 'pointer', fontWeight: 600 }}>✏️ ערוך</button>
                                     <button onClick={() => setLocationService({ ...s, _table: 'treatment' })} style={{ background: s.lat ? '#E8F5E9' : '#FFF3E0', color: s.lat ? '#2E7D32' : '#6B21A8', border: `1.5px solid ${s.lat ? '#A5D6A7' : '#d4b0f0'}`, borderRadius: 20, padding: '5px 12px', fontSize: 12, cursor: 'pointer', fontWeight: 600 }}>📍 {s.lat ? 'עדכן מיקום' : 'הוסף מיקום'}</button>
+                                    {s.lat && <button onClick={() => clearLocation(s.id, 'treatment')} style={{ background: '#FFF3E0', color: '#C62828', border: '1.5px solid #FFCCBC', borderRadius: 20, padding: '5px 12px', fontSize: 12, cursor: 'pointer', fontWeight: 600 }}>🗑️ הסר מיקום</button>}
                                     <button onClick={() => deleteTreatmentService(s.id)} style={{ background: 'none', border: '1.5px solid #FFCDD2', color: '#C62828', borderRadius: 20, padding: '5px 12px', fontSize: 12, cursor: 'pointer', fontWeight: 600 }}>🗑️ מחק</button>
                                   </>
                                 )}
