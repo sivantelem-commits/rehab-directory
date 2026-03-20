@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef } from 'react'
 import Head from 'next/head'
+import { BasketPanel, BasketButton } from '../components/ServiceBasket'
 
 const REHAB_COLORS = {
   'דיור': '#2E0060', 'תעסוקה': '#6A0099', 'השכלה': '#9B00CC',
@@ -558,7 +559,10 @@ export default function MapPage() {
                   </div>
                   <div style={{ fontSize: 12, color: '#888', marginTop: 2 }}>📍 {selected.city}{selected.district ? `, ${selected.district}` : ''}{selected._districtLabel && <span style={{ marginRight: 6, background: '#EEF2FF', color: '#1A3A5C', borderRadius: 999, padding: '1px 7px', fontSize: 11 }}>🗺️ שירות איזורי - {selected._districtLabel}</span>}</div>
                 </div>
-                <button onClick={() => setSelected(null)} style={{ background: 'none', border: 'none', fontSize: 20, cursor: 'pointer', color: '#aaa', padding: 0 }}>✕</button>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <BasketButton service={selected} />
+                  <button onClick={() => setSelected(null)} style={{ background: 'none', border: 'none', fontSize: 20, cursor: 'pointer', color: '#aaa', padding: 0 }}>✕</button>
+                </div>
               </div>
               <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap', marginBottom: 10 }}>
                 {[...new Set([selected.category, ...(selected.categories || [])])].filter(Boolean).map((cat, i) => {
@@ -583,6 +587,7 @@ export default function MapPage() {
           )}
         </div>
       </div>
+      <BasketPanel />
     </>
   )
 }
