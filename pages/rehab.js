@@ -3,6 +3,7 @@ import { useRouter } from 'next/router'
 import Head from 'next/head'
 import ServiceCard from '../components/ServiceCard'
 import { CATEGORIES, CATEGORY_NAMES } from '../lib/categories'
+import { BasketPanel } from '../components/ServiceBasket'
 
 const DISTRICTS = ['הכל', 'צפון', 'חיפה', 'מרכז', 'תל אביב', 'ירושלים', 'דרום', 'יהודה ושומרון', '🌍 ארצי']
 const AGE_GROUPS = ['ילדים', 'נוער', 'מבוגרים', 'קשישים']
@@ -352,6 +353,8 @@ export default function Rehab() {
             onMouseLeave={e => e.currentTarget.style.transform = 'translateY(0)'}
           >↑</button>
         )}
+
+        <BasketPanel />
 
         <footer style={{
           background: 'linear-gradient(135deg, #2E0060, #4C0080)', color: 'rgba(255,255,255,0.75)',
