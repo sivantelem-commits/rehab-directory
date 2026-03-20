@@ -42,9 +42,9 @@ if (error) return res.status(500).json({ error: error.message })
         <p><strong>עיר:</strong> ${city}, ${district}</p>
         <p><strong>טלפון:</strong> ${phone}</p>
         <p><strong>מייל:</strong> ${email}</p>
-        <p><strong>איש קשר:</strong> ${contact_name || '—'}${contact_role ? ` (${contact_role})` : ''}</p>
-        <p><strong>טלפון לבירורים:</strong> ${contact_phone || '—'}</p>
-        <p><strong>מייל לבירורים:</strong> ${contact_email || '—'}</p>
+        <p><strong>איש קשר:</strong> ${contact_name || '-'}${contact_role ? ` (${contact_role})` : ''}</p>
+        <p><strong>טלפון לבירורים:</strong> ${contact_phone || '-'}</p>
+        <p><strong>מייל לבירורים:</strong> ${contact_email || '-'}</p>
         ${website ? `<p><strong>אתר:</strong> ${website}</p>` : ''}
         ${description ? `<p><strong>תיאור:</strong> ${description}</p>` : ''}
         <a href="https://rehabdirectoryil.vercel.app/admin" style="background:#0277BD;color:white;padding:10px 20px;border-radius:20px;text-decoration:none;display:inline-block;margin-top:16px;">
