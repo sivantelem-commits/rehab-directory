@@ -797,7 +797,7 @@ export default function Admin() {
                   </div>
                 </div>
 
-                {/* קטגוריות נוספות — רק שיקום */}
+                {/* קטגוריות נוספות - רק שיקום */}
                 {!isTreatmentEdit && (
                   <div style={{ marginBottom: 14 }}>
                     <label style={{ display: 'block', fontSize: 13, fontWeight: 700, color: '#1A3A5C', marginBottom: 6 }}>קטגוריות נוספות</label>
@@ -853,7 +853,7 @@ function DuplicatesTab({ duplicates, loading, onDismiss, onDelete }) {
   if (active.length === 0) return <div style={{ textAlign: 'center', padding: 52, color: '#aaa' }}><div style={{ fontSize: 40, marginBottom: 10 }}>✅</div><div style={{ fontWeight: 600 }}>לא נמצאו כפילויות</div></div>
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-      <div style={{ fontSize: 13, color: '#7B2D8B', fontWeight: 700, background: '#F3E5F5', borderRadius: 10, padding: '8px 14px' }}>נמצאו {active.length} זוגות חשודים — בדקו ומחקו כפילויות לפי הצורך</div>
+      <div style={{ fontSize: 13, color: '#7B2D8B', fontWeight: 700, background: '#F3E5F5', borderRadius: 10, padding: '8px 14px' }}>נמצאו {active.length} זוגות חשודים - בדקו ומחקו כפילויות לפי הצורך</div>
       {duplicates.map((pair, i) => {
         if (pair.dismissed) return null
         const typeLabel = pair.a._type === 'rehab' ? '♿ שיקום' : '🏥 טיפול'
@@ -910,9 +910,9 @@ function HistoryTab({ history, loading }) {
               {keys.map(key => (
                 <div key={key} style={{ fontSize: 12, background: '#f9f9f9', borderRadius: 8, padding: '8px 10px' }}>
                   <span style={{ fontWeight: 700, color: '#555' }}>{FIELD_NAMES[key] || key}: </span>
-                  <span style={{ color: '#C62828', textDecoration: 'line-through', marginLeft: 6 }}>{Array.isArray(changes[key].before) ? (changes[key].before.join(', ') || '—') : String(changes[key].before ?? '—')}</span>
+                  <span style={{ color: '#C62828', textDecoration: 'line-through', marginLeft: 6 }}>{Array.isArray(changes[key].before) ? (changes[key].before.join(', ') || '-') : String(changes[key].before ?? '-')}</span>
                   <span style={{ margin: '0 6px', color: '#aaa' }}>→</span>
-                  <span style={{ color: '#2E7D32', fontWeight: 600 }}>{Array.isArray(changes[key].after) ? (changes[key].after.join(', ') || '—') : String(changes[key].after ?? '—')}</span>
+                  <span style={{ color: '#2E7D32', fontWeight: 600 }}>{Array.isArray(changes[key].after) ? (changes[key].after.join(', ') || '-') : String(changes[key].after ?? '-')}</span>
                 </div>
               ))}
             </div>
