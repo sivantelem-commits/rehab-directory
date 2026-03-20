@@ -61,7 +61,7 @@ export default function Guide() {
           <img src='/guide-logo.png' alt='מדריך' style={{ width: 220, height: 220, objectFit: 'contain', marginBottom: -40, filter: 'invert(1) brightness(10)' }} />
           <h1 style={{ fontSize: 28, fontWeight: 800, margin: '0 0 10px' }}>מדריך למטופל</h1>
           <p style={{ fontSize: 15, opacity: 0.85, maxWidth: 560, margin: '0 auto', lineHeight: 1.8 }}>
-            כל מה שצריך לדעת לפני שמתחילים — בשפה פשוטה וברורה
+            כל מה שצריך לדעת לפני שמתחילים - בשפה פשוטה וברורה
           </p>
         </div>
 
@@ -86,7 +86,7 @@ export default function Guide() {
 
         <main style={{ maxWidth: 740, margin: '0 auto', padding: '32px 16px' }}>
 
-          {/* 1 — שיקום vs טיפול */}
+          {/* 1 - שיקום vs טיפול */}
           <div id="diff">
             <Card color={PURPLE} icon="⚖️" title="מה ההבדל בין שיקום לטיפול?">
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14, marginBottom: 16 }}>
@@ -112,12 +112,12 @@ export default function Guide() {
                 </div>
               </div>
               <div style={{ background: '#fffbeb', border: '1px solid #fcd34d', borderRadius: 10, padding: '12px 14px', fontSize: 13, color: '#92400e', lineHeight: 1.6 }}>
-                💡 <strong>חשוב לדעת:</strong> שיקום וטיפול לא מתחרים — הרבה אנשים מקבלים את שניהם במקביל.
+                💡 <strong>חשוב לדעת:</strong> שיקום וטיפול לא מתחרים - הרבה אנשים מקבלים את שניהם במקביל.
               </div>
             </Card>
           </div>
 
-          {/* 2 — זכאות סל שיקום */}
+          {/* 2 - זכאות סל שיקום */}
           <div id="sal">
             <Card color="#6B21A8" icon="📋" title="איך מקבלים זכאות לסל שיקום?">
               <p style={pStyle}>סל השיקום הוא זכות חוקית שמגיעה לאנשים עם מגבלה נפשית. הדרך לקבל אותו עוברת בשני שלבים:</p>
@@ -126,13 +126,13 @@ export default function Guide() {
                 {[
                   {
                     num: '1',
-                    title: 'ביטוח לאומי — קביעת נכות',
+                    title: 'ביטוח לאומי - קביעת נכות',
                     text: 'פנה לביטוח לאומי לקביעת דרגת נכות. צריך אבחנה פסיכיאטרית ומסמכים רפואיים. ועדה רפואית קובעת את אחוז הנכות.',
                     color: '#6B21A8',
                   },
                   {
                     num: '2',
-                    title: 'משרד הבריאות — פתיחת תיק שיקום',
+                    title: 'משרד הבריאות - פתיחת תיק שיקום',
                     text: 'לאחר קבלת קצבת נכות מהביטוח הלאומי, פנה למרכז לבריאות הנפש הקרוב לביתך לפתיחת תיק שיקום. רכז השיקום יעזור לבנות תוכנית מותאמת אישית.',
                     color: '#4C0080',
                   },
@@ -158,19 +158,19 @@ export default function Guide() {
             </Card>
           </div>
 
-          {/* 3 — זכויות המטופל */}
+          {/* 3 - זכויות המטופל */}
           <div id="rights">
             <Card color="#0E7490" icon="⚖️" title="זכויות המטופל בבריאות הנפש">
               <p style={pStyle}>חוק זכויות החולה (1996) וחוק טיפול בחולי נפש מגנים על זכויותיך. הנה העיקריות:</p>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                 {[
-                  { icon: '📄', title: 'זכות למידע', text: 'הזכות לקבל הסבר מלא על אבחנתך, מצבך ואפשרויות הטיפול — בשפה שאתה מבין.' },
+                  { icon: '📄', title: 'זכות למידע', text: 'הזכות לקבל הסבר מלא על אבחנתך, מצבך ואפשרויות הטיפול - בשפה שאתה מבין.' },
                   { icon: '✅', title: 'הסכמה מדעת', text: 'שום טיפול לא יינתן ללא הסכמתך, למעט מקרי חירום או צו בית משפט.' },
                   { icon: '🔒', title: 'סודיות רפואית', text: 'המידע הרפואי שלך חסוי ולא יועבר לגורם שלישי ללא רשותך.' },
                   { icon: '📂', title: 'עיון בתיק הרפואי', text: 'הזכות לעיין בתיק הרפואי שלך ולקבל עותק ממנו.' },
                   { icon: '🔄', title: 'דעה שנייה', text: 'הזכות לפנות לרופא אחר לקבלת חוות דעת נוספת.' },
                   { icon: '👤', title: 'כבוד וצנעת הפרט', text: 'הזכות לטיפול בכבוד ובהתחשבות בצרכייך הפיזיים, הנפשיים והתרבותיים.' },
-                  { icon: '🆘', title: 'אשפוז כפוי — זכויות', text: 'גם אם אושפזת בכפייה, יש לך זכות לייצוג משפטי, לערר בפני ועדה פסיכיאטרית ולהודיע לקרוב משפחה.' },
+                  { icon: '🆘', title: 'אשפוז כפוי - זכויות', text: 'גם אם אושפזת בכפייה, יש לך זכות לייצוג משפטי, לערר בפני ועדה פסיכיאטרית ולהודיע לקרוב משפחה.' },
                 ].map(r => (
                   <div key={r.title} style={{ display: 'flex', gap: 12, padding: '10px 14px', background: '#f0faff', borderRadius: 10, alignItems: 'flex-start' }}>
                     <span style={{ fontSize: 20, flexShrink: 0 }}>{r.icon}</span>
@@ -184,7 +184,7 @@ export default function Guide() {
             </Card>
           </div>
 
-          {/* 4 — שאלות לשאול */}
+          {/* 4 - שאלות לשאול */}
           <div id="questions">
             <Card color="#5E35B1" icon="❓" title="מה לשאול לפני קבלה למסגרת?">
               <p style={pStyle}>פגישת ההיכרות היא הזדמנות לאסוף מידע חשוב. הנה שאלות שכדאי להכין מראש:</p>
