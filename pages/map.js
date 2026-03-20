@@ -132,15 +132,7 @@ export default function MapPage() {
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(mapRef.current)
     }
 
-    const DISTRICT_CENTERS = {
-      'צפון': [32.89, 35.50],
-      'חיפה': [32.81, 34.99],
-      'מרכז': [32.08, 34.88],
-      'תל אביב': [32.07, 34.78],
-      'ירושלים': [31.78, 35.22],
-      'דרום': [31.25, 34.79],
-      'יהודה ושומרון': [31.95, 35.27],
-    }
+    
 
     markersRef.current.forEach(m => m.remove())
     markersRef.current = []
@@ -170,7 +162,7 @@ export default function MapPage() {
       ).forEach(s => {
         const allDistricts = [...new Set([...(s.districts || []), ...(s.district ? [s.district] : [])])]
         allDistricts.forEach(d => {
-          const center = DISTRICT_CENTERS[d]
+          const center = ({'צפון':[32.89,35.50],'חיפה':[32.81,34.99],'מרכז':[32.08,34.88],'תל אביב':[32.07,34.78],'ירושלים':[31.78,35.22],'דרום':[31.25,34.79],'יהודה ושומרון':[31.95,35.27]})[d]
           if (!center) return
           const color = REHAB_COLORS[s.category] || '#4aab78'
           const icon = L.divIcon({
@@ -192,7 +184,7 @@ export default function MapPage() {
       filteredRehab.filter(s => s.is_regional).forEach(s => {
         const allDistricts = [...new Set([...(s.districts || []), ...(s.district ? [s.district] : [])])]
         allDistricts.forEach(d => {
-          const center = DISTRICT_CENTERS[d]
+          const center = ({'צפון':[32.89,35.50],'חיפה':[32.81,34.99],'מרכז':[32.08,34.88],'תל אביב':[32.07,34.78],'ירושלים':[31.78,35.22],'דרום':[31.25,34.79],'יהודה ושומרון':[31.95,35.27]})[d]
           if (!center) return
           rehabWithLat.push({ ...s, lat: center[0], lng: center[1], _districtLabel: d, _isRegionalPin: true })
         })
@@ -207,7 +199,7 @@ export default function MapPage() {
       ).forEach(s => {
         const allDistricts = [...new Set([...(s.districts || []), ...(s.district ? [s.district] : [])])]
         allDistricts.forEach(d => {
-          const center = DISTRICT_CENTERS[d]
+          const center = ({'צפון':[32.89,35.50],'חיפה':[32.81,34.99],'מרכז':[32.08,34.88],'תל אביב':[32.07,34.78],'ירושלים':[31.78,35.22],'דרום':[31.25,34.79],'יהודה ושומרון':[31.95,35.27]})[d]
           if (!center) return
           rehabWithLat.push({ ...s, lat: center[0], lng: center[1], _districtLabel: d, _isRegionalPin: true })
         })
@@ -245,7 +237,7 @@ export default function MapPage() {
       ).forEach(s => {
         const allDistricts = [...new Set([...(s.districts || []), ...(s.district ? [s.district] : [])])]
         allDistricts.forEach(d => {
-          const center = DISTRICT_CENTERS[d]
+          const center = ({'צפון':[32.89,35.50],'חיפה':[32.81,34.99],'מרכז':[32.08,34.88],'תל אביב':[32.07,34.78],'ירושלים':[31.78,35.22],'דרום':[31.25,34.79],'יהודה ושומרון':[31.95,35.27]})[d]
           if (!center) return
           const color = TREATMENT_COLORS[s.category] || '#ee7a50'
           const icon = L.divIcon({
@@ -270,7 +262,7 @@ export default function MapPage() {
       ).forEach(s => {
         const allDistricts = [...new Set([...(s.districts || []), ...(s.district ? [s.district] : [])])]
         allDistricts.forEach(d => {
-          const center = DISTRICT_CENTERS[d]
+          const center = ({'צפון':[32.89,35.50],'חיפה':[32.81,34.99],'מרכז':[32.08,34.88],'תל אביב':[32.07,34.78],'ירושלים':[31.78,35.22],'דרום':[31.25,34.79],'יהודה ושומרון':[31.95,35.27]})[d]
           if (!center) return
           const color = TREATMENT_COLORS[s.category] || '#ee7a50'
           const svg = buildPieSVG([color], 22)
