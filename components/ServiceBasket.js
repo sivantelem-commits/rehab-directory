@@ -83,44 +83,81 @@ export function BasketPanel() {
   async function exportToExcel() {
     setExporting(true)
     try {
-      const XLSX = await import('https://cdn.sheetjs.com/xlsx-0.20.1/package/xlsx.mjs')
+      const ExcelJS = (await import('exceljs')).default
 
-      const rows = basket.map(s => ({
-        'סוג': s.type === 'treatment' ? 'טיפול' : 'שיקום',
-        'שם השירות': s.name || '',
-        'קטגוריה': s.category || '',
-        'תת-קטגוריה': s.subcategory || '',
-        'עיר': s.city || '',
-        'מחוז': s.district || '',
-        'פריסה ארצית': s.is_national ? 'כן' : '',
-        'שירות איזורי': s.is_regional ? 'כן' : '',
-        'טלפון': s.phone || '',
-        'מייל': s.email || '',
-        'אתר אינטרנט': s.website || '',
-        'תיאור': s.description || '',
-        'קבוצות גיל': (s.age_groups || []).join(', '),
-        'אבחנות': (s.diagnoses || []).join(', '),
-        'אוכלוסיות': (s.populations || []).join(', '),
-      }))
+      const wb = new ExcelJS.Workbook()
+      wb.views = [{ rightToLeft: true }]
+      const ws = wb.addWorksheet('שירותים נבחרים', { views: [{ rightToLeft: true }] })
 
-      const ws = XLSX.utils.json_to_sheet(rows)
-
-      // רוחב עמודות
-      ws['!cols'] = [
-        { wch: 8 }, { wch: 30 }, { wch: 16 }, { wch: 16 },
-        { wch: 14 }, { wch: 14 }, { wch: 10 }, { wch: 10 },
-        { wch: 14 }, { wch: 24 }, { wch: 28 }, { wch: 40 },
-        { wch: 18 }, { wch: 28 }, { wch: 20 },
+      // הגדרת עמודות
+      ws.columns = [
+        { header: 'סוג', key: 'type', width: 8 },
+        { header: 'שם השירות', key: 'name', width: 30 },
+        { header: 'קטגוריה', key: 'category', width: 16 },
+        { header: 'תת-קטגוריה', key: 'subcategory', width: 16 },
+        { header: 'עיר', key: 'city', width: 14 },
+        { header: 'מחוז', key: 'district', width: 14 },
+        { header: 'פריסה ארצית', key: 'national', width: 10 },
+        { header: 'שירות איזורי', key: 'regional', width: 10 },
+        { header: 'טלפון', key: 'phone', width: 14 },
+        { header: 'מייל', key: 'email', width: 26 },
+        { header: 'אתר אינטרנט', key: 'website', width: 28 },
+        { header: 'תיאור', key: 'description', width: 40 },
+        { header: 'קבוצות גיל', key: 'age_groups', width: 18 },
+        { header: 'אבחנות', key: 'diagnoses', width: 28 },
+        { header: 'אוכלוסיות', key: 'populations', width: 20 },
       ]
 
-      // כיוון RTL לגיליון
-      ws['!sheetView'] = [{ rightToLeft: true }]
+      // עיצוב כותרות
+      ws.getRow(1).eachCell(cell => {
+        cell.font = { bold: true, color: { argb: 'FFFFFFFF' }, name: 'Arial' }
+        cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF4C0080' } }
+        cell.alignment = { horizontal: 'center', vertical: 'middle' }
+        cell.border = {
+          bottom: { style: 'thin', color: { argb: 'FF8B00D4' } }
+        }
+      })
+      ws.getRow(1).height = 22
 
-      const wb = XLSX.utils.book_new()
-      XLSX.utils.book_append_sheet(wb, ws, 'שירותים נבחרים')
+      // הוספת שורות
+      basket.forEach((s, i) => {
+        const row = ws.addRow({
+          type: s.type === 'treatment' ? 'טיפול' : 'שיקום',
+          name: s.name || '',
+          category: s.category || '',
+          subcategory: s.subcategory || '',
+          city: s.city || '',
+          district: s.district || '',
+          national: s.is_national ? 'כן' : '',
+          regional: s.is_regional ? 'כן' : '',
+          phone: s.phone || '',
+          email: s.email || '',
+          website: s.website || '',
+          description: s.description || '',
+          age_groups: (s.age_groups || []).join(', '),
+          diagnoses: (s.diagnoses || []).join(', '),
+          populations: (s.populations || []).join(', '),
+        })
+        row.eachCell(cell => {
+          cell.font = { name: 'Arial', size: 11 }
+          cell.alignment = { wrapText: true, vertical: 'top' }
+          cell.fill = {
+            type: 'pattern', pattern: 'solid',
+            fgColor: { argb: i % 2 === 0 ? 'FFFFFFFF' : 'FFF9F0FF' }
+          }
+        })
+      })
 
+      // ייצוא
+      const buffer = await wb.xlsx.writeBuffer()
+      const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
       const date = new Date().toLocaleDateString('he-IL').replace(/\//g, '-')
-      XLSX.writeFile(wb, `שירותי-בריאות-נפש-${date}.xlsx`)
+      a.href = url
+      a.download = `שירותי-בריאות-נפש-${date}.xlsx`
+      a.click()
+      URL.revokeObjectURL(url)
     } catch (err) {
       console.error(err)
       alert('שגיאה בייצוא. נסו שוב.')
