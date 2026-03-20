@@ -137,79 +137,43 @@ export default function MapPage() {
     markersRef.current.forEach(m => m.remove())
     markersRef.current = []
 
-    const filteredRehab = rehabServices.filter(s =>
-      s.lat &&
-      (rehabCategory === 'הכל' || s.category === rehabCategory) &&
-      (district === 'הכל' || s.district === district) &&
-      (!showNationalOnly || s.is_national)
-    )
-
-    const filteredTreatment = treatmentServices.filter(s =>
-      s.lat &&
-      (treatmentCategory === 'הכל' || s.category === treatmentCategory) &&
-      (district === 'הכל' || s.district === district) &&
-      (!showNationalOnly || s.is_national)
-    )
+    const DISTRICT_CENTERS = {'צפון':[32.89,35.50],'חיפה':[32.81,34.99],'מרכז':[32.08,34.88],'תל אביב':[32.07,34.78],'ירושלים':[31.78,35.22],'דרום':[31.25,34.79],'יהודה ושומרון':[31.95,35.27]}
 
     if (showRehab) {
-      // שירותים איזוריים ללא מיקום — הצג בנקודות מרכז המחוז
+      const rehabToPlace = []
+
       rehabServices.filter(s =>
-        !s.lat && !s.is_national &&
-        ((s.districts && s.districts.length > 0) || s.district) &&
         (rehabCategory === 'הכל' || s.category === rehabCategory || (s.categories || []).includes(rehabCategory)) &&
-        (district === 'הכל' || (s.districts || []).includes(district) || s.district === district) &&
+        (district === 'הכל' || s.district === district || (s.districts || []).includes(district)) &&
         (!showNationalOnly || s.is_national)
       ).forEach(s => {
-        const allDistricts = [...new Set([...(s.districts || []), ...(s.district ? [s.district] : [])])]
-        allDistricts.forEach(d => {
-          const center = ({'צפון':[32.89,35.50],'חיפה':[32.81,34.99],'מרכז':[32.08,34.88],'תל אביב':[32.07,34.78],'ירושלים':[31.78,35.22],'דרום':[31.25,34.79],'יהודה ושומרון':[31.95,35.27]})[d]
-          if (!center) return
-          const color = REHAB_COLORS[s.category] || '#4aab78'
-          const icon = L.divIcon({
-            html: `<div style="position:relative;width:28px;height:28px"><div style="width:26px;height:26px;border-radius:50%;background:white;border:3px solid ${color};box-shadow:0 2px 8px rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center"><div style="width:14px;height:14px;border-radius:50%;background:${color}"></div></div><div style="position:absolute;top:-8px;right:-8px;font-size:12px;line-height:1">🗺️</div></div>`,
-            className: '',
-            iconSize: [28, 28],
-            iconAnchor: [14, 14],
+        if (s.lat) {
+          // שירות עם מיקום — מופיע פעם אחת בדיוק במיקום האמיתי שלו
+          rehabToPlace.push({ ...s })
+        } else {
+          // שירות ללא מיקום — מופיע במרכז כל מחוז שלו עם 🗺️
+          const allDistricts = [...new Set([...(s.districts || []), ...(s.district ? [s.district] : [])])]
+          allDistricts.forEach(d => {
+            const center = DISTRICT_CENTERS[d]
+            if (!center) return
+            rehabToPlace.push({ ...s, lat: center[0], lng: center[1], _districtLabel: d, _isRegionalPin: true })
           })
-          const marker = L.marker(center, { icon }).addTo(mapRef.current)
-          marker.on('click', () => setSelected({ ...s, type: 'rehab', _districtLabel: d }))
-          markersRef.current.push(marker)
-        })
+        }
       })
 
-      // בניית רשימת נקודות לשיקום
-      const rehabWithLat = [...filteredRehab]
-      // שירותים איזוריים ללא מיקום → עיגול איזורי במרכז המחוז
-      rehabServices.filter(s =>
-        !s.lat && s.is_regional &&
-        ((s.districts && s.districts.length > 0) || s.district) &&
-        (rehabCategory === 'הכל' || s.category === rehabCategory || (s.categories || []).includes(rehabCategory)) &&
-        (district === 'הכל' || (s.districts || []).includes(district) || s.district === district) &&
-        (!showNationalOnly || s.is_national)
-      ).forEach(s => {
-        const allDistricts = [...new Set([...(s.districts || []), ...(s.district ? [s.district] : [])])]
-        allDistricts.forEach(d => {
-          const center = ({'צפון':[32.89,35.50],'חיפה':[32.81,34.99],'מרכז':[32.08,34.88],'תל אביב':[32.07,34.78],'ירושלים':[31.78,35.22],'דרום':[31.25,34.79],'יהודה ושומרון':[31.95,35.27]})[d]
-          if (!center) return
-          rehabWithLat.push({ ...s, lat: center[0], lng: center[1], _districtLabel: d, _isRegionalPin: true })
-        })
-      })
-
-      applySpiral(rehabWithLat).forEach(s => {
+      applySpiral(rehabToPlace).forEach(s => {
+        let icon
         if (s._isRegionalPin) {
           const baseIcon = buildRehabMarkerIcon(L, s, s.is_national)
           const baseHtml = baseIcon.options.html
           const size = s.is_national ? 30 : 22
-          const icon = L.divIcon({
+          icon = L.divIcon({
             html: '<div style="position:relative;display:inline-block">' + baseHtml + '<div style="position:absolute;top:-8px;right:-8px;font-size:12px;line-height:1">🗺️</div></div>',
             className: '', iconSize: [size + 8, size + 8], iconAnchor: [(size + 8) / 2, (size + 8) / 2],
           })
-          const marker = L.marker([s.lat, s.lng], { icon }).addTo(mapRef.current)
-          marker.on('click', () => setSelected({ ...s, type: 'rehab' }))
-          markersRef.current.push(marker)
-          return
+        } else {
+          icon = buildRehabMarkerIcon(L, s, s.is_national)
         }
-        const icon = buildRehabMarkerIcon(L, s, s.is_national)
         const marker = L.marker([s.lat, s.lng], { icon }).addTo(mapRef.current)
         marker.on('click', () => setSelected({ ...s, type: 'rehab' }))
         markersRef.current.push(marker)
@@ -217,70 +181,48 @@ export default function MapPage() {
     }
 
     if (showTreatment) {
-      // שירותים איזוריים ללא מיקום — הצג בנקודות מרכז המחוז
+      const treatmentToPlace = []
+
       treatmentServices.filter(s =>
-        !s.lat && !s.is_national &&
-        ((s.districts && s.districts.length > 0) || s.district) &&
         (treatmentCategory === 'הכל' || s.category === treatmentCategory) &&
-        (district === 'הכל' || (s.districts || []).includes(district) || s.district === district) &&
+        (district === 'הכל' || s.district === district || (s.districts || []).includes(district)) &&
         (!showNationalOnly || s.is_national)
       ).forEach(s => {
-        const allDistricts = [...new Set([...(s.districts || []), ...(s.district ? [s.district] : [])])]
-        allDistricts.forEach(d => {
-          const center = ({'צפון':[32.89,35.50],'חיפה':[32.81,34.99],'מרכז':[32.08,34.88],'תל אביב':[32.07,34.78],'ירושלים':[31.78,35.22],'דרום':[31.25,34.79],'יהודה ושומרון':[31.95,35.27]})[d]
-          if (!center) return
-          const color = TREATMENT_COLORS[s.category] || '#ee7a50'
-          const icon = L.divIcon({
-            html: `<div style="position:relative;width:28px;height:28px"><div style="width:26px;height:26px;clip-path:polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);background:white;box-shadow:0 2px 8px rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center;border:3px solid ${color}"><div style="width:14px;height:14px;clip-path:polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);background:${color}"></div></div><div style="position:absolute;top:-8px;right:-8px;font-size:12px;line-height:1">🗺️</div></div>`,
-            className: '',
-            iconSize: [28, 28],
-            iconAnchor: [14, 14],
+        if (s.lat) {
+          // שירות עם מיקום — מופיע פעם אחת בדיוק במיקום האמיתי שלו
+          treatmentToPlace.push({ ...s })
+        } else {
+          // שירות ללא מיקום — מופיע במרכז כל מחוז שלו עם 🗺️
+          const allDistricts = [...new Set([...(s.districts || []), ...(s.district ? [s.district] : [])])]
+          allDistricts.forEach(d => {
+            const center = DISTRICT_CENTERS[d]
+            if (!center) return
+            treatmentToPlace.push({ ...s, lat: center[0], lng: center[1], _districtLabel: d, _isRegionalPin: true })
           })
-          const marker = L.marker(center, { icon }).addTo(mapRef.current)
-          marker.on('click', () => setSelected({ ...s, type: 'treatment', _districtLabel: d }))
-          markersRef.current.push(marker)
-        })
+        }
       })
 
-      // שירותי טיפול עם מיקום שסומנו כ"איזוריים"
-      treatmentServices.filter(s =>
-        s.is_regional &&
-        ((s.districts && s.districts.length > 0) || s.district) &&
-        (treatmentCategory === 'הכל' || s.category === treatmentCategory) &&
-        (district === 'הכל' || (s.districts || []).includes(district) || s.district === district) &&
-        (!showNationalOnly || s.is_national)
-      ).forEach(s => {
-        const allDistricts = [...new Set([...(s.districts || []), ...(s.district ? [s.district] : [])])]
-        allDistricts.forEach(d => {
-          const center = ({'צפון':[32.89,35.50],'חיפה':[32.81,34.99],'מרכז':[32.08,34.88],'תל אביב':[32.07,34.78],'ירושלים':[31.78,35.22],'דרום':[31.25,34.79],'יהודה ושומרון':[31.95,35.27]})[d]
-          if (!center) return
-          const color = TREATMENT_COLORS[s.category] || '#ee7a50'
+      applySpiral(treatmentToPlace).forEach(s => {
+        const color = TREATMENT_COLORS[s.category] || '#ee7a50'
+        const isNational = s.is_national
+        let icon
+        if (s._isRegionalPin) {
           const svg = buildPieSVG([color], 22)
           const encoded = encodeURIComponent(svg)
-          const icon = L.divIcon({
+          icon = L.divIcon({
             html: '<div style="position:relative;width:32px;height:32px"><img src="data:image/svg+xml,' + encoded + '" width="22" height="22" style="clip-path:polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);box-shadow:0 2px 8px rgba(0,0,0,0.3)"/><div style="position:absolute;top:-8px;right:-8px;font-size:12px;line-height:1">🗺️</div></div>',
             className: '', iconSize: [32, 32], iconAnchor: [16, 16],
           })
-          const marker = L.marker(center, { icon }).addTo(mapRef.current)
-          marker.on('click', () => setSelected({ ...s, type: 'treatment', _districtLabel: d }))
-          markersRef.current.push(marker)
-        })
-      })
-
-      applySpiral(filteredTreatment).forEach(s => {
-        const color = TREATMENT_COLORS[s.category] || '#ee7a50'
-        const isNational = s.is_national
-        const icon = L.divIcon({
-          html: isNational
-            ? `<div style="position:relative;width:22px;height:22px">
-                <div style="width:20px;height:20px;clip-path:polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);background:white;box-shadow:0 2px 8px rgba(0,0,0,0.35);display:flex;align-items:center;justify-content:center"><div style="width:13px;height:13px;clip-path:polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);background:${color}"></div></div>
-                <div style="position:absolute;top:-6px;right:-6px;font-size:11px;line-height:1">🌍</div>
-               </div>`
-            : `<div style="width:18px;height:18px;clip-path:polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);background:white;box-shadow:0 2px 6px rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center"><div style="width:12px;height:12px;clip-path:polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);background:${color}"></div></div>`,
-          className: '',
-          iconSize: isNational ? [22, 22] : [18, 18],
-          iconAnchor: isNational ? [11, 11] : [9, 9],
-        })
+        } else {
+          icon = L.divIcon({
+            html: isNational
+              ? `<div style="position:relative;width:22px;height:22px"><div style="width:20px;height:20px;clip-path:polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);background:white;box-shadow:0 2px 8px rgba(0,0,0,0.35);display:flex;align-items:center;justify-content:center"><div style="width:13px;height:13px;clip-path:polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);background:${color}"></div></div><div style="position:absolute;top:-6px;right:-6px;font-size:11px;line-height:1">🌍</div></div>`
+              : `<div style="width:18px;height:18px;clip-path:polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);background:white;box-shadow:0 2px 6px rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center"><div style="width:12px;height:12px;clip-path:polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);background:${color}"></div></div>`,
+            className: '',
+            iconSize: isNational ? [22, 22] : [18, 18],
+            iconAnchor: isNational ? [11, 11] : [9, 9],
+          })
+        }
         const marker = L.marker([s.lat, s.lng], { icon }).addTo(mapRef.current)
         marker.on('click', () => setSelected({ ...s, type: 'treatment' }))
         markersRef.current.push(marker)
