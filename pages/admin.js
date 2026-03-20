@@ -178,6 +178,7 @@ export default function Admin() {
       populations: service.populations || [],
       categories: service.categories || [],
       districts: service.districts || [],
+      is_regional: service.is_regional || false,
     })
   }
 
@@ -810,6 +811,15 @@ export default function Admin() {
                   </div>
                 )}
 
+                <div style={{ marginBottom: 14, background: '#f0f7ff', borderRadius: 12, padding: '12px 14px', border: '1.5px solid #c5d0f0' }}>
+                  <label style={{ display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer' }}>
+                    <input type="checkbox" checked={editForm.is_regional || false} onChange={e => setEditForm(f => ({ ...f, is_regional: e.target.checked }))} style={{ width: 18, height: 18, accentColor: '#1A3A5C', cursor: 'pointer' }} />
+                    <div>
+                      <div style={{ fontSize: 14, fontWeight: 700, color: '#1A3A5C' }}>🗺️ שירות איזורי</div>
+                      <div style={{ fontSize: 11, color: '#6b7280', marginTop: 2 }}>יוצג במפה בנקודות מרכז המחוזות הנבחרים, בנוסף למיקומו הספציפי</div>
+                    </div>
+                  </label>
+                </div>
                 <div style={{ marginBottom: 22 }}>
                   <label style={{ display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer' }}>
                     <input type="checkbox" checked={editForm.is_national || false} onChange={e => setEditForm(f => ({ ...f, is_national: e.target.checked }))} style={{ width: 18, height: 18, accentColor: '#8B00D4', cursor: 'pointer' }} />
