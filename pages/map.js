@@ -184,7 +184,8 @@ export default function MapPage() {
         })
       })
 
-      // שירותים עם מיקום שסומנו כ"איזוריים" — יוצגו גם בנקודות מרכז המחוז
+      // בניית רשימת נקודות לשיקום: רגילות + מרכזי מחוז לשירותים איזוריים
+      const rehabPoints = [...filteredRehab]
       rehabServices.filter(s =>
         s.is_regional &&
         ((s.districts && s.districts.length > 0) || s.district) &&
@@ -196,21 +197,24 @@ export default function MapPage() {
         allDistricts.forEach(d => {
           const center = DISTRICT_CENTERS[d]
           if (!center) return
-          const allCats = [...new Set([s.category, ...(s.categories || [])])].filter(Boolean).filter(c => REHAB_COLORS[c])
-          const colors = allCats.length > 0 ? allCats.map(c => REHAB_COLORS[c]) : ['#4aab78']
-          const svg = buildPieSVG(colors, 22)
-          const encoded = encodeURIComponent(svg)
-          const icon = L.divIcon({
-            html: '<div style="position:relative;width:32px;height:32px"><img src="data:image/svg+xml,' + encoded + '" width="22" height="22" style="border-radius:50%;box-shadow:0 2px 8px rgba(0,0,0,0.3)"/><div style="position:absolute;top:-8px;right:-8px;font-size:12px;line-height:1">🗺️</div></div>',
-            className: '', iconSize: [32, 32], iconAnchor: [16, 16],
-          })
-          const marker = L.marker(center, { icon }).addTo(mapRef.current)
-          marker.on('click', () => setSelected({ ...s, type: 'rehab', _districtLabel: d }))
-          markersRef.current.push(marker)
+          rehabPoints.push({ ...s, lat: center[0], lng: center[1], _districtLabel: d, _isRegionalPin: true })
         })
       })
 
-      applySpiral(filteredRehab).forEach(s => {
+      applySpiral(rehabPoints).forEach(s => {
+        if (s._isRegionalPin) {
+          const baseIcon = buildRehabMarkerIcon(L, s, s.is_national)
+          const baseHtml = baseIcon.options.html
+          const size = s.is_national ? 30 : 22
+          const icon = L.divIcon({
+            html: '<div style="position:relative;display:inline-block">' + baseHtml + '<div style="position:absolute;top:-8px;right:-8px;font-size:12px;line-height:1">🗺️</div></div>',
+            className: '', iconSize: [size + 8, size + 8], iconAnchor: [(size + 8) / 2, (size + 8) / 2],
+          })
+          const marker = L.marker([s.lat, s.lng], { icon }).addTo(mapRef.current)
+          marker.on('click', () => setSelected({ ...s, type: 'rehab' }))
+          markersRef.current.push(marker)
+          return
+        }
         const icon = buildRehabMarkerIcon(L, s, s.is_national)
         const marker = L.marker([s.lat, s.lng], { icon }).addTo(mapRef.current)
         marker.on('click', () => setSelected({ ...s, type: 'rehab' }))
