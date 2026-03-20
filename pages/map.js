@@ -99,10 +99,15 @@ export default function MapPage() {
   const [showRehab, setShowRehab] = useState(true)
   const [showTreatment, setShowTreatment] = useState(true)
   const [rehabCategory, setRehabCategory] = useState('הכל')
+  const [rehabSubcategory, setRehabSubcategory] = useState('הכל')
   const [treatmentCategory, setTreatmentCategory] = useState('הכל')
   const [district, setDistrict] = useState('הכל')
   const [showNationalOnly, setShowNationalOnly] = useState(false)
   const [showNationalPanel, setShowNationalPanel] = useState(false)
+  const [ageGroup, setAgeGroup] = useState('')
+  const [diagnosis, setDiagnosis] = useState('')
+  const [population, setPopulation] = useState('')
+  const [showAdvanced, setShowAdvanced] = useState(false)
   const [mounted, setMounted] = useState(false)
   const [selected, setSelected] = useState(null)
   const [isMobile, setIsMobile] = useState(false)
@@ -144,8 +149,12 @@ export default function MapPage() {
 
       rehabServices.filter(s =>
         (rehabCategory === 'הכל' || s.category === rehabCategory || (s.categories || []).includes(rehabCategory)) &&
+        (rehabSubcategory === 'הכל' || s.subcategory === rehabSubcategory) &&
         (district === 'הכל' || s.district === district || (s.districts || []).includes(district)) &&
-        (!showNationalOnly || s.is_national)
+        (!showNationalOnly || s.is_national) &&
+        (!ageGroup || (s.age_groups || []).includes(ageGroup)) &&
+        (!diagnosis || (s.diagnoses || []).includes(diagnosis)) &&
+        (!population || (s.populations || []).includes(population))
       ).forEach(s => {
         if (s.lat) {
           // שירות עם מיקום - מופיע פעם אחת בדיוק במיקום האמיתי שלו
@@ -187,7 +196,10 @@ export default function MapPage() {
       treatmentServices.filter(s =>
         (treatmentCategory === 'הכל' || s.category === treatmentCategory) &&
         (district === 'הכל' || s.district === district || (s.districts || []).includes(district)) &&
-        (!showNationalOnly || s.is_national)
+        (!showNationalOnly || s.is_national) &&
+        (!ageGroup || (s.age_groups || []).includes(ageGroup)) &&
+        (!diagnosis || (s.diagnoses || []).includes(diagnosis)) &&
+        (!population || (s.populations || []).includes(population))
       ).forEach(s => {
         if (s.lat) {
           // שירות עם מיקום - מופיע פעם אחת בדיוק במיקום האמיתי שלו
@@ -230,22 +242,27 @@ export default function MapPage() {
         markersRef.current.push(marker)
       })
     }
-  }, [mounted, rehabServices, treatmentServices, showRehab, showTreatment, rehabCategory, treatmentCategory, district, showNationalOnly])
+  }, [mounted, rehabServices, treatmentServices, showRehab, showTreatment, rehabCategory, rehabSubcategory, treatmentCategory, district, showNationalOnly, ageGroup, diagnosis, population])
 
   if (!mounted) return null
 
   const filteredRehabCount = rehabServices.filter(s =>
-    s.lat &&
-    (rehabCategory === 'הכל' || s.category === rehabCategory) &&
-    (district === 'הכל' || s.district === district) &&
-    (!showNationalOnly || s.is_national)
+    (rehabCategory === 'הכל' || s.category === rehabCategory || (s.categories || []).includes(rehabCategory)) &&
+    (rehabSubcategory === 'הכל' || s.subcategory === rehabSubcategory) &&
+    (district === 'הכל' || s.district === district || (s.districts || []).includes(district)) &&
+    (!showNationalOnly || s.is_national) &&
+    (!ageGroup || (s.age_groups || []).includes(ageGroup)) &&
+    (!diagnosis || (s.diagnoses || []).includes(diagnosis)) &&
+    (!population || (s.populations || []).includes(population))
   ).length
 
   const filteredTreatmentCount = treatmentServices.filter(s =>
-    s.lat &&
     (treatmentCategory === 'הכל' || s.category === treatmentCategory) &&
-    (district === 'הכל' || s.district === district) &&
-    (!showNationalOnly || s.is_national)
+    (district === 'הכל' || s.district === district || (s.districts || []).includes(district)) &&
+    (!showNationalOnly || s.is_national) &&
+    (!ageGroup || (s.age_groups || []).includes(ageGroup)) &&
+    (!diagnosis || (s.diagnoses || []).includes(diagnosis)) &&
+    (!population || (s.populations || []).includes(population))
   ).length
 
   const nationalRehab = rehabServices.filter(s =>
@@ -317,7 +334,7 @@ export default function MapPage() {
               ♿ שיקום
             </button>
             {showRehab && (
-              <select value={rehabCategory} onChange={e => setRehabCategory(e.target.value)} style={{ ...sel, borderColor: '#8B00D4' }}>
+              <select value={rehabCategory} onChange={e => { setRehabCategory(e.target.value); setRehabSubcategory('הכל') }} style={{ ...sel, borderColor: '#8B00D4' }}>
                 <option value="הכל">כל הקטגוריות</option>
                 {Object.keys(REHAB_COLORS).map(c => <option key={c}>{c}</option>)}
               </select>
@@ -354,10 +371,114 @@ export default function MapPage() {
             }}>📋 שירותים ארציים ({nationalCount})</button>
           )}
 
+          {/* סינון מתקדם */}
+          {(() => {
+            const activeCount = [ageGroup, diagnosis, population, rehabSubcategory !== 'הכל' ? rehabSubcategory : ''].filter(Boolean).length
+            return (
+              <button onClick={() => setShowAdvanced(v => !v)} style={{
+                display: 'flex', alignItems: 'center', gap: 6, padding: '7px 14px', borderRadius: '999px',
+                border: `2px solid ${activeCount > 0 ? '#1A3A5C' : '#ddd'}`,
+                background: activeCount > 0 ? '#EEF2FF' : 'white',
+                color: activeCount > 0 ? '#1A3A5C' : '#888',
+                fontWeight: 700, fontSize: 13, cursor: 'pointer', fontFamily: "'Nunito', sans-serif",
+              }}>
+                🎯 סינון מתקדם
+                {activeCount > 0 && <span style={{ background: '#1A3A5C', color: 'white', borderRadius: 999, padding: '1px 7px', fontSize: 11 }}>{activeCount}</span>}
+                <span style={{ fontSize: 10 }}>{showAdvanced ? '▲' : '▼'}</span>
+              </button>
+            )
+          })()}
+
           <div style={{ fontSize: 13, color: '#888', marginRight: 'auto', fontWeight: 600 }}>
             {(showRehab ? filteredRehabCount : 0) + (showTreatment ? filteredTreatmentCount : 0)} שירותים
           </div>
         </div>
+
+        {/* שורת פילטרים מתקדמים */}
+        {showAdvanced && (
+          <div style={{ background: '#f8f9ff', borderBottom: '1px solid #dde', padding: '10px 16px', display: 'flex', gap: 16, flexWrap: 'wrap', alignItems: 'flex-start' }}>
+
+            {/* תת-קטגוריה לשיקום */}
+            {showRehab && rehabCategory !== 'הכל' && (() => {
+              const { CATEGORIES: CATS } = require('../lib/categories')
+              const subs = CATS[rehabCategory]?.subcategories || []
+              if (!subs.length) return null
+              return (
+                <div>
+                  <div style={{ fontSize: 11, fontWeight: 700, color: '#9b88bb', marginBottom: 5 }}>תת-קטגוריה (שיקום)</div>
+                  <div style={{ display: 'flex', gap: 5, flexWrap: 'wrap' }}>
+                    {['הכל', ...subs].map(s => (
+                      <button key={s} onClick={() => setRehabSubcategory(s)} style={{
+                        padding: '5px 12px', borderRadius: '999px', fontSize: 12, fontWeight: 600,
+                        border: `1.5px solid ${rehabSubcategory === s ? '#8B00D4' : '#d4b0f0'}`,
+                        background: rehabSubcategory === s ? '#8B00D4' : 'white',
+                        color: rehabSubcategory === s ? 'white' : '#555',
+                        cursor: 'pointer', fontFamily: "'Nunito', sans-serif",
+                      }}>{s}</button>
+                    ))}
+                  </div>
+                </div>
+              )
+            })()}
+
+            {/* קבוצת גיל */}
+            <div>
+              <div style={{ fontSize: 11, fontWeight: 700, color: '#9b88bb', marginBottom: 5 }}>קבוצת גיל</div>
+              <div style={{ display: 'flex', gap: 5, flexWrap: 'wrap' }}>
+                {['ילדים', 'נוער', 'צעירים', 'מבוגרים', 'קשישים'].map(ag => (
+                  <button key={ag} onClick={() => setAgeGroup(ageGroup === ag ? '' : ag)} style={{
+                    padding: '5px 12px', borderRadius: '999px', fontSize: 12, fontWeight: 600,
+                    border: `1.5px solid ${ageGroup === ag ? '#6B21A8' : '#ddd'}`,
+                    background: ageGroup === ag ? '#6B21A8' : 'white',
+                    color: ageGroup === ag ? 'white' : '#555',
+                    cursor: 'pointer', fontFamily: "'Nunito', sans-serif",
+                  }}>{ag}</button>
+                ))}
+              </div>
+            </div>
+
+            {/* אבחנה */}
+            <div>
+              <div style={{ fontSize: 11, fontWeight: 700, color: '#9b88bb', marginBottom: 5 }}>אבחנה / התמחות</div>
+              <div style={{ display: 'flex', gap: 5, flexWrap: 'wrap' }}>
+                {['הפרעות אכילה', 'OCD', 'פוסט טראומה', 'פוסט טראומה מורכבת', 'התמכרויות'].map(d => (
+                  <button key={d} onClick={() => setDiagnosis(diagnosis === d ? '' : d)} style={{
+                    padding: '5px 12px', borderRadius: '999px', fontSize: 12, fontWeight: 600,
+                    border: `1.5px solid ${diagnosis === d ? '#0E7490' : '#ddd'}`,
+                    background: diagnosis === d ? '#0E7490' : 'white',
+                    color: diagnosis === d ? 'white' : '#555',
+                    cursor: 'pointer', fontFamily: "'Nunito', sans-serif",
+                  }}>{d}</button>
+                ))}
+              </div>
+            </div>
+
+            {/* אוכלוסייה */}
+            <div>
+              <div style={{ fontSize: 11, fontWeight: 700, color: '#9b88bb', marginBottom: 5 }}>אוכלוסייה ייעודית</div>
+              <div style={{ display: 'flex', gap: 5, flexWrap: 'wrap' }}>
+                {['נשים', 'דתי/מסורתי', 'חרדי', 'להט"ב'].map(p => (
+                  <button key={p} onClick={() => setPopulation(population === p ? '' : p)} style={{
+                    padding: '5px 12px', borderRadius: '999px', fontSize: 12, fontWeight: 600,
+                    border: `1.5px solid ${population === p ? '#5E35B1' : '#ddd'}`,
+                    background: population === p ? '#5E35B1' : 'white',
+                    color: population === p ? 'white' : '#555',
+                    cursor: 'pointer', fontFamily: "'Nunito', sans-serif",
+                  }}>{p}</button>
+                ))}
+              </div>
+            </div>
+
+            {/* נקה הכל */}
+            {[ageGroup, diagnosis, population, rehabSubcategory !== 'הכל' ? rehabSubcategory : ''].some(Boolean) && (
+              <button onClick={() => { setAgeGroup(''); setDiagnosis(''); setPopulation(''); setRehabSubcategory('הכל') }} style={{
+                alignSelf: 'flex-end', fontSize: 12, color: '#888', background: 'none',
+                border: '1.5px solid #ddd', borderRadius: '999px', padding: '5px 12px',
+                cursor: 'pointer', fontWeight: 600, fontFamily: "'Nunito', sans-serif",
+              }}>✕ נקה הכל</button>
+            )}
+          </div>
+        )}
 
         <div style={{ position: 'relative', flex: 1, display: 'flex', flexDirection: 'column' }}>
           <div id="main-map" style={{ height: isMobile ? '55vw' : 'calc(100vh - 130px)', minHeight: isMobile ? 260 : undefined, width: '100%' }} />
