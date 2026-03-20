@@ -186,7 +186,7 @@ export default function MapPage() {
 
       // שירותים עם מיקום שסומנו כ"איזוריים" — יוצגו גם בנקודות מרכז המחוז
       rehabServices.filter(s =>
-        s.lat && s.is_regional &&
+        s.is_regional &&
         ((s.districts && s.districts.length > 0) || s.district) &&
         (rehabCategory === 'הכל' || s.category === rehabCategory || (s.categories || []).includes(rehabCategory)) &&
         (district === 'הכל' || (s.districts || []).includes(district) || s.district === district) &&
@@ -246,7 +246,7 @@ export default function MapPage() {
 
       // שירותי טיפול עם מיקום שסומנו כ"איזוריים"
       treatmentServices.filter(s =>
-        s.lat && s.is_regional &&
+        s.is_regional &&
         ((s.districts && s.districts.length > 0) || s.district) &&
         (treatmentCategory === 'הכל' || s.category === treatmentCategory) &&
         (district === 'הכל' || (s.districts || []).includes(district) || s.district === district) &&
