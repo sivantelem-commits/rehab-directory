@@ -250,7 +250,7 @@ export default function Rehab() {
           </div>
         )}
 
-        {/* פילטרים נוספים — גיל / אבחנה / אוכלוסייה */}
+        {/* פילטרים נוספים - גיל / אבחנה / אוכלוסייה */}
         <div style={{ background: '#fdf8ff', borderBottom: '1px solid #ede0f8' }}>
           {/* כפתור פתיחה */}
           <div style={{ padding: '8px 16px', display: 'flex', alignItems: 'center', gap: 8 }}>
