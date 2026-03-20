@@ -4,7 +4,8 @@ import { CATEGORIES, CATEGORY_NAMES } from '../lib/categories'
 
 const DISTRICTS = ['צפון', 'חיפה', 'מרכז', 'תל אביב', 'ירושלים', 'דרום', 'יהודה ושומרון']
 const TREATMENT_CATEGORIES = ['בתים מאזנים', 'מחלקות אשפוז', 'מרפאות יום', 'חדרי מיון', 'שירותים נוספים']
-const AGE_GROUPS = ['ילדים', 'נוער', 'מבוגרים', 'קשישים']
+const AGE_GROUPS_REHAB = ['צעירים', 'מבוגרים', 'קשישים']
+const AGE_GROUPS_TREATMENT = ['ילדים', 'נוער', 'צעירים', 'מבוגרים', 'קשישים']
 const DIAGNOSES = ['הפרעות אכילה', 'OCD', 'פוסט טראומה', 'פוסט טראומה מורכבת', 'התמכרויות']
 const POPULATIONS = ['נשים', 'דתי/מסורתי', 'חרדי', 'להט"ב']
 
@@ -361,7 +362,7 @@ export default function Register() {
                   <span style={{ fontWeight: 400, color: '#9ca3af', marginRight: 6 }}>(אופציונלי)</span>
                 </label>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-                  {AGE_GROUPS.map(ag => {
+                  {(tab === 'rehab' ? AGE_GROUPS_REHAB : AGE_GROUPS_TREATMENT).map(ag => {
                     const selected = (form.age_groups || []).includes(ag)
                     return (
                       <button key={ag} type="button" onClick={() => toggleField('age_groups', ag)} style={{
