@@ -95,6 +95,7 @@ export default function Home() {
             ['/about', 'אודות'],
             ['/contact', 'צור קשר'],
             ['/legal', 'תנאי שימוש'],
+            ['/accessibility', 'הצהרת נגישות'],
           ].map(([href, label]) => (
             <a key={href} href={href} style={{ fontSize: 13, fontWeight: 600, color: '#9b88bb', textDecoration: 'none', padding: '4px 0' }}>{label}</a>
           ))}
