@@ -29,16 +29,15 @@ export default async function handler(req, res) {
   }
 
   if (age_group) {
-    // הצג שירות אם: סימן את הגיל המבוקש, או לא סימן גיל בכלל
-    query = query.or(`age_groups.cs.{${age_group}},age_groups.eq.{}`)
+    query = query.contains('age_groups', [age_group])
   }
 
   if (diagnosis) {
-    query = query.or(`diagnoses.cs.{${diagnosis}},diagnoses.eq.{}`)
+    query = query.contains('diagnoses', [diagnosis])
   }
 
   if (population) {
-    query = query.or(`populations.cs.{${population}},populations.eq.{}`)
+    query = query.contains('populations', [population])
   }
 
   if (search) {
