@@ -6,7 +6,7 @@ import { CATEGORIES, CATEGORY_NAMES } from '../lib/categories'
 import { BasketPanel } from '../components/ServiceBasket'
 
 const DISTRICTS = ['הכל', 'צפון', 'חיפה', 'מרכז', 'תל אביב', 'ירושלים', 'דרום', 'יהודה ושומרון', '🌍 ארצי']
-const AGE_GROUPS = ['ילדים', 'נוער', 'מבוגרים', 'קשישים']
+const AGE_GROUPS = ['צעירים', 'מבוגרים', 'קשישים']
 const DIAGNOSES = ['הפרעות אכילה', 'OCD', 'פוסט טראומה', 'פוסט טראומה מורכבת', 'התמכרויות']
 const POPULATIONS = ['נשים', 'דתי/מסורתי', 'חרדי', 'להט"ב']
 
@@ -152,6 +152,7 @@ export default function Rehab() {
               <div style={{ fontSize: 11, opacity: 0.8 }}>שירותי שיקום בקהילה</div>
             </div>
           </div>
+          <a href="/calculator" style={{ background: 'rgba(255,255,200,0.18)', border: '1.5px solid rgba(255,255,150,0.5)', color: 'white', borderRadius: '999px', padding: '8px 18px', fontWeight: 800, fontSize: 13, textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 6, whiteSpace: 'nowrap' }}>🧭 מחשבון מסלול</a>
           <nav style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
             {[['/', 'ראשי'], ['/rehab', 'שיקום'], ['/treatment', 'טיפול'], ['/map', 'מפה'], ['/guide', 'מדריך'], ['/register', 'הוספת שירות'], ['/about', 'אודות'], ['/contact', 'צור קשר'], ['/admin', 'ניהול']].map(([href, label]) => (
               <a key={href} href={href} style={{
