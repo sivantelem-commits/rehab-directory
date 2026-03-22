@@ -123,9 +123,20 @@ export default function MapPage() {
     return () => window.removeEventListener('resize', check)
   }, [])
 
+  const ADULT_AGES = ['צעירים', 'מבוגרים', 'קשישים']
+
+  // סינון שירותים שמיועדים אך ורק לילדים/נוער (לא לבוגרים בכלל)
+  function filterAdultsOnly(services) {
+    return services.filter(s => {
+      const ages = s.age_groups || []
+      if (ages.length === 0) return true // ללא הגבלת גיל - מוצג
+      return ages.some(a => ADULT_AGES.includes(a)) // יש לפחות גיל בוגר אחד
+    })
+  }
+
   useEffect(() => {
-    fetch('/api/services').then(r => r.json()).then(data => setRehabServices(Array.isArray(data) ? data : []))
-    fetch('/api/treatment').then(r => r.json()).then(data => setTreatmentServices(Array.isArray(data) ? data : []))
+    fetch('/api/services').then(r => r.json()).then(data => setRehabServices(filterAdultsOnly(Array.isArray(data) ? data : [])))
+    fetch('/api/treatment').then(r => r.json()).then(data => setTreatmentServices(filterAdultsOnly(Array.isArray(data) ? data : [])))
   }, [])
 
   useEffect(() => {
@@ -426,7 +437,10 @@ export default function MapPage() {
             <div>
               <div style={{ fontSize: 11, fontWeight: 700, color: '#9b88bb', marginBottom: 5 }}>קבוצת גיל</div>
               <div style={{ display: 'flex', gap: 5, flexWrap: 'wrap' }}>
-                {['ילדים', 'נוער', 'צעירים', 'מבוגרים', 'קשישים'].map(ag => (
+                {(showTreatment && !showRehab
+                  ? ['ילדים', 'נוער', 'צעירים', 'מבוגרים', 'קשישים']
+                  : ['צעירים', 'מבוגרים', 'קשישים']
+                ).map(ag => (
                   <button key={ag} onClick={() => setAgeGroup(ageGroup === ag ? '' : ag)} style={{
                     padding: '5px 12px', borderRadius: '999px', fontSize: 12, fontWeight: 600,
                     border: `1.5px solid ${ageGroup === ag ? '#6B21A8' : '#ddd'}`,
