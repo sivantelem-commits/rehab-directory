@@ -137,8 +137,25 @@ export default function Register() {
         <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
       </Head>
 
-      <div dir="rtl" style={{ fontFamily: "'Nunito', sans-serif", minHeight: '100vh', background: isRehab ? '#f7f0ff' : '#f0faff' }}>
+      <div dir="rtl" style={{ fontFamily: "'Nunito', sans-serif", minHeight: '100vh', background: isRehab ? '#f7f0ff' : '#f0faff', position: 'relative' }}>
 
+        <a href="#main-content" style={{
+            position: 'absolute',
+            top: '-40px',
+            right: 0,
+            background: '#2E0060',
+            color: 'white',
+            padding: '8px 16px',
+            borderRadius: '0 0 8px 8px',
+            fontWeight: 700,
+            fontSize: 14,
+            textDecoration: 'none',
+            zIndex: 9999,
+            transition: 'top 0.2s'
+          }}
+          onFocus={e => e.currentTarget.style.top = '0'}
+          onBlur={e => e.currentTarget.style.top = '-40px'}
+        >דלג לתוכן הראשי</a>
         <header style={{
           background: `linear-gradient(135deg, ${darkColor}, ${color})`,
           color: 'white', padding: '10px 20px',
@@ -146,13 +163,13 @@ export default function Register() {
           boxShadow: '0 2px 12px rgba(0,0,0,0.15)', flexWrap: 'wrap', gap: 8,
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-            <img src="/logo.png" alt="לוגו" style={{ width: 44, height: 44, objectFit: 'contain', filter: 'brightness(0) invert(1)' }} />
+            <img src="/logo.png" alt="בריאות נפש בישראל" style={{ width: 44, height: 44, objectFit: 'contain', filter: 'brightness(0) invert(1)' }} />
             <div>
               <div style={{ fontWeight: 800, fontSize: 18 }}>בריאות נפש בישראל</div>
               <div style={{ fontSize: 11, opacity: 0.8 }}>הוספת שירות</div>
             </div>
           </div>
-          <nav style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+          <nav aria-label="ניווט ראשי" style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
             {NAV.map(([href, label]) => (
               <a key={href} href={href} style={{
                 color: 'white',
@@ -174,7 +191,7 @@ export default function Register() {
           <p style={{ fontSize: 14, opacity: 0.85, margin: 0 }}>לאחר אישור האדמין השירות יופיע במאגר</p>
         </div>
 
-        <main style={{ maxWidth: 620, margin: '0 auto', padding: '28px 16px' }}>
+        <main id="main-content" style={{ maxWidth: 620, margin: '0 auto', padding: '28px 16px' }}>
 
           {/* טאב שיקום/טיפול */}
           <div style={{
