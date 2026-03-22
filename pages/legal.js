@@ -13,17 +13,34 @@ export default function Legal() {
         <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
       </Head>
 
-      <div dir="rtl" style={{ fontFamily: "'Nunito', sans-serif", minHeight: '100vh', background: '#F0F7FF' }}>
+      <div dir="rtl" style={{ fontFamily: "'Nunito', sans-serif", minHeight: '100vh', background: '#F0F7FF', position: 'relative' }}>
+        <a href="#main-content" style={{
+            position: 'absolute',
+            top: '-40px',
+            right: 0,
+            background: '#1A3A5C',
+            color: 'white',
+            padding: '8px 16px',
+            borderRadius: '0 0 8px 8px',
+            fontWeight: 700,
+            fontSize: 14,
+            textDecoration: 'none',
+            zIndex: 9999,
+            transition: 'top 0.2s'
+          }}
+          onFocus={e => e.currentTarget.style.top = '0'}
+          onBlur={e => e.currentTarget.style.top = '-40px'}
+        >דלג לתוכן הראשי</a>
 
         <header style={{ background: '#1A3A5C', color: 'white', padding: '10px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxShadow: '0 2px 12px rgba(0,0,0,0.15)', flexWrap: 'wrap', gap: 8 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-            <img src="/logo.png" alt="לוגו" style={{ width: 44, height: 44, objectFit: 'contain', filter: 'brightness(0) invert(1)' }} />
+            <img src="/logo.png" alt="בריאות נפש בישראל" style={{ width: 44, height: 44, objectFit: 'contain', filter: 'brightness(0) invert(1)' }} />
             <div>
               <div style={{ fontWeight: 800, fontSize: 18 }}>בריאות נפש בישראל</div>
               <div style={{ fontSize: 11, opacity: 0.75 }}>תנאי שימוש ופרטיות</div>
             </div>
           </div>
-          <nav style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+          <nav aria-label="ניווט ראשי" style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
             {NAV.map(([href, label]) => (
               <a key={href} href={href} style={{ color: 'white', background: 'rgba(255,255,255,0.12)', borderRadius: '999px', padding: '6px 14px', fontWeight: 600, fontSize: 12, border: '1.5px solid rgba(255,255,255,0.25)', textDecoration: 'none' }}>{label}</a>
             ))}
@@ -36,7 +53,7 @@ export default function Legal() {
           <p style={{ fontSize: 14, opacity: 0.8, margin: 0 }}>עודכן לאחרונה: מרץ 2026</p>
         </div>
 
-        <main style={{ maxWidth: 740, margin: '0 auto', padding: '40px 16px 64px' }}>
+        <main id="main-content" style={{ maxWidth: 740, margin: '0 auto', padding: '40px 16px 64px' }}>
 
           {/* תנאי שימוש */}
           <Section color="#1A3A5C" title="תנאי שימוש">
