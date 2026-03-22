@@ -83,6 +83,8 @@ export default function About() {
             <a href="/contact" style={{ color: 'rgba(255,255,255,0.7)', textDecoration: 'none' }}>צור קשר</a>
             <span style={{ margin: '0 8px', opacity: 0.4 }}>·</span>
             <a href="/legal" style={{ color: 'rgba(255,255,255,0.7)', textDecoration: 'none' }}>תנאי שימוש</a>
+            <span style={{ margin: '0 8px', opacity: 0.4 }}>·</span>
+            <a href="/accessibility" style={{ color: 'rgba(255,255,255,0.7)', textDecoration: 'none' }}>הצהרת נגישות</a>
           </div>
           בריאות נפש בישראל © {new Date().getFullYear()}
         </footer>
