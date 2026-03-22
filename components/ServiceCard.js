@@ -1,6 +1,6 @@
 import { getCategoryColor } from '../lib/categories'
 import { BasketButton } from './ServiceBasket'
-const TREATMENT_CATEGORIES = ['בתים מאזנים', 'מחלקות אשפוז', 'מרפאות יום', 'חדרי מיון', 'אשפוז בית', 'שירותים נוספים']
+const TREATMENT_CATEGORIES = ['בתים מאזנים', 'מחלקות אשפוז', 'מרפאות יום', 'מרפאות בריאות נפש', 'חדרי מיון', 'אשפוז בית', 'שירותים נוספים']
 const TREATMENT_COLOR = '#0891B2'
 export default function ServiceCard({ service }) {
   const isTreatment = TREATMENT_CATEGORIES.includes(service.category)
