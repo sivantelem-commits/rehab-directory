@@ -4,7 +4,7 @@ export default function Document() {
     <Html lang="he" dir="rtl">
       <Head>
         <meta charSet="utf-8" />
-        <meta name="theme-color" content="#1A3A5C" />
+        <meta name="theme-color" content="#2E0060" />
         <meta name="robots" content="index, follow" />
         <meta name="description" content="הנגשת בריאות הנפש בישראל – מצאו שירותי שיקום וטיפול לפי אזור" />
         <meta property="og:type" content="website" />
@@ -15,7 +15,18 @@ export default function Document() {
         <meta name="twitter:card" content="summary" />
         <meta name="twitter:title" content="בריאות נפש בישראל" />
         <meta name="twitter:description" content="הנגשת בריאות הנפש בישראל – מצאו שירותי שיקום וטיפול לפי אזור" />
-        <link rel="icon" href="/logo.png" />
+
+        {/* PWA */}
+        <link rel="manifest" href="/manifest.json" />
+        <meta name="application-name" content="בריאות נפש בישראל" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <meta name="apple-mobile-web-app-title" content="בריאות נפש" />
+        <meta name="mobile-web-app-capable" content="yes" />
+        <link rel="apple-touch-icon" href="/icon-180.png" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/icon-32.png" />
+        <link rel="icon" type="image/png" sizes="16x16" href="/icon-16.png" />
+
         {/* Google Analytics */}
         <script async src="https://www.googletagmanager.com/gtag/js?id=G-CL2BJ9Q4X3" />
         <script dangerouslySetInnerHTML={{ __html: `
@@ -23,6 +34,15 @@ export default function Document() {
           function gtag(){dataLayer.push(arguments);}
           gtag('js', new Date());
           gtag('config', 'G-CL2BJ9Q4X3');
+        `}} />
+
+        {/* Service Worker */}
+        <script dangerouslySetInnerHTML={{ __html: `
+          if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+              navigator.serviceWorker.register('/sw.js');
+            });
+          }
         `}} />
       </Head>
       <body>
