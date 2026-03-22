@@ -24,9 +24,27 @@ export default function Home() {
         paddingTop: 24,
       }}>
 
+        <a href="#main-content" style={{
+            position: 'absolute',
+            top: '-40px',
+            right: 0,
+            background: '#3d2a6e',
+            color: 'white',
+            padding: '8px 16px',
+            borderRadius: '0 0 8px 8px',
+            fontWeight: 700,
+            fontSize: 14,
+            textDecoration: 'none',
+            zIndex: 9999,
+            transition: 'top 0.2s'
+          }}
+          onFocus={e => e.currentTarget.style.top = '0'}
+          onBlur={e => e.currentTarget.style.top = '-40px'}
+        >דלג לתוכן הראשי</a>
+        <main id="main-content">
         {/* כותרת */}
         <div style={{ textAlign: 'center', marginBottom: 28, marginTop: 16 }}>
-          <img src="/logo.png" alt="לוגו" style={{ width: 'min(160px, 40vw)', height: 'min(160px, 40vw)', objectFit: 'contain', marginBottom: 8, mixBlendMode: 'multiply' }} />
+          <img src="/logo.png" alt="בריאות נפש בישראל" style={{ width: 'min(160px, 40vw)', height: 'min(160px, 40vw)', objectFit: 'contain', marginBottom: 8, mixBlendMode: 'multiply' }} />
           <h1 style={{ fontSize: 'clamp(22px, 6vw, 32px)', fontWeight: 800, color: '#3d2a6e', margin: '0 0 10px', letterSpacing: '-0.3px' }}>
             בריאות נפש בישראל
           </h1>
@@ -88,6 +106,8 @@ export default function Home() {
           <br/>
           <a href="/register" style={{ color: '#8B00D4', fontWeight: 700, textDecoration: 'none' }}>הוספת שירות ←</a>
         </div>
+
+        </main>
 
         {/* קישורים תחתונים */}
         <div style={{ display: 'flex', gap: 16, marginTop: 24, justifyContent: 'center', flexWrap: 'wrap' }}>
