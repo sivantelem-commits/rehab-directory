@@ -20,7 +20,7 @@ export default async function handler(req, res) {
     age_groups: age_groups || [],
     diagnoses: diagnoses || [],
     populations: populations || [],
-    ...(table !== 'treatment' && { categories: categories || [] }),
+    categories: categories || [],
     updated_at: new Date().toISOString()
   }
   const { data, error } = await supabase.from(tableName).update(updates).eq('id', id).select().single()
