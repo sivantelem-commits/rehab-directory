@@ -262,9 +262,14 @@ export default function Treatment() {
                   >
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 10 }}>
                       <div style={{ fontWeight: 700, fontSize: 16, color: '#3a1a0a', flex: 1 }}>{s.name}</div>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                        <BasketButton service={{ ...s, type: 'treatment' }} />
-                        <span style={{ background: cat.color, color: 'white', borderRadius: '999px', padding: '3px 12px', fontSize: 11, fontWeight: 700, whiteSpace: 'nowrap', marginRight: 8 }}>{s.category}</span>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: 4, alignItems: 'flex-end' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                          <BasketButton service={{ ...s, type: 'treatment' }} />
+                          <span style={{ background: cat.color, color: 'white', borderRadius: '999px', padding: '3px 12px', fontSize: 11, fontWeight: 700, whiteSpace: 'nowrap' }}>{s.category}</span>
+                        </div>
+                        {(s.categories || []).filter(c => c && c !== s.category).map(c => (
+                          <span key={c} style={{ background: `${COLOR}22`, color: COLOR, borderRadius: '999px', padding: '2px 8px', fontSize: 10, fontWeight: 600, whiteSpace: 'nowrap' }}>+ {c}</span>
+                        ))}
                       </div>
                     </div>
                     <div style={{ fontSize: 13, color: '#aaa', marginBottom: 8, fontWeight: 500, display: 'flex', alignItems: 'center', gap: 6 }}>
