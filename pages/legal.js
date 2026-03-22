@@ -81,7 +81,7 @@ export default function Legal() {
 
         <footer style={{ background: '#1A3A5C', color: 'rgba(255,255,255,0.7)', textAlign: 'center', padding: '24px', fontSize: 13 }}>
           <div style={{ marginBottom: 8 }}>
-            {[['/', 'ראשי'], ['/rehab', 'שיקום'], ['/treatment', 'טיפול'], ['/about', 'אודות'], ['/contact', 'צור קשר'], ['/legal', 'תנאי שימוש']].map(([href, label], i, arr) => (
+            {[['/', 'ראשי'], ['/rehab', 'שיקום'], ['/treatment', 'טיפול'], ['/about', 'אודות'], ['/contact', 'צור קשר'], ['/legal', 'תנאי שימוש'], ['/accessibility', 'הצהרת נגישות']].map(([href, label], i, arr) => (
               <span key={href}>
                 <a href={href} style={{ color: 'rgba(255,255,255,0.7)', textDecoration: 'none' }}>{label}</a>
                 {i < arr.length - 1 && <span style={{ margin: '0 8px', opacity: 0.4 }}>·</span>}
