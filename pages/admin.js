@@ -768,7 +768,10 @@ export default function Admin() {
                 <div style={{ marginBottom: 14 }}>
                   <label style={{ display: 'block', fontSize: 13, fontWeight: 700, color: '#1A3A5C', marginBottom: 6 }}>קבוצות גיל</label>
                   <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-                    {['צעירים', 'מבוגרים', 'קשישים'].map(ag => {
+                    {(isTreatmentEdit
+                      ? ['ילדים', 'נוער', 'צעירים', 'מבוגרים', 'קשישים']
+                      : ['צעירים', 'מבוגרים', 'קשישים']
+                    ).map(ag => {
                       const sel = (editForm.age_groups || []).includes(ag)
                       return <button key={ag} type="button" onClick={() => toggleEditArray('age_groups', ag)} style={{ padding: '5px 14px', borderRadius: '999px', fontSize: 12, fontWeight: 700, cursor: 'pointer', border: `1.5px solid ${sel ? '#8B00D4' : '#d4b0f0'}`, background: sel ? '#8B00D4' : 'white', color: sel ? 'white' : '#555', fontFamily: 'inherit' }}>{ag}</button>
                     })}
@@ -797,19 +800,20 @@ export default function Admin() {
                   </div>
                 </div>
 
-                {/* קטגוריות נוספות - רק שיקום */}
-                {!isTreatmentEdit && (
-                  <div style={{ marginBottom: 14 }}>
-                    <label style={{ display: 'block', fontSize: 13, fontWeight: 700, color: '#1A3A5C', marginBottom: 6 }}>קטגוריות נוספות</label>
-                    <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-                      {CATEGORY_NAMES.filter(c => c !== editForm.category).map(cat => {
-                        const sel = (editForm.categories || []).includes(cat)
-                        const catColor = getCategoryColor(cat)
-                        return <button key={cat} type="button" onClick={() => toggleEditArray('categories', cat)} style={{ padding: '5px 14px', borderRadius: '999px', fontSize: 12, fontWeight: 700, cursor: 'pointer', border: `1.5px solid ${sel ? catColor : '#e0d0f0'}`, background: sel ? catColor : 'white', color: sel ? 'white' : catColor, fontFamily: 'inherit' }}>{cat}</button>
-                      })}
-                    </div>
+                {/* קטגוריות נוספות */}
+                <div style={{ marginBottom: 14 }}>
+                  <label style={{ display: 'block', fontSize: 13, fontWeight: 700, color: '#1A3A5C', marginBottom: 6 }}>קטגוריות נוספות</label>
+                  <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                    {(isTreatmentEdit
+                      ? TREATMENT_CATEGORIES.filter(c => c !== editForm.category)
+                      : CATEGORY_NAMES.filter(c => c !== editForm.category)
+                    ).map(cat => {
+                      const sel = (editForm.categories || []).includes(cat)
+                      const catColor = isTreatmentEdit ? '#0891B2' : getCategoryColor(cat)
+                      return <button key={cat} type="button" onClick={() => toggleEditArray('categories', cat)} style={{ padding: '5px 14px', borderRadius: '999px', fontSize: 12, fontWeight: 700, cursor: 'pointer', border: `1.5px solid ${sel ? catColor : (isTreatmentEdit ? '#a0d8e8' : '#e0d0f0')}`, background: sel ? catColor : 'white', color: sel ? 'white' : catColor, fontFamily: 'inherit' }}>{cat}</button>
+                    })}
                   </div>
-                )}
+                </div>
 
                 <div style={{ marginBottom: 14, background: '#f0f7ff', borderRadius: 12, padding: '12px 14px', border: '1.5px solid #c5d0f0' }}>
                   <label style={{ display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer' }}>
