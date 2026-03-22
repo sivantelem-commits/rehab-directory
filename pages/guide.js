@@ -25,8 +25,25 @@ export default function Guide() {
         <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
       </Head>
 
-      <div dir="rtl" style={{ fontFamily: "'Nunito', sans-serif", minHeight: '100vh', background: '#f7f3ff' }}>
+      <div dir="rtl" style={{ fontFamily: "'Nunito', sans-serif", minHeight: '100vh', background: '#f7f3ff', position: 'relative' }}>
 
+        <a href="#main-content" style={{
+            position: 'absolute',
+            top: '-40px',
+            right: 0,
+            background: '#2E0060',
+            color: 'white',
+            padding: '8px 16px',
+            borderRadius: '0 0 8px 8px',
+            fontWeight: 700,
+            fontSize: 14,
+            textDecoration: 'none',
+            zIndex: 9999,
+            transition: 'top 0.2s'
+          }}
+          onFocus={e => e.currentTarget.style.top = '0'}
+          onBlur={e => e.currentTarget.style.top = '-40px'}
+        >דלג לתוכן הראשי</a>
         <header style={{
           background: 'linear-gradient(135deg, #2E0060, #8B00D4)', color: 'white',
           padding: '10px 20px', display: 'flex', alignItems: 'center',
@@ -34,13 +51,13 @@ export default function Guide() {
           flexWrap: 'wrap', gap: 8,
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-            <img src="/logo.png" alt="לוגו" style={{ width: 44, height: 44, objectFit: 'contain', filter: 'brightness(0) invert(1)' }} />
+            <img src="/logo.png" alt="בריאות נפש בישראל" style={{ width: 44, height: 44, objectFit: 'contain', filter: 'brightness(0) invert(1)' }} />
             <div>
               <div style={{ fontWeight: 800, fontSize: 18 }}>בריאות נפש בישראל</div>
               <div style={{ fontSize: 11, opacity: 0.8 }}>מדריך למטופל</div>
             </div>
           </div>
-          <nav style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+          <nav aria-label="ניווט ראשי" style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
             {NAV.map(([href, label]) => (
               <a key={href} href={href} style={{
                 color: 'white',
@@ -58,7 +75,7 @@ export default function Guide() {
           background: 'linear-gradient(160deg, #2E0060, #8B00D4)',
           color: 'white', padding: '48px 20px', textAlign: 'center',
         }}>
-          <img src='/guide-logo.png' alt='מדריך' style={{ width: 220, height: 220, objectFit: 'contain', marginBottom: -40, filter: 'invert(1) brightness(10)' }} />
+          <img src='/guide-logo.png' alt='' role='presentation' style={{ width: 220, height: 220, objectFit: 'contain', marginBottom: -40, filter: 'invert(1) brightness(10)' }} />
           <h1 style={{ fontSize: 28, fontWeight: 800, margin: '0 0 10px' }}>מדריך למטופל</h1>
           <p style={{ fontSize: 15, opacity: 0.85, maxWidth: 560, margin: '0 auto', lineHeight: 1.8 }}>
             כל מה שצריך לדעת לפני שמתחילים - בשפה פשוטה וברורה
@@ -84,7 +101,7 @@ export default function Guide() {
           </div>
         </div>
 
-        <main style={{ maxWidth: 740, margin: '0 auto', padding: '32px 16px' }}>
+        <main id="main-content" style={{ maxWidth: 740, margin: '0 auto', padding: '32px 16px' }}>
 
           {/* 1 - שיקום vs טיפול */}
           <div id="diff">
