@@ -316,8 +316,8 @@ export default function Register() {
                 </div>
               )}
 
-              {/* קטגוריות נוספות - multi select */}
-              {isRehab && (
+              {/* קטגוריות נוספות */}
+              {isRehab ? (
                 <div style={{ marginBottom: 20 }}>
                   <label style={lbl}>
                     קטגוריות נוספות
@@ -328,29 +328,42 @@ export default function Register() {
                       const selected = (form.categories || []).includes(cat)
                       const catColor = CATEGORIES[cat]?.color || color
                       return (
-                        <button
-                          key={cat}
-                          type="button"
-                          onClick={() => toggleCategory(cat)}
-                          style={{
-                            padding: '6px 14px', borderRadius: '999px', fontSize: 13,
-                            fontWeight: 700, cursor: 'pointer',
-                            border: `2px solid ${selected ? catColor : '#e0d0f0'}`,
-                            background: selected ? catColor : 'white',
-                            color: selected ? 'white' : catColor,
-                            fontFamily: "'Nunito', sans-serif",
-                            transition: 'all 0.15s',
-                          }}
-                        >
-                          {cat}
-                        </button>
+                        <button key={cat} type="button" onClick={() => toggleCategory(cat)} style={{
+                          padding: '6px 14px', borderRadius: '999px', fontSize: 13, fontWeight: 700, cursor: 'pointer',
+                          border: `2px solid ${selected ? catColor : '#e0d0f0'}`,
+                          background: selected ? catColor : 'white',
+                          color: selected ? 'white' : catColor,
+                          fontFamily: "'Nunito', sans-serif", transition: 'all 0.15s',
+                        }}>{cat}</button>
                       )
                     })}
                   </div>
                   {(form.categories || []).length > 0 && (
-                    <div style={{ fontSize: 12, color: '#9b88bb', marginTop: 8, fontWeight: 600 }}>
-                      ✓ נבחרו: {form.categories.join(', ')}
-                    </div>
+                    <div style={{ fontSize: 12, color: '#9b88bb', marginTop: 8, fontWeight: 600 }}>✓ נבחרו: {form.categories.join(', ')}</div>
+                  )}
+                </div>
+              ) : (
+                <div style={{ marginBottom: 20 }}>
+                  <label style={lbl}>
+                    קטגוריות נוספות
+                    <span style={{ fontWeight: 400, color: '#9ca3af', marginRight: 6 }}>(אופציונלי - אם השירות עוסק בכמה תחומים)</span>
+                  </label>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                    {TREATMENT_CATEGORIES.filter(c => c !== form.category).map(cat => {
+                      const selected = (form.categories || []).includes(cat)
+                      return (
+                        <button key={cat} type="button" onClick={() => toggleCategory(cat)} style={{
+                          padding: '6px 14px', borderRadius: '999px', fontSize: 13, fontWeight: 700, cursor: 'pointer',
+                          border: `2px solid ${selected ? '#0891B2' : '#a0d8e8'}`,
+                          background: selected ? '#0891B2' : 'white',
+                          color: selected ? 'white' : '#0891B2',
+                          fontFamily: "'Nunito', sans-serif", transition: 'all 0.15s',
+                        }}>{cat}</button>
+                      )
+                    })}
+                  </div>
+                  {(form.categories || []).length > 0 && (
+                    <div style={{ fontSize: 12, color: '#0891B2', marginTop: 8, fontWeight: 600 }}>✓ נבחרו: {form.categories.join(', ')}</div>
                   )}
                 </div>
               )}
