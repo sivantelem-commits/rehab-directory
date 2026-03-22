@@ -4,7 +4,7 @@ import Head from 'next/head'
 import { BasketPanel, BasketButton } from '../components/ServiceBasket'
 
 const DISTRICTS = ['צפון', 'חיפה', 'מרכז', 'תל אביב', 'ירושלים', 'דרום', 'יהודה ושומרון']
-const AGE_GROUPS = ['צעירים', 'מבוגרים', 'קשישים']
+const AGE_GROUPS = ['ילדים', 'נוער', 'צעירים', 'מבוגרים', 'קשישים']
 const DIAGNOSES = ['הפרעות אכילה', 'OCD', 'פוסט טראומה', 'פוסט טראומה מורכבת', 'התמכרויות']
 const POPULATIONS = ['נשים', 'דתי/מסורתי', 'חרדי', 'להט"ב']
 
