@@ -83,8 +83,41 @@ export default function TreatmentServicePage() {
         <meta property="og:title" content={`${service.name} – ${service.city} | בריאות נפש בישראל`} />
         <meta property="og:description" content={pageDesc} />
         <meta property="og:url" content={pageUrl} />
+        <meta property="og:image" content={`${BASE_URL}/icon-512.png`} />
+        <meta property="og:image:width" content="512" />
+        <meta property="og:image:height" content="512" />
         <meta property="og:locale" content="he_IL" />
         <meta property="og:site_name" content="בריאות נפש בישראל" />
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:image" content={`${BASE_URL}/icon-512.png`} />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "MedicalOrganization",
+              "name": service.name,
+              "description": service.description || undefined,
+              "medicalSpecialty": "Psychiatry",
+              "address": {
+                "@type": "PostalAddress",
+                "addressLocality": service.city,
+                "addressRegion": service.district || undefined,
+                "addressCountry": "IL"
+              },
+              "telephone": service.phone || undefined,
+              "email": service.email || undefined,
+              "url": service.website || pageUrl,
+            },
+            {
+              "@type": "BreadcrumbList",
+              "itemListElement": [
+                { "@type": "ListItem", "position": 1, "name": "בריאות נפש בישראל", "item": BASE_URL },
+                { "@type": "ListItem", "position": 2, "name": "שירותי טיפול", "item": `${BASE_URL}/treatment` },
+                { "@type": "ListItem", "position": 3, "name": service.name, "item": pageUrl },
+              ]
+            }
+          ]
+        }) }} />
         <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
       </Head>
       <div dir="rtl" style={{ fontFamily: "'Nunito', sans-serif", minHeight: '100vh', background: '#f0faff' }}>
