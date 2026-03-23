@@ -112,7 +112,7 @@ export default function Rehab() {
   if (!mounted) return null
 
   const filterBtn = (label, active, onClick, color = '#8B00D4') => (
-    <button key={label} onClick={onClick} style={{
+    <button key={label} onClick={onClick} aria-pressed={active} style={{
       padding: '6px 14px', borderRadius: '999px', fontSize: 12, fontWeight: 600,
       border: `1.5px solid ${active ? color : '#e0d0f0'}`,
       background: active ? color : 'white',
@@ -132,8 +132,24 @@ export default function Rehab() {
         <meta property="og:title" content="שירותי שיקום בקהילה | בריאות נפש בישראל" />
         <meta property="og:description" content="מאגר שירותי סל שיקום בקהילה – דיור, תעסוקה, השכלה וליווי לפי אזור בישראל." />
         <meta property="og:url" content="https://rehabdirectoryil.vercel.app/rehab" />
+        <meta property="og:image" content="https://rehabdirectoryil.vercel.app/icon-512.png" />
+        <meta property="og:image:width" content="512" />
+        <meta property="og:image:height" content="512" />
         <meta property="og:locale" content="he_IL" />
         <meta property="og:site_name" content="בריאות נפש בישראל" />
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:image" content="https://rehabdirectoryil.vercel.app/icon-512.png" />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+          '@context': 'https://schema.org',
+          '@type': 'MedicalWebPage',
+          name: 'שירותי שיקום בקהילה',
+          url: 'https://rehabdirectoryil.vercel.app/rehab',
+          description: 'מאגר שירותי סל שיקום בקהילה – דיור, תעסוקה, השכלה וליווי לפי אזור בישראל.',
+          inLanguage: 'he',
+          about: { '@type': 'MedicalCondition', name: 'שיקום נפשי' },
+          audience: { '@type': 'Patient' },
+          isPartOf: { '@type': 'WebSite', name: 'בריאות נפש בישראל', url: 'https://rehabdirectoryil.vercel.app' },
+        })}} />
         <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
       </Head>
 
