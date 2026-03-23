@@ -35,7 +35,7 @@ export default function Document() {
           window.dataLayer = window.dataLayer || [];
           function gtag(){dataLayer.push(arguments);}
           gtag('js', new Date());
-          gtag('config', 'G-CL2BJ9Q4X3');
+          gtag('config', 'G-CL2BJ9Q4X3', { anonymize_ip: true });
         `}} />
 
         {/* Service Worker */}
