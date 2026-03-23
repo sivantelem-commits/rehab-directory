@@ -42,11 +42,15 @@ export default async function handler(req, res) {
   }
 
   if (age_group) {
-    query = query.contains('age_groups', [age_group])
+    const ags = Array.isArray(age_group) ? age_group : [age_group]
+    const orClauses = ags.map(ag => `age_groups.cs.{${ag}}`).join(',')
+    query = query.or(orClauses)
   }
 
   if (diagnosis) {
-    query = query.contains('diagnoses', [diagnosis])
+    const diags = Array.isArray(diagnosis) ? diagnosis : [diagnosis]
+    const orClauses = diags.map(d => `diagnoses.cs.{${d}}`).join(',')
+    query = query.or(orClauses)
   }
 
   if (population) {
