@@ -4,8 +4,8 @@ import { CATEGORIES, CATEGORY_NAMES, getCategoryColor } from '../lib/categories'
 import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts'
 
 const DISTRICTS = ['צפון', 'חיפה', 'מרכז', 'תל אביב', 'ירושלים', 'דרום', 'יהודה ושומרון']
-const TREATMENT_CATEGORIES = ['בתים מאזנים', 'מחלקות אשפוז', 'מרפאות יום', 'מרפאות בריאות נפש', 'חדרי מיון', 'אשפוז בית', 'שירותים נוספים']
-const TREATMENT_COLORS = { 'בתים מאזנים': '#0A3040', 'מחלקות אשפוז': '#0A6080', 'מרפאות יום': '#0891B2', 'מרפאות בריאות נפש': '#0284C7', 'חדרי מיון': '#06B6D4', 'אשפוז בית': '#0E7490', 'שירותים נוספים': '#0A6080' }
+const TREATMENT_CATEGORIES = ['בתים מאזנים', 'מחלקות אשפוז', 'טיפול יום', 'מרפאות בריאות נפש', 'חדרי מיון', 'אשפוז בית', 'שירותים נוספים']
+const TREATMENT_COLORS = { 'בתים מאזנים': '#0A3040', 'מחלקות אשפוז': '#0A6080', 'טיפול יום': '#0891B2', 'מרפאות בריאות נפש': '#0284C7', 'חדרי מיון': '#06B6D4', 'אשפוז בית': '#0E7490', 'שירותים נוספים': '#0A6080' }
 
 const CATEGORY_BG_COLORS = {
   'דיור': 'FFF3E5F5', 'תעסוקה': 'FFFFF3E0', 'השכלה': 'FFE3F2FD',
@@ -322,7 +322,7 @@ export default function Admin() {
       ]
       const CAT_COLORS = {
         'בתים מאזנים': { bg: 'FFE3F2FD', text: 'FF0891B2' }, 'מחלקות אשפוז': { bg: 'FFF3E5F5', text: 'FF7B2D8B' },
-        'מרפאות יום': { bg: 'FFE8F5E9', text: 'FF164E63' }, 'מרפאות בריאות נפש': { bg: 'FFE0F2FE', text: 'FF0284C7' }, 'חדרי מיון': { bg: 'FFFFEBEE', text: 'FFC62828' },
+        'טיפול יום': { bg: 'FFE8F5E9', text: 'FF164E63' }, 'מרפאות בריאות נפש': { bg: 'FFE0F2FE', text: 'FF0284C7' }, 'חדרי מיון': { bg: 'FFFFEBEE', text: 'FFC62828' },
       }
       const headerRow = ws.getRow(1)
       headerRow.height = 28
