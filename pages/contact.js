@@ -127,6 +127,7 @@ export default function Contact() {
         </div>
 
         <main id="main-content" style={{ maxWidth: 620, margin: '0 auto', padding: '40px 16px 64px' }}>
+          <div role="status" aria-live="polite" aria-atomic="true">
           {sent ? (
             <div style={{ background: 'white', borderRadius: 20, padding: '52px 32px', textAlign: 'center', boxShadow: '0 4px 24px rgba(26,58,92,0.1)', border: '1.5px solid #C5D0F0' }}>
               <div style={{ fontSize: 56, marginBottom: 16 }}>🎉</div>
@@ -137,7 +138,7 @@ export default function Contact() {
           ) : (
             <div style={{ background: 'white', borderRadius: 20, padding: '32px 28px', boxShadow: '0 4px 24px rgba(26,58,92,0.1)', border: '1.5px solid #C5D0F0' }}>
               <div style={{ marginBottom: 22 }}>
-                <label style={{ display: 'block', fontSize: 13, fontWeight: 700, color: '#1A3A5C', marginBottom: 10 }}><label htmlFor="inquiry-type" style={{ fontWeight: 700, fontSize: 14, color: '#1A3A5C', marginBottom: 6, display: 'block' }}>סוג הפנייה *</label></label>
+                <label htmlFor="inquiry-type" style={{ display: 'block', fontSize: 13, fontWeight: 700, color: '#1A3A5C', marginBottom: 10 }}>סוג הפנייה *</label>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                   {TYPES.map(t => (
                     <label key={t.value} style={{
@@ -154,24 +155,24 @@ export default function Contact() {
 
               {needsServiceName && (
                 <div style={{ marginBottom: 18 }}>
-                  <label style={{ display: 'block', fontSize: 13, fontWeight: 700, color: '#1A3A5C', marginBottom: 6 }}>שם השירות</label>
-                  <input type="text" placeholder="לדוגמה: מרכז שיקום ירושלים" value={serviceName} onChange={e => setServiceName(e.target.value)} style={inp} />
+                  <label htmlFor="service-name" style={{ display: 'block', fontSize: 13, fontWeight: 700, color: '#1A3A5C', marginBottom: 6 }}>שם השירות</label>
+                  <input id="service-name" type="text" placeholder="לדוגמה: מרכז שיקום ירושלים" value={serviceName} onChange={e => setServiceName(e.target.value)} style={inp} />
                 </div>
               )}
 
               <div style={{ marginBottom: 18 }}>
-                <label style={{ display: 'block', fontSize: 13, fontWeight: 700, color: '#1A3A5C', marginBottom: 6 }}>שם (אופציונלי)</label>
-                <input type="text" placeholder="השם שלכם" value={name} onChange={e => setName(e.target.value)} style={inp} />
+                <label htmlFor="contact-name" style={{ display: 'block', fontSize: 13, fontWeight: 700, color: '#1A3A5C', marginBottom: 6 }}>שם (אופציונלי)</label>
+                <input id="contact-name" type="text" placeholder="השם שלכם" value={name} onChange={e => setName(e.target.value)} style={inp} />
               </div>
 
               <div style={{ marginBottom: 18 }}>
-                <label style={{ display: 'block', fontSize: 13, fontWeight: 700, color: '#1A3A5C', marginBottom: 6 }}>מייל לחזרה (אופציונלי)</label>
-                <input type="email" placeholder="your@email.com" value={email} onChange={e => setEmail(e.target.value)} style={inp} />
+                <label htmlFor="contact-email" style={{ display: 'block', fontSize: 13, fontWeight: 700, color: '#1A3A5C', marginBottom: 6 }}>מייל לחזרה (אופציונלי)</label>
+                <input id="contact-email" type="email" placeholder="your@email.com" value={email} onChange={e => setEmail(e.target.value)} style={inp} />
               </div>
 
               <div style={{ marginBottom: 24 }}>
-                <label style={{ display: 'block', fontSize: 13, fontWeight: 700, color: '#1A3A5C', marginBottom: 6 }}>הודעה *</label>
-                <textarea placeholder="כתבו כאן את ההודעה שלכם..." value={message} onChange={e => setMessage(e.target.value)} rows={5} style={{ ...inp, resize: 'vertical', borderRadius: 14, lineHeight: 1.6 }} />
+                <label htmlFor="contact-message" style={{ display: 'block', fontSize: 13, fontWeight: 700, color: '#1A3A5C', marginBottom: 6 }}>הודעה *</label>
+                <textarea id="contact-message" aria-required="true" placeholder="כתבו כאן את ההודעה שלכם..." value={message} onChange={e => setMessage(e.target.value)} rows={5} style={{ ...inp, resize: 'vertical', borderRadius: 14, lineHeight: 1.6 }} />
               </div>
 
               {error && (
@@ -187,6 +188,7 @@ export default function Contact() {
               </button>
             </div>
           )}
+          </div>
         </main>
 
         <footer style={{ background: '#1A3A5C', color: 'rgba(255,255,255,0.7)', textAlign: 'center', padding: '24px', fontSize: 13 }}>
