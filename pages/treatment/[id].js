@@ -5,7 +5,7 @@ import Head from 'next/head'
 const CATEGORIES = {
   'בתים מאזנים': { color: '#0A3040', icon: '🏠' },
   'מחלקות אשפוז': { color: '#1565A8', icon: '🏥' },
-  'מרפאות יום': { color: '#0891B2', icon: '☀️' },
+  'טיפול יום': { color: '#0891B2', icon: '☀️' },
   'מרפאות בריאות נפש': { color: '#0284C7', icon: '🏨' },
   'חדרי מיון': { color: '#06B6D4', icon: '🚨' },
   'שירותים נוספים': { color: '#0A6080', icon: '➕' },
