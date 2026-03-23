@@ -14,7 +14,24 @@ export default function Custom404() {
         <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
       </Head>
 
-      <div dir="rtl" style={{ fontFamily: "'Nunito', sans-serif", minHeight: '100vh', background: '#F8F9FF', display: 'flex', flexDirection: 'column' }}>
+      <div dir="rtl" style={{ fontFamily: "'Nunito', sans-serif", minHeight: '100vh', background: '#F8F9FF', display: 'flex', flexDirection: 'column', position: 'relative' }}>
+        <a href="#main-content" style={{
+            position: 'absolute',
+            top: '-40px',
+            right: 0,
+            background: '#1A3A5C',
+            color: 'white',
+            padding: '8px 16px',
+            borderRadius: '0 0 8px 8px',
+            fontWeight: 700,
+            fontSize: 14,
+            textDecoration: 'none',
+            zIndex: 9999,
+            transition: 'top 0.2s'
+          }}
+          onFocus={e => e.currentTarget.style.top = '0'}
+          onBlur={e => e.currentTarget.style.top = '-40px'}
+        >דלג לתוכן הראשי</a>
 
         <header style={{
           background: '#1A3A5C', color: 'white', padding: '10px 20px',
@@ -22,10 +39,10 @@ export default function Custom404() {
           boxShadow: '0 2px 12px rgba(0,0,0,0.15)', flexWrap: 'wrap', gap: 8,
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-            <img src="/logo.png" alt="לוגו" style={{ width: 44, height: 44, objectFit: 'contain', filter: 'brightness(0) invert(1)' }} />
+            <img src="/logo.png" alt="בריאות נפש בישראל" style={{ width: 44, height: 44, objectFit: 'contain', filter: 'brightness(0) invert(1)' }} />
             <div style={{ fontWeight: 800, fontSize: 18 }}>בריאות נפש בישראל</div>
           </div>
-          <nav style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+          <nav aria-label="ניווט ראשי" style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
             {NAV.map(([href, label]) => (
               <a key={href} href={href} style={{
                 color: 'white', background: 'rgba(255,255,255,0.1)', borderRadius: '999px',
@@ -37,13 +54,13 @@ export default function Custom404() {
         </header>
 
         {/* תוכן מרכזי */}
-        <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '40px 16px' }}>
+        <main id="main-content" style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '40px 16px' }}>
           <div style={{ textAlign: 'center', maxWidth: 480 }}>
 
             {/* לוגו */}
             <img
               src="/logo.png"
-              alt="לוגו"
+              alt="בריאות נפש בישראל"
               style={{ width: 90, height: 90, objectFit: 'contain', marginBottom: 24, opacity: 0.85 }}
             />
 
@@ -107,12 +124,17 @@ export default function Custom404() {
             </div>
 
           </div>
-        </div>
+        </main>
 
         <footer style={{
           background: '#1A3A5C', color: 'rgba(255,255,255,0.7)',
           textAlign: 'center', padding: '20px', fontSize: 13,
         }}>
+          <div style={{ marginBottom: 8 }}>
+            <a href="/accessibility" style={{ color: 'rgba(255,255,255,0.7)', textDecoration: 'none', margin: '0 8px' }}>הצהרת נגישות</a>
+            <span style={{ opacity: 0.4 }}>·</span>
+            <a href="/legal" style={{ color: 'rgba(255,255,255,0.7)', textDecoration: 'none', margin: '0 8px' }}>תנאי שימוש</a>
+          </div>
           בריאות נפש בישראל © {new Date().getFullYear()}
         </footer>
       </div>
