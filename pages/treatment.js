@@ -11,8 +11,8 @@ const CATEGORIES = {
   'שירותים נוספים': { color: '#0A6080', icon: '➕' },
 }
 const CATEGORY_NAMES = Object.keys(CATEGORIES)
-const DISTRICTS = ['הכל', 'צפון', 'חיפה', 'מרכז', 'תל אביב', 'ירושלים', 'דרום', 'יהודה ושומרון', '🌍 ארצי']
-const AGE_GROUPS = ['צעירים', 'מבוגרים', 'קשישים']
+const DISTRICTS = ['הכל', 'צפון', 'חיפה', 'מרכז', 'תל אביב', 'ירושלים', 'דרום', 'יהודה ושומרון', 'ארצי']
+const AGE_GROUPS = ['ילדים', 'נוער', 'צעירים', 'מבוגרים', 'קשישים']
 const DIAGNOSES = ['הפרעות אכילה', 'OCD', 'פוסט טראומה', 'פוסט טראומה מורכבת', 'התמכרויות']
 const POPULATIONS = ['נשים', 'דתי/מסורתי', 'חרדי', 'להט"ב']
 const BASE_URL = 'https://rehabdirectoryil.vercel.app'
@@ -68,12 +68,12 @@ function TreatmentCard({ service }) {
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 8, gap: 8 }}>
         <div style={{ fontWeight: 800, fontSize: 15, color: '#0A3040', lineHeight: 1.3 }}>{service.name}</div>
         <span style={{ background: cat.color, color: 'white', borderRadius: '999px', padding: '3px 10px', fontSize: 11, fontWeight: 700, whiteSpace: 'nowrap', flexShrink: 0 }}>
-          {cat.icon} {service.category}
+          {service.category}
         </span>
       </div>
       <div style={{ fontSize: 13, color: '#0891B2', fontWeight: 600, marginBottom: 10 }}>
-        📍 {service.city}{service.district ? `, ${service.district}` : ''}
-        {service.is_national && <span style={{ marginRight: 8, background: '#EEF2FF', color: '#1A3A5C', borderRadius: '999px', padding: '2px 8px', fontSize: 11 }}>🌍 ארצי</span>}
+        {service.city}{service.district ? `, ${service.district}` : ''}
+        {service.is_national && <span style={{ marginRight: 8, background: '#EEF2FF', color: '#1A3A5C', borderRadius: '999px', padding: '2px 8px', fontSize: 11 }}>ארצי</span>}
       </div>
       {service.description && (
         <div style={{ fontSize: 13, color: '#555', lineHeight: 1.6, marginBottom: 12,
@@ -82,8 +82,8 @@ function TreatmentCard({ service }) {
         </div>
       )}
       <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginTop: 'auto' }}>
-        {service.phone && <span style={{ fontSize: 12, color: '#0891B2', fontWeight: 600 }}>📞 {service.phone}</span>}
-        {service.website && <span style={{ fontSize: 12, color: '#0891B2', fontWeight: 600 }}>🌐 אתר</span>}
+        {service.phone && <span style={{ fontSize: 12, color: '#0891B2', fontWeight: 600 }}>{ service.phone}</span>}
+        {service.website && <span style={{ fontSize: 12, color: '#0891B2', fontWeight: 600 }}>אתר</span>}
       </div>
     </div>
   )
@@ -96,8 +96,8 @@ export default function TreatmentList() {
   const [search, setSearch] = useState('')
   const [district, setDistrict] = useState('הכל')
   const [category, setCategory] = useState('הכל')
-  const [ageGroup, setAgeGroup] = useState('')
-  const [diagnosis, setDiagnosis] = useState('')
+  const [ageGroups, setAgeGroups] = useState([])
+  const [diagnoses, setDiagnoses] = useState([])
   const [populations, setPopulations] = useState([])
   const [showMoreFilters, setShowMoreFilters] = useState(false)
   const [debouncedSearch, setDebouncedSearch] = useState('')
@@ -127,29 +127,29 @@ export default function TreatmentList() {
     setLoading(true)
     try {
       const params = new URLSearchParams()
-      if (district === '🌍 ארצי') {
+      if (district === 'ארצי') {
         params.set('national', 'true')
       } else if (district !== 'הכל') {
         params.set('district', district)
       }
       if (category !== 'הכל') params.set('category', category)
-      if (ageGroup) params.set('age_group', ageGroup)
-      if (diagnosis) params.set('diagnosis', diagnosis)
+      if (ageGroups.length) ageGroups.forEach(ag => params.append('age_group', ag))
+      if (diagnoses.length) diagnoses.forEach(d => params.append('diagnosis', d))
       populations.forEach(p => params.append('population', p))
       if (debouncedSearch) params.set('search', debouncedSearch)
       const res = await fetch(`/api/treatment?${params}`)
       const data = await res.json()
       setServices(Array.isArray(data) ? data : [])
     } finally { setLoading(false) }
-  }, [district, category, ageGroup, diagnosis, populations, debouncedSearch])
+  }, [district, category, ageGroups, diagnoses, populations, debouncedSearch])
 
   useEffect(() => { fetchServices() }, [fetchServices])
 
-  const activeExtraFilters = [ageGroup, diagnosis, ...populations].filter(Boolean).length
+  const activeExtraFilters = [...ageGroups, ...diagnoses, ...populations].filter(Boolean).length
 
   function clearAll() {
     setSearch(''); setDistrict('הכל'); setCategory('הכל')
-    setAgeGroup(''); setDiagnosis(''); setPopulations([])
+    setAgeGroups([]); setDiagnoses([]); setPopulations([])
   }
 
   if (!mounted) return null
@@ -244,7 +244,7 @@ export default function TreatmentList() {
           padding: '10px 16px', display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center',
         }}>
           {DISTRICTS.map(d => {
-            const isNat = d === '🌍 ארצי'
+            const isNat = d === 'ארצי'
             const active = district === d
             return (
               <button key={d} onClick={() => setDistrict(d)} style={{
@@ -278,7 +278,7 @@ export default function TreatmentList() {
                 transition: 'all 0.15s',
                 boxShadow: active ? `0 3px 0 ${color}99` : 'none',
               }}>
-                {name === 'הכל' ? '🔍 הכל' : `${cat?.icon || ''} ${name}`}
+                {name}
               </button>
             )
           })}
@@ -297,17 +297,17 @@ export default function TreatmentList() {
                 display: 'flex', alignItems: 'center', gap: 6,
               }}
             >
-              🎯 סינון מתקדם
+              סינון מתקדם
               {activeExtraFilters > 0 && (
                 <span style={{ background: 'rgba(255,255,255,0.3)', borderRadius: '999px', padding: '1px 7px', fontSize: 11 }}>{activeExtraFilters}</span>
               )}
               <span style={{ fontSize: 10 }}>{showMoreFilters ? '▲' : '▼'}</span>
             </button>
             {activeExtraFilters > 0 && (
-              <button onClick={() => { setAgeGroup(''); setDiagnosis(''); setPopulations([]) }} style={{
+              <button onClick={() => { setAgeGroups([]); setDiagnoses([]); setPopulations([]) }} style={{
                 fontSize: 12, color: '#0891B2', background: 'none', border: 'none',
                 cursor: 'pointer', fontWeight: 600, fontFamily: "'Nunito', sans-serif",
-              }}>✕ נקה</button>
+              }}>נקה</button>
             )}
           </div>
 
@@ -316,13 +316,13 @@ export default function TreatmentList() {
               <div>
                 <div style={{ fontSize: 11, fontWeight: 700, color: '#6899bb', marginBottom: 6 }}>קבוצת גיל</div>
                 <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-                  {AGE_GROUPS.map(ag => filterBtn(ag, ageGroup === ag, () => setAgeGroup(ageGroup === ag ? '' : ag), '#0284C7'))}
+                  {AGE_GROUPS.map(ag => filterBtn(ag, ageGroups.includes(ag), () => setAgeGroups(prev => prev.includes(ag) ? prev.filter(x => x !== ag) : [...prev, ag]), '#0284C7'))}
                 </div>
               </div>
               <div>
                 <div style={{ fontSize: 11, fontWeight: 700, color: '#6899bb', marginBottom: 6 }}>אבחנה / התמחות</div>
                 <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-                  {DIAGNOSES.map(d => filterBtn(d, diagnosis === d, () => setDiagnosis(diagnosis === d ? '' : d), '#0E7490'))}
+                  {DIAGNOSES.map(d => filterBtn(d, diagnoses.includes(d), () => setDiagnoses(prev => prev.includes(d) ? prev.filter(x => x !== d) : [...prev, d]), '#0E7490'))}
                 </div>
               </div>
               <div>
@@ -342,7 +342,7 @@ export default function TreatmentList() {
             </div>
           ) : services.length === 0 ? (
             <div style={{ textAlign: 'center', padding: 64, color: '#aaa' }}>
-              <div style={{ fontSize: 48, marginBottom: 12 }}>🔍</div>
+              <div style={{ fontSize: 48, marginBottom: 12 }}></div>
               <div style={{ fontWeight: 700, fontSize: 18, marginBottom: 8, color: '#555' }}>לא נמצאו שירותים</div>
               <button onClick={clearAll} style={{
                 background: 'linear-gradient(160deg, #0891B2, #164E63)', color: 'white', border: 'none',
@@ -379,7 +379,7 @@ export default function TreatmentList() {
           textAlign: 'center', padding: '24px', fontSize: 13, marginTop: 48, fontWeight: 500,
         }}>
           <div style={{ marginBottom: 8 }}>
-            <a href="/contact" style={{ color: 'rgba(255,255,255,0.7)', textDecoration: 'none' }}>✉️ צור קשר</a>
+            <a href="/contact" style={{ color: 'rgba(255,255,255,0.7)', textDecoration: 'none' }}>צור קשר</a>
             <span style={{ margin: '0 8px', opacity: 0.4 }}>·</span>
             <a href="/legal" style={{ color: 'rgba(255,255,255,0.7)', textDecoration: 'none' }}>תנאי שימוש</a>
             <span style={{ margin: '0 8px', opacity: 0.4 }}>·</span>
