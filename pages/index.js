@@ -88,7 +88,7 @@ export default function Home() {
         </div>
 
         {/* כפתור מחשבון */}
-        <button onClick={() => router.push('/calculator')} style={{ width: '100%', maxWidth: 460, padding: '18px 24px', borderRadius: '999px', background: 'white', border: '2px solid #e9d5ff', color: '#4C0080', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, fontFamily: "'Nunito', sans-serif", boxShadow: '0 4px 16px rgba(76,0,128,0.08)', transition: 'all 0.2s ease' }}
+        <button aria-label="פתח מחשבון איתור מסלול שיקום" onClick={() => router.push('/calculator')} style={{ width: '100%', maxWidth: 460, padding: '18px 24px', borderRadius: '999px', background: 'white', border: '2px solid #e9d5ff', color: '#4C0080', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, fontFamily: "'Nunito', sans-serif", boxShadow: '0 4px 16px rgba(76,0,128,0.08)', transition: 'all 0.2s ease' }}
           onMouseEnter={e => { e.currentTarget.style.background = '#faf5ff'; e.currentTarget.style.borderColor = '#a855f7'; e.currentTarget.style.boxShadow = '0 6px 20px rgba(76,0,128,0.15)'; e.currentTarget.style.transform = 'translateY(-2px)' }}
           onMouseLeave={e => { e.currentTarget.style.background = 'white'; e.currentTarget.style.borderColor = '#e9d5ff'; e.currentTarget.style.boxShadow = '0 4px 16px rgba(76,0,128,0.08)'; e.currentTarget.style.transform = 'translateY(0)' }}
         >
