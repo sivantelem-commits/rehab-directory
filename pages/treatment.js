@@ -185,11 +185,12 @@ export default function Treatment() {
         </header>
 
         <div style={{ background: 'linear-gradient(160deg, #164E63, #0891B2)', color: 'white', padding: '16px 20px', textAlign: 'center' }}>
-          <img src='/treatment-logo.png' alt='טיפול' style={{ width: 220, height: 220, objectFit: 'contain', marginBottom: -40, filter: 'invert(1) brightness(10)' }} />
+          <img src='/treatment-logo.png' alt='' role='presentation' style={{ width: 220, height: 220, objectFit: 'contain', marginBottom: -40, filter: 'invert(1) brightness(10)' }} />
           <h1 style={{ fontSize: 28, fontWeight: 800, margin: '0 0 8px', letterSpacing: '-0.3px' }}>שירותי טיפול</h1>
           <p style={{ fontSize: 15, opacity: 0.85, margin: '0 0 24px', fontWeight: 500 }}>בתים מאזנים, מחלקות אשפוז, מרפאות יום, חדרי מיון ועוד</p>
           <div style={{ maxWidth: 480, margin: '0 auto' }}>
-            <input type="text" placeholder="חפשו לפי שם, עיר או תיאור..." value={search} onChange={e => setSearch(e.target.value)}
+            <label htmlFor="treatment-search" style={{ position: 'absolute', width: 1, height: 1, overflow: 'hidden', clip: 'rect(0,0,0,0)', whiteSpace: 'nowrap' }}>חיפוש שירותי טיפול</label>
+              <input id="treatment-search" type="text" placeholder="חפשו לפי שם, עיר או תיאור..." value={search} onChange={e => setSearch(e.target.value)}
               style={{ width: '100%', padding: '14px 22px', borderRadius: '999px', border: 'none', fontSize: 15, outline: 'none', boxSizing: 'border-box', boxShadow: '0 4px 20px rgba(0,0,0,0.12)', fontFamily: "'Nunito', sans-serif", fontWeight: 500 }} />
           </div>
         </div>
@@ -208,7 +209,7 @@ export default function Treatment() {
           <button onClick={setNationalMode} style={{ padding: '7px 14px', borderRadius: '999px', fontSize: 13, fontWeight: 600, border: `2px solid ${national ? '#1A3A5C' : '#c8eaf2'}`, background: national ? '#1A3A5C' : 'white', color: national ? 'white' : '#1A3A5C', cursor: 'pointer', fontFamily: "'Nunito', sans-serif", transition: 'all 0.15s' }}>🌍 ארצי</button>
 
           <div style={{ marginRight: 'auto', fontSize: 13, color: COLOR, fontWeight: 600 }}>
-            {loading ? 'טוען...' : `${services.length} שירותים`}
+            <span role="status" aria-live="polite" aria-atomic="true">{loading ? 'טוען...' : `${services.length} שירותים`}</span>
           </div>
         </div>
 
