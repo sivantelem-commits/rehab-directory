@@ -37,7 +37,8 @@ export default async function handler(req, res) {
   }
 
   if (population) {
-    query = query.contains('populations', [population])
+    const pops = Array.isArray(population) ? population : [population]
+    pops.forEach(p => { query = query.contains('populations', [p]) })
   }
 
   if (search) {
