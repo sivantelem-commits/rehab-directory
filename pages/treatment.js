@@ -49,7 +49,7 @@ export default function Treatment() {
   const [category, setCategory] = useState('הכל')
   const [ageGroup, setAgeGroup] = useState('')
   const [diagnosis, setDiagnosis] = useState('')
-  const [population, setPopulation] = useState('')
+  const [populations, setPopulations] = useState([])
   const [showMoreFilters, setShowMoreFilters] = useState(false)
   const [debouncedSearch, setDebouncedSearch] = useState('')
   const [mounted, setMounted] = useState(false)
@@ -87,7 +87,7 @@ export default function Treatment() {
             if (category !== 'הכל') p.set('category', category)
             if (ageGroup) p.set('age_group', ageGroup)
             if (diagnosis) p.set('diagnosis', diagnosis)
-            if (population) p.set('population', population)
+            populations.forEach(pop => p.append('population', pop))
             if (debouncedSearch) p.set('search', debouncedSearch)
             return fetch(`/api/treatment?${p}`).then(r => r.json())
           })
@@ -105,21 +105,21 @@ export default function Treatment() {
       if (category !== 'הכל') params.set('category', category)
       if (ageGroup) params.set('age_group', ageGroup)
       if (diagnosis) params.set('diagnosis', diagnosis)
-      if (population) params.set('population', population)
+      populations.forEach(p => params.append('population', p))
       if (debouncedSearch) params.set('search', debouncedSearch)
       const res = await fetch(`/api/treatment?${params}`)
       const data = await res.json()
       setServices(Array.isArray(data) ? data : [])
     } finally { setLoading(false) }
-  }, [national, selectedDistricts, category, ageGroup, diagnosis, population, debouncedSearch])
+  }, [national, selectedDistricts, category, ageGroup, diagnosis, populations, debouncedSearch])
 
   useEffect(() => { fetchServices() }, [fetchServices])
 
-  const activeExtraFilters = [ageGroup, diagnosis, population].filter(Boolean).length
+  const activeExtraFilters = [ageGroup, diagnosis, ...populations].filter(Boolean).length
 
   function clearAll() {
     setSearch(''); clearDistricts(); setCategory('הכל')
-    setAgeGroup(''); setDiagnosis(''); setPopulation('')
+    setAgeGroup(''); setDiagnosis(''); setPopulations([])
   }
 
   const filterBtn = (label, active, onClick) => (
@@ -238,7 +238,7 @@ export default function Treatment() {
               {activeExtraFilters > 0 && <span style={{ background: 'rgba(255,255,255,0.3)', borderRadius: '999px', padding: '1px 7px', fontSize: 11 }}>{activeExtraFilters}</span>}
               <span style={{ fontSize: 10 }}>{showMoreFilters ? '▲' : '▼'}</span>
             </button>
-            {activeExtraFilters > 0 && <button onClick={() => { setAgeGroup(''); setDiagnosis(''); setPopulation('') }} style={{ fontSize: 12, color: COLOR, background: 'none', border: 'none', cursor: 'pointer', fontWeight: 600, fontFamily: "'Nunito', sans-serif" }}>✕ נקה</button>}
+            {activeExtraFilters > 0 && <button onClick={() => { setAgeGroup(''); setDiagnosis(''); setPopulations([]) }} style={{ fontSize: 12, color: COLOR, background: 'none', border: 'none', cursor: 'pointer', fontWeight: 600, fontFamily: "'Nunito', sans-serif" }}>✕ נקה</button>}
           </div>
           {showMoreFilters && (
             <div style={{ padding: '4px 16px 14px', display: 'flex', flexDirection: 'column', gap: 10 }}>
@@ -252,7 +252,7 @@ export default function Treatment() {
               </div>
               <div>
                 <div style={{ fontSize: 11, fontWeight: 700, color: '#6b99aa', marginBottom: 6 }}>אוכלוסייה ייעודית</div>
-                <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>{POPULATIONS.map(p => filterBtn(p, population === p, () => setPopulation(population === p ? '' : p)))}</div>
+                <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>{POPULATIONS.map(p => filterBtn(p, populations.includes(p), () => setPopulations(prev => prev.includes(p) ? prev.filter(x => x !== p) : [...prev, p])))}</div>
               </div>
             </div>
           )}
