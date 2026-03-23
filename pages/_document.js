@@ -30,12 +30,24 @@ export default function Document() {
         <link rel="icon" type="image/png" sizes="16x16" href="/icon-16.png" />
 
         {/* Google Analytics */}
-        <script async src="https://www.googletagmanager.com/gtag/js?id=G-CL2BJ9Q4X3" />
         <script dangerouslySetInnerHTML={{ __html: `
           window.dataLayer = window.dataLayer || [];
           function gtag(){dataLayer.push(arguments);}
-          gtag('js', new Date());
-          gtag('config', 'G-CL2BJ9Q4X3', { anonymize_ip: true });
+          gtag('consent', 'default', {
+            analytics_storage: 'denied'
+          });
+          window.__loadGA = function() {
+            var s = document.createElement('script');
+            s.src = 'https://www.googletagmanager.com/gtag/js?id=G-CL2BJ9Q4X3';
+            s.async = true;
+            document.head.appendChild(s);
+            gtag('js', new Date());
+            gtag('config', 'G-CL2BJ9Q4X3', { anonymize_ip: true });
+            gtag('consent', 'update', { analytics_storage: 'granted' });
+          };
+          if (typeof localStorage !== 'undefined' && localStorage.getItem('cookie_consent') === 'accepted') {
+            window.__loadGA();
+          }
         `}} />
 
         {/* Service Worker */}
