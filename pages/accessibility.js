@@ -14,20 +14,13 @@ export default function Accessibility() {
       </Head>
 
       <div dir="rtl" style={{ fontFamily: "'Nunito', sans-serif", minHeight: '100vh', background: '#F0F7FF', position: 'relative' }}>
+
         <a href="#main-content" style={{
-            position: 'absolute',
-            top: '-40px',
-            right: 0,
-            background: '#1A3A5C',
-            color: 'white',
-            padding: '8px 16px',
-            borderRadius: '0 0 8px 8px',
-            fontWeight: 700,
-            fontSize: 14,
-            textDecoration: 'none',
-            zIndex: 9999,
-            transition: 'top 0.2s'
-          }}
+          position: 'absolute', top: '-40px', right: 0,
+          background: '#1A3A5C', color: 'white', padding: '8px 16px',
+          borderRadius: '0 0 8px 8px', fontWeight: 700, fontSize: 14,
+          textDecoration: 'none', zIndex: 9999, transition: 'top 0.2s'
+        }}
           onFocus={e => e.currentTarget.style.top = '0'}
           onBlur={e => e.currentTarget.style.top = '-40px'}
         >דלג לתוכן הראשי</a>
@@ -79,18 +72,23 @@ export default function Accessibility() {
               <li>קישורי ניווט ברורים עם טקסט תיאורי</li>
               <li>פוטר עקבי בכל עמודי האתר עם קישורים לעמודים מרכזיים</li>
             </ul>
+
             <SubTitle>3.2 תוכן ומדיה</SubTitle>
             <ul style={{ fontSize: 15, color: '#334', lineHeight: 2, paddingRight: 20 }}>
               <li>תמונות מלוות בטקסט חלופי (alt text) המתאר את תוכנן</li>
               <li>תמונות דקורטיביות מוגדרות עם alt ריק כדי שיידלגו על ידי קוראי מסך</li>
               <li>שפת האתר מוגדרת כעברית (lang=&quot;he&quot;) וכיוון RTL (dir=&quot;rtl&quot;)</li>
             </ul>
+
             <SubTitle>3.3 טפסים ואינטראקציה</SubTitle>
             <ul style={{ fontSize: 15, color: '#334', lineHeight: 2, paddingRight: 20 }}>
               <li>כל שדות הטופס מלווים בתוויות (labels) מקושרות באמצעות מאפיין for/id</li>
               <li>שדות חובה מסומנים בבירור ומלווים בהסבר טקסטואלי</li>
               <li>הודעות שגיאה ברורות ומקושרות לשדה הרלוונטי</li>
               <li>הודעות אישור לאחר שליחת טופס נגישות לקוראי מסך באמצעות aria-live</li>
+              <li>מחשבון המסלול: שאלות מקובצות סמנטית (fieldset/legend), כפתורי תשובה עם מצב נבחר (aria-pressed), ועדכון התקדמות בזמן אמת</li>
+              <li>עדכון תוצאות חיפוש בזמן אמת (aria-live) בעמודי שיקום וטיפול — קורא מסך מודיע על מספר השירותים שנמצאו</li>
+              <li>הסכמה לעוגיות: Google Analytics נטען רק לאחר הסכמה מפורשת של המשתמש. ניתן לדחות ולא להיות מנוטר</li>
             </ul>
           </Section>
 
@@ -98,7 +96,6 @@ export default function Accessibility() {
             <P>למרות מאמצינו, ייתכן שחלקים מסוימים באתר אינם נגישים במלואם. להלן מגבלות ידועות שאנו עובדים לתקן:</P>
             <ul style={{ fontSize: 15, color: '#334', lineHeight: 2, paddingRight: 20 }}>
               <li><strong>מפת השירותים (/map):</strong> מפה אינטראקטיבית עשויה להציב אתגרים למשתמשי קורא מסך. אנו עובדים על חלופה מבוססת-טבלה.</li>
-              <li><strong>מחשבון המסלול:</strong> ממשק השאלון עשוי שלא להיות נגיש במלואו. יצירת קשר ישירה עם הצוות מהווה חלופה.</li>
               <li><strong>תכני צד שלישי:</strong> תוכן המוטמע ממקורות חיצוניים (מפות, וידאו) עשוי לא לעמוד בכל דרישות הנגישות.</li>
             </ul>
           </Section>
@@ -154,6 +151,7 @@ export default function Accessibility() {
           </div>
           בריאות נפש בישראל © {new Date().getFullYear()}
         </footer>
+
       </div>
     </>
   )
