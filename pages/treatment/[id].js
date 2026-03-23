@@ -29,8 +29,11 @@ export default function TreatmentServicePage() {
     fetch(`/api/treatment?id=${id}`)
       .then(r => r.json())
       .then(data => {
-        const found = Array.isArray(data) ? data.find(s => s.id === id) : null
-        setService(found || null)
+        setService(data && data.id ? data : null)
+        setLoading(false)
+      })
+      .catch(() => {
+        setService(null)
         setLoading(false)
       })
   }, [id])
