@@ -67,7 +67,7 @@ function TreatmentCard({ service }) {
       onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 4px 16px rgba(8,145,178,0.08)' }}
     >
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 8, gap: 8 }}>
-        <div style={{ fontWeight: 800, fontSize: 15, color: '#0A3040', lineHeight: 1.3 }}>{service.name}</div>
+        <div style={{ fontWeight: 700, fontSize: 16, color: '#1A3A5C', lineHeight: 1.3 }}>{service.name}</div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 4, alignItems: 'flex-end', flexShrink: 0 }}>
           <span style={{ background: cat.color, color: 'white', borderRadius: '999px', padding: '3px 10px', fontSize: 11, fontWeight: 700, whiteSpace: 'nowrap' }}>
             {service.category}
@@ -87,19 +87,19 @@ function TreatmentCard({ service }) {
           })}
         </div>
       </div>
-      <div style={{ fontSize: 13, color: '#0891B2', fontWeight: 600, marginBottom: 10 }}>
+      <div style={{ fontSize: 13, color: '#888', marginBottom: 8, display: 'flex', alignItems: 'center', gap: 6 }}>
         {service.city}{service.district ? `, ${service.district}` : ''}
         {service.is_national && <span style={{ marginRight: 8, background: '#EEF2FF', color: '#1A3A5C', borderRadius: '999px', padding: '2px 8px', fontSize: 11 }}>ארצי</span>}
       </div>
       {service.description && (
-        <div style={{ fontSize: 13, color: '#555', lineHeight: 1.6, marginBottom: 12,
+        <div style={{ fontSize: 13.5, color: '#445', lineHeight: 1.55, marginBottom: 12,
           display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
           {service.description}
         </div>
       )}
       <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginTop: 'auto' }}>
-        {service.phone && <span style={{ fontSize: 12, color: '#0891B2', fontWeight: 600 }}>{ service.phone}</span>}
-        {service.website && <span style={{ fontSize: 12, color: '#0891B2', fontWeight: 600 }}>אתר</span>}
+        {service.phone && <span style={{ fontSize: 13, color: cat.color }}>{ service.phone}</span>}
+        {service.website && <span style={{ fontSize: 13, color: cat.color }}>אתר</span>}
       </div>
     </div>
   )
