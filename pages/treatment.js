@@ -11,7 +11,7 @@ const POPULATIONS = ['נשים', 'דתי/מסורתי', 'חרדי', 'להט"ב']
 const CATEGORIES = {
   'בתים מאזנים': { color: '#0A3040' },
   'מחלקות אשפוז': { color: '#0A6080' },
-  'מרפאות יום': { color: '#0891B2' },
+  'טיפול יום': { color: '#0891B2' },
   'מרפאות בריאות נפש': { color: '#0284C7' },
   'חדרי מיון': { color: '#06B6D4' },
   'אשפוז בית': { color: '#0E7490' },
@@ -137,12 +137,12 @@ export default function Treatment() {
     <>
       <Head>
         <title>שירותי טיפול פסיכיאטרי | בריאות נפש בישראל</title>
-        <meta name="description" content="בתים מאזנים, מחלקות אשפוז פסיכיאטרי, מרפאות יום וחדרי מיון בישראל." />
+        <meta name="description" content="בתים מאזנים, מחלקות אשפוז פסיכיאטרי, טיפול יום וחדרי מיון בישראל." />
         <meta name="robots" content="index, follow" />
         <link rel="canonical" href="https://rehabdirectoryil.vercel.app/treatment" />
         <meta property="og:type" content="website" />
         <meta property="og:title" content="שירותי טיפול פסיכיאטרי | בריאות נפש בישראל" />
-        <meta property="og:description" content="בתים מאזנים, מחלקות אשפוז פסיכיאטרי, מרפאות יום וחדרי מיון בישראל." />
+        <meta property="og:description" content="בתים מאזנים, מחלקות אשפוז פסיכיאטרי, טיפול יום וחדרי מיון בישראל." />
         <meta property="og:url" content="https://rehabdirectoryil.vercel.app/treatment" />
         <meta property="og:locale" content="he_IL" />
         <meta property="og:site_name" content="בריאות נפש בישראל" />
@@ -187,7 +187,7 @@ export default function Treatment() {
         <div style={{ background: 'linear-gradient(160deg, #164E63, #0891B2)', color: 'white', padding: '16px 20px', textAlign: 'center' }}>
           <img src='/treatment-logo.png' alt='' role='presentation' style={{ width: 220, height: 220, objectFit: 'contain', marginBottom: -40, filter: 'invert(1) brightness(10)' }} />
           <h1 style={{ fontSize: 28, fontWeight: 800, margin: '0 0 8px', letterSpacing: '-0.3px' }}>שירותי טיפול</h1>
-          <p style={{ fontSize: 15, opacity: 0.85, margin: '0 0 24px', fontWeight: 500 }}>בתים מאזנים, מחלקות אשפוז, מרפאות יום, חדרי מיון ועוד</p>
+          <p style={{ fontSize: 15, opacity: 0.85, margin: '0 0 24px', fontWeight: 500 }}>בתים מאזנים, מחלקות אשפוז, טיפול יום, חדרי מיון ועוד</p>
           <div style={{ maxWidth: 480, margin: '0 auto' }}>
             <label htmlFor="treatment-search" style={{ position: 'absolute', width: 1, height: 1, overflow: 'hidden', clip: 'rect(0,0,0,0)', whiteSpace: 'nowrap' }}>חיפוש שירותי טיפול</label>
               <input id="treatment-search" type="text" placeholder="חפשו לפי שם, עיר או תיאור..." value={search} onChange={e => setSearch(e.target.value)}
