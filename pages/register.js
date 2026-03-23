@@ -3,7 +3,7 @@ import Head from 'next/head'
 import { CATEGORIES, CATEGORY_NAMES } from '../lib/categories'
 
 const DISTRICTS = ['צפון', 'חיפה', 'מרכז', 'תל אביב', 'ירושלים', 'דרום', 'יהודה ושומרון']
-const TREATMENT_CATEGORIES = ['בתים מאזנים', 'מחלקות אשפוז', 'מרפאות יום', 'מרפאות בריאות נפש', 'חדרי מיון', 'שירותים נוספים']
+const TREATMENT_CATEGORIES = ['בתים מאזנים', 'מחלקות אשפוז', 'טיפול יום', 'מרפאות בריאות נפש', 'חדרי מיון', 'שירותים נוספים']
 const AGE_GROUPS_REHAB = ['צעירים', 'מבוגרים', 'קשישים']
 const AGE_GROUPS_TREATMENT = ['ילדים', 'נוער', 'צעירים', 'מבוגרים', 'קשישים']
 const DIAGNOSES = ['הפרעות אכילה', 'OCD', 'פוסט טראומה', 'פוסט טראומה מורכבת', 'התמכרויות']
