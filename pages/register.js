@@ -235,10 +235,10 @@ export default function Register() {
 
               {/* שם */}
               <div style={{ marginBottom: 16 }}>
-                <label style={lbl}>שם השירות *</label>
+                <label htmlFor="reg-name" style={lbl}>שם השירות *</label>
                 <div style={{ position: 'relative' }}>
                   <input
-                    type="text" placeholder="שם המרכז / השירות"
+                    id="reg-name" type="text" placeholder="שם המרכז / השירות"
                     value={form.name}
                     onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
                     style={{
@@ -281,8 +281,8 @@ export default function Register() {
                 ['website', 'אתר אינטרנט', 'url', 'https://...'],
               ].map(([key, label, type, placeholder]) => (
                 <div key={key} style={{ marginBottom: 16 }}>
-                  <label style={lbl}>{label}</label>
-                  <input type={type} placeholder={placeholder} value={form[key]}
+                  <label htmlFor={`reg-${key}`} style={lbl}>{label}</label>
+                  <input id={`reg-${key}`} type={type} placeholder={placeholder} value={form[key]}
                     onChange={e => setForm(f => ({ ...f, [key]: e.target.value }))} style={inp} />
                 </div>
               ))}
@@ -297,8 +297,8 @@ export default function Register() {
                 </label>
                 {!form.is_national && (
                   <>
-                    <label style={lbl}>מחוז *</label>
-                    <select value={form.district} onChange={e => setForm(f => ({ ...f, district: e.target.value }))} style={inp}>
+                    <label htmlFor="reg-district" style={lbl}>מחוז *</label>
+                    <select id="reg-district" value={form.district} onChange={e => setForm(f => ({ ...f, district: e.target.value }))} style={inp}>
                       <option value="">בחרו מחוז</option>
                       {DISTRICTS.map(d => <option key={d}>{d}</option>)}
                     </select>
@@ -308,8 +308,8 @@ export default function Register() {
 
               {/* קטגוריה ראשית */}
               <div style={{ marginBottom: 16 }}>
-                <label style={lbl}>קטגוריה ראשית</label>
-                <select value={form.category}
+                <label htmlFor="reg-category" style={lbl}>קטגוריה ראשית</label>
+                <select id="reg-category" value={form.category}
                   onChange={e => setForm(f => ({ ...f, category: e.target.value, subcategory: '' }))}
                   style={inp}>
                   <option value="">בחרו קטגוריה</option>
@@ -323,8 +323,8 @@ export default function Register() {
               {/* תת קטגוריה */}
               {isRehab && subcategories.length > 0 && (
                 <div style={{ marginBottom: 16 }}>
-                  <label style={lbl}>תת קטגוריה</label>
-                  <select value={form.subcategory}
+                  <label htmlFor="reg-subcategory" style={lbl}>תת קטגוריה</label>
+                  <select id="reg-subcategory" value={form.subcategory}
                     onChange={e => setForm(f => ({ ...f, subcategory: e.target.value }))}
                     style={inp}>
                     <option value="">בחרו תת קטגוריה</option>
@@ -453,8 +453,8 @@ export default function Register() {
 
               {/* תיאור */}
               <div style={{ marginBottom: 24 }}>
-                <label style={lbl}>תיאור השירות</label>
-                <textarea
+                <label htmlFor="reg-description" style={lbl}>תיאור השירות</label>
+                <textarea id="reg-description"
                   placeholder={`תארו את שירותי ה${isRehab ? 'שיקום' : 'טיפול'} שאתם מציעים...`}
                   value={form.description}
                   onChange={e => setForm(f => ({ ...f, description: e.target.value }))}
@@ -463,11 +463,13 @@ export default function Register() {
                 />
               </div>
 
+              <div role="alert" aria-live="assertive">
               {error && (
                 <div style={{ background: '#FFF0F0', border: '1px solid #FFCDD2', borderRadius: 12, padding: '10px 16px', fontSize: 14, color: '#C62828', marginBottom: 16 }}>
                   ⚠️ {error}
                 </div>
               )}
+              </div>
 
               <button onClick={handleSubmit} disabled={loading} style={{
                 width: '100%',
