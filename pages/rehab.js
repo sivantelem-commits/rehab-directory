@@ -53,7 +53,7 @@ export default function Rehab() {
   const [subcategory, setSubcategory] = useState('הכל')
   const [ageGroup, setAgeGroup] = useState('')
   const [diagnosis, setDiagnosis] = useState('')
-  const [population, setPopulation] = useState('')
+  const [populations, setPopulations] = useState([])
   const [showMoreFilters, setShowMoreFilters] = useState(false)
   const [debouncedSearch, setDebouncedSearch] = useState('')
   const [mounted, setMounted] = useState(false)
@@ -91,22 +91,22 @@ export default function Rehab() {
       if (subcategory !== 'הכל') params.set('subcategory', subcategory)
       if (ageGroup) params.set('age_group', ageGroup)
       if (diagnosis) params.set('diagnosis', diagnosis)
-      if (population) params.set('population', population)
+      populations.forEach(p => params.append('population', p))
       if (debouncedSearch) params.set('search', debouncedSearch)
       const res = await fetch(`/api/services?${params}`)
       const data = await res.json()
       setServices(Array.isArray(data) ? data : [])
     } finally { setLoading(false) }
-  }, [district, category, subcategory, ageGroup, diagnosis, population, debouncedSearch])
+  }, [district, category, subcategory, ageGroup, diagnosis, populations, debouncedSearch])
 
   useEffect(() => { fetchServices() }, [fetchServices])
 
   const subcategories = category !== 'הכל' ? ['הכל', ...CATEGORIES[category].subcategories] : []
-  const activeExtraFilters = [ageGroup, diagnosis, population].filter(Boolean).length
+  const activeExtraFilters = [ageGroup, diagnosis, ...populations].filter(Boolean).length
 
   function clearAll() {
     setSearch(''); setDistrict('הכל'); setCategory('הכל'); setSubcategory('הכל')
-    setAgeGroup(''); setDiagnosis(''); setPopulation('')
+    setAgeGroup(''); setDiagnosis(''); setPopulations([])
   }
 
   if (!mounted) return null
@@ -295,7 +295,7 @@ export default function Rehab() {
               <span style={{ fontSize: 10 }}>{showMoreFilters ? '▲' : '▼'}</span>
             </button>
             {activeExtraFilters > 0 && (
-              <button onClick={() => { setAgeGroup(''); setDiagnosis(''); setPopulation('') }} style={{
+              <button onClick={() => { setAgeGroup(''); setDiagnosis(''); setPopulations([]) }} style={{
                 fontSize: 12, color: '#9B00CC', background: 'none', border: 'none',
                 cursor: 'pointer', fontWeight: 600, fontFamily: "'Nunito', sans-serif",
               }}>✕ נקה</button>
@@ -326,7 +326,7 @@ export default function Rehab() {
               <div>
                 <div style={{ fontSize: 11, fontWeight: 700, color: '#9b88bb', marginBottom: 6 }}>אוכלוסייה ייעודית</div>
                 <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-                  {POPULATIONS.map(p => filterBtn(p, population === p, () => setPopulation(population === p ? '' : p), '#5E35B1'))}
+                  {POPULATIONS.map(p => filterBtn(p, populations.includes(p), () => setPopulations(prev => prev.includes(p) ? prev.filter(x => x !== p) : [...prev, p]), '#5E35B1'))}
                 </div>
               </div>
 
