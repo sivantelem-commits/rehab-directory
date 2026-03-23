@@ -160,7 +160,7 @@ function ProgressBar({ current, total }) {
 
 function OptionBtn({ label, selected, onClick }) {
   return (
-    <button type="button" onClick={onClick} style={{
+    <button type="button" aria-pressed={selected} onClick={onClick} style={{
       display: 'flex', alignItems: 'center', padding: '12px 16px', borderRadius: 12,
       cursor: 'pointer', textAlign: 'right', width: '100%',
       border: selected ? `1.5px solid ${PURPLE}` : '1px solid #e5e7eb',
@@ -175,7 +175,7 @@ function OptionBtn({ label, selected, onClick }) {
 function ScaleBtn({ label, index, selected, onClick }) {
   const colors = ['#e5e7eb', '#d1d5db', '#a78bfa', '#8b5cf6', '#6B21A8']
   return (
-    <button type="button" onClick={onClick} style={{
+    <button type="button" aria-pressed={selected} onClick={onClick} style={{
       flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center',
       padding: '10px 4px', borderRadius: 12, cursor: 'pointer',
       border: selected ? `1.5px solid ${PURPLE}` : '1px solid #e5e7eb',
@@ -366,19 +366,21 @@ export default function Calculator() {
     <Page title="מחשבון איתור מסלול">
       <div style={{ maxWidth: 560, margin: '0 auto', padding: '32px 16px' }}>
         <ProgressBar current={step} total={STEPS.length} />
-        <p style={{ fontSize: 12, color: '#9ca3af', marginBottom: 20, fontWeight: 600 }}>שלב {step} מתוך {STEPS.length}</p>
+        <p role="status" aria-live="polite" style={{ fontSize: 12, color: '#9ca3af', marginBottom: 20, fontWeight: 600 }}>שלב {step} מתוך {STEPS.length}</p>
         <div style={{ background: '#fff', borderRadius: 20, border: '1px solid #e9d5ff', padding: '24px 20px', boxShadow: '0 4px 16px rgba(76,0,128,0.06)' }}>
-          <h2 style={{ fontSize: 17, fontWeight: 800, color: '#3d2a6e', marginBottom: current.hint ? 4 : 18, lineHeight: 1.4 }}>{current.question}</h2>
-          {current.hint && <p style={{ fontSize: 12, color: '#9ca3af', marginBottom: 14, fontWeight: 600 }}>{current.hint}</p>}
-          {current.scale ? (
-            <div style={{ display: 'flex', gap: 8 }}>
-              {current.options.map((o, i) => <ScaleBtn key={o.value} label={o.label} index={i} selected={sel === o.value} onClick={() => toggle(o.value)} />)}
-            </div>
-          ) : (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-              {current.options.map(o => <OptionBtn key={o.value} label={o.label} selected={current.multi ? sel.includes(o.value) : sel === o.value} onClick={() => toggle(o.value)} />)}
-            </div>
-          )}
+          <fieldset style={{ border: 'none', padding: 0, margin: 0 }}>
+            <legend style={{ fontSize: 17, fontWeight: 800, color: '#3d2a6e', marginBottom: current.hint ? 4 : 18, lineHeight: 1.4, display: 'block', width: '100%' }}>{current.question}</legend>
+            {current.hint && <p style={{ fontSize: 12, color: '#9ca3af', marginBottom: 14, fontWeight: 600 }}>{current.hint}</p>}
+            {current.scale ? (
+              <div style={{ display: 'flex', gap: 8 }}>
+                {current.options.map((o, i) => <ScaleBtn key={o.value} label={o.label} index={i} selected={sel === o.value} onClick={() => toggle(o.value)} />)}
+              </div>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                {current.options.map(o => <OptionBtn key={o.value} label={o.label} selected={current.multi ? sel.includes(o.value) : sel === o.value} onClick={() => toggle(o.value)} />)}
+              </div>
+            )}
+          </fieldset>
           <div style={{ display: 'flex', gap: 8, marginTop: 20, justifyContent: 'flex-end' }}>
             <button type="button" onClick={back} style={{ padding: '9px 18px', fontSize: 13, fontWeight: 700, color: '#6b7280', cursor: 'pointer', border: '1px solid #e5e7eb', borderRadius: '999px', background: 'transparent', fontFamily: "'Nunito', sans-serif" }}>חזרה →</button>
             <button type="button" onClick={next} disabled={!isReady} style={btnStyle(!isReady)}>{step === STEPS.length ? '← הצג שירותים מתאימים' : '← המשך'}</button>
