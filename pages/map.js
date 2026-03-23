@@ -305,11 +305,28 @@ export default function MapPage() {
         <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
       </Head>
 
-      <div dir="rtl" style={{ fontFamily: "'Nunito', sans-serif", minHeight: '100vh', background: '#f5f5f5', display: 'flex', flexDirection: 'column' }}>
+      <div dir="rtl" style={{ fontFamily: "'Nunito', sans-serif", minHeight: '100vh', background: '#f5f5f5', display: 'flex', flexDirection: 'column', position: 'relative' }}>
+        <a href="#main-content" style={{
+            position: 'absolute',
+            top: '-40px',
+            right: 0,
+            background: '#1A3A5C',
+            color: 'white',
+            padding: '8px 16px',
+            borderRadius: '0 0 8px 8px',
+            fontWeight: 700,
+            fontSize: 14,
+            textDecoration: 'none',
+            zIndex: 9999,
+            transition: 'top 0.2s'
+          }}
+          onFocus={e => e.currentTarget.style.top = '0'}
+          onBlur={e => e.currentTarget.style.top = '-40px'}
+        >דלג לתוכן הראשי</a>
 
         <header style={{ background: '#1A3A5C', color: 'white', padding: '10px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxShadow: '0 2px 12px rgba(0,0,0,0.15)', flexWrap: 'wrap', gap: 8 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-            <img src="/logo.png" alt="לוגו" style={{ width: 44, height: 44, objectFit: 'contain', filter: 'brightness(0) invert(1)' }} />
+            <img src="/logo.png" alt="בריאות נפש בישראל" style={{ width: 44, height: 44, objectFit: 'contain', filter: 'brightness(0) invert(1)' }} />
             <div>
               <div style={{ fontWeight: 800, fontSize: 18 }}>בריאות נפש בישראל</div>
               <div style={{ fontSize: 11, opacity: 0.75 }}>מפת שירותים</div>
@@ -321,7 +338,7 @@ export default function MapPage() {
             fontWeight: 800, fontSize: 13, textDecoration: 'none',
             display: 'flex', alignItems: 'center', gap: 6, whiteSpace: 'nowrap',
           }}>🧭 מחשבון מסלול</a>
-          <nav style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+          <nav aria-label="ניווט ראשי" style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
             {NAV.map(([href, label]) => (
               <a key={href} href={href} style={{
                 color: 'white',
@@ -335,18 +352,20 @@ export default function MapPage() {
         </header>
 
         <div style={{ background: 'white', borderBottom: '1px solid #e0e0e0', padding: '10px 16px', display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'center' }}>
-          <select value={district} onChange={e => setDistrict(e.target.value)} style={sel}>
+          <label htmlFor="map-district" style={{ position: 'absolute', width: 1, height: 1, overflow: 'hidden', clip: 'rect(0,0,0,0)', whiteSpace: 'nowrap' }}>סינון לפי מחוז</label>
+          <select id="map-district" value={district} onChange={e => setDistrict(e.target.value)} style={sel}>
             {DISTRICTS.map(d => <option key={d}>{d}</option>)}
           </select>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-            <button onClick={() => setShowRehab(v => !v)}
+            <button aria-pressed={showRehab} onClick={() => setShowRehab(v => !v)}
               style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '7px 14px', borderRadius: '999px', border: `2px solid ${showRehab ? '#8B00D4' : '#ddd'}`, background: showRehab ? '#f7f0ff' : 'white', color: showRehab ? '#4C0080' : '#aaa', fontWeight: 700, fontSize: 13, cursor: 'pointer', fontFamily: "'Nunito', sans-serif" }}>
               <div style={{ width: 10, height: 10, borderRadius: '50%', background: showRehab ? '#8B00D4' : '#ddd' }} />
               ♿ שיקום
             </button>
             {showRehab && (
-              <select value={rehabCategory} onChange={e => { setRehabCategory(e.target.value); setRehabSubcategory('הכל') }} style={{ ...sel, borderColor: '#8B00D4' }}>
+              <label htmlFor="map-rehab-cat" style={{ position: 'absolute', width: 1, height: 1, overflow: 'hidden', clip: 'rect(0,0,0,0)', whiteSpace: 'nowrap' }}>קטגוריית שיקום</label>
+              <select id="map-rehab-cat" value={rehabCategory} onChange={e => { setRehabCategory(e.target.value); setRehabSubcategory('הכל') }} style={{ ...sel, borderColor: '#8B00D4' }}>
                 <option value="הכל">כל הקטגוריות</option>
                 {Object.keys(REHAB_COLORS).map(c => <option key={c}>{c}</option>)}
               </select>
@@ -354,20 +373,21 @@ export default function MapPage() {
           </div>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-            <button onClick={() => setShowTreatment(v => !v)}
+            <button aria-pressed={showTreatment} onClick={() => setShowTreatment(v => !v)}
               style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '7px 14px', borderRadius: '999px', border: `2px solid ${showTreatment ? '#0891B2' : '#ddd'}`, background: showTreatment ? '#f0faff' : 'white', color: showTreatment ? '#0A6080' : '#aaa', fontWeight: 700, fontSize: 13, cursor: 'pointer', fontFamily: "'Nunito', sans-serif" }}>
               <div style={{ width: 10, height: 10, background: showTreatment ? '#0891B2' : '#ddd', clipPath: 'polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)' }} />
               🏥 טיפול
             </button>
             {showTreatment && (
-              <select value={treatmentCategory} onChange={e => setTreatmentCategory(e.target.value)} style={{ ...sel, borderColor: '#0891B2' }}>
+              <label htmlFor="map-treatment-cat" style={{ position: 'absolute', width: 1, height: 1, overflow: 'hidden', clip: 'rect(0,0,0,0)', whiteSpace: 'nowrap' }}>קטגוריית טיפול</label>
+              <select id="map-treatment-cat" value={treatmentCategory} onChange={e => setTreatmentCategory(e.target.value)} style={{ ...sel, borderColor: '#0891B2' }}>
                 <option value="הכל">כל הקטגוריות</option>
                 {Object.keys(TREATMENT_COLORS).map(c => <option key={c}>{c}</option>)}
               </select>
             )}
           </div>
 
-          <button onClick={() => setShowNationalOnly(v => !v)} style={{
+          <button aria-pressed={showNationalOnly} onClick={() => setShowNationalOnly(v => !v)} style={{
             display: 'flex', alignItems: 'center', gap: 6, padding: '7px 14px', borderRadius: '999px',
             border: `2px solid ${showNationalOnly ? '#1A3A5C' : '#ddd'}`,
             background: showNationalOnly ? '#EEF2FF' : 'white',
@@ -602,6 +622,11 @@ export default function MapPage() {
         </div>
       </div>
       <BasketPanel />
+        <footer style={{ background: '#1A3A5C', color: 'rgba(255,255,255,0.7)', textAlign: 'center', padding: '12px', fontSize: 12 }}>
+          <a href="/accessibility" style={{ color: 'rgba(255,255,255,0.7)', textDecoration: 'none', margin: '0 8px' }}>הצהרת נגישות</a>
+          <span style={{ opacity: 0.4 }}>·</span>
+          <a href="/legal" style={{ color: 'rgba(255,255,255,0.7)', textDecoration: 'none', margin: '0 8px' }}>תנאי שימוש</a>
+        </footer>
     </>
   )
 }
