@@ -53,6 +53,7 @@ const SkeletonCard = () => (
 
 function TreatmentCard({ service }) {
   const cat = CATEGORIES[service.category] || { color: '#0891B2', icon: '🏥' }
+  const extraCats = (service.categories || []).filter(c => c && c !== service.category)
   return (
     <div style={{
       background: 'white', borderRadius: 20, padding: '20px',
@@ -67,9 +68,24 @@ function TreatmentCard({ service }) {
     >
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 8, gap: 8 }}>
         <div style={{ fontWeight: 800, fontSize: 15, color: '#0A3040', lineHeight: 1.3 }}>{service.name}</div>
-        <span style={{ background: cat.color, color: 'white', borderRadius: '999px', padding: '3px 10px', fontSize: 11, fontWeight: 700, whiteSpace: 'nowrap', flexShrink: 0 }}>
-          {service.category}
-        </span>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 4, alignItems: 'flex-end', flexShrink: 0 }}>
+          <span style={{ background: cat.color, color: 'white', borderRadius: '999px', padding: '3px 10px', fontSize: 11, fontWeight: 700, whiteSpace: 'nowrap' }}>
+            {service.category}
+          </span>
+          {service.subcategory && service.subcategory !== service.category && (
+            <span style={{ background: `${cat.color}22`, color: cat.color, borderRadius: '999px', padding: '2px 8px', fontSize: 10, fontWeight: 600, whiteSpace: 'nowrap' }}>
+              {service.subcategory}
+            </span>
+          )}
+          {extraCats.slice(0, 2).map(c => {
+            const ec = CATEGORIES[c] || { color: '#0891B2' }
+            return (
+              <span key={c} style={{ background: `${ec.color}22`, color: ec.color, borderRadius: '999px', padding: '2px 8px', fontSize: 10, fontWeight: 600, whiteSpace: 'nowrap' }}>
+                + {c}
+              </span>
+            )
+          })}
+        </div>
       </div>
       <div style={{ fontSize: 13, color: '#0891B2', fontWeight: 600, marginBottom: 10 }}>
         {service.city}{service.district ? `, ${service.district}` : ''}
