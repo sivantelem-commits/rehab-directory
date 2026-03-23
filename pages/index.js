@@ -1,14 +1,55 @@
 import { useRouter } from 'next/router'
 import Head from 'next/head'
+import { useState, useEffect } from 'react'
+
+const SITE_URL = 'https://rehabdirectoryil.vercel.app'
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: 'בריאות נפש בישראל',
+  url: SITE_URL,
+  description: 'פורטל שירותי בריאות נפש בישראל – שיקום וטיפול לפי אזור',
+  inLanguage: 'he',
+  potentialAction: {
+    '@type': 'SearchAction',
+    target: `${SITE_URL}/rehab?q={search_term_string}`,
+    'query-input': 'required name=search_term_string',
+  },
+}
 
 export default function Home() {
   const router = useRouter()
+  const [stats, setStats] = useState(null)
+
+  useEffect(() => {
+    fetch('/api/home-stats')
+      .then(r => r.ok ? r.json() : null)
+      .then(data => { if (data) setStats(data) })
+      .catch(() => {})
+  }, [])
 
   return (
     <>
       <Head>
         <title>בריאות נפש בישראל</title>
-        <meta name="description" content="פורטל שירותי בריאות נפש בישראל – שיקום וטיפול" />
+        <meta name="description" content="פורטל שירותי בריאות נפש בישראל – שיקום וטיפול לפי אזור" />
+        <link rel="canonical" href={SITE_URL} />
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content="בריאות נפש בישראל" />
+        <meta property="og:description" content="פורטל שירותי בריאות נפש בישראל – שיקום וטיפול לפי אזור" />
+        <meta property="og:url" content={SITE_URL} />
+        <meta property="og:image" content={`${SITE_URL}/icon-512.png`} />
+        <meta property="og:image:width" content="512" />
+        <meta property="og:image:height" content="512" />
+        <meta property="og:locale" content="he_IL" />
+        <meta property="og:site_name" content="בריאות נפש בישראל" />
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:image" content={`${SITE_URL}/icon-512.png`} />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
         <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
       </Head>
 
@@ -100,11 +141,33 @@ export default function Home() {
           <span style={{ marginRight: 'auto', fontSize: 18, color: '#a855f7' }}>←</span>
         </button>
 
-        {/* הערת מאגר */}
-        <div style={{ marginTop: 28, maxWidth: 460, textAlign: 'center', fontSize: 12, color: '#b8a8d0', lineHeight: 1.7, fontWeight: 500, padding: '12px 16px', background: 'rgba(255,255,255,0.5)', borderRadius: 12, border: '1px solid #e9d5ff' }}>
-          המאגר נבנה על סמך הרשמת השירותים - ייתכן שיש שירותים שטרם נוספו.
-          <br/>
-          <a href="/register" style={{ color: '#8B00D4', fontWeight: 700, textDecoration: 'none' }}>הוספת שירות ←</a>
+        {/* אינדיקטור חיות + הערת מאגר */}
+        <div style={{ marginTop: 28, maxWidth: 460, width: '100%', padding: '14px 18px', background: 'rgba(255,255,255,0.6)', borderRadius: 14, border: '1px solid #e9d5ff' }}>
+          {stats ? (
+            <div style={{ display: 'flex', justifyContent: 'center', gap: 28, marginBottom: 10 }}>
+              <div style={{ textAlign: 'center' }}>
+                <div style={{ fontSize: 22, fontWeight: 800, color: '#4C0080', lineHeight: 1 }}>{stats.rehabCount}</div>
+                <div style={{ fontSize: 11, color: '#9b88bb', fontWeight: 600, marginTop: 2 }}>שירותי שיקום</div>
+              </div>
+              <div style={{ width: 1, background: '#e9d5ff' }} />
+              <div style={{ textAlign: 'center' }}>
+                <div style={{ fontSize: 22, fontWeight: 800, color: '#0891B2', lineHeight: 1 }}>{stats.treatmentCount}</div>
+                <div style={{ fontSize: 11, color: '#9b88bb', fontWeight: 600, marginTop: 2 }}>שירותי טיפול</div>
+              </div>
+              <div style={{ width: 1, background: '#e9d5ff' }} />
+              <div style={{ textAlign: 'center' }}>
+                <div style={{ fontSize: 22, fontWeight: 800, color: '#1D9E75', lineHeight: 1 }}>{stats.total}</div>
+                <div style={{ fontSize: 11, color: '#9b88bb', fontWeight: 600, marginTop: 2 }}>סה"כ</div>
+              </div>
+            </div>
+          ) : (
+            <div style={{ height: 38, marginBottom: 10 }} />
+          )}
+          <div style={{ textAlign: 'center', fontSize: 12, color: '#b8a8d0', lineHeight: 1.7, fontWeight: 500 }}>
+            המאגר נבנה על סמך הרשמת השירותים – ייתכן שיש שירותים שטרם נוספו.
+            <br/>
+            <a href="/register" style={{ color: '#8B00D4', fontWeight: 700, textDecoration: 'none' }}>הוספת שירות ←</a>
+          </div>
         </div>
 
         </main>
