@@ -185,11 +185,12 @@ export default function Rehab() {
 
         {/* Hero + חיפוש */}
         <div style={{ background: 'linear-gradient(160deg, #4C0080, #8B00D4)', color: 'white', padding: '16px 20px', textAlign: 'center' }}>
-          <img src='/rehab-logo.png' alt='שיקום' style={{ width: 220, height: 220, objectFit: 'contain', marginBottom: -40, filter: 'invert(1) brightness(10)' }} />
+          <img src='/rehab-logo.png' alt='' role='presentation' style={{ width: 220, height: 220, objectFit: 'contain', marginBottom: -40, filter: 'invert(1) brightness(10)' }} />
           <h1 style={{ fontSize: 28, fontWeight: 800, margin: '0 0 8px', letterSpacing: '-0.3px' }}>שירותי שיקום</h1>
           <p style={{ fontSize: 15, opacity: 0.85, margin: '0 0 24px', fontWeight: 500 }}>מצאו שירותי שיקום בקהילה לפי אזור וקטגוריה</p>
           <div style={{ maxWidth: 480, margin: '0 auto' }}>
-            <input type="text" placeholder="חפשו לפי שם, עיר או תיאור..." value={search}
+            <label htmlFor="rehab-search" style={{ position: 'absolute', width: 1, height: 1, overflow: 'hidden', clip: 'rect(0,0,0,0)', whiteSpace: 'nowrap' }}>חיפוש שירותי שיקום</label>
+              <input id="rehab-search" type="text" placeholder="חפשו לפי שם, עיר או תיאור..." value={search}
               onChange={e => setSearch(e.target.value)}
               style={{
                 width: '100%', padding: '14px 22px', borderRadius: '999px', border: 'none',
@@ -219,7 +220,7 @@ export default function Rehab() {
             )
           })}
           <div style={{ marginRight: 'auto', fontSize: 13, color: '#9B00CC', fontWeight: 600 }}>
-            {loading ? 'טוען...' : `${services.length} שירותים`}
+            <span role="status" aria-live="polite" aria-atomic="true">{loading ? 'טוען...' : `${services.length} שירותים`}</span>
           </div>
         </div>
 
