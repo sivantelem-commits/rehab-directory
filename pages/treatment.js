@@ -123,7 +123,7 @@ export default function Treatment() {
   }
 
   const filterBtn = (label, active, onClick) => (
-    <button key={label} onClick={onClick} style={{
+    <button key={label} onClick={onClick} aria-pressed={active} style={{
       padding: '6px 14px', borderRadius: '999px', fontSize: 12, fontWeight: 600,
       border: `1.5px solid ${active ? COLOR : '#c8eaf2'}`,
       background: active ? COLOR : 'white', color: active ? 'white' : '#555',
@@ -144,8 +144,24 @@ export default function Treatment() {
         <meta property="og:title" content="שירותי טיפול פסיכיאטרי | בריאות נפש בישראל" />
         <meta property="og:description" content="בתים מאזנים, מחלקות אשפוז פסיכיאטרי, טיפול יום וחדרי מיון בישראל." />
         <meta property="og:url" content="https://rehabdirectoryil.vercel.app/treatment" />
+        <meta property="og:image" content="https://rehabdirectoryil.vercel.app/icon-512.png" />
+        <meta property="og:image:width" content="512" />
+        <meta property="og:image:height" content="512" />
         <meta property="og:locale" content="he_IL" />
         <meta property="og:site_name" content="בריאות נפש בישראל" />
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:image" content="https://rehabdirectoryil.vercel.app/icon-512.png" />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+          '@context': 'https://schema.org',
+          '@type': 'MedicalWebPage',
+          name: 'שירותי טיפול פסיכיאטרי',
+          url: 'https://rehabdirectoryil.vercel.app/treatment',
+          description: 'בתים מאזנים, מחלקות אשפוז פסיכיאטרי, טיפול יום וחדרי מיון בישראל.',
+          inLanguage: 'he',
+          about: { '@type': 'MedicalCondition', name: 'בריאות נפש' },
+          audience: { '@type': 'Patient' },
+          isPartOf: { '@type': 'WebSite', name: 'בריאות נפש בישראל', url: 'https://rehabdirectoryil.vercel.app' },
+        })}} />
         <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
       </Head>
 
