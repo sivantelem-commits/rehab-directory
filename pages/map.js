@@ -352,7 +352,7 @@ export default function MapPage() {
         </header>
 
         <div style={{ background: 'white', borderBottom: '1px solid #e0e0e0', padding: '10px 16px', display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'center' }}>
-          <label htmlFor="map-district" style={{ position: 'absolute', width: 1, height: 1, overflow: 'hidden', clip: 'rect(0,0,0,0)', whiteSpace: 'nowrap' }}>סינון לפי מחוז</label>
+          <label htmlFor="map-district" style={{ display: 'block', position: 'absolute', width: 1, height: 1, overflow: 'hidden', clip: 'rect(0,0,0,0)', whiteSpace: 'nowrap' }}>סינון לפי מחוז</label>
           <select id="map-district" value={district} onChange={e => setDistrict(e.target.value)} style={sel}>
             {DISTRICTS.map(d => <option key={d}>{d}</option>)}
           </select>
@@ -364,11 +364,13 @@ export default function MapPage() {
               ♿ שיקום
             </button>
             {showRehab && (
-              <label htmlFor="map-rehab-cat" style={{ position: 'absolute', width: 1, height: 1, overflow: 'hidden', clip: 'rect(0,0,0,0)', whiteSpace: 'nowrap' }}>קטגוריית שיקום</label>
-              <select id="map-rehab-cat" value={rehabCategory} onChange={e => { setRehabCategory(e.target.value); setRehabSubcategory('הכל') }} style={{ ...sel, borderColor: '#8B00D4' }}>
-                <option value="הכל">כל הקטגוריות</option>
-                {Object.keys(REHAB_COLORS).map(c => <option key={c}>{c}</option>)}
-              </select>
+              <>
+                <label htmlFor="map-rehab-cat" style={{ position: 'absolute', width: 1, height: 1, overflow: 'hidden', clip: 'rect(0,0,0,0)', whiteSpace: 'nowrap' }}>קטגוריית שיקום</label>
+                <select id="map-rehab-cat" value={rehabCategory} onChange={e => { setRehabCategory(e.target.value); setRehabSubcategory('הכל') }} style={{ ...sel, borderColor: '#8B00D4' }}>
+                  <option value="הכל">כל הקטגוריות</option>
+                  {Object.keys(REHAB_COLORS).map(c => <option key={c}>{c}</option>)}
+                </select>
+              </>
             )}
           </div>
 
@@ -379,11 +381,13 @@ export default function MapPage() {
               🏥 טיפול
             </button>
             {showTreatment && (
-              <label htmlFor="map-treatment-cat" style={{ position: 'absolute', width: 1, height: 1, overflow: 'hidden', clip: 'rect(0,0,0,0)', whiteSpace: 'nowrap' }}>קטגוריית טיפול</label>
-              <select id="map-treatment-cat" value={treatmentCategory} onChange={e => setTreatmentCategory(e.target.value)} style={{ ...sel, borderColor: '#0891B2' }}>
-                <option value="הכל">כל הקטגוריות</option>
-                {Object.keys(TREATMENT_COLORS).map(c => <option key={c}>{c}</option>)}
-              </select>
+              <>
+                <label htmlFor="map-treatment-cat" style={{ position: 'absolute', width: 1, height: 1, overflow: 'hidden', clip: 'rect(0,0,0,0)', whiteSpace: 'nowrap' }}>קטגוריית טיפול</label>
+                <select id="map-treatment-cat" value={treatmentCategory} onChange={e => setTreatmentCategory(e.target.value)} style={{ ...sel, borderColor: '#0891B2' }}>
+                  <option value="הכל">כל הקטגוריות</option>
+                  {Object.keys(TREATMENT_COLORS).map(c => <option key={c}>{c}</option>)}
+                </select>
+              </>
             )}
           </div>
 
