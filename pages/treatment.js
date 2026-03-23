@@ -1,41 +1,38 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import Head from 'next/head'
-import { getCategoryColor } from '../../lib/categories'
+
+const CATEGORIES = {
+  'בתים מאזנים': { color: '#0A3040', icon: '🏠' },
+  'מחלקות אשפוז': { color: '#1565A8', icon: '🏥' },
+  'טיפול יום': { color: '#0891B2', icon: '☀️' },
+  'מרפאות בריאות נפש': { color: '#0284C7', icon: '🏨' },
+  'חדרי מיון': { color: '#06B6D4', icon: '🚨' },
+  'שירותים נוספים': { color: '#0A6080', icon: '➕' },
+}
 
 const NAV = [['/', 'ראשי'], ['/rehab', 'שיקום'], ['/treatment', 'טיפול'], ['/map', 'מפה'], ['/register', 'הוספת שירות'], ['/about', 'אודות'], ['/contact', 'צור קשר'], ['/admin', 'ניהול']]
 const BASE_URL = 'https://rehabdirectoryil.vercel.app'
 
-export default function ServicePage() {
+export default function TreatmentServicePage() {
   const router = useRouter()
   const { id } = router.query
   const [service, setService] = useState(null)
   const [loading, setLoading] = useState(true)
   const [mounted, setMounted] = useState(false)
   const [copied, setCopied] = useState(false)
-  const [backUrl, setBackUrl] = useState('/rehab')
-
-  useEffect(() => {
-    // שמור את הדף הקודם כדי לחזור אליו עם הפילטרים
-    if (document.referrer && document.referrer.includes(window.location.host)) {
-      setBackUrl(document.referrer.replace(window.location.origin, ''))
-    } else if (window.history.length > 1) {
-      setBackUrl(null) // יחזיר אחורה
-    }
-  }, [])
 
   useEffect(() => { setMounted(true) }, [])
 
   useEffect(() => {
     if (!id) return
-    fetch(`/api/services?id=${id}`)
-      .then(r => r.ok ? r.json() : null)
+    fetch(`/api/treatment?id=${id}`)
+      .then(r => r.json())
       .then(data => {
-        if (!data) { setLoading(false); return }
-        setService(Array.isArray(data) ? data.find(s => s.id === id) : (data?.id ? data : null))
+        const found = Array.isArray(data) ? data.find(s => s.id === id) : null
+        setService(found || null)
         setLoading(false)
       })
-      .catch(() => setLoading(false))
   }, [id])
 
   const copyLink = () => {
@@ -45,7 +42,7 @@ export default function ServicePage() {
   }
 
   const shareWhatsApp = () => {
-    const text = `${service.name} – שירות שיקום ב${service.city}\n${window.location.href}`
+    const text = `${service.name} – שירות טיפולי ב${service.city}\n${window.location.href}`
     window.open(`https://wa.me/?text=${encodeURIComponent(text)}`)
   }
 
@@ -56,24 +53,24 @@ export default function ServicePage() {
   if (!mounted) return null
 
   if (loading) return (
-    <div dir="rtl" style={{ fontFamily: "'Nunito', sans-serif", minHeight: '100vh', background: '#f7f0ff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      <div style={{ color: '#8B00D4', fontSize: 18, fontWeight: 700 }}>טוען...</div>
+    <div dir="rtl" style={{ fontFamily: "'Nunito', sans-serif", minHeight: '100vh', background: '#f0faff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <div style={{ color: '#0891B2', fontSize: 18, fontWeight: 700 }}>טוען...</div>
     </div>
   )
 
   if (!service) return (
-    <div dir="rtl" style={{ fontFamily: "'Nunito', sans-serif", minHeight: '100vh', background: '#f7f0ff', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: 16 }}>
+    <div dir="rtl" style={{ fontFamily: "'Nunito', sans-serif", minHeight: '100vh', background: '#f0faff', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: 16 }}>
       <div style={{ fontSize: 48 }}>😕</div>
-      <div style={{ fontSize: 18, color: '#8B00D4', fontWeight: 700 }}>השירות לא נמצא</div>
-      <button onClick={() => router.push('/rehab')} style={{ background: 'linear-gradient(160deg, #8B00D4, #4C0080)', color: 'white', border: 'none', borderRadius: '999px', padding: '10px 24px', fontWeight: 700, cursor: 'pointer', fontFamily: "'Nunito', sans-serif", boxShadow: '0 4px 0 #2E0060' }}>חזרה לרשימה</button>
+      <div style={{ fontSize: 18, color: '#0891B2', fontWeight: 700 }}>השירות לא נמצא</div>
+      <button onClick={() => router.push('/treatment')} style={{ background: 'linear-gradient(160deg, #0891B2, #164E63)', color: 'white', border: 'none', borderRadius: '999px', padding: '10px 24px', fontWeight: 700, cursor: 'pointer', fontFamily: "'Nunito', sans-serif", boxShadow: '0 4px 0 #0A3040' }}>חזרה לרשימה</button>
     </div>
   )
 
-  const color = getCategoryColor(service.category, service.subcategory)
-  const pageUrl = `${BASE_URL}/service/${id}`
+  const cat = CATEGORIES[service.category] || { color: '#0891B2', icon: '🏥' }
+  const pageUrl = `${BASE_URL}/treatment/${id}`
   const pageDesc = service.description
     ? service.description.slice(0, 155)
-    : `${service.category}${service.subcategory ? ` – ${service.subcategory}` : ''} ב${service.city}. שירות שיקום בקהילה.`
+    : `${service.category} ב${service.city}. שירות טיפולי בבריאות הנפש.`
 
   return (
     <>
@@ -115,7 +112,7 @@ export default function ServicePage() {
               "@type": "BreadcrumbList",
               "itemListElement": [
                 { "@type": "ListItem", "position": 1, "name": "בריאות נפש בישראל", "item": BASE_URL },
-                { "@type": "ListItem", "position": 2, "name": "שירותי שיקום", "item": `${BASE_URL}/rehab` },
+                { "@type": "ListItem", "position": 2, "name": "שירותי טיפול", "item": `${BASE_URL}/treatment` },
                 { "@type": "ListItem", "position": 3, "name": service.name, "item": pageUrl },
               ]
             }
@@ -123,19 +120,19 @@ export default function ServicePage() {
         }) }} />
         <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
       </Head>
-      <div dir="rtl" style={{ fontFamily: "'Nunito', sans-serif", minHeight: '100vh', background: '#f7f0ff' }}>
+      <div dir="rtl" style={{ fontFamily: "'Nunito', sans-serif", minHeight: '100vh', background: '#f0faff' }}>
 
         <header style={{
-          background: 'linear-gradient(135deg, #2E0060, #8B00D4)',
+          background: 'linear-gradient(135deg, #164E63, #0891B2)',
           color: 'white', padding: '10px 20px',
           display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-          boxShadow: '0 2px 12px rgba(76,0,128,0.2)', flexWrap: 'wrap', gap: 8,
+          boxShadow: '0 2px 12px rgba(22,78,99,0.2)', flexWrap: 'wrap', gap: 8,
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
             <img src="/logo.png" alt="לוגו" style={{ width: 44, height: 44, objectFit: 'contain', filter: 'brightness(0) invert(1)' }} />
             <div>
               <div style={{ fontWeight: 800, fontSize: 18 }}>בריאות נפש בישראל</div>
-              <div style={{ fontSize: 11, opacity: 0.8 }}>שירותי שיקום בקהילה</div>
+              <div style={{ fontSize: 11, opacity: 0.8 }}>שירותי טיפול</div>
             </div>
           </div>
           <nav style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
@@ -150,33 +147,32 @@ export default function ServicePage() {
         </header>
 
         {/* breadcrumb + חזרה */}
-        <div style={{ background: 'linear-gradient(160deg, #4C0080, #8B00D4)', padding: '12px 20px', display: 'flex', alignItems: 'center', gap: 8 }}>
-          <button onClick={() => backUrl ? router.push(backUrl) : router.back()} style={{
+        <div style={{ background: 'linear-gradient(160deg, #164E63, #0891B2)', padding: '12px 20px', display: 'flex', alignItems: 'center', gap: 8 }}>
+          <button onClick={() => router.push('/treatment')} style={{
             background: 'rgba(255,255,255,0.15)', border: '1.5px solid rgba(255,255,255,0.3)',
             color: 'white', borderRadius: '999px', padding: '6px 14px',
             cursor: 'pointer', fontSize: 13, fontWeight: 600,
             fontFamily: "'Nunito', sans-serif",
-          }}>← חזרה לרשימה</button>
+          }}>🏥 טיפול</button>
           <span style={{ color: 'rgba(255,255,255,0.5)', fontSize: 14 }}>←</span>
           <span style={{ color: 'rgba(255,255,255,0.9)', fontSize: 13, fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: 200 }}>{service.name}</span>
         </div>
 
         <main style={{ maxWidth: 720, margin: '0 auto', padding: '24px 16px' }}>
-          <div style={{ background: 'white', borderRadius: 20, overflow: 'hidden', boxShadow: '0 4px 24px rgba(76,0,128,0.1)', border: '1.5px solid #d4b0f0' }}>
-            <div style={{ height: 8, background: color }} />
+          <div style={{ background: 'white', borderRadius: 20, overflow: 'hidden', boxShadow: '0 4px 24px rgba(8,145,178,0.1)', border: '1.5px solid #a0d8e8' }}>
+            <div style={{ height: 8, background: cat.color }} />
             <div style={{ padding: '24px 20px' }}>
 
               <div style={{ display: 'flex', gap: 8, marginBottom: 14, flexWrap: 'wrap' }}>
-                <span style={{ background: color, color: 'white', borderRadius: '999px', padding: '4px 14px', fontSize: 13, fontWeight: 700 }}>{service.category}</span>
-                {service.subcategory && <span style={{ background: `${color}22`, color, borderRadius: '999px', padding: '4px 14px', fontSize: 13, fontWeight: 600 }}>{service.subcategory}</span>}
+                <span style={{ background: cat.color, color: 'white', borderRadius: '999px', padding: '4px 14px', fontSize: 13, fontWeight: 700 }}>{cat.icon} {service.category}</span>
                 {service.is_national && <span style={{ background: '#EEF2FF', color: '#1A3A5C', borderRadius: '999px', padding: '4px 14px', fontSize: 13, fontWeight: 700 }}>🌍 פריסה ארצית</span>}
               </div>
 
-              <h1 style={{ fontSize: 24, fontWeight: 800, color: '#4C0080', margin: '0 0 8px' }}>{service.name}</h1>
+              <h1 style={{ fontSize: 24, fontWeight: 800, color: '#0A6080', margin: '0 0 8px' }}>{service.name}</h1>
               <div style={{ fontSize: 14, color: '#888', marginBottom: 20 }}>📍 {service.address || service.city}{service.district ? `, ${service.district}` : ''}</div>
 
               {service.description && (
-                <div style={{ background: '#f7f0ff', borderRadius: 12, padding: '16px', marginBottom: 20, fontSize: 14, color: '#334', lineHeight: 1.7 }}>
+                <div style={{ background: '#f0faff', borderRadius: 12, padding: '16px', marginBottom: 20, fontSize: 14, color: '#334', lineHeight: 1.7 }}>
                   {service.description}
                 </div>
               )}
@@ -189,25 +185,25 @@ export default function ServicePage() {
                   </a>
                 )}
                 {service.email && (
-                  <a href={`mailto:${service.email}`} style={{ display: 'flex', alignItems: 'center', gap: 8, background: '#f7f0ff', border: '1.5px solid #d4b0f0', borderRadius: 14, padding: '12px 14px', textDecoration: 'none', color: '#4C0080' }}>
+                  <a href={`mailto:${service.email}`} style={{ display: 'flex', alignItems: 'center', gap: 8, background: '#f0faff', border: '1.5px solid #a0d8e8', borderRadius: 14, padding: '12px 14px', textDecoration: 'none', color: '#0A6080' }}>
                     <span style={{ fontSize: 20 }}>✉️</span>
                     <div><div style={{ fontSize: 10, opacity: 0.7 }}>מייל</div><div style={{ fontWeight: 700, fontSize: 12, wordBreak: 'break-all' }}>{service.email}</div></div>
                   </a>
                 )}
                 {service.website && (
-                  <a href={service.website} target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center', gap: 8, background: '#f7f0ff', border: '1.5px solid #d4b0f0', borderRadius: 14, padding: '12px 14px', textDecoration: 'none', color: '#4C0080', gridColumn: 'span 2' }}>
+                  <a href={service.website} target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center', gap: 8, background: '#f0faff', border: '1.5px solid #a0d8e8', borderRadius: 14, padding: '12px 14px', textDecoration: 'none', color: '#0A6080', gridColumn: 'span 2' }}>
                     <span style={{ fontSize: 20 }}>🌐</span>
                     <div><div style={{ fontSize: 10, opacity: 0.7 }}>אתר אינטרנט</div><div style={{ fontWeight: 700, fontSize: 12, wordBreak: 'break-all' }}>{service.website}</div></div>
                   </a>
                 )}
               </div>
 
-              {service.lat && <RehabMap service={service} color={color} />}
+              {service.lat && <TreatmentMap service={service} color={cat.color} />}
 
               {/* כפתורי שיתוף */}
               <div style={{ display: 'flex', gap: 10, marginTop: 20, flexWrap: 'wrap' }}>
                 <button onClick={shareWhatsApp} style={{ flex: 1, background: '#25D366', color: 'white', border: 'none', borderRadius: '999px', padding: '12px 0', fontWeight: 700, fontSize: 14, cursor: 'pointer', fontFamily: "'Nunito', sans-serif" }}>💬 וואטסאפ</button>
-                <button onClick={copyLink} style={{ flex: 1, background: '#f7f0ff', color: '#4C0080', border: '1.5px solid #d4b0f0', borderRadius: '999px', padding: '12px 0', fontWeight: 700, fontSize: 14, cursor: 'pointer', fontFamily: "'Nunito', sans-serif" }}>
+                <button onClick={copyLink} style={{ flex: 1, background: '#f0faff', color: '#0A6080', border: '1.5px solid #a0d8e8', borderRadius: '999px', padding: '12px 0', fontWeight: 700, fontSize: 14, cursor: 'pointer', fontFamily: "'Nunito', sans-serif" }}>
                   {copied ? '✓ הועתק!' : '🔗 קישור'}
                 </button>
               </div>
@@ -227,7 +223,7 @@ export default function ServicePage() {
         </main>
 
         <footer style={{
-          background: 'linear-gradient(135deg, #2E0060, #4C0080)',
+          background: 'linear-gradient(135deg, #0A3040, #164E63)',
           color: 'rgba(255,255,255,0.75)', textAlign: 'center',
           padding: '24px', fontSize: 13, marginTop: 48, fontWeight: 500,
         }}>
@@ -241,12 +237,12 @@ export default function ServicePage() {
   )
 }
 
-function RehabMap({ service, color }) {
+function TreatmentMap({ service, color }) {
   useEffect(() => {
     if (typeof window === 'undefined') return
     const L = require('leaflet')
     require('leaflet/dist/leaflet.css')
-    const map = L.map('rehab-map').setView([service.lat, service.lng], 15)
+    const map = L.map('treatment-map').setView([service.lat, service.lng], 15)
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map)
     const icon = L.divIcon({
       html: `<div style="background:${color};width:16px;height:16px;border-radius:50%;border:2px solid white;box-shadow:0 2px 6px rgba(0,0,0,0.3)"></div>`,
@@ -255,5 +251,5 @@ function RehabMap({ service, color }) {
     L.marker([service.lat, service.lng], { icon }).addTo(map)
     return () => map.remove()
   }, [])
-  return <div id="rehab-map" style={{ height: 200, borderRadius: 12, overflow: 'hidden', marginBottom: 20 }} />
+  return <div id="treatment-map" style={{ height: 200, borderRadius: 12, overflow: 'hidden', marginBottom: 20 }} />
 }
