@@ -1,42 +1,44 @@
+// pages/treatment/[id].js
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import Head from 'next/head'
+import { createClient } from '@supabase/supabase-js'
 
 const CATEGORIES = {
-  'בתים מאזנים': { color: '#0A3040', icon: '🏠' },
-  'מחלקות אשפוז': { color: '#1565A8', icon: '🏥' },
-  'טיפול יום': { color: '#0891B2', icon: '☀️' },
-  'מרפאות בריאות נפש': { color: '#0284C7', icon: '🏨' },
-  'חדרי מיון': { color: '#06B6D4', icon: '🚨' },
-  'שירותים נוספים': { color: '#0A6080', icon: '➕' },
+  'בתים מאזנים': { color: '#0A3040' },
+  'מחלקות אשפוז': { color: '#1565A8' },
+  'טיפול יום': { color: '#0891B2' },
+  'מרפאות בריאות נפש': { color: '#0284C7' },
+  'חדרי מיון': { color: '#06B6D4' },
+  'שירותים נוספים': { color: '#0A6080' },
 }
 
 const NAV = [['/', 'ראשי'], ['/rehab', 'שיקום'], ['/treatment', 'טיפול'], ['/map', 'מפה'], ['/register', 'הוספת שירות'], ['/about', 'אודות'], ['/contact', 'צור קשר'], ['/admin', 'ניהול']]
 const BASE_URL = 'https://rehabdirectoryil.vercel.app'
 
-export default function TreatmentServicePage() {
+export async function getServerSideProps({ params }) {
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL,
+    process.env.SUPABASE_SERVICE_ROLE_KEY
+  )
+  const { data, error } = await supabase
+    .from('treatment_services')
+    .select('*')
+    .eq('id', params.id)
+    .eq('status', 'approved')
+    .single()
+
+  if (error || !data) return { notFound: true }
+  return { props: { initialService: data } }
+}
+
+export default function TreatmentServicePage({ initialService }) {
   const router = useRouter()
-  const { id } = router.query
-  const [service, setService] = useState(null)
-  const [loading, setLoading] = useState(true)
+  const [service] = useState(initialService)
   const [mounted, setMounted] = useState(false)
   const [copied, setCopied] = useState(false)
 
   useEffect(() => { setMounted(true) }, [])
-
-  useEffect(() => {
-    if (!id) return
-    fetch(`/api/treatment?id=${id}`)
-      .then(r => r.json())
-      .then(data => {
-        setService(data && data.id ? data : null)
-        setLoading(false)
-      })
-      .catch(() => {
-        setService(null)
-        setLoading(false)
-      })
-  }, [id])
 
   const copyLink = () => {
     navigator.clipboard.writeText(window.location.href)
@@ -53,24 +55,8 @@ export default function TreatmentServicePage() {
     router.push(`/contact?type=fix&serviceName=${encodeURIComponent(service.name)}`)
   }
 
-  if (!mounted) return null
-
-  if (loading) return (
-    <div dir="rtl" style={{ fontFamily: "'Nunito', sans-serif", minHeight: '100vh', background: '#f0faff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      <div style={{ color: '#0891B2', fontSize: 18, fontWeight: 700 }}>טוען...</div>
-    </div>
-  )
-
-  if (!service) return (
-    <div dir="rtl" style={{ fontFamily: "'Nunito', sans-serif", minHeight: '100vh', background: '#f0faff', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: 16 }}>
-      <div style={{ fontSize: 48 }}>😕</div>
-      <div style={{ fontSize: 18, color: '#0891B2', fontWeight: 700 }}>השירות לא נמצא</div>
-      <button onClick={() => router.push('/treatment')} style={{ background: 'linear-gradient(160deg, #0891B2, #164E63)', color: 'white', border: 'none', borderRadius: '999px', padding: '10px 24px', fontWeight: 700, cursor: 'pointer', fontFamily: "'Nunito', sans-serif", boxShadow: '0 4px 0 #0A3040' }}>חזרה לרשימה</button>
-    </div>
-  )
-
-  const cat = CATEGORIES[service.category] || { color: '#0891B2', icon: '🏥' }
-  const pageUrl = `${BASE_URL}/treatment/${id}`
+  const cat = CATEGORIES[service.category] || { color: '#0891B2' }
+  const pageUrl = `${BASE_URL}/treatment/${service.id}`
   const pageDesc = service.description
     ? service.description.slice(0, 155)
     : `${service.category} ב${service.city}. שירות טיפולי בבריאות הנפש.`
@@ -123,6 +109,7 @@ export default function TreatmentServicePage() {
         }) }} />
         <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
       </Head>
+
       <div dir="rtl" style={{ fontFamily: "'Nunito', sans-serif", minHeight: '100vh', background: '#f0faff' }}>
 
         <header style={{
@@ -149,14 +136,13 @@ export default function TreatmentServicePage() {
           </nav>
         </header>
 
-        {/* breadcrumb + חזרה */}
         <div style={{ background: 'linear-gradient(160deg, #164E63, #0891B2)', padding: '12px 20px', display: 'flex', alignItems: 'center', gap: 8 }}>
           <button onClick={() => router.push('/treatment')} style={{
             background: 'rgba(255,255,255,0.15)', border: '1.5px solid rgba(255,255,255,0.3)',
             color: 'white', borderRadius: '999px', padding: '6px 14px',
             cursor: 'pointer', fontSize: 13, fontWeight: 600,
             fontFamily: "'Nunito', sans-serif",
-          }}>🏥 טיפול</button>
+          }}>טיפול</button>
           <span style={{ color: 'rgba(255,255,255,0.5)', fontSize: 14 }}>←</span>
           <span style={{ color: 'rgba(255,255,255,0.9)', fontSize: 13, fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: 200 }}>{service.name}</span>
         </div>
@@ -167,12 +153,17 @@ export default function TreatmentServicePage() {
             <div style={{ padding: '24px 20px' }}>
 
               <div style={{ display: 'flex', gap: 8, marginBottom: 14, flexWrap: 'wrap' }}>
-                <span style={{ background: cat.color, color: 'white', borderRadius: '999px', padding: '4px 14px', fontSize: 13, fontWeight: 700 }}>{cat.icon} {service.category}</span>
-                {service.is_national && <span style={{ background: '#EEF2FF', color: '#1A3A5C', borderRadius: '999px', padding: '4px 14px', fontSize: 13, fontWeight: 700 }}>🌍 פריסה ארצית</span>}
+                <span style={{ background: cat.color, color: 'white', borderRadius: '999px', padding: '4px 14px', fontSize: 13, fontWeight: 700 }}>{service.category}</span>
+                {service.subcategory && service.subcategory !== service.category && (
+                  <span style={{ background: `${cat.color}22`, color: cat.color, borderRadius: '999px', padding: '4px 14px', fontSize: 13, fontWeight: 600 }}>{service.subcategory}</span>
+                )}
+                {service.is_national && <span style={{ background: '#EEF2FF', color: '#1A3A5C', borderRadius: '999px', padding: '4px 14px', fontSize: 13, fontWeight: 700 }}>פריסה ארצית</span>}
               </div>
 
               <h1 style={{ fontSize: 24, fontWeight: 800, color: '#0A6080', margin: '0 0 8px' }}>{service.name}</h1>
-              <div style={{ fontSize: 14, color: '#888', marginBottom: 20 }}>📍 {service.address || service.city}{service.district ? `, ${service.district}` : ''}</div>
+              <div style={{ fontSize: 14, color: '#888', marginBottom: 20 }}>
+                {service.address || service.city}{service.district ? `, ${service.district}` : ''}
+              </div>
 
               {service.description && (
                 <div style={{ background: '#f0faff', borderRadius: 12, padding: '16px', marginBottom: 20, fontSize: 14, color: '#334', lineHeight: 1.7 }}>
@@ -201,9 +192,8 @@ export default function TreatmentServicePage() {
                 )}
               </div>
 
-              {service.lat && <TreatmentMap service={service} color={cat.color} />}
+              {mounted && service.lat && <TreatmentMap service={service} color={cat.color} />}
 
-              {/* כפתורי שיתוף */}
               <div style={{ display: 'flex', gap: 10, marginTop: 20, flexWrap: 'wrap' }}>
                 <button onClick={shareWhatsApp} style={{ flex: 1, background: '#25D366', color: 'white', border: 'none', borderRadius: '999px', padding: '12px 0', fontWeight: 700, fontSize: 14, cursor: 'pointer', fontFamily: "'Nunito', sans-serif" }}>💬 וואטסאפ</button>
                 <button onClick={copyLink} style={{ flex: 1, background: '#f0faff', color: '#0A6080', border: '1.5px solid #a0d8e8', borderRadius: '999px', padding: '12px 0', fontWeight: 700, fontSize: 14, cursor: 'pointer', fontFamily: "'Nunito', sans-serif" }}>
@@ -211,7 +201,6 @@ export default function TreatmentServicePage() {
                 </button>
               </div>
 
-              {/* דווח על שגיאה */}
               <div style={{ marginTop: 16, textAlign: 'center' }}>
                 <button onClick={reportError} style={{
                   background: 'none', border: 'none', color: '#aaa', fontSize: 12,
