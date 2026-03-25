@@ -125,7 +125,7 @@ export default function Rehab() {
     <>
       <Head>
         <title>שירותי שיקום בקהילה | בריאות נפש בישראל</title>
-        <meta name="description" content="מאגר שירותי סל שיקום בקהילה – דיור, תעסוקה, השכלה וליווי לפי אזור בישראל." />
+        <meta name="description" content="מאגר שירותי סל שיקום בקהילה בישראל – דיור מוגן, תעסוקה נתמכת, השכלה וליווי שיקומי לפי אזור. מצאו שירות שיקום מתאים בצפון, מרכז, תל אביב, ירושלים ודרום." />
         <meta name="robots" content="index, follow" />
         <link rel="canonical" href="https://rehabdirectoryil.vercel.app/rehab" />
         <meta property="og:type" content="website" />
@@ -202,8 +202,11 @@ export default function Rehab() {
         {/* Hero + חיפוש */}
         <div style={{ background: 'linear-gradient(160deg, #4C0080, #8B00D4)', color: 'white', padding: '16px 20px', textAlign: 'center' }}>
           <img src='/rehab-logo.png' alt='' role='presentation' style={{ width: 220, height: 220, objectFit: 'contain', marginBottom: -40, filter: 'invert(1) brightness(10)' }} />
-          <h1 style={{ fontSize: 28, fontWeight: 800, margin: '0 0 8px', letterSpacing: '-0.3px' }}>שירותי שיקום</h1>
-          <p style={{ fontSize: 15, opacity: 0.85, margin: '0 0 24px', fontWeight: 500 }}>מצאו שירותי שיקום בקהילה לפי אזור וקטגוריה</p>
+          <h1 style={{ fontSize: 28, fontWeight: 800, margin: '0 0 8px', letterSpacing: '-0.3px' }}>שירותי שיקום בקהילה בישראל</h1>
+          <p style={{ fontSize: 15, opacity: 0.85, margin: '0 0 8px', fontWeight: 500 }}>מצאו שירותי שיקום בקהילה לפי אזור וקטגוריה</p>
+          <p style={{ fontSize: 13, opacity: 0.75, margin: '0 0 20px', fontWeight: 400, maxWidth: 520, lineHeight: 1.6 }}>
+            מאגר שירותי סל שיקום בקהילה – דיור מוגן, תעסוקה נתמכת, השכלה, חברה ופנאי וליווי שיקומי לאנשים עם מוגבלות נפשית בכל רחבי ישראל. סינון לפי מחוז, קטגוריה, גיל ואבחנה.
+          </p>
           <div style={{ maxWidth: 480, margin: '0 auto' }}>
             <label htmlFor="rehab-search" style={{ position: 'absolute', width: 1, height: 1, overflow: 'hidden', clip: 'rect(0,0,0,0)', whiteSpace: 'nowrap' }}>חיפוש שירותי שיקום</label>
               <input id="rehab-search" type="text" placeholder="חפשו לפי שם, עיר או תיאור..." value={search}
