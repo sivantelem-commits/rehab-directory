@@ -140,7 +140,7 @@ export default function Home() {
             <span style={{ fontSize: 22 }}>🧭</span>
             <div style={{ textAlign: 'right' }}>
               <div style={{ fontSize: 16, fontWeight: 800 }}>מחשבון איתור מסלול</div>
-              <div style={{ fontSize: 12, fontWeight: 500, color: '#9b88bb', marginTop: 2 }}>8 שאלות קצרות - וקבל המלצה מותאמת אישית</div>
+              <div style={{ fontSize: 12, fontWeight: 500, color: '#9b88bb', marginTop: 2 }}>7 שאלות קצרות - וקבל המלצה מותאמת אישית</div>
             </div>
             <span style={{ marginRight: 'auto', fontSize: 18, color: '#a855f7' }}>←</span>
           </button>
