@@ -1,42 +1,45 @@
+// pages/service/[id].js
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import Head from 'next/head'
 import { getCategoryColor } from '../../lib/categories'
+import { createClient } from '@supabase/supabase-js'
 
 const NAV = [['/', 'ראשי'], ['/rehab', 'שיקום'], ['/treatment', 'טיפול'], ['/map', 'מפה'], ['/register', 'הוספת שירות'], ['/about', 'אודות'], ['/contact', 'צור קשר'], ['/admin', 'ניהול']]
 const BASE_URL = 'https://rehabdirectoryil.vercel.app'
 
-export default function ServicePage() {
+export async function getServerSideProps({ params }) {
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL,
+    process.env.SUPABASE_SERVICE_ROLE_KEY
+  )
+  const { data, error } = await supabase
+    .from('services')
+    .select('*')
+    .eq('id', params.id)
+    .eq('status', 'approved')
+    .single()
+
+  if (error || !data) return { notFound: true }
+  return { props: { initialService: data } }
+}
+
+export default function ServicePage({ initialService }) {
   const router = useRouter()
   const { id } = router.query
-  const [service, setService] = useState(null)
-  const [loading, setLoading] = useState(true)
+  const [service] = useState(initialService)
   const [mounted, setMounted] = useState(false)
   const [copied, setCopied] = useState(false)
   const [backUrl, setBackUrl] = useState('/rehab')
 
   useEffect(() => {
-    // שמור את הדף הקודם כדי לחזור אליו עם הפילטרים
+    setMounted(true)
     if (document.referrer && document.referrer.includes(window.location.host)) {
       setBackUrl(document.referrer.replace(window.location.origin, ''))
     } else if (window.history.length > 1) {
-      setBackUrl(null) // יחזיר אחורה
+      setBackUrl(null)
     }
   }, [])
-
-  useEffect(() => { setMounted(true) }, [])
-
-  useEffect(() => {
-    if (!id) return
-    fetch(`/api/services?id=${id}`)
-      .then(r => r.ok ? r.json() : null)
-      .then(data => {
-        if (!data) { setLoading(false); return }
-        setService(Array.isArray(data) ? data.find(s => s.id === id) : (data?.id ? data : null))
-        setLoading(false)
-      })
-      .catch(() => setLoading(false))
-  }, [id])
 
   const copyLink = () => {
     navigator.clipboard.writeText(window.location.href)
@@ -53,24 +56,8 @@ export default function ServicePage() {
     router.push(`/contact?type=fix&serviceName=${encodeURIComponent(service.name)}`)
   }
 
-  if (!mounted) return null
-
-  if (loading) return (
-    <div dir="rtl" style={{ fontFamily: "'Nunito', sans-serif", minHeight: '100vh', background: '#f7f0ff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      <div style={{ color: '#8B00D4', fontSize: 18, fontWeight: 700 }}>טוען...</div>
-    </div>
-  )
-
-  if (!service) return (
-    <div dir="rtl" style={{ fontFamily: "'Nunito', sans-serif", minHeight: '100vh', background: '#f7f0ff', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: 16 }}>
-      <div style={{ fontSize: 48 }}>😕</div>
-      <div style={{ fontSize: 18, color: '#8B00D4', fontWeight: 700 }}>השירות לא נמצא</div>
-      <button onClick={() => router.push('/rehab')} style={{ background: 'linear-gradient(160deg, #8B00D4, #4C0080)', color: 'white', border: 'none', borderRadius: '999px', padding: '10px 24px', fontWeight: 700, cursor: 'pointer', fontFamily: "'Nunito', sans-serif", boxShadow: '0 4px 0 #2E0060' }}>חזרה לרשימה</button>
-    </div>
-  )
-
   const color = getCategoryColor(service.category, service.subcategory)
-  const pageUrl = `${BASE_URL}/service/${id}`
+  const pageUrl = `${BASE_URL}/service/${service.id}`
   const pageDesc = service.description
     ? service.description.slice(0, 155)
     : `${service.category}${service.subcategory ? ` – ${service.subcategory}` : ''} ב${service.city}. שירות שיקום בקהילה.`
@@ -83,6 +70,11 @@ export default function ServicePage() {
         <meta name="robots" content="index, follow" />
         <link rel="canonical" href={pageUrl} />
         <meta property="og:type" content="website" />
+        <meta property="og:title" content={`${service.name} – ${service.city} | בריאות נפש בישראל`} />
+        <meta property="og:description" content={pageDesc} />
+        <meta property="og:url" content={pageUrl} />
+        <meta property="og:locale" content="he_IL" />
+        <meta property="og:site_name" content="בריאות נפש בישראל" />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
           "@context": "https://schema.org",
           "@graph": [
@@ -103,20 +95,16 @@ export default function ServicePage() {
             {
               "@type": "BreadcrumbList",
               "itemListElement": [
-                { "@type": "ListItem", "position": 1, "name": "בריאות נפש בישראל", "item": "https://rehabdirectoryil.vercel.app" },
-                { "@type": "ListItem", "position": 2, "name": "שירותי שיקום", "item": "https://rehabdirectoryil.vercel.app/rehab" },
+                { "@type": "ListItem", "position": 1, "name": "בריאות נפש בישראל", "item": BASE_URL },
+                { "@type": "ListItem", "position": 2, "name": "שירותי שיקום", "item": `${BASE_URL}/rehab` },
                 { "@type": "ListItem", "position": 3, "name": service.name, "item": pageUrl },
               ]
             }
           ]
         }) }} />
-        <meta property="og:title" content={`${service.name} – ${service.city} | בריאות נפש בישראל`} />
-        <meta property="og:description" content={pageDesc} />
-        <meta property="og:url" content={pageUrl} />
-        <meta property="og:locale" content="he_IL" />
-        <meta property="og:site_name" content="בריאות נפש בישראל" />
         <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
       </Head>
+
       <div dir="rtl" style={{ fontFamily: "'Nunito', sans-serif", minHeight: '100vh', background: '#f7f0ff' }}>
 
         <header style={{
@@ -143,7 +131,6 @@ export default function ServicePage() {
           </nav>
         </header>
 
-        {/* breadcrumb + חזרה */}
         <div style={{ background: 'linear-gradient(160deg, #4C0080, #8B00D4)', padding: '12px 20px', display: 'flex', alignItems: 'center', gap: 8 }}>
           <button onClick={() => backUrl ? router.push(backUrl) : router.back()} style={{
             background: 'rgba(255,255,255,0.15)', border: '1.5px solid rgba(255,255,255,0.3)',
@@ -163,11 +150,13 @@ export default function ServicePage() {
               <div style={{ display: 'flex', gap: 8, marginBottom: 14, flexWrap: 'wrap' }}>
                 <span style={{ background: color, color: 'white', borderRadius: '999px', padding: '4px 14px', fontSize: 13, fontWeight: 700 }}>{service.category}</span>
                 {service.subcategory && <span style={{ background: `${color}22`, color, borderRadius: '999px', padding: '4px 14px', fontSize: 13, fontWeight: 600 }}>{service.subcategory}</span>}
-                {service.is_national && <span style={{ background: '#EEF2FF', color: '#1A3A5C', borderRadius: '999px', padding: '4px 14px', fontSize: 13, fontWeight: 700 }}>🌍 פריסה ארצית</span>}
+                {service.is_national && <span style={{ background: '#EEF2FF', color: '#1A3A5C', borderRadius: '999px', padding: '4px 14px', fontSize: 13, fontWeight: 700 }}>פריסה ארצית</span>}
               </div>
 
               <h1 style={{ fontSize: 24, fontWeight: 800, color: '#4C0080', margin: '0 0 8px' }}>{service.name}</h1>
-              <div style={{ fontSize: 14, color: '#888', marginBottom: 20 }}>📍 {service.address || service.city}{service.district ? `, ${service.district}` : ''}</div>
+              <div style={{ fontSize: 14, color: '#888', marginBottom: 20 }}>
+                {service.address || service.city}{service.district ? `, ${service.district}` : ''}
+              </div>
 
               {service.description && (
                 <div style={{ background: '#f7f0ff', borderRadius: 12, padding: '16px', marginBottom: 20, fontSize: 14, color: '#334', lineHeight: 1.7 }}>
@@ -196,9 +185,8 @@ export default function ServicePage() {
                 )}
               </div>
 
-              {service.lat && <RehabMap service={service} color={color} />}
+              {mounted && service.lat && <RehabMap service={service} color={color} />}
 
-              {/* כפתורי שיתוף */}
               <div style={{ display: 'flex', gap: 10, marginTop: 20, flexWrap: 'wrap' }}>
                 <button onClick={shareWhatsApp} style={{ flex: 1, background: '#25D366', color: 'white', border: 'none', borderRadius: '999px', padding: '12px 0', fontWeight: 700, fontSize: 14, cursor: 'pointer', fontFamily: "'Nunito', sans-serif" }}>💬 וואטסאפ</button>
                 <button onClick={copyLink} style={{ flex: 1, background: '#f7f0ff', color: '#4C0080', border: '1.5px solid #d4b0f0', borderRadius: '999px', padding: '12px 0', fontWeight: 700, fontSize: 14, cursor: 'pointer', fontFamily: "'Nunito', sans-serif" }}>
@@ -206,7 +194,6 @@ export default function ServicePage() {
                 </button>
               </div>
 
-              {/* דווח על שגיאה */}
               <div style={{ marginTop: 16, textAlign: 'center' }}>
                 <button onClick={reportError} style={{
                   background: 'none', border: 'none', color: '#aaa', fontSize: 12,
