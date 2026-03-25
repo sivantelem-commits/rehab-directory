@@ -184,7 +184,7 @@ export default function TreatmentList() {
     <>
       <Head>
         <title>שירותי טיפול בבריאות הנפש | בריאות נפש בישראל</title>
-        <meta name="description" content="מאגר שירותי טיפול בבריאות הנפש – בתים מאזנים, מחלקות אשפוז, טיפול יום ומרפאות לפי אזור בישראל." />
+        <meta name="description" content="מאגר שירותי טיפול בבריאות הנפש בישראל – בתים מאזנים, מחלקות אשפוז, טיפול יום ומרפאות פסיכיאטריות לפי אזור. מצאו שירות טיפולי מתאים בצפון, מרכז, תל אביב, ירושלים ודרום." />
         <meta name="robots" content="index, follow" />
         <link rel="canonical" href={`${BASE_URL}/treatment`} />
         <meta property="og:type" content="website" />
@@ -240,8 +240,11 @@ export default function TreatmentList() {
 
         <div style={{ background: 'linear-gradient(160deg, #164E63, #0891B2)', color: 'white', padding: '24px 20px', textAlign: 'center' }}>
           <img src='/treatment-logo.png' alt='' role='presentation' style={{ width: 180, height: 180, objectFit: 'contain', marginBottom: -30, filter: 'invert(1) brightness(10)' }} />
-          <h1 style={{ fontSize: 28, fontWeight: 800, margin: '0 0 8px', letterSpacing: '-0.3px' }}>שירותי טיפול</h1>
-          <p style={{ fontSize: 15, opacity: 0.85, margin: '0 0 24px', fontWeight: 500 }}>מצאו שירותי טיפול בבריאות הנפש לפי אזור וקטגוריה</p>
+          <h1 style={{ fontSize: 28, fontWeight: 800, margin: '0 0 8px', letterSpacing: '-0.3px' }}>שירותי טיפול בבריאות הנפש בישראל</h1>
+          <p style={{ fontSize: 15, opacity: 0.85, margin: '0 0 8px', fontWeight: 500 }}>מצאו שירותי טיפול בבריאות הנפש לפי אזור וקטגוריה</p>
+          <p style={{ fontSize: 13, opacity: 0.75, margin: '0 0 20px', fontWeight: 400, maxWidth: 520, lineHeight: 1.6 }}>
+            מאגר שירותי טיפול בבריאות הנפש – בתים מאזנים, מחלקות אשפוז, טיפול יום, מרפאות בריאות נפש וחדרי מיון פסיכיאטריים בכל רחבי ישראל. סינון לפי מחוז, קטגוריה, גיל ואבחנה.
+          </p>
           <div style={{ maxWidth: 480, margin: '0 auto' }}>
             <label htmlFor="treatment-search" style={{ position: 'absolute', width: 1, height: 1, overflow: 'hidden', clip: 'rect(0,0,0,0)', whiteSpace: 'nowrap' }}>חיפוש שירותי טיפול</label>
             <input id="treatment-search" type="text" placeholder="חפשו לפי שם, עיר או תיאור..." value={search}
