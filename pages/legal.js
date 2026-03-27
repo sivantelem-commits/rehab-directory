@@ -48,7 +48,7 @@ export default function Legal() {
         </header>
 
         <div style={{ background: 'linear-gradient(135deg, #1A3A5C, #2A5298)', color: 'white', padding: '48px 20px', textAlign: 'center' }}>
-          <img src="/privacy-icon.png" alt="" role="presentation" style={{ width: 120, height: 120, objectFit: 'contain', marginBottom: 12, mixBlendMode: 'multiply' }} />
+          <img src="/privacy-icon.png" alt="" role="presentation" style={{ width: 120, height: 120, objectFit: 'contain', marginBottom: 12 }} />
           <h1 style={{ fontSize: 28, fontWeight: 800, margin: '0 0 10px' }}>תנאי שימוש ומדיניות פרטיות</h1>
           <p style={{ fontSize: 14, opacity: 0.8, margin: 0 }}>עודכן לאחרונה: מרץ 2026</p>
         </div>
