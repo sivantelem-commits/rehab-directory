@@ -27,6 +27,7 @@ export default function Register() {
   const [duplicates, setDuplicates] = useState([])
   const [checkingDuplicates, setCheckingDuplicates] = useState(false)
   const [confirmedNotDuplicate, setConfirmedNotDuplicate] = useState(false)
+  const [truthDeclaration, setTruthDeclaration] = useState(false)
   const debounceRef = useRef(null)
 
   useEffect(() => { setMounted(true) }, [])
@@ -84,6 +85,10 @@ export default function Register() {
     }
     if (duplicates.length > 0 && !confirmedNotDuplicate) {
       setError('נמצאו שירותים דומים - אנא אשרו שזהו שירות שונה לפני השליחה')
+      return
+    }
+    if (!truthDeclaration) {
+      setError('יש לאשר את הצהרת האמת לפני השליחה')
       return
     }
     setLoading(true)
@@ -470,6 +475,18 @@ export default function Register() {
                 </div>
               )}
               </div>
+
+              <label style={{ display: 'flex', alignItems: 'flex-start', gap: 10, marginBottom: 16, cursor: 'pointer', background: truthDeclaration ? (isRehab ? '#f7f0ff' : '#f0faff') : '#fff', borderRadius: 12, padding: '12px 14px', border: `1.5px solid ${truthDeclaration ? (isRehab ? '#8B00D4' : '#0891B2') : '#e0d0f0'}` }}>
+                <input
+                  type="checkbox"
+                  checked={truthDeclaration}
+                  onChange={e => setTruthDeclaration(e.target.checked)}
+                  style={{ width: 16, height: 16, marginTop: 2, accentColor: isRehab ? '#8B00D4' : '#0891B2', cursor: 'pointer', flexShrink: 0 }}
+                />
+                <span style={{ fontSize: 13, color: '#444', lineHeight: 1.6 }}>
+                  אני מצהיר/ה שהמידע שמסרתי הוא מלא, נכון ומדויק, וכי יש לי הסמכה למסור פרטים אלה בשם השירות הנרשם. ידוע לי שמידע שגוי עלול להביא להסרת השירות מהמאגר.
+                </span>
+              </label>
 
               <button onClick={handleSubmit} disabled={loading} style={{
                 width: '100%',
