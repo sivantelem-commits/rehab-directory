@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/router'
 import Head from 'next/head'
+import { BasketButton, BasketPanel } from '../components/ServiceBasket'
 
 const CATEGORIES = {
   'בתים מאזנים': { color: '#0A3040', icon: '🏠' },
@@ -54,6 +55,7 @@ const SkeletonCard = () => (
 function TreatmentCard({ service }) {
   const cat = CATEGORIES[service.category] || { color: '#0891B2', icon: '🏥' }
   const extraCats = (service.categories || []).filter(c => c && c !== service.category)
+  const serviceWithType = { ...service, type: 'treatment' }
   return (
     <div style={{
       background: 'white', borderRadius: 20, padding: '20px',
@@ -69,9 +71,12 @@ function TreatmentCard({ service }) {
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 8, gap: 8 }}>
         <div style={{ fontWeight: 700, fontSize: 16, color: '#1A3A5C', lineHeight: 1.3 }}>{service.name}</div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 4, alignItems: 'flex-end', flexShrink: 0 }}>
-          <span style={{ background: cat.color, color: 'white', borderRadius: '999px', padding: '3px 10px', fontSize: 11, fontWeight: 700, whiteSpace: 'nowrap' }}>
-            {service.category}
-          </span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+            <BasketButton service={serviceWithType} />
+            <span style={{ background: cat.color, color: 'white', borderRadius: '999px', padding: '3px 10px', fontSize: 11, fontWeight: 700, whiteSpace: 'nowrap' }}>
+              {service.category}
+            </span>
+          </div>
           {service.subcategory && service.subcategory !== service.category && (
             <span style={{ background: `${cat.color}22`, color: cat.color, borderRadius: '999px', padding: '2px 8px', fontSize: 10, fontWeight: 600, whiteSpace: 'nowrap' }}>
               {service.subcategory}
@@ -383,7 +388,7 @@ export default function TreatmentList() {
         {showTop && (
           <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
             style={{
-              position: 'fixed', bottom: 24, right: 16, width: 48, height: 48, borderRadius: '50%',
+              position: 'fixed', bottom: 90, right: 16, width: 48, height: 48, borderRadius: '50%',
               background: 'linear-gradient(160deg, #0891B2, #164E63)', color: 'white', border: 'none',
               fontSize: 20, cursor: 'pointer', boxShadow: '0 4px 0 #0A3040, 0 8px 20px rgba(8,145,178,0.3)',
               zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800,
@@ -392,6 +397,8 @@ export default function TreatmentList() {
             onMouseLeave={e => e.currentTarget.style.transform = 'translateY(0)'}
           >↑</button>
         )}
+
+        <BasketPanel />
 
         <footer style={{
           background: 'linear-gradient(135deg, #0A3040, #164E63)', color: 'rgba(255,255,255,0.75)',
