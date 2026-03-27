@@ -201,6 +201,10 @@ export default function TreatmentServicePage({ initialService }) {
                 </button>
               </div>
 
+              <div style={{ marginTop: 20, background: '#FFF8F0', border: '1.5px solid #FFD0A0', borderRadius: 12, padding: '12px 16px', fontSize: 13, color: '#7A4500', lineHeight: 1.7 }}>
+                <strong>שימו לב:</strong> המידע באתר מסופק על ידי השירותים עצמם ואינו מהווה המלצה רפואית או ייעוץ מקצועי. האתר אינו אחראי לנכונות המידע. במצב חירום — פנו ל-<strong>1201</strong> (קו לבריאות הנפש) או <strong>101</strong> (מד"א).
+              </div>
+
               <div style={{ marginTop: 16, textAlign: 'center' }}>
                 <button onClick={reportError} style={{
                   background: 'none', border: 'none', color: '#aaa', fontSize: 12,
