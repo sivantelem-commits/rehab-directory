@@ -388,7 +388,7 @@ export default function TreatmentList() {
         {showTop && (
           <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
             style={{
-              position: 'fixed', bottom: 90, right: 16, width: 48, height: 48, borderRadius: '50%',
+              position: 'fixed', bottom: 24, right: 16, width: 48, height: 48, borderRadius: '50%',
               background: 'linear-gradient(160deg, #0891B2, #164E63)', color: 'white', border: 'none',
               fontSize: 20, cursor: 'pointer', boxShadow: '0 4px 0 #0A3040, 0 8px 20px rgba(8,145,178,0.3)',
               zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800,
