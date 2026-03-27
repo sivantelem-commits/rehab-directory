@@ -204,7 +204,7 @@ export default function Rehab() {
           <img src='/rehab-logo.png' alt='' role='presentation' style={{ width: 220, height: 220, objectFit: 'contain', marginBottom: -40, filter: 'invert(1) brightness(10)' }} />
           <h1 style={{ fontSize: 28, fontWeight: 800, margin: '0 0 8px', letterSpacing: '-0.3px' }}>שירותי שיקום בקהילה בישראל</h1>
           <p style={{ fontSize: 15, opacity: 0.85, margin: '0 0 8px', fontWeight: 500 }}>מצאו שירותי שיקום בקהילה לפי אזור וקטגוריה</p>
-          <p style={{ fontSize: 13, opacity: 0.75, margin: '0 0 20px', fontWeight: 400, maxWidth: 520, lineHeight: 1.6 }}>
+          <p style={{ fontSize: 13, opacity: 0.75, margin: '0 auto 20px', fontWeight: 400, maxWidth: 520, lineHeight: 1.6 }}>
             מאגר שירותי סל שיקום בקהילה – דיור מוגן, תעסוקה נתמכת, השכלה, חברה ופנאי וליווי שיקומי לאנשים עם מוגבלות נפשית בכל רחבי ישראל. סינון לפי מחוז, קטגוריה, גיל ואבחנה.
           </p>
           <div style={{ maxWidth: 480, margin: '0 auto' }}>
