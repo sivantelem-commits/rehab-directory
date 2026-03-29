@@ -21,12 +21,24 @@ const jsonLd = {
 export default function Home() {
   const router = useRouter()
   const [stats, setStats] = useState(null)
+  const [visitors, setVisitors] = useState(null)
 
   useEffect(() => {
     fetch('/api/home-stats')
       .then(r => r.ok ? r.json() : null)
       .then(data => { if (data) setStats(data) })
       .catch(() => {})
+  }, [])
+
+  useEffect(() => {
+    const ping = () =>
+      fetch('/api/visitors', { method: 'POST' })
+        .then(r => r.ok ? r.json() : null)
+        .then(data => { if (data) setVisitors(data.count) })
+        .catch(() => {})
+    ping()
+    const interval = setInterval(ping, 30000)
+    return () => clearInterval(interval)
   }, [])
 
   return (
@@ -168,6 +180,15 @@ export default function Home() {
               <div style={{ height: 38, marginBottom: 10 }} />
             )}
             <div style={{ textAlign: 'center', fontSize: 12, color: '#b8a8d0', lineHeight: 1.7, fontWeight: 500 }}>
+              {visitors !== null && (
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, marginBottom: 8 }}>
+                  <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#22c55e', display: 'inline-block', animation: 'pulse 2s infinite' }} />
+                  <style>{`@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }`}</style>
+                  <span style={{ fontSize: 13, color: '#6b7280' }}>
+                    <span style={{ fontWeight: 700, color: '#4C0080', fontSize: 15 }}>{visitors}</span> גולשים באתר כרגע
+                  </span>
+                </div>
+              )}
               המאגר נבנה על סמך הרשמת השירותים – ייתכן שיש שירותים שטרם נוספו.
               <br/>
               <a href="/register" style={{ color: '#8B00D4', fontWeight: 700, textDecoration: 'none' }}>הוספת שירות ←</a>
