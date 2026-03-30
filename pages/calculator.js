@@ -344,8 +344,8 @@ export default function Calculator() {
                 </div>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 16 }}>
                   {group.services.slice(0, 6).map(s => (
-                    <div key={s.id} onClick={() => router.push(`/service/${s.id}`)} style={{ cursor: 'pointer' }}>
-                      <ServiceCard service={s} />
+                    <div key={s.id} onClick={() => router.push(group.page === 'treatment' ? `/treatment/${s.id}` : `/service/${s.id}`)} style={{ cursor: 'pointer' }}>
+                      <ServiceCard service={{ ...s, _forcedType: group.page }} />
                     </div>
                   ))}
                 </div>
