@@ -23,7 +23,7 @@ export default function ServiceCard({ service }) {
             <span style={{ background: `${color}22`, color, borderRadius: 20, padding: '2px 8px', fontSize: 10, fontWeight: 600, whiteSpace: 'nowrap' }}>{service.subcategory}</span>
           )}
           {extraCats.slice(0, 2).map(cat => {
-            const catColor = getCategoryColor(cat)
+            const catColor = isTreatment ? TREATMENT_COLOR : getCategoryColor(cat)
             return (
               <span key={cat} style={{ background: `${catColor}22`, color: catColor, borderRadius: 20, padding: '2px 8px', fontSize: 10, fontWeight: 600, whiteSpace: 'nowrap' }}>+ {cat}</span>
             )
