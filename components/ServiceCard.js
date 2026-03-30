@@ -3,7 +3,7 @@ import { BasketButton } from './ServiceBasket'
 const TREATMENT_CATEGORIES = ['בתים מאזנים', 'מחלקות אשפוז', 'מרפאות יום', 'מרפאות בריאות נפש', 'חדרי מיון', 'אשפוז בית', 'שירותים נוספים']
 const TREATMENT_COLOR = '#0891B2'
 export default function ServiceCard({ service }) {
-  const isTreatment = TREATMENT_CATEGORIES.includes(service.category)
+  const isTreatment = service._forcedType ? service._forcedType === 'treatment' : TREATMENT_CATEGORIES.includes(service.category)
   const color = isTreatment ? TREATMENT_COLOR : getCategoryColor(service.category, service.subcategory)
   const serviceWithType = { ...service, type: isTreatment ? 'treatment' : 'rehab' }
   // קטגוריות נוספות - ללא כפילות עם הראשית
