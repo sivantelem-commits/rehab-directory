@@ -4,6 +4,7 @@ import Head from 'next/head'
 import ServiceCard from '../components/ServiceCard'
 import { CATEGORIES, CATEGORY_NAMES } from '../lib/categories'
 import { BasketPanel } from '../components/ServiceBasket'
+import ServiceDetailModal from '../components/ServiceDetailModal'
 
 const DISTRICTS = ['הכל', 'צפון', 'חיפה', 'מרכז', 'תל אביב', 'ירושלים', 'דרום', 'יהודה ושומרון', '🌍 ארצי']
 const AGE_GROUPS = ['צעירים', 'מבוגרים', 'קשישים']
@@ -58,6 +59,7 @@ export default function Rehab() {
   const [debouncedSearch, setDebouncedSearch] = useState('')
   const [mounted, setMounted] = useState(false)
   const [showTop, setShowTop] = useState(false)
+  const [modalService, setModalService] = useState(null)
 
   useEffect(() => {
     setMounted(true)
@@ -371,7 +373,7 @@ export default function Rehab() {
           ) : (
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 16, alignItems: 'stretch' }}>
               {services.map(s => (
-                <div key={s.id} onClick={() => router.push(`/service/${s.id}`)} style={{ cursor: 'pointer', height: '100%' }}>
+                <div key={s.id} onClick={() => setModalService(s)} style={{ cursor: 'pointer', height: '100%' }}>
                   <ServiceCard service={s} />
                 </div>
               ))}
@@ -393,6 +395,13 @@ export default function Rehab() {
         )}
 
         <BasketPanel />
+        {modalService && (
+          <ServiceDetailModal
+            service={modalService}
+            type="rehab"
+            onClose={() => setModalService(null)}
+          />
+        )}
 
         <footer style={{
           background: 'linear-gradient(135deg, #2E0060, #4C0080)', color: 'rgba(255,255,255,0.75)',
