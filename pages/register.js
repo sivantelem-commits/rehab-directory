@@ -18,7 +18,7 @@ const emptyForm = {
 }
 
 export default function Register() {
-  const [tab, setTab] = useState('rehab')
+  const [tab, setTab] = useState('')
   const [form, setForm] = useState(emptyForm)
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
@@ -112,8 +112,8 @@ export default function Register() {
   }
 
   const isRehab = tab === 'rehab'
-  const color = isRehab ? '#8B00D4' : '#0891B2'
-  const darkColor = isRehab ? '#4C0080' : '#164E63'
+  const color = tab === 'treatment' ? '#0891B2' : '#8B00D4'
+  const darkColor = tab === 'treatment' ? '#164E63' : '#4C0080'
 
   const inp = {
     width: '100%', padding: '11px 16px', borderRadius: 20,
@@ -198,26 +198,47 @@ export default function Register() {
 
         <main id="main-content" style={{ maxWidth: 620, margin: '0 auto', padding: '28px 16px' }}>
 
-          {/* טאב שיקום/טיפול */}
-          <div style={{
-            display: 'flex', borderRadius: '999px', overflow: 'hidden',
-            border: `2px solid ${color}`, marginBottom: 24, background: 'white',
-          }}>
-            <button onClick={() => handleTabChange('rehab')} style={{
-              flex: 1, padding: '12px 0', border: 'none', cursor: 'pointer',
-              fontFamily: "'Nunito', sans-serif", fontWeight: 800, fontSize: 15,
-              background: isRehab ? 'linear-gradient(160deg, #8B00D4, #4C0080)' : 'white',
-              color: isRehab ? 'white' : '#8B00D4', transition: 'all 0.2s',
-            }}>♿ שיקום</button>
-            <button onClick={() => handleTabChange('treatment')} style={{
-              flex: 1, padding: '12px 0', border: 'none', cursor: 'pointer',
-              fontFamily: "'Nunito', sans-serif", fontWeight: 800, fontSize: 15,
-              background: !isRehab ? 'linear-gradient(160deg, #0891B2, #164E63)' : 'white',
-              color: !isRehab ? 'white' : '#0891B2', transition: 'all 0.2s',
-            }}>🏥 טיפול</button>
+          {/* בחירת סוג שירות - חובה */}
+          <div style={{ marginBottom: 24 }}>
+            <div style={{ fontSize: 14, fontWeight: 800, color: '#1A3A5C', marginBottom: 10, textAlign: 'center' }}>
+              ראשית, בחרו את סוג השירות שאתם מוסיפים:
+            </div>
+            <div style={{ display: 'flex', gap: 12 }}>
+              <button onClick={() => handleTabChange('rehab')} style={{
+                flex: 1, padding: '18px 12px', borderRadius: 16, border: `2.5px solid ${tab === 'rehab' ? '#8B00D4' : '#e0d0f0'}`,
+                background: tab === 'rehab' ? 'linear-gradient(160deg, #8B00D4, #4C0080)' : 'white',
+                color: tab === 'rehab' ? 'white' : '#8B00D4', cursor: 'pointer',
+                fontFamily: "'Nunito', sans-serif", fontWeight: 800, fontSize: 15,
+                display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6,
+                boxShadow: tab === 'rehab' ? '0 4px 16px rgba(139,0,212,0.3)' : 'none',
+                transition: 'all 0.2s',
+              }}>
+                <span style={{ fontSize: 28 }}>♿</span>
+                <span>שיקום</span>
+                <span style={{ fontSize: 11, fontWeight: 500, opacity: 0.8, lineHeight: 1.4 }}>סל שיקום בקהילה – דיור, תעסוקה, השכלה</span>
+              </button>
+              <button onClick={() => handleTabChange('treatment')} style={{
+                flex: 1, padding: '18px 12px', borderRadius: 16, border: `2.5px solid ${tab === 'treatment' ? '#0891B2' : '#c0e8f0'}`,
+                background: tab === 'treatment' ? 'linear-gradient(160deg, #0891B2, #164E63)' : 'white',
+                color: tab === 'treatment' ? 'white' : '#0891B2', cursor: 'pointer',
+                fontFamily: "'Nunito', sans-serif", fontWeight: 800, fontSize: 15,
+                display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6,
+                boxShadow: tab === 'treatment' ? '0 4px 16px rgba(8,145,178,0.3)' : 'none',
+                transition: 'all 0.2s',
+              }}>
+                <span style={{ fontSize: 28 }}>🏥</span>
+                <span>טיפול</span>
+                <span style={{ fontSize: 11, fontWeight: 500, opacity: 0.8, lineHeight: 1.4 }}>בתים מאזנים, אשפוז, מרפאות</span>
+              </button>
+            </div>
+            {!tab && (
+              <div style={{ textAlign: 'center', marginTop: 10, fontSize: 13, color: '#a78bba', fontWeight: 600 }}>
+                👆 יש לבחור סוג שירות כדי להמשיך
+              </div>
+            )}
           </div>
 
-          {success ? (
+          {tab && (success ? (
             <div style={{
               background: 'white', borderRadius: 20, padding: 40, textAlign: 'center',
               border: `2px solid ${color}`, boxShadow: `0 4px 20px ${color}33`,
@@ -500,7 +521,7 @@ export default function Register() {
                 {loading ? 'שולח...' : 'שליחת בקשה לאישור ←'}
               </button>
             </div>
-          )}
+          ))}
         </main>
 
         <footer style={{
