@@ -160,7 +160,7 @@ export default function MapPage() {
         (!ageGroup || (s.age_groups || []).includes(ageGroup)) &&
         (!diagnosis || (s.diagnoses || []).includes(diagnosis)) &&
         (!populations.length || populations.every(p => (s.populations || []).includes(p))) &&
-        (!searchText || [s.name, s.description, s.city, s.category, s.subcategory].some(f => f && f.toLowerCase().includes(searchText.toLowerCase())))
+        (!searchText || [s.name, s.description, s.city, s.category, s.subcategory, ...(s.categories || [])].some(f => f && f.toLowerCase().includes(searchText.toLowerCase())))
       ).forEach(s => {
         if (s.lat) {
           allToPlace.push({ ...s, _type: 'rehab', _isRegionalPin: s.is_regional || false })
@@ -183,7 +183,7 @@ export default function MapPage() {
         (!ageGroup || (s.age_groups || []).includes(ageGroup)) &&
         (!diagnosis || (s.diagnoses || []).includes(diagnosis)) &&
         (!populations.length || populations.every(p => (s.populations || []).includes(p))) &&
-        (!searchText || [s.name, s.description, s.city, s.category, s.subcategory].some(f => f && f.toLowerCase().includes(searchText.toLowerCase())))
+        (!searchText || [s.name, s.description, s.city, s.category, s.subcategory, ...(s.categories || [])].some(f => f && f.toLowerCase().includes(searchText.toLowerCase())))
       ).forEach(s => {
         if (s.lat) {
           allToPlace.push({ ...s, _type: 'treatment', _isRegionalPin: s.is_regional || false })
@@ -253,7 +253,7 @@ export default function MapPage() {
     (!ageGroup || (s.age_groups || []).includes(ageGroup)) &&
     (!diagnosis || (s.diagnoses || []).includes(diagnosis)) &&
     (!populations.length || populations.every(p => (s.populations || []).includes(p))) &&
-    (!searchText || [s.name, s.description, s.city, s.category, s.subcategory].some(f => f && f.toLowerCase().includes(searchText.toLowerCase())))
+    (!searchText || [s.name, s.description, s.city, s.category, s.subcategory, ...(s.categories || [])].some(f => f && f.toLowerCase().includes(searchText.toLowerCase())))
   ).length
 
   const filteredTreatmentCount = treatmentServices.filter(s =>
@@ -263,7 +263,7 @@ export default function MapPage() {
     (!ageGroup || (s.age_groups || []).includes(ageGroup)) &&
     (!diagnosis || (s.diagnoses || []).includes(diagnosis)) &&
     (!populations.length || populations.every(p => (s.populations || []).includes(p))) &&
-    (!searchText || [s.name, s.description, s.city, s.category, s.subcategory].some(f => f && f.toLowerCase().includes(searchText.toLowerCase())))
+    (!searchText || [s.name, s.description, s.city, s.category, s.subcategory, ...(s.categories || [])].some(f => f && f.toLowerCase().includes(searchText.toLowerCase())))
   ).length
 
   const nationalRehab = rehabServices.filter(s =>
