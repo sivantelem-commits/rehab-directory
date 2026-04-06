@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/router'
 import Head from 'next/head'
 import { BasketButton, BasketPanel } from '../components/ServiceBasket'
+import ServiceDetailModal from '../components/ServiceDetailModal'
 
 const CATEGORIES = {
   'בתים מאזנים': { color: '#0A3040', icon: '🏠' },
@@ -124,6 +125,7 @@ export default function TreatmentList() {
   const [debouncedSearch, setDebouncedSearch] = useState('')
   const [mounted, setMounted] = useState(false)
   const [showTop, setShowTop] = useState(false)
+  const [modalService, setModalService] = useState(null)
 
   useEffect(() => {
     setMounted(true)
@@ -378,7 +380,7 @@ export default function TreatmentList() {
           ) : (
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 16, alignItems: 'stretch' }}>
               {services.map(s => (
-                <div key={s.id} onClick={() => router.push(`/treatment/${s.id}`)} style={{ height: '100%' }}>
+                <div key={s.id} onClick={() => setModalService(s)} style={{ height: '100%', cursor: 'pointer' }}>
                   <TreatmentCard service={s} />
                 </div>
               ))}
@@ -400,6 +402,13 @@ export default function TreatmentList() {
         )}
 
         <BasketPanel />
+        {modalService && (
+          <ServiceDetailModal
+            service={modalService}
+            type="treatment"
+            onClose={() => setModalService(null)}
+          />
+        )}
 
         <footer style={{
           background: 'linear-gradient(135deg, #0A3040, #164E63)', color: 'rgba(255,255,255,0.75)',
