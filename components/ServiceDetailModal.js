@@ -159,16 +159,6 @@ export default function ServiceDetailModal({ service, type, onClose }) {
                 </div>
               </a>
             )}
-            {service.phone && (
-              <a href={`https://wa.me/972${service.phone.replace(/^0/, '').replace(/-/g, '')}`} target="_blank" rel="noreferrer"
-                style={{ display: 'flex', alignItems: 'center', gap: 8, background: '#E8F5E9', border: '1.5px solid #A5D6A7', borderRadius: 12, padding: '10px 12px', textDecoration: 'none', color: '#2E7D32' }}>
-                <span style={{ fontSize: 18 }}>💬</span>
-                <div>
-                  <div style={{ fontSize: 10, opacity: 0.7 }}>וואטסאפ</div>
-                  <div style={{ fontWeight: 700, fontSize: 13 }}>שלחו הודעה</div>
-                </div>
-              </a>
-            )}
             {service.email && (
               <a href={`mailto:${service.email}`} style={{ display: 'flex', alignItems: 'center', gap: 8, background: bgLight, border: `1.5px solid ${borderLight}`, borderRadius: 12, padding: '10px 12px', textDecoration: 'none', color: isRehab ? '#4C0080' : '#0A6080' }}>
                 <span style={{ fontSize: 18 }}>✉️</span>
