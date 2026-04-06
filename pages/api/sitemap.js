@@ -7,6 +7,15 @@ const supabase = createClient(
 
 const BASE_URL = 'https://rehabdirectoryil.vercel.app'
 
+const SUPPORTED_CITIES = [
+  'תל-אביב', 'ירושלים', 'חיפה', 'באר-שבע', 'רמת-גן', 'פתח-תקווה',
+  'נתניה', 'אשדוד', 'ראשון-לציון', 'חולון', 'בני-ברק', 'אשקלון',
+  'רחובות', 'בת-ים', 'הרצליה', 'כפר-סבא', 'מודיעין', 'לוד',
+  'רמלה', 'נהריה', 'עכו', 'טבריה', 'צפת', 'קריית-שמונה',
+  'אילת', 'דימונה', 'קריית-גת', 'יבנה', 'נס-ציונה', 'רעננה',
+  'הוד-השרון', 'גבעתיים', 'קריית-אונו', 'אור-יהודה', 'טירת-כרמל',
+]
+
 const STATIC_PAGES = [
   { url: '/',             priority: '1.0', changefreq: 'weekly'  },
   { url: '/rehab',        priority: '0.9', changefreq: 'daily'   },
@@ -56,6 +65,24 @@ export default async function handler(req, res) {
     <lastmod>${today}</lastmod>
     <changefreq>${p.changefreq}</changefreq>
     <priority>${p.priority}</priority>
+  </url>`),
+
+    // עמודי ערים — שיקום
+    ...SUPPORTED_CITIES.map(city => `
+  <url>
+    <loc>${BASE_URL}/rehab/${encodeURIComponent(city)}</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>`),
+
+    // עמודי ערים — טיפול
+    ...SUPPORTED_CITIES.map(city => `
+  <url>
+    <loc>${BASE_URL}/treatment-city/${encodeURIComponent(city)}</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
   </url>`),
 
     // שירותי שיקום
