@@ -110,7 +110,7 @@ export default function AccessibilityWidget() {
         className="a11y-trigger"
         style={{
           position: 'fixed',
-          bottom: 24,
+          bottom: 84,
           right: 24,
           left: 'auto',
           zIndex: 1200,
@@ -149,7 +149,7 @@ export default function AccessibilityWidget() {
           dir="rtl"
           style={{
             position: 'fixed',
-            bottom: 88,
+            bottom: 148,
             right: 20,
             left: 'auto',
             zIndex: 1200,
