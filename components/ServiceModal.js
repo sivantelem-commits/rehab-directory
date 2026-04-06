@@ -33,12 +33,6 @@ export default function ServiceModal({ service, onClose, getCategoryColor }) {
                 <span style={{ fontSize: 20 }}>📞</span> {service.phone}
               </a>
             )}
-            {service.phone && (
-              <a href={`https://wa.me/972${service.phone.replace(/^0/, '').replace(/-/g, '')}`} target="_blank" rel="noreferrer"
-                style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '12px 16px', background: '#E8F5E9', borderRadius: 12, textDecoration: 'none', color: '#2E7D32', fontWeight: 600, fontSize: 14 }}>
-                <span style={{ fontSize: 20 }}>💬</span> WhatsApp
-              </a>
-            )}
             {service.email && (
               <a href={`mailto:${service.email}`} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '12px 16px', background: '#FFF8F3', borderRadius: 12, textDecoration: 'none', color: '#1A3A5C', fontWeight: 600, fontSize: 14 }}>
                 <span style={{ fontSize: 20 }}>✉️</span> {service.email}
