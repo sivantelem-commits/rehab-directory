@@ -80,7 +80,7 @@ function applySpiral(services) {
     if (group.length === 1) {
       result.push({ ...group[0] })
     } else {
-      const radius = 0.0005
+      const radius = 0.0012
       group.forEach((s, i) => {
         const angle = (2 * Math.PI / group.length) * i - Math.PI / 2
         result.push({
@@ -146,9 +146,12 @@ export default function MapPage() {
 
     const DISTRICT_CENTERS = {'צפון':[32.89,35.50],'חיפה':[32.81,34.99],'מרכז':[32.08,34.88],'תל אביב':[32.07,34.78],'ירושלים':[31.78,35.22],'דרום':[31.25,34.79],'יהודה ושומרון':[31.95,35.27]}
 
-    if (showRehab) {
-      const rehabToPlace = []
+    // ── בנייה משולבת של כל הסמנים לפני applySpiral ──────────────────
+    // חשוב: applySpiral חייבת לרוץ על כל השירותים יחד (שיקום + טיפול)
+    // כדי שגם שירות שיקום ושירות טיפול שחולקים אותן קואורדינטות יתפזרו
+    const allToPlace = []
 
+    if (showRehab) {
       rehabServices.filter(s =>
         (rehabCategory === 'הכל' || s.category === rehabCategory || (s.categories || []).includes(rehabCategory)) &&
         (rehabSubcategory === 'הכל' || s.subcategory === rehabSubcategory) &&
@@ -160,22 +163,45 @@ export default function MapPage() {
         (!searchText || [s.name, s.description, s.city, s.category, s.subcategory].some(f => f && f.toLowerCase().includes(searchText.toLowerCase())))
       ).forEach(s => {
         if (s.lat) {
-          // שירות עם מיקום - מופיע פעם אחת בדיוק במיקום האמיתי שלו
-          // אם הוא איזורי, מסמנים כדי שיקבל 🗺️
-          rehabToPlace.push({ ...s, _isRegionalPin: s.is_regional || false })
+          allToPlace.push({ ...s, _type: 'rehab', _isRegionalPin: s.is_regional || false })
         } else {
-          // שירות ללא מיקום - מופיע במרכז כל מחוז שלו עם 🗺️
           const allDistricts = [...new Set([...(s.districts || []), ...(s.district ? [s.district] : [])])]
           allDistricts.forEach(d => {
             const center = DISTRICT_CENTERS[d]
             if (!center) return
-            rehabToPlace.push({ ...s, lat: center[0], lng: center[1], _districtLabel: d, _isRegionalPin: true })
+            allToPlace.push({ ...s, _type: 'rehab', lat: center[0], lng: center[1], _districtLabel: d, _isRegionalPin: true })
           })
         }
       })
+    }
 
-      applySpiral(rehabToPlace).forEach(s => {
-        let icon
+    if (showTreatment) {
+      treatmentServices.filter(s =>
+        (treatmentCategory === 'הכל' || s.category === treatmentCategory) &&
+        (district === 'הכל' || s.district === district || (s.districts || []).includes(district)) &&
+        (!showNationalOnly || s.is_national) &&
+        (!ageGroup || (s.age_groups || []).includes(ageGroup)) &&
+        (!diagnosis || (s.diagnoses || []).includes(diagnosis)) &&
+        (!populations.length || populations.every(p => (s.populations || []).includes(p))) &&
+        (!searchText || [s.name, s.description, s.city, s.category, s.subcategory].some(f => f && f.toLowerCase().includes(searchText.toLowerCase())))
+      ).forEach(s => {
+        if (s.lat) {
+          allToPlace.push({ ...s, _type: 'treatment', _isRegionalPin: s.is_regional || false })
+        } else {
+          const allDistricts = [...new Set([...(s.districts || []), ...(s.district ? [s.district] : [])])]
+          allDistricts.forEach(d => {
+            const center = DISTRICT_CENTERS[d]
+            if (!center) return
+            allToPlace.push({ ...s, _type: 'treatment', lat: center[0], lng: center[1], _districtLabel: d, _isRegionalPin: true })
+          })
+        }
+      })
+    }
+
+    // הפעלת applySpiral על הרשימה המשולבת
+    applySpiral(allToPlace).forEach(s => {
+      let icon
+      if (s._type === 'rehab') {
         if (s._isRegionalPin) {
           const baseIcon = buildRehabMarkerIcon(L, s, s.is_national)
           const baseHtml = baseIcon.options.html
@@ -190,40 +216,9 @@ export default function MapPage() {
         const marker = L.marker([s.lat, s.lng], { icon }).addTo(mapRef.current)
         marker.on('click', () => setSelected({ ...s, type: 'rehab' }))
         markersRef.current.push(marker)
-      })
-    }
-
-    if (showTreatment) {
-      const treatmentToPlace = []
-
-      treatmentServices.filter(s =>
-        (treatmentCategory === 'הכל' || s.category === treatmentCategory) &&
-        (district === 'הכל' || s.district === district || (s.districts || []).includes(district)) &&
-        (!showNationalOnly || s.is_national) &&
-        (!ageGroup || (s.age_groups || []).includes(ageGroup)) &&
-        (!diagnosis || (s.diagnoses || []).includes(diagnosis)) &&
-        (!populations.length || populations.every(p => (s.populations || []).includes(p))) &&
-        (!searchText || [s.name, s.description, s.city, s.category, s.subcategory].some(f => f && f.toLowerCase().includes(searchText.toLowerCase())))
-      ).forEach(s => {
-        if (s.lat) {
-          // שירות עם מיקום - מופיע פעם אחת בדיוק במיקום האמיתי שלו
-          // אם הוא איזורי, מסמנים כדי שיקבל 🗺️
-          treatmentToPlace.push({ ...s, _isRegionalPin: s.is_regional || false })
-        } else {
-          // שירות ללא מיקום - מופיע במרכז כל מחוז שלו עם 🗺️
-          const allDistricts = [...new Set([...(s.districts || []), ...(s.district ? [s.district] : [])])]
-          allDistricts.forEach(d => {
-            const center = DISTRICT_CENTERS[d]
-            if (!center) return
-            treatmentToPlace.push({ ...s, lat: center[0], lng: center[1], _districtLabel: d, _isRegionalPin: true })
-          })
-        }
-      })
-
-      applySpiral(treatmentToPlace).forEach(s => {
+      } else {
         const color = TREATMENT_COLORS[s.category] || '#ee7a50'
         const isNational = s.is_national
-        let icon
         if (s._isRegionalPin) {
           const svg = buildPieSVG([color], 22)
           const encoded = encodeURIComponent(svg)
@@ -244,8 +239,8 @@ export default function MapPage() {
         const marker = L.marker([s.lat, s.lng], { icon }).addTo(mapRef.current)
         marker.on('click', () => setSelected({ ...s, type: 'treatment' }))
         markersRef.current.push(marker)
-      })
-    }
+      }
+    })
   }, [mounted, rehabServices, treatmentServices, showRehab, showTreatment, rehabCategory, rehabSubcategory, treatmentCategory, district, showNationalOnly, ageGroup, diagnosis, populations, searchText])
 
   if (!mounted) return null
