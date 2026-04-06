@@ -178,7 +178,6 @@ export default function AccessibilityWidget() {
           }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
               <div>
-              <div>
                 <div style={{ color: 'white', fontWeight: 800, fontSize: 15, lineHeight: 1.2 }}>סרגל נגישות</div>
                 <div style={{ color: 'rgba(255,255,255,0.7)', fontSize: 11, marginTop: 1 }}>התאם את התצוגה לצרכיך</div>
               </div>
