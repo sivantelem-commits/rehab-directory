@@ -177,7 +177,7 @@ export default function AccessibilityWidget() {
             justifyContent: 'space-between',
           }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-              <img src="/accessibility-widget-icon.png" alt="" aria-hidden="true" style={{ width: 28, height: 28, objectFit: 'contain', filter: 'brightness(0) invert(1)' }} />
+              <div>
               <div>
                 <div style={{ color: 'white', fontWeight: 800, fontSize: 15, lineHeight: 1.2 }}>סרגל נגישות</div>
                 <div style={{ color: 'rgba(255,255,255,0.7)', fontSize: 11, marginTop: 1 }}>התאם את התצוגה לצרכיך</div>
