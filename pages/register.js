@@ -240,17 +240,54 @@ export default function Register() {
 
           {tab && (success ? (
             <div style={{
-              background: 'white', borderRadius: 20, padding: 40, textAlign: 'center',
-              border: `2px solid ${color}`, boxShadow: `0 4px 20px ${color}33`,
+              background: 'white', borderRadius: 20, overflow: 'hidden',
+              border: `2px solid ${color}`, boxShadow: `0 8px 32px ${color}33`,
             }}>
-              <div style={{ fontSize: 52, marginBottom: 14 }}>✅</div>
-              <div style={{ fontSize: 20, fontWeight: 700, color: darkColor, marginBottom: 8 }}>הבקשה נשלחה בהצלחה!</div>
-              <div style={{ fontSize: 14, color: '#666', lineHeight: 1.6 }}>השירות ממתין לאישור ויופיע במאגר בקרוב.</div>
-              <button onClick={() => setSuccess(false)} style={{
-                marginTop: 22, background: color, color: 'white', border: 'none',
-                borderRadius: 20, padding: '11px 32px', fontWeight: 700, fontSize: 14,
-                cursor: 'pointer', fontFamily: "'Nunito', sans-serif",
-              }}>הוספת שירות נוסף</button>
+              {/* פס צבע עליון */}
+              <div style={{ height: 6, background: `linear-gradient(90deg, ${darkColor}, ${color})` }} />
+              <div style={{ padding: '36px 28px', textAlign: 'center' }}>
+                <div style={{ fontSize: 64, marginBottom: 12, lineHeight: 1 }}>🎉</div>
+                <div style={{ fontSize: 22, fontWeight: 800, color: darkColor, marginBottom: 8 }}>תודה! הבקשה נשלחה</div>
+                <div style={{ fontSize: 15, color: '#555', lineHeight: 1.7, marginBottom: 28 }}>
+                  השירות שלך ממתין לאישור הצוות שלנו.
+                </div>
+
+                {/* timeline */}
+                <div style={{ background: isRehab ? '#f7f0ff' : '#f0faff', borderRadius: 16, padding: '20px 24px', marginBottom: 28, textAlign: 'right' }}>
+                  <div style={{ fontWeight: 800, fontSize: 14, color: darkColor, marginBottom: 14 }}>מה קורה עכשיו?</div>
+                  {[
+                    ['✅', 'הבקשה התקבלה', 'הרגע'],
+                    ['👀', 'הצוות בודק את הפרטים', 'עד 3 ימי עבודה'],
+                    ['📧', 'תקבלו עדכון במייל', 'לאחר האישור'],
+                    ['🗺️', 'השירות יופיע במאגר', 'מיד לאחר האישור'],
+                  ].map(([icon, text, timing], i) => (
+                    <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: i < 3 ? 12 : 0 }}>
+                      <div style={{ width: 36, height: 36, borderRadius: '50%', background: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18, flexShrink: 0, boxShadow: `0 2px 8px ${color}33` }}>{icon}</div>
+                      <div style={{ flex: 1 }}>
+                        <div style={{ fontWeight: 700, fontSize: 13, color: '#1A3A5C' }}>{text}</div>
+                      </div>
+                      <div style={{ fontSize: 11, color: '#aaa', fontWeight: 600, whiteSpace: 'nowrap' }}>{timing}</div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* כפתורים */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                  <button onClick={() => { setSuccess(false); setTruthDeclaration(false) }} style={{
+                    background: `linear-gradient(160deg, ${darkColor}, ${color})`,
+                    color: 'white', border: 'none', borderRadius: '999px',
+                    padding: '13px 0', fontWeight: 800, fontSize: 15,
+                    cursor: 'pointer', fontFamily: "'Nunito', sans-serif",
+                    boxShadow: `0 4px 0 ${darkColor}`,
+                  }}>➕ הוספת שירות נוסף</button>
+                  <a href={isRehab ? '/rehab' : '/treatment'} style={{
+                    display: 'block', background: 'white',
+                    color: darkColor, border: `2px solid ${color}`, borderRadius: '999px',
+                    padding: '12px 0', fontWeight: 700, fontSize: 14,
+                    textDecoration: 'none', textAlign: 'center',
+                  }}>← צפייה בכל השירותים</a>
+                </div>
+              </div>
             </div>
           ) : (
             <div style={{
@@ -488,6 +525,53 @@ export default function Register() {
                   style={{ ...inp, resize: 'vertical', fontFamily: 'inherit', borderRadius: 12 }}
                 />
               </div>
+
+              {/* ── תצוגה מקדימה ── */}
+              {(form.name || form.category || form.city) && (
+                <div style={{ marginBottom: 20 }}>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: darkColor, marginBottom: 8, display: 'flex', alignItems: 'center', gap: 6 }}>
+                    <span>👁️</span> תצוגה מקדימה — כך יראה הכרטיס שלך
+                  </div>
+                  <div style={{
+                    background: 'white', borderRadius: 16, padding: '18px 20px',
+                    boxShadow: '0 4px 16px rgba(0,0,0,0.07)',
+                    border: `1.5px solid ${isRehab ? '#d4b0f0' : '#a0d8e8'}`,
+                    borderTop: `4px solid ${color}`,
+                    opacity: 0.95,
+                  }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 8 }}>
+                      <div style={{ fontWeight: 700, fontSize: 16, color: '#1A3A5C', flex: 1, lineHeight: 1.3 }}>
+                        {form.name || <span style={{ color: '#ccc' }}>שם השירות</span>}
+                      </div>
+                      {form.category && (
+                        <span style={{ background: color, color: 'white', borderRadius: 20, padding: '3px 10px', fontSize: 11, fontWeight: 700, whiteSpace: 'nowrap', marginRight: 8 }}>
+                          {form.category}
+                        </span>
+                      )}
+                    </div>
+                    {form.subcategory && (
+                      <div style={{ marginBottom: 6 }}>
+                        <span style={{ background: `${color}22`, color, borderRadius: 20, padding: '2px 8px', fontSize: 10, fontWeight: 600 }}>{form.subcategory}</span>
+                      </div>
+                    )}
+                    <div style={{ fontSize: 13, color: '#888', marginBottom: 8 }}>
+                      📍 {[form.city, form.district].filter(Boolean).join(', ') || <span style={{ color: '#ccc' }}>עיר, מחוז</span>}
+                      {form.is_national && <span style={{ marginRight: 8, background: '#1A3A5C', color: 'white', borderRadius: 20, padding: '2px 8px', fontSize: 10, fontWeight: 700 }}>🌍 ארצי</span>}
+                    </div>
+                    {form.description ? (
+                      <div style={{ fontSize: 13, color: '#445', lineHeight: 1.55, marginBottom: 10, display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                        {form.description}
+                      </div>
+                    ) : (
+                      <div style={{ fontSize: 13, color: '#ddd', marginBottom: 10, fontStyle: 'italic' }}>תיאור השירות יופיע כאן...</div>
+                    )}
+                    <div style={{ display: 'flex', gap: 12, fontSize: 13, color, flexWrap: 'wrap' }}>
+                      {form.phone && <span>📞 {form.phone}</span>}
+                      {form.email && <span>✉️ {form.email}</span>}
+                    </div>
+                  </div>
+                </div>
+              )}
 
               <div role="alert" aria-live="assertive">
               {error && (
