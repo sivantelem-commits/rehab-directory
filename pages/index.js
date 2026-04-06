@@ -105,9 +105,27 @@ export default function Home() {
             <h1 style={{ fontSize: 'clamp(22px, 6vw, 32px)', fontWeight: 800, color: '#3d2a6e', margin: '0 0 10px', letterSpacing: '-0.3px' }}>
               בריאות נפש בישראל
             </h1>
-            <p style={{ fontSize: 15, color: '#9b88bb', margin: 0, fontWeight: 500 }}>
+            <p style={{ fontSize: 15, color: '#9b88bb', margin: '0 0 12px', fontWeight: 500 }}>
               בחרו את סוג השירות שאתם מחפשים
             </p>
+            <a
+              href="https://links.payboxapp.com/g9hdYBPr71b"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                display: 'inline-flex', alignItems: 'center', gap: 6,
+                padding: '7px 18px', borderRadius: '999px',
+                border: '1.5px solid #e0d0f0',
+                background: 'white', color: '#9b88bb',
+                fontSize: 12, fontWeight: 600, textDecoration: 'none',
+                fontFamily: "'Nunito', sans-serif",
+                transition: 'all 0.15s',
+              }}
+              onMouseEnter={e => { e.currentTarget.style.borderColor = '#a855f7'; e.currentTarget.style.color = '#7c3aed' }}
+              onMouseLeave={e => { e.currentTarget.style.borderColor = '#e0d0f0'; e.currentTarget.style.color = '#9b88bb' }}
+            >
+              💙 האתר חינמי — אפשר לתמוך
+            </a>
           </div>
 
           {/* שני כפתורים ראשיים */}
@@ -196,28 +214,6 @@ export default function Home() {
           </div>
 
         </main>
-
-        {/* כפתור תרומה */}
-        <div style={{ marginTop: 20, textAlign: 'center' }}>
-          <a
-            href="https://links.payboxapp.com/g9hdYBPr71b"
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{
-              display: 'inline-flex', alignItems: 'center', gap: 8,
-              padding: '10px 22px', borderRadius: '999px',
-              border: '1.5px solid #e0d0f0',
-              background: 'white', color: '#9b88bb',
-              fontSize: 13, fontWeight: 600, textDecoration: 'none',
-              fontFamily: "'Nunito', sans-serif",
-              transition: 'all 0.15s',
-            }}
-            onMouseEnter={e => { e.currentTarget.style.borderColor = '#a855f7'; e.currentTarget.style.color = '#7c3aed' }}
-            onMouseLeave={e => { e.currentTarget.style.borderColor = '#e0d0f0'; e.currentTarget.style.color = '#9b88bb' }}
-          >
-            💙 האתר חינמי — אפשר לתמוך
-          </a>
-        </div>
 
         {/* קישורים תחתונים */}
         <div style={{ display: 'flex', gap: 16, marginTop: 24, justifyContent: 'center', flexWrap: 'wrap' }}>
