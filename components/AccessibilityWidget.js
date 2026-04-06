@@ -111,7 +111,8 @@ export default function AccessibilityWidget() {
         style={{
           position: 'fixed',
           bottom: 24,
-          left: 24,
+          right: 24,
+          left: 'auto',
           zIndex: 1200,
           width: 52,
           height: 52,
@@ -149,7 +150,8 @@ export default function AccessibilityWidget() {
           style={{
             position: 'fixed',
             bottom: 88,
-            left: 20,
+            right: 20,
+            left: 'auto',
             zIndex: 1200,
             width: 300,
             background: 'white',
