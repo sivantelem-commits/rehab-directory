@@ -117,12 +117,12 @@ export default function AccessibilityWidget() {
           width: 52,
           height: 52,
           borderRadius: '50%',
-          border: 'none',
+          border: '3px solid #1D9E75',
           cursor: 'pointer',
-          background: 'linear-gradient(135deg, #1D9E75, #148f64)',
+          background: 'white',
           boxShadow: anyActive
-            ? '0 0 0 3px #fff, 0 0 0 5px #1D9E75, 0 8px 24px rgba(29,158,117,0.4)'
-            : '0 4px 20px rgba(26,58,92,0.35)',
+            ? '0 0 0 3px #1D9E75, 0 8px 24px rgba(29,158,117,0.4)'
+            : '0 4px 20px rgba(29,158,117,0.3)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
@@ -135,7 +135,7 @@ export default function AccessibilityWidget() {
           src="/accessibility-widget-icon.png"
           alt=""
           aria-hidden="true"
-          style={{ width: 34, height: 34, objectFit: 'contain', filter: 'brightness(0) invert(1)' }}
+          style={{ width: 36, height: 36, objectFit: 'contain' }}
         />
         {anyActive && (
           <span style={{
