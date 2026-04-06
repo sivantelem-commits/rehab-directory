@@ -3,6 +3,7 @@ import { useRouter } from 'next/router'
 import Head from 'next/head'
 import { BasketButton, BasketPanel } from '../components/ServiceBasket'
 import ServiceDetailModal from '../components/ServiceDetailModal'
+import FilterBottomSheet from '../components/FilterBottomSheet'
 
 const CATEGORIES = {
   'בתים מאזנים': { color: '#0A3040', icon: '🏠' },
@@ -126,6 +127,15 @@ export default function TreatmentList() {
   const [mounted, setMounted] = useState(false)
   const [showTop, setShowTop] = useState(false)
   const [modalService, setModalService] = useState(null)
+  const [showSheet, setShowSheet] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768)
+    check()
+    window.addEventListener('resize', check)
+    return () => window.removeEventListener('resize', check)
+  }, [])
 
   useEffect(() => {
     setMounted(true)
@@ -266,101 +276,112 @@ export default function TreatmentList() {
           </div>
         </div>
 
-        <div style={{
-          background: 'white', borderBottom: '1px solid #a0d8e8',
-          padding: '10px 16px', display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center',
-        }}>
-          {DISTRICTS.map(d => {
-            const isNat = d === 'ארצי'
-            const active = district === d
-            return (
-              <button key={d} onClick={() => setDistrict(d)} style={{
-                padding: '7px 14px', borderRadius: '999px', fontSize: 13, fontWeight: 600,
-                border: `2px solid ${active ? (isNat ? '#1A3A5C' : '#0891B2') : '#a0d8e8'}`,
-                background: active ? (isNat ? '#1A3A5C' : '#0891B2') : 'white',
-                color: active ? 'white' : (isNat ? '#1A3A5C' : '#0A6080'),
-                cursor: 'pointer', fontFamily: "'Nunito', sans-serif", transition: 'all 0.15s',
-              }}>{d}</button>
-            )
-          })}
-          <div style={{ marginRight: 'auto', fontSize: 13, color: '#0891B2', fontWeight: 600 }}>
-            <span role="status" aria-live="polite" aria-atomic="true">{loading ? 'טוען...' : `${services.length} שירותים`}</span>
+        {/* ── פילטרים - דסקטופ ── */}
+        {!isMobile && (<>
+          <div style={{ background: 'white', borderBottom: '1px solid #a0d8e8', padding: '10px 16px', display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
+            {DISTRICTS.map(d => {
+              const isNat = d === 'ארצי'
+              const active = district === d
+              return (
+                <button key={d} onClick={() => setDistrict(d)} style={{ padding: '7px 14px', borderRadius: '999px', fontSize: 13, fontWeight: 600, border: `2px solid ${active ? (isNat ? '#1A3A5C' : '#0891B2') : '#a0d8e8'}`, background: active ? (isNat ? '#1A3A5C' : '#0891B2') : 'white', color: active ? 'white' : (isNat ? '#1A3A5C' : '#0A6080'), cursor: 'pointer', fontFamily: "'Nunito', sans-serif", transition: 'all 0.15s' }}>{d}</button>
+              )
+            })}
+            <div style={{ marginRight: 'auto', fontSize: 13, color: '#0891B2', fontWeight: 600 }}>
+              <span role="status" aria-live="polite">{loading ? 'טוען...' : `${services.length} שירותים`}</span>
+            </div>
           </div>
-        </div>
-
-        <div style={{
-          background: 'white', borderBottom: '1px solid #d0edf8',
-          padding: '10px 16px', display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center',
-        }}>
-          {[['הכל', null], ...CATEGORY_NAMES.map(n => [n, CATEGORIES[n]])].map(([name, cat]) => {
-            const color = cat ? cat.color : '#0891B2'
-            const active = category === name
-            return (
-              <button key={name} onClick={() => setCategory(name)} style={{
-                padding: '7px 16px', borderRadius: '999px', fontSize: 13, fontWeight: 700,
-                border: `2px solid ${active ? color : '#a0d8e8'}`,
-                background: active ? color : 'white',
-                color: active ? 'white' : color,
-                cursor: 'pointer', fontFamily: "'Nunito', sans-serif",
-                transition: 'all 0.15s',
-                boxShadow: active ? `0 3px 0 ${color}99` : 'none',
-              }}>
-                {name}
+          <div style={{ background: 'white', borderBottom: '1px solid #d0edf8', padding: '10px 16px', display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
+            {[['הכל', null], ...CATEGORY_NAMES.map(n => [n, CATEGORIES[n]])].map(([name, cat]) => {
+              const color = cat ? cat.color : '#0891B2'
+              const active = category === name
+              return (
+                <button key={name} onClick={() => setCategory(name)} style={{ padding: '7px 16px', borderRadius: '999px', fontSize: 13, fontWeight: 700, border: `2px solid ${active ? color : '#a0d8e8'}`, background: active ? color : 'white', color: active ? 'white' : color, cursor: 'pointer', fontFamily: "'Nunito', sans-serif", transition: 'all 0.15s', boxShadow: active ? `0 3px 0 ${color}99` : 'none' }}>{name}</button>
+              )
+            })}
+          </div>
+          <div style={{ background: '#f0faff', borderBottom: '1px solid #d0edf8' }}>
+            <div style={{ padding: '8px 16px', display: 'flex', alignItems: 'center', gap: 8 }}>
+              <button onClick={() => setShowMoreFilters(v => !v)} style={{ padding: '6px 16px', borderRadius: '999px', fontSize: 12, fontWeight: 700, border: `1.5px solid ${activeExtraFilters > 0 ? '#0891B2' : '#a0d8e8'}`, background: activeExtraFilters > 0 ? '#0891B2' : 'white', color: activeExtraFilters > 0 ? 'white' : '#666', cursor: 'pointer', fontFamily: "'Nunito', sans-serif", display: 'flex', alignItems: 'center', gap: 6 }}>
+                🎯 סינון מתקדם
+                {activeExtraFilters > 0 && <span style={{ background: 'rgba(255,255,255,0.3)', borderRadius: '999px', padding: '1px 7px', fontSize: 11 }}>{activeExtraFilters}</span>}
+                <span style={{ fontSize: 10 }}>{showMoreFilters ? '▲' : '▼'}</span>
               </button>
-            )
-          })}
-        </div>
-
-        <div style={{ background: '#f0faff', borderBottom: '1px solid #d0edf8' }}>
-          <div style={{ padding: '8px 16px', display: 'flex', alignItems: 'center', gap: 8 }}>
-            <button
-              onClick={() => setShowMoreFilters(v => !v)}
-              style={{
-                padding: '6px 16px', borderRadius: '999px', fontSize: 12, fontWeight: 700,
-                border: `1.5px solid ${activeExtraFilters > 0 ? '#0891B2' : '#a0d8e8'}`,
-                background: activeExtraFilters > 0 ? '#0891B2' : 'white',
-                color: activeExtraFilters > 0 ? 'white' : '#666',
-                cursor: 'pointer', fontFamily: "'Nunito', sans-serif",
-                display: 'flex', alignItems: 'center', gap: 6,
-              }}
-            >
-              סינון מתקדם
-              {activeExtraFilters > 0 && (
-                <span style={{ background: 'rgba(255,255,255,0.3)', borderRadius: '999px', padding: '1px 7px', fontSize: 11 }}>{activeExtraFilters}</span>
-              )}
-              <span style={{ fontSize: 10 }}>{showMoreFilters ? '▲' : '▼'}</span>
-            </button>
-            {activeExtraFilters > 0 && (
-              <button onClick={() => { setAgeGroups([]); setDiagnoses([]); setPopulations([]) }} style={{
-                fontSize: 12, color: '#0891B2', background: 'none', border: 'none',
-                cursor: 'pointer', fontWeight: 600, fontFamily: "'Nunito', sans-serif",
-              }}>נקה</button>
+              {activeExtraFilters > 0 && <button onClick={() => { setAgeGroups([]); setDiagnoses([]); setPopulations([]) }} style={{ fontSize: 12, color: '#0891B2', background: 'none', border: 'none', cursor: 'pointer', fontWeight: 600, fontFamily: "'Nunito', sans-serif" }}>נקה</button>}
+            </div>
+            {showMoreFilters && (
+              <div style={{ padding: '4px 16px 14px', display: 'flex', flexDirection: 'column', gap: 10 }}>
+                <div>
+                  <div style={{ fontSize: 11, fontWeight: 700, color: '#6899bb', marginBottom: 6 }}>קבוצת גיל</div>
+                  <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>{AGE_GROUPS.map(ag => filterBtn(ag, ageGroups.includes(ag), () => setAgeGroups(prev => prev.includes(ag) ? prev.filter(x => x !== ag) : [...prev, ag]), '#0284C7'))}</div>
+                </div>
+                <div>
+                  <div style={{ fontSize: 11, fontWeight: 700, color: '#6899bb', marginBottom: 6 }}>אבחנה / התמחות</div>
+                  <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>{DIAGNOSES.map(d => filterBtn(d, diagnoses.includes(d), () => setDiagnoses(prev => prev.includes(d) ? prev.filter(x => x !== d) : [...prev, d]), '#0E7490'))}</div>
+                </div>
+                <div>
+                  <div style={{ fontSize: 11, fontWeight: 700, color: '#6899bb', marginBottom: 6 }}>אוכלוסייה ייעודית</div>
+                  <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>{POPULATIONS.map(p => filterBtn(p, populations.includes(p), () => setPopulations(prev => prev.includes(p) ? prev.filter(x => x !== p) : [...prev, p]), '#1565A8'))}</div>
+                </div>
+              </div>
             )}
           </div>
+        </>)}
 
-          {showMoreFilters && (
-            <div style={{ padding: '4px 16px 14px', display: 'flex', flexDirection: 'column', gap: 10 }}>
-              <div>
-                <div style={{ fontSize: 11, fontWeight: 700, color: '#6899bb', marginBottom: 6 }}>קבוצת גיל</div>
-                <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-                  {AGE_GROUPS.map(ag => filterBtn(ag, ageGroups.includes(ag), () => setAgeGroups(prev => prev.includes(ag) ? prev.filter(x => x !== ag) : [...prev, ag]), '#0284C7'))}
-                </div>
-              </div>
-              <div>
-                <div style={{ fontSize: 11, fontWeight: 700, color: '#6899bb', marginBottom: 6 }}>אבחנה / התמחות</div>
-                <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-                  {DIAGNOSES.map(d => filterBtn(d, diagnoses.includes(d), () => setDiagnoses(prev => prev.includes(d) ? prev.filter(x => x !== d) : [...prev, d]), '#0E7490'))}
-                </div>
-              </div>
-              <div>
-                <div style={{ fontSize: 11, fontWeight: 700, color: '#6899bb', marginBottom: 6 }}>אוכלוסייה ייעודית</div>
-                <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-                  {POPULATIONS.map(p => filterBtn(p, populations.includes(p), () => setPopulations(prev => prev.includes(p) ? prev.filter(x => x !== p) : [...prev, p]), '#1565A8'))}
-                </div>
+        {/* ── פילטרים - נייד ── */}
+        {isMobile && (
+          <div style={{ background: 'white', borderBottom: '1px solid #a0d8e8', padding: '10px 16px', display: 'flex', gap: 8, alignItems: 'center' }}>
+            <div style={{ display: 'flex', gap: 6, flex: 1, overflowX: 'auto', paddingBottom: 2 }}>
+              {DISTRICTS.map(d => {
+                const isNat = d === 'ארצי'
+                const active = district === d
+                return (
+                  <button key={d} onClick={() => setDistrict(d)} style={{ flexShrink: 0, padding: '6px 12px', borderRadius: '999px', fontSize: 12, fontWeight: 600, border: `2px solid ${active ? (isNat ? '#1A3A5C' : '#0891B2') : '#a0d8e8'}`, background: active ? (isNat ? '#1A3A5C' : '#0891B2') : 'white', color: active ? 'white' : '#0A6080', cursor: 'pointer', fontFamily: "'Nunito', sans-serif" }}>{d}</button>
+                )
+              })}
+            </div>
+            <button onClick={() => setShowSheet(true)} style={{ flexShrink: 0, display: 'flex', alignItems: 'center', gap: 6, padding: '8px 16px', borderRadius: '999px', border: `2px solid ${activeExtraFilters > 0 || category !== 'הכל' ? '#0891B2' : '#a0d8e8'}`, background: activeExtraFilters > 0 || category !== 'הכל' ? '#0891B2' : 'white', color: activeExtraFilters > 0 || category !== 'הכל' ? 'white' : '#0A6080', fontWeight: 700, fontSize: 13, cursor: 'pointer', fontFamily: "'Nunito', sans-serif" }}>
+              🎯 פילטרים
+              {(activeExtraFilters > 0 || category !== 'הכל') && (
+                <span style={{ background: 'rgba(255,255,255,0.35)', borderRadius: '999px', padding: '1px 7px', fontSize: 11 }}>{[category !== 'הכל' ? 1 : 0, activeExtraFilters].reduce((a, b) => a + b, 0)}</span>
+              )}
+            </button>
+            <div style={{ flexShrink: 0, fontSize: 12, color: '#0891B2', fontWeight: 600 }}>{loading ? '...' : `${services.length}`}</div>
+          </div>
+        )}
+
+        <FilterBottomSheet
+          open={showSheet}
+          onClose={() => setShowSheet(false)}
+          title="סינון שירותי טיפול"
+          color="#0891B2"
+          activeCount={[category !== 'הכל' ? 1 : 0, activeExtraFilters].reduce((a, b) => a + b, 0)}
+          onClear={() => { setCategory('הכל'); setAgeGroups([]); setDiagnoses([]); setPopulations([]) }}
+        >
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+            <div>
+              <div style={{ fontSize: 13, fontWeight: 800, color: '#0A6080', marginBottom: 8 }}>קטגוריה</div>
+              <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                {[['הכל', null], ...CATEGORY_NAMES.map(n => [n, CATEGORIES[n]])].map(([name, cat]) => {
+                  const color = cat ? cat.color : '#0891B2'
+                  const active = category === name
+                  return <button key={name} onClick={() => setCategory(name)} style={{ padding: '7px 14px', borderRadius: '999px', fontSize: 13, fontWeight: 700, border: `2px solid ${active ? color : '#a0d8e8'}`, background: active ? color : 'white', color: active ? 'white' : color, cursor: 'pointer', fontFamily: "'Nunito', sans-serif" }}>{name}</button>
+                })}
               </div>
             </div>
-          )}
-        </div>
+            <div>
+              <div style={{ fontSize: 13, fontWeight: 800, color: '#0A6080', marginBottom: 8 }}>קבוצת גיל</div>
+              <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>{AGE_GROUPS.map(ag => filterBtn(ag, ageGroups.includes(ag), () => setAgeGroups(prev => prev.includes(ag) ? prev.filter(x => x !== ag) : [...prev, ag]), '#0284C7'))}</div>
+            </div>
+            <div>
+              <div style={{ fontSize: 13, fontWeight: 800, color: '#0A6080', marginBottom: 8 }}>אבחנה / התמחות</div>
+              <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>{DIAGNOSES.map(d => filterBtn(d, diagnoses.includes(d), () => setDiagnoses(prev => prev.includes(d) ? prev.filter(x => x !== d) : [...prev, d]), '#0E7490'))}</div>
+            </div>
+            <div>
+              <div style={{ fontSize: 13, fontWeight: 800, color: '#0A6080', marginBottom: 8 }}>אוכלוסייה ייעודית</div>
+              <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>{POPULATIONS.map(p => filterBtn(p, populations.includes(p), () => setPopulations(prev => prev.includes(p) ? prev.filter(x => x !== p) : [...prev, p]), '#1565A8'))}</div>
+            </div>
+          </div>
+        </FilterBottomSheet>
 
         <main id="main-content" style={{ maxWidth: 1100, margin: '0 auto', padding: '28px 16px' }}>
           {loading ? (
@@ -371,11 +392,7 @@ export default function TreatmentList() {
             <div style={{ textAlign: 'center', padding: 64, color: '#aaa' }}>
               <div style={{ fontSize: 48, marginBottom: 12 }}></div>
               <div style={{ fontWeight: 700, fontSize: 18, marginBottom: 8, color: '#555' }}>לא נמצאו שירותים</div>
-              <button onClick={clearAll} style={{
-                background: 'linear-gradient(160deg, #0891B2, #164E63)', color: 'white', border: 'none',
-                borderRadius: '999px', padding: '11px 28px', fontWeight: 700, fontSize: 14, cursor: 'pointer',
-                fontFamily: "'Nunito', sans-serif", boxShadow: '0 4px 0 #0A3040',
-              }}>נקה פילטרים</button>
+              <button onClick={clearAll} style={{ background: 'linear-gradient(160deg, #0891B2, #164E63)', color: 'white', border: 'none', borderRadius: '999px', padding: '11px 28px', fontWeight: 700, fontSize: 14, cursor: 'pointer', fontFamily: "'Nunito', sans-serif", boxShadow: '0 4px 0 #0A3040' }}>נקה פילטרים</button>
             </div>
           ) : (
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 16, alignItems: 'stretch' }}>
