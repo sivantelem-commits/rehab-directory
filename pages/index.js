@@ -34,7 +34,7 @@ export default function Home() {
     const ping = () =>
       fetch('/api/visitors', { method: 'POST' })
         .then(r => r.ok ? r.json() : null)
-        .then(data => { if (data) setVisitors(data.count) })
+        .then(data => { if (data) setVisitors(data.total) })
         .catch(() => {})
     ping()
     const interval = setInterval(ping, 30000)
@@ -185,7 +185,7 @@ export default function Home() {
                   <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#22c55e', display: 'inline-block', animation: 'pulse 2s infinite' }} />
                   <style>{`@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }`}</style>
                   <span style={{ fontSize: 13, color: '#6b7280' }}>
-                    <span style={{ fontWeight: 700, color: '#4C0080', fontSize: 15 }}>{visitors}</span> גולשים באתר כרגע
+                    <span style={{ fontWeight: 700, color: '#4C0080', fontSize: 15 }}>{visitors.toLocaleString()}</span> אנשים ביקרו באתר
                   </span>
                 </div>
               )}
