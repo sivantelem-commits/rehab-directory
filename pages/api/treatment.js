@@ -4,28 +4,6 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY
 )
 
-function normalizeHebrew(str) {
-  return str
-    .replace(/[בכלמשו](?=\S)/g, '')
-    .replace(/[^\u05D0-\u05EAa-zA-Z0-9\s]/g, '')
-    .trim()
-}
-
-function buildSearchClauses(search) {
-  const base = search.trim()
-  const normalized = normalizeHebrew(base)
-  const terms = [...new Set([base, normalized].filter(Boolean))]
-
-  const fields = ['name', 'city', 'description', 'category', 'subcategory']
-  const clauses = []
-  terms.forEach(term => {
-    fields.forEach(field => {
-      clauses.push(`${field}.ilike.%${term}%`)
-    })
-  })
-  return [...new Set(clauses)].join(',')
-}
-
 export default async function handler(req, res) {
   if (req.method !== 'GET') return res.status(405).end()
 
@@ -73,7 +51,7 @@ export default async function handler(req, res) {
   }
 
   if (search) {
-    query = query.or(buildSearchClauses(search))
+    query = query.or(`name.ilike.%${search}%,city.ilike.%${search}%,description.ilike.%${search}%,category.ilike.%${search}%,subcategory.ilike.%${search}%`)
   }
 
   const { data, error } = await query.order('created_at', { ascending: false })
