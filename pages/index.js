@@ -200,7 +200,7 @@ export default function Home() {
         {/* כפתור תרומה */}
         <div style={{ marginTop: 20, textAlign: 'center' }}>
           <a
-            href="https://bitpay.il/p/0523733141"
+            href="https://links.payboxapp.com/g9hdYBPr71b"
             target="_blank"
             rel="noopener noreferrer"
             style={{
