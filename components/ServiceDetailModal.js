@@ -13,6 +13,18 @@ function getColor(service, type) {
   return getCategoryColor(service.category, service.subcategory)
 }
 
+function formatDate(dateStr) {
+  if (!dateStr) return null
+  const d = new Date(dateStr)
+  const now = new Date()
+  const diffDays = Math.floor((now - d) / (1000 * 60 * 60 * 24))
+  if (diffDays === 0) return 'עודכן היום'
+  if (diffDays === 1) return 'עודכן אתמול'
+  if (diffDays < 30) return `עודכן לפני ${diffDays} ימים`
+  if (diffDays < 365) return `עודכן לפני ${Math.floor(diffDays / 30)} חודשים`
+  return `עודכן לפני ${Math.floor(diffDays / 365)} שנה`
+}
+
 function MiniMap({ service, color }) {
   const mapId = useRef(`modal-map-${service.id}-${Date.now()}`)
   useEffect(() => {
@@ -213,6 +225,24 @@ export default function ServiceDetailModal({ service, type, onClose }) {
           <div style={{ background: '#FFF8F0', border: '1.5px solid #FFD0A0', borderRadius: 10, padding: '10px 14px', fontSize: 12, color: '#7A4500', lineHeight: 1.6 }}>
             <strong>שימו לב:</strong> המידע מסופק על ידי השירותים עצמם. במצב חירום — <strong>1201</strong> או <strong>101</strong>.
           </div>
+
+          {/* תאריך עדכון + דיווח */}
+          {(() => {
+            const dateLabel = formatDate(service.updated_at || service.created_at)
+            const reportUrl = `/contact?type=fix&serviceName=${encodeURIComponent(service.name)}`
+            return (
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 12, paddingTop: 10, borderTop: '1px solid #f0f0f0' }}>
+                {dateLabel
+                  ? <span style={{ fontSize: 11, color: '#bbb', fontWeight: 500 }}>🕐 {dateLabel}</span>
+                  : <span />
+                }
+                <a href={reportUrl} style={{ fontSize: 12, color: '#bbb', textDecoration: 'none', fontWeight: 500 }}
+                  onMouseEnter={e => e.currentTarget.style.color = '#e08020'}
+                  onMouseLeave={e => e.currentTarget.style.color = '#bbb'}
+                >⚠️ דיווח על שגיאה</a>
+              </div>
+            )
+          })()}
 
         </div>
       </div>
