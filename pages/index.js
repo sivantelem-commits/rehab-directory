@@ -197,6 +197,28 @@ export default function Home() {
 
         </main>
 
+        {/* כפתור תרומה */}
+        <div style={{ marginTop: 20, textAlign: 'center' }}>
+          <a
+            href="https://bitpay.il/p/0523733141"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              display: 'inline-flex', alignItems: 'center', gap: 8,
+              padding: '10px 22px', borderRadius: '999px',
+              border: '1.5px solid #e0d0f0',
+              background: 'white', color: '#9b88bb',
+              fontSize: 13, fontWeight: 600, textDecoration: 'none',
+              fontFamily: "'Nunito', sans-serif",
+              transition: 'all 0.15s',
+            }}
+            onMouseEnter={e => { e.currentTarget.style.borderColor = '#a855f7'; e.currentTarget.style.color = '#7c3aed' }}
+            onMouseLeave={e => { e.currentTarget.style.borderColor = '#e0d0f0'; e.currentTarget.style.color = '#9b88bb' }}
+          >
+            💙 האתר חינמי — אפשר לתמוך
+          </a>
+        </div>
+
         {/* קישורים תחתונים */}
         <div style={{ display: 'flex', gap: 16, marginTop: 24, justifyContent: 'center', flexWrap: 'wrap' }}>
           {[
