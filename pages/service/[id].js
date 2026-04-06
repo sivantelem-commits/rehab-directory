@@ -8,7 +8,19 @@ import { createClient } from '@supabase/supabase-js'
 const NAV = [['/', 'ראשי'], ['/rehab', 'שיקום'], ['/treatment', 'טיפול'], ['/map', 'מפה'], ['/register', 'הוספת שירות'], ['/about', 'אודות'], ['/contact', 'צור קשר'], ['/admin', 'ניהול']]
 const BASE_URL = 'https://rehabdirectoryil.vercel.app'
 
-export async function getServerSideProps({ params }) {
+export async function getStaticPaths() {
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL,
+    process.env.SUPABASE_SERVICE_ROLE_KEY
+  )
+  const { data } = await supabase.from('services').select('id').eq('status', 'approved')
+  return {
+    paths: (data || []).map(s => ({ params: { id: String(s.id) } })),
+    fallback: 'blocking',
+  }
+}
+
+export async function getStaticProps({ params }) {
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL,
     process.env.SUPABASE_SERVICE_ROLE_KEY
@@ -21,7 +33,7 @@ export async function getServerSideProps({ params }) {
     .single()
 
   if (error || !data) return { notFound: true }
-  return { props: { initialService: data } }
+  return { props: { initialService: data }, revalidate: 600 }
 }
 
 export default function ServicePage({ initialService }) {
