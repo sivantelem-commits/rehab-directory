@@ -277,9 +277,10 @@ export function BasketPanel() {
             )}
           </div>
 
-          {/* כפתור ייצוא */}
+          {/* כפתורי שיתוף */}
           {count > 0 && (
-            <div style={{ padding: '12px 14px', borderTop: '1px solid #f0e8ff' }}>
+            <div style={{ padding: '12px 14px', borderTop: '1px solid #f0e8ff', display: 'flex', flexDirection: 'column', gap: 8 }}>
+              {/* ייצוא לאקסל */}
               <button onClick={exportToExcel} disabled={exporting} style={{
                 width: '100%', padding: '11px 0',
                 background: exporting ? '#ccc' : 'linear-gradient(135deg, #4C0080, #8B00D4)',
@@ -290,6 +291,48 @@ export function BasketPanel() {
                 display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
               }}>
                 {exporting ? '⏳ מייצא...' : '⬇️ ייצוא לאקסל'}
+              </button>
+
+              {/* שיתוף בוואטסאפ */}
+              <button onClick={() => {
+                const lines = basket.map((s, i) => {
+                  const type = s.type === 'treatment' ? '🏥' : '♿'
+                  const url = `${window.location.origin}/${s.type === 'treatment' ? 'treatment' : 'service'}/${s.id}`
+                  return `${i + 1}. ${type} *${s.name}*\n📍 ${s.city || ''}${s.district ? `, ${s.district}` : ''}${s.phone ? `\n📞 ${s.phone}` : ''}\n🔗 ${url}`
+                }).join('\n\n')
+                const text = `שירותי בריאות נפש שמצאתי באתר:\n\n${lines}\n\n_בריאות נפש בישראל: ${window.location.origin}_`
+                window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank')
+              }} style={{
+                width: '100%', padding: '11px 0',
+                background: '#25D366',
+                color: 'white', border: 'none', borderRadius: '999px',
+                fontWeight: 800, fontSize: 14, cursor: 'pointer',
+                fontFamily: "'Nunito', sans-serif",
+                boxShadow: '0 4px 0 #1da851',
+                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+              }}>
+                💬 שתפו ברשימה בוואטסאפ
+              </button>
+
+              {/* שליחה במייל */}
+              <button onClick={() => {
+                const subject = encodeURIComponent(`שירותי בריאות נפש - ${count} שירותים נבחרים`)
+                const lines = basket.map((s, i) => {
+                  const type = s.type === 'treatment' ? 'טיפול' : 'שיקום'
+                  const url = `${window.location.origin}/${s.type === 'treatment' ? 'treatment' : 'service'}/${s.id}`
+                  return `${i + 1}. ${s.name} (${type})\nמיקום: ${s.city || ''}${s.district ? `, ${s.district}` : ''}${s.phone ? `\nטלפון: ${s.phone}` : ''}${s.email ? `\nמייל: ${s.email}` : ''}\nקישור: ${url}`
+                }).join('\n\n')
+                const body = encodeURIComponent(`שלום,\n\nריכזתי עבורך את השירותים הבאים מאתר בריאות נפש בישראל:\n\n${lines}\n\nלאתר: ${window.location.origin}`)
+                window.open(`mailto:?subject=${subject}&body=${body}`)
+              }} style={{
+                width: '100%', padding: '11px 0',
+                background: 'white',
+                color: '#4C0080', border: '2px solid #d4b0f0', borderRadius: '999px',
+                fontWeight: 800, fontSize: 14, cursor: 'pointer',
+                fontFamily: "'Nunito', sans-serif",
+                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+              }}>
+                ✉️ שלחו במייל
               </button>
             </div>
           )}
