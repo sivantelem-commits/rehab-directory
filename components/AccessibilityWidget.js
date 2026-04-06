@@ -119,9 +119,9 @@ export default function AccessibilityWidget() {
           borderRadius: '50%',
           border: 'none',
           cursor: 'pointer',
-          background: 'linear-gradient(135deg, #1A3A5C, #0891B2)',
+          background: 'linear-gradient(135deg, #1D9E75, #148f64)',
           boxShadow: anyActive
-            ? '0 0 0 3px #fff, 0 0 0 5px #0891B2, 0 8px 24px rgba(8,145,178,0.4)'
+            ? '0 0 0 3px #fff, 0 0 0 5px #1D9E75, 0 8px 24px rgba(29,158,117,0.4)'
             : '0 4px 20px rgba(26,58,92,0.35)',
           display: 'flex',
           alignItems: 'center',
@@ -164,7 +164,7 @@ export default function AccessibilityWidget() {
         >
           {/* כותרת */}
           <div style={{
-            background: 'linear-gradient(135deg, #1A3A5C, #0891B2)',
+            background: 'linear-gradient(135deg, #1D9E75, #148f64)',
             padding: '16px 18px',
             display: 'flex',
             alignItems: 'center',
@@ -202,7 +202,7 @@ export default function AccessibilityWidget() {
                     gap: 6,
                     padding: '12px 6px',
                     borderRadius: 14,
-                    border: `2px solid ${on ? '#0891B2' : '#e8f0f8'}`,
+                    border: `2px solid ${on ? '#1D9E75' : '#e0f5ee'}`,
                     background: on ? 'linear-gradient(135deg, #e0f7ff, #f0faff)' : '#f8fafd',
                     cursor: 'pointer',
                     transition: 'all 0.18s ease',
@@ -212,20 +212,20 @@ export default function AccessibilityWidget() {
                   <span style={{
                     fontSize: 20,
                     fontWeight: 700,
-                    color: on ? '#0891B2' : '#8aabcc',
+                    color: on ? '#1D9E75' : '#6dbfa3',
                     lineHeight: 1,
                   }}>{f.icon}</span>
                   <span style={{
                     fontSize: 10,
                     fontWeight: 700,
-                    color: on ? '#0A6080' : '#7a9ab8',
+                    color: on ? '#0d7a5c' : '#5a9e85',
                     textAlign: 'center',
                     lineHeight: 1.3,
                   }}>{f.label}</span>
                   {/* אינדיקטור פעיל */}
                   <div style={{
                     width: 24, height: 4, borderRadius: 99,
-                    background: on ? '#0891B2' : '#e0eaf4',
+                    background: on ? '#1D9E75' : '#c8ead9',
                     transition: 'background 0.2s',
                   }} />
                 </button>
@@ -242,9 +242,9 @@ export default function AccessibilityWidget() {
                   flex: 1,
                   padding: '10px 0',
                   borderRadius: '999px',
-                  border: '1.5px solid #e0eaf4',
+                  border: '1.5px solid #c8ead9',
                   background: 'white',
-                  color: '#7a9ab8',
+                  color: '#5a9e85',
                   fontWeight: 700,
                   fontSize: 13,
                   cursor: 'pointer',
@@ -259,7 +259,7 @@ export default function AccessibilityWidget() {
                 flex: 2,
                 padding: '10px 0',
                 borderRadius: '999px',
-                background: 'linear-gradient(135deg, #1A3A5C, #0891B2)',
+                background: 'linear-gradient(135deg, #1D9E75, #148f64)',
                 color: 'white',
                 fontWeight: 700,
                 fontSize: 13,
