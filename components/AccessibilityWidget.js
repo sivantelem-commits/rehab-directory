@@ -27,8 +27,8 @@ export default function AccessibilityWidget() {
   function applyAll(prefs) {
     const root = document.documentElement
 
-    // גודל טקסט
-    root.style.fontSize = prefs.fontSize ? '118%' : ''
+    // גודל טקסט — zoom על ה-body
+    document.body.style.zoom = prefs.fontSize ? '1.18' : ''
 
     // ניגודיות
     if (prefs.contrast) {
