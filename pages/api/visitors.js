@@ -16,10 +16,22 @@ export default async function handler(req, res) {
 
   const now = new Date().toISOString()
 
-  // עדכן או צור רשומה לגולש הנוכחי
+  // בדוק אם הגולש כבר קיים
+  const { data: existing } = await supabase
+    .from('active_visitors')
+    .select('session_id')
+    .eq('session_id', sessionId)
+    .single()
+
+  // עדכן את הגולש הנוכחי
   await supabase
     .from('active_visitors')
     .upsert({ session_id: sessionId, last_seen: now }, { onConflict: 'session_id' })
+
+  // אם גולש חדש — הגדל את הסכום הכולל
+  if (!existing) {
+    await supabase.rpc('increment_stat', { stat_key: 'total_visitors' })
+  }
 
   // מחק גולשים ישנים
   const cutoff = new Date(Date.now() - ACTIVE_WINDOW).toISOString()
@@ -28,11 +40,13 @@ export default async function handler(req, res) {
     .delete()
     .lt('last_seen', cutoff)
 
-  // ספור גולשים פעילים
-  const { count } = await supabase
-    .from('active_visitors')
-    .select('*', { count: 'exact', head: true })
+  // קרא את הסכום הכולל
+  const { data: stats } = await supabase
+    .from('site_stats')
+    .select('value')
+    .eq('key', 'total_visitors')
+    .single()
 
   res.setHeader('Cache-Control', 'no-store')
-  res.status(200).json({ count: count || 1 })
+  res.status(200).json({ total: stats?.value || 113 })
 }
