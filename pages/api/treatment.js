@@ -4,12 +4,33 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY
 )
 
+function normalizeHebrew(str) {
+  return str
+    .replace(/[בכלמשו](?=\S)/g, '')
+    .replace(/[^\u05D0-\u05EAa-zA-Z0-9\s]/g, '')
+    .trim()
+}
+
+function buildSearchClauses(search) {
+  const base = search.trim()
+  const normalized = normalizeHebrew(base)
+  const terms = [...new Set([base, normalized].filter(Boolean))]
+
+  const fields = ['name', 'city', 'description', 'category', 'subcategory']
+  const clauses = []
+  terms.forEach(term => {
+    fields.forEach(field => {
+      clauses.push(`${field}.ilike.%${term}%`)
+    })
+  })
+  return [...new Set(clauses)].join(',')
+}
+
 export default async function handler(req, res) {
   if (req.method !== 'GET') return res.status(405).end()
 
   const { id, district, category, search, national, age_group, diagnosis, population } = req.query
 
-  // אם מחפשים שירות ספציפי לפי id
   if (id) {
     const { data, error } = await supabase
       .from('treatment_services')
@@ -33,29 +54,26 @@ export default async function handler(req, res) {
   }
 
   if (category) {
-    // סינון לפי קטגוריה ראשית או קטגוריות נוספות
     query = query.or(`category.eq.${category},categories.cs.{${category}}`)
-  }
-
-  if (search) {
-    query = query.or(`name.ilike.%${search}%,city.ilike.%${search}%,description.ilike.%${search}%,category.ilike.%${search}%,subcategory.ilike.%${search}%`)
   }
 
   if (age_group) {
     const ags = Array.isArray(age_group) ? age_group : [age_group]
-    const orClauses = ags.map(ag => `age_groups.cs.{${ag}}`).join(',')
-    query = query.or(orClauses)
+    ags.forEach(ag => { query = query.contains('age_groups', [ag]) })
   }
 
   if (diagnosis) {
     const diags = Array.isArray(diagnosis) ? diagnosis : [diagnosis]
-    const orClauses = diags.map(d => `diagnoses.cs.{${d}}`).join(',')
-    query = query.or(orClauses)
+    diags.forEach(d => { query = query.contains('diagnoses', [d]) })
   }
 
   if (population) {
     const pops = Array.isArray(population) ? population : [population]
     pops.forEach(p => { query = query.contains('populations', [p]) })
+  }
+
+  if (search) {
+    query = query.or(buildSearchClauses(search))
   }
 
   const { data, error } = await query.order('created_at', { ascending: false })
