@@ -109,6 +109,7 @@ export default function MapPage() {
   const [diagnosis, setDiagnosis] = useState('')
   const [populations, setPopulations] = useState([])
   const [showAdvanced, setShowAdvanced] = useState(false)
+  const [searchText, setSearchText] = useState('')
   const [mounted, setMounted] = useState(false)
   const [selected, setSelected] = useState(null)
   const [isMobile, setIsMobile] = useState(false)
@@ -123,20 +124,9 @@ export default function MapPage() {
     return () => window.removeEventListener('resize', check)
   }, [])
 
-  const ADULT_AGES = ['צעירים', 'מבוגרים', 'קשישים']
-
-  // סינון שירותים שמיועדים אך ורק לילדים/נוער (לא לבוגרים בכלל)
-  function filterAdultsOnly(services) {
-    return services.filter(s => {
-      const ages = s.age_groups || []
-      if (ages.length === 0) return true // ללא הגבלת גיל - מוצג
-      return ages.some(a => ADULT_AGES.includes(a)) // יש לפחות גיל בוגר אחד
-    })
-  }
-
   useEffect(() => {
-    fetch('/api/services').then(r => r.json()).then(data => setRehabServices(filterAdultsOnly(Array.isArray(data) ? data : [])))
-    fetch('/api/treatment').then(r => r.json()).then(data => setTreatmentServices(filterAdultsOnly(Array.isArray(data) ? data : [])))
+    fetch('/api/services').then(r => r.json()).then(data => setRehabServices(Array.isArray(data) ? data : []))
+    fetch('/api/treatment').then(r => r.json()).then(data => setTreatmentServices(Array.isArray(data) ? data : []))
   }, [])
 
   useEffect(() => {
@@ -166,7 +156,8 @@ export default function MapPage() {
         (!showNationalOnly || s.is_national) &&
         (!ageGroup || (s.age_groups || []).includes(ageGroup)) &&
         (!diagnosis || (s.diagnoses || []).includes(diagnosis)) &&
-        (!populations.length || populations.every(p => (s.populations || []).includes(p)))
+        (!populations.length || populations.every(p => (s.populations || []).includes(p))) &&
+        (!searchText || [s.name, s.description, s.city, s.category, s.subcategory].some(f => f && f.toLowerCase().includes(searchText.toLowerCase())))
       ).forEach(s => {
         if (s.lat) {
           // שירות עם מיקום - מופיע פעם אחת בדיוק במיקום האמיתי שלו
@@ -211,7 +202,8 @@ export default function MapPage() {
         (!showNationalOnly || s.is_national) &&
         (!ageGroup || (s.age_groups || []).includes(ageGroup)) &&
         (!diagnosis || (s.diagnoses || []).includes(diagnosis)) &&
-        (!populations.length || populations.every(p => (s.populations || []).includes(p)))
+        (!populations.length || populations.every(p => (s.populations || []).includes(p))) &&
+        (!searchText || [s.name, s.description, s.city, s.category, s.subcategory].some(f => f && f.toLowerCase().includes(searchText.toLowerCase())))
       ).forEach(s => {
         if (s.lat) {
           // שירות עם מיקום - מופיע פעם אחת בדיוק במיקום האמיתי שלו
@@ -254,7 +246,7 @@ export default function MapPage() {
         markersRef.current.push(marker)
       })
     }
-  }, [mounted, rehabServices, treatmentServices, showRehab, showTreatment, rehabCategory, rehabSubcategory, treatmentCategory, district, showNationalOnly, ageGroup, diagnosis, populations])
+  }, [mounted, rehabServices, treatmentServices, showRehab, showTreatment, rehabCategory, rehabSubcategory, treatmentCategory, district, showNationalOnly, ageGroup, diagnosis, populations, searchText])
 
   if (!mounted) return null
 
@@ -265,7 +257,8 @@ export default function MapPage() {
     (!showNationalOnly || s.is_national) &&
     (!ageGroup || (s.age_groups || []).includes(ageGroup)) &&
     (!diagnosis || (s.diagnoses || []).includes(diagnosis)) &&
-    (!populations.length || populations.every(p => (s.populations || []).includes(p)))
+    (!populations.length || populations.every(p => (s.populations || []).includes(p))) &&
+    (!searchText || [s.name, s.description, s.city, s.category, s.subcategory].some(f => f && f.toLowerCase().includes(searchText.toLowerCase())))
   ).length
 
   const filteredTreatmentCount = treatmentServices.filter(s =>
@@ -274,7 +267,8 @@ export default function MapPage() {
     (!showNationalOnly || s.is_national) &&
     (!ageGroup || (s.age_groups || []).includes(ageGroup)) &&
     (!diagnosis || (s.diagnoses || []).includes(diagnosis)) &&
-    (!populations.length || populations.every(p => (s.populations || []).includes(p)))
+    (!populations.length || populations.every(p => (s.populations || []).includes(p))) &&
+    (!searchText || [s.name, s.description, s.city, s.category, s.subcategory].some(f => f && f.toLowerCase().includes(searchText.toLowerCase())))
   ).length
 
   const nationalRehab = rehabServices.filter(s =>
@@ -352,7 +346,24 @@ export default function MapPage() {
         </header>
 
         <div style={{ background: 'white', borderBottom: '1px solid #e0e0e0', padding: '10px 16px', display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'center' }}>
-          <label htmlFor="map-district" style={{ display: 'block', position: 'absolute', width: 1, height: 1, overflow: 'hidden', clip: 'rect(0,0,0,0)', whiteSpace: 'nowrap' }}>סינון לפי מחוז</label>
+          {/* חיפוש טקסטואלי */}
+          <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+            <span style={{ position: 'absolute', right: 10, fontSize: 14, color: '#aaa', pointerEvents: 'none' }}>🔍</span>
+            <input
+              type="text"
+              placeholder="חיפוש לפי שם, עיר, תיאור..."
+              value={searchText}
+              onChange={e => setSearchText(e.target.value)}
+              style={{
+                padding: '7px 32px 7px 12px', borderRadius: '999px', border: `1.5px solid ${searchText ? '#8B00D4' : '#ddd'}`,
+                fontSize: 13, fontFamily: "'Nunito', sans-serif", outline: 'none', width: 200,
+                background: searchText ? '#fdf8ff' : 'white', direction: 'rtl',
+              }}
+            />
+            {searchText && (
+              <button onClick={() => setSearchText('')} style={{ position: 'absolute', left: 8, background: 'none', border: 'none', cursor: 'pointer', fontSize: 14, color: '#aaa', padding: 0, lineHeight: 1 }}>✕</button>
+            )}
+          </div>
           <select id="map-district" value={district} onChange={e => setDistrict(e.target.value)} style={sel}>
             {DISTRICTS.map(d => <option key={d}>{d}</option>)}
           </select>
@@ -409,7 +420,7 @@ export default function MapPage() {
 
           {/* סינון מתקדם */}
           {(() => {
-            const activeCount = [ageGroup, diagnosis, ...populations, rehabSubcategory !== 'הכל' ? rehabSubcategory : ''].filter(Boolean).length
+            const activeCount = [ageGroup, diagnosis, ...populations, rehabSubcategory !== 'הכל' ? rehabSubcategory : '', searchText].filter(Boolean).length
             return (
               <button onClick={() => setShowAdvanced(v => !v)} style={{
                 display: 'flex', alignItems: 'center', gap: 6, padding: '7px 14px', borderRadius: '999px',
@@ -461,10 +472,7 @@ export default function MapPage() {
             <div>
               <div style={{ fontSize: 11, fontWeight: 700, color: '#9b88bb', marginBottom: 5 }}>קבוצת גיל</div>
               <div style={{ display: 'flex', gap: 5, flexWrap: 'wrap' }}>
-                {(showTreatment && !showRehab
-                  ? ['ילדים', 'נוער', 'צעירים', 'מבוגרים', 'קשישים']
-                  : ['צעירים', 'מבוגרים', 'קשישים']
-                ).map(ag => (
+                {['ילדים', 'נוער', 'צעירים', 'מבוגרים', 'קשישים'].map(ag => (
                   <button key={ag} onClick={() => setAgeGroup(ageGroup === ag ? '' : ag)} style={{
                     padding: '5px 12px', borderRadius: '999px', fontSize: 12, fontWeight: 600,
                     border: `1.5px solid ${ageGroup === ag ? '#6B21A8' : '#ddd'}`,
@@ -509,8 +517,8 @@ export default function MapPage() {
             </div>
 
             {/* נקה הכל */}
-            {[ageGroup, diagnosis, ...populations, rehabSubcategory !== 'הכל' ? rehabSubcategory : ''].some(Boolean) && (
-              <button onClick={() => { setAgeGroup(''); setDiagnosis(''); setPopulations([]); setRehabSubcategory('הכל') }} style={{
+            {[ageGroup, diagnosis, ...populations, rehabSubcategory !== 'הכל' ? rehabSubcategory : '', searchText].some(Boolean) && (
+              <button onClick={() => { setAgeGroup(''); setDiagnosis(''); setPopulations([]); setRehabSubcategory('הכל'); setSearchText('') }} style={{
                 alignSelf: 'flex-end', fontSize: 12, color: '#888', background: 'none',
                 border: '1.5px solid #ddd', borderRadius: '999px', padding: '5px 12px',
                 cursor: 'pointer', fontWeight: 600, fontFamily: "'Nunito', sans-serif",
