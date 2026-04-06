@@ -127,10 +127,16 @@ export default function AccessibilityWidget() {
           alignItems: 'center',
           justifyContent: 'center',
           transition: 'transform 0.2s ease, box-shadow 0.2s ease',
-          fontSize: 24,
+          padding: 0,
+          overflow: 'hidden',
         }}
       >
-        ♿
+        <img
+          src="/accessibility-widget-icon.png"
+          alt=""
+          aria-hidden="true"
+          style={{ width: 34, height: 34, objectFit: 'contain', filter: 'brightness(0) invert(1)' }}
+        />
         {anyActive && (
           <span style={{
             position: 'absolute', top: -3, right: -3,
@@ -171,7 +177,7 @@ export default function AccessibilityWidget() {
             justifyContent: 'space-between',
           }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-              <span style={{ fontSize: 22 }}>♿</span>
+              <img src="/accessibility-widget-icon.png" alt="" aria-hidden="true" style={{ width: 28, height: 28, objectFit: 'contain', filter: 'brightness(0) invert(1)' }} />
               <div>
                 <div style={{ color: 'white', fontWeight: 800, fontSize: 15, lineHeight: 1.2 }}>סרגל נגישות</div>
                 <div style={{ color: 'rgba(255,255,255,0.7)', fontSize: 11, marginTop: 1 }}>התאם את התצוגה לצרכיך</div>
