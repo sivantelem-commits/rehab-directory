@@ -42,7 +42,7 @@ export default async function handler(req, res) {
   }
 
   if (search) {
-    query = query.or(`name.ilike.%${search}%,city.ilike.%${search}%,description.ilike.%${search}%`)
+    query = query.or(`name.ilike.%${search}%,city.ilike.%${search}%,description.ilike.%${search}%,category.ilike.%${search}%,subcategory.ilike.%${search}%`)
   }
 
   const { data, error } = await query.order('created_at', { ascending: false })
