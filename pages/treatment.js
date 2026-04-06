@@ -329,9 +329,17 @@ export default function TreatmentList() {
 
         {/* ── פילטרים - נייד ── */}
         {isMobile && (
-          <div style={{ background: 'white', borderBottom: '1px solid #a0d8e8', padding: '10px 16px', display: 'flex', gap: 8, alignItems: 'center' }}>
-            <div style={{ display: 'flex', gap: 6, flex: 1, overflowX: 'auto', paddingBottom: 2 }}>
-              {DISTRICTS.map(d => {
+          <div style={{ background: 'white', borderBottom: '1px solid #a0d8e8', padding: '10px 12px', display: 'flex', gap: 8, alignItems: 'center' }}>
+            {/* כפתור פילטרים — קבוע בצד ימין */}
+            <button onClick={() => setShowSheet(true)} style={{ flexShrink: 0, display: 'flex', alignItems: 'center', gap: 6, padding: '8px 14px', borderRadius: '999px', border: `2px solid ${activeExtraFilters > 0 || category !== 'הכל' ? '#0891B2' : '#a0d8e8'}`, background: activeExtraFilters > 0 || category !== 'הכל' ? '#0891B2' : 'white', color: activeExtraFilters > 0 || category !== 'הכל' ? 'white' : '#0A6080', fontWeight: 700, fontSize: 13, cursor: 'pointer', fontFamily: "'Nunito', sans-serif" }}>
+              🎯 פילטרים
+              {(activeExtraFilters > 0 || category !== 'הכל') && (
+                <span style={{ background: 'rgba(255,255,255,0.35)', borderRadius: '999px', padding: '1px 7px', fontSize: 11 }}>{[category !== 'הכל' ? 1 : 0, activeExtraFilters].reduce((a, b) => a + b, 0)}</span>
+              )}
+            </button>
+            {/* אזורים — גלילה שמאלה */}
+            <div style={{ display: 'flex', gap: 6, flex: 1, overflowX: 'auto', paddingBottom: 2, direction: 'ltr' }}>
+              {[...DISTRICTS].reverse().map(d => {
                 const isNat = d === 'ארצי'
                 const active = district === d
                 return (
@@ -339,12 +347,6 @@ export default function TreatmentList() {
                 )
               })}
             </div>
-            <button onClick={() => setShowSheet(true)} style={{ flexShrink: 0, display: 'flex', alignItems: 'center', gap: 6, padding: '8px 16px', borderRadius: '999px', border: `2px solid ${activeExtraFilters > 0 || category !== 'הכל' ? '#0891B2' : '#a0d8e8'}`, background: activeExtraFilters > 0 || category !== 'הכל' ? '#0891B2' : 'white', color: activeExtraFilters > 0 || category !== 'הכל' ? 'white' : '#0A6080', fontWeight: 700, fontSize: 13, cursor: 'pointer', fontFamily: "'Nunito', sans-serif" }}>
-              🎯 פילטרים
-              {(activeExtraFilters > 0 || category !== 'הכל') && (
-                <span style={{ background: 'rgba(255,255,255,0.35)', borderRadius: '999px', padding: '1px 7px', fontSize: 11 }}>{[category !== 'הכל' ? 1 : 0, activeExtraFilters].reduce((a, b) => a + b, 0)}</span>
-              )}
-            </button>
             <div style={{ flexShrink: 0, fontSize: 12, color: '#0891B2', fontWeight: 600 }}>{loading ? '...' : `${services.length}`}</div>
           </div>
         )}
