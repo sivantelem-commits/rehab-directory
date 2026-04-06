@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import AccessibilityWidget from '../components/AccessibilityWidget'
 
 function CookieBanner() {
   const [visible, setVisible] = useState(false)
@@ -94,6 +95,7 @@ export default function App({ Component, pageProps }) {
     <>
       <Component {...pageProps} />
       <CookieBanner />
+      <AccessibilityWidget />
     </>
   )
 }
