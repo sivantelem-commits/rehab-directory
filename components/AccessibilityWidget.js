@@ -135,7 +135,7 @@ export default function AccessibilityWidget() {
           src="/accessibility-widget-icon.png"
           alt=""
           aria-hidden="true"
-          style={{ width: 36, height: 36, objectFit: 'contain' }}
+          style={{ width: 46, height: 46, objectFit: 'contain' }}
         />
         {anyActive && (
           <span style={{
