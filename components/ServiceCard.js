@@ -2,14 +2,28 @@ import { getCategoryColor } from '../lib/categories'
 import { BasketButton } from './ServiceBasket'
 const TREATMENT_CATEGORIES = ['בתים מאזנים', 'מחלקות אשפוז', 'מרפאות יום', 'מרפאות בריאות נפש', 'חדרי מיון', 'אשפוז בית', 'שירותים נוספים']
 const TREATMENT_COLOR = '#0891B2'
+
+function formatDate(dateStr) {
+  if (!dateStr) return null
+  const d = new Date(dateStr)
+  const now = new Date()
+  const diffDays = Math.floor((now - d) / (1000 * 60 * 60 * 24))
+  if (diffDays === 0) return 'עודכן היום'
+  if (diffDays === 1) return 'עודכן אתמול'
+  if (diffDays < 30) return `עודכן לפני ${diffDays} ימים`
+  if (diffDays < 365) return `עודכן ${Math.floor(diffDays / 30)} חודשים`
+  return `עודכן ${Math.floor(diffDays / 365)} שנה`
+}
+
 export default function ServiceCard({ service }) {
   const isTreatment = service._forcedType ? service._forcedType === 'treatment' : TREATMENT_CATEGORIES.includes(service.category)
   const color = isTreatment ? TREATMENT_COLOR : getCategoryColor(service.category, service.subcategory)
   const serviceWithType = { ...service, type: isTreatment ? 'treatment' : 'rehab' }
-  // קטגוריות נוספות - ללא כפילות עם הראשית
   const extraCats = (service.categories || []).filter(c => c && c !== service.category)
+  const dateLabel = formatDate(service.updated_at || service.created_at)
+  const reportUrl = `/contact?type=fix&serviceName=${encodeURIComponent(service.name)}`
   return (
-    <div style={{ background: 'white', borderRadius: 16, padding: '20px 22px', cursor: 'pointer', boxShadow: '0 4px 16px rgba(0,0,0,0.07)', border: `1.5px solid ${isTreatment ? '#a0d8e8' : '#d4b0f0'}`, borderTop: `4px solid ${color}`, transition: 'transform 0.15s, box-shadow 0.15s', display: 'flex', flexDirection: 'column', height: '260px' }}
+    <div style={{ background: 'white', borderRadius: 16, padding: '20px 22px', cursor: 'pointer', boxShadow: '0 4px 16px rgba(0,0,0,0.07)', border: `1.5px solid ${isTreatment ? '#a0d8e8' : '#d4b0f0'}`, borderTop: `4px solid ${color}`, transition: 'transform 0.15s, box-shadow 0.15s', display: 'flex', flexDirection: 'column', height: '280px' }}
       onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = `0 8px 24px ${isTreatment ? 'rgba(8,145,178,0.12)' : 'rgba(76,0,128,0.12)'}` }}
       onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 4px 16px rgba(0,0,0,0.07)' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 10 }}>
@@ -41,9 +55,22 @@ export default function ServiceCard({ service }) {
           </div>
         )}
       </div>
-      <div style={{ display: 'flex', gap: 12, fontSize: 13, color, flexWrap: 'wrap', marginTop: 12 }}>
+      <div style={{ display: 'flex', gap: 12, fontSize: 13, color, flexWrap: 'wrap', marginTop: 10 }}>
         {service.phone && <span>📞 {service.phone}</span>}
         {service.email && <span>✉️ {service.email}</span>}
+      </div>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 8, paddingTop: 8, borderTop: '1px solid #f0f0f0' }}>
+        {dateLabel
+          ? <span style={{ fontSize: 11, color: '#bbb', fontWeight: 500 }}>🕐 {dateLabel}</span>
+          : <span />
+        }
+        <a
+          href={reportUrl}
+          onClick={e => e.stopPropagation()}
+          style={{ fontSize: 11, color: '#ccc', textDecoration: 'none', fontWeight: 500 }}
+          onMouseEnter={e => e.currentTarget.style.color = '#e08020'}
+          onMouseLeave={e => e.currentTarget.style.color = '#ccc'}
+        >⚠️ דיווח</a>
       </div>
     </div>
   )
