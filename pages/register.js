@@ -213,7 +213,7 @@ export default function Register() {
                 boxShadow: tab === 'rehab' ? '0 4px 16px rgba(139,0,212,0.3)' : 'none',
                 transition: 'all 0.2s',
               }}>
-                <span style={{ fontSize: 28 }}>♿</span>
+                <img src="/rehab-logo.png" alt="" role="presentation" style={{ width: 64, height: 64, objectFit: 'contain', filter: tab === 'rehab' ? 'invert(1) brightness(10)' : 'none' }} />
                 <span>שיקום</span>
                 <span style={{ fontSize: 11, fontWeight: 500, opacity: 0.8, lineHeight: 1.4 }}>סל שיקום בקהילה – דיור, תעסוקה, השכלה</span>
               </button>
@@ -226,7 +226,7 @@ export default function Register() {
                 boxShadow: tab === 'treatment' ? '0 4px 16px rgba(8,145,178,0.3)' : 'none',
                 transition: 'all 0.2s',
               }}>
-                <span style={{ fontSize: 28 }}>🏥</span>
+                <img src="/treatment-logo.png" alt="" role="presentation" style={{ width: 64, height: 64, objectFit: 'contain', filter: tab === 'treatment' ? 'invert(1) brightness(10)' : 'none' }} />
                 <span>טיפול</span>
                 <span style={{ fontSize: 11, fontWeight: 500, opacity: 0.8, lineHeight: 1.4 }}>בתים מאזנים, אשפוז, מרפאות</span>
               </button>
