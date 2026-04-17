@@ -5,7 +5,7 @@ import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveCo
 
 const DISTRICTS = ['צפון', 'חיפה', 'מרכז', 'תל אביב', 'ירושלים', 'דרום', 'יהודה ושומרון']
 const PRACT_TREATMENT_TYPES = ['טיפול רגשי','טיפול זוגי','טיפול רגשי לילדים','טיפול במתבגרים','CBT','EMDR','הדרכת הורים','טיפול מוזל','ריפוי בעיסוק','קלינאית תקשורת','טיפולים בהבעה ויצירה','מטפלים לקהילה הגאה']
-const PRACT_SPECIALIZATIONS = ['טיפול בדיכאון','טיפול בחרדה','טראומה','הפרעות אכילה','טיפול בנערות ונשים צעירות','לקויות למידה והפרעות קשב','נכויות ומחלות כרוניות','אבחונים','התמכרויות','מיינדפולנס','פסיכולוגיה תעסוקתית','פסיכודרמה','התפתחות הילד','גיל ההתבגרות','בעיות משפחתיות וזוגיות','אבל ואובדן','טיפול רגשי בילדים','הגיל השלישי']
+const PRACT_SPECIALIZATIONS = ['טיפול בדיכאון','טיפול בחרדה','פוסט טראומה','פוסט טראומה מורכבת','הפרעות אכילה','טיפול בנערות ונשים צעירות','לקויות למידה והפרעות קשב','נכויות ומחלות כרוניות','אבחונים','התמכרויות','מיינדפולנס','פסיכולוגיה תעסוקתית','פסיכודרמה','התפתחות הילד','גיל ההתבגרות','בעיות משפחתיות וזוגיות','אבל ואובדן','טיפול רגשי בילדים','הגיל השלישי']
 const PRACT_PROFESSIONS = ['פסיכולוג/ית קלינית','פסיכיאטר/ית','עובד/ת סוציאלי/ת','מטפל/ת CBT מוסמך/ת','מטפל/ת EMDR מוסמך/ת','פסיכותרפיסט/ית','קלינאי/ת תקשורת','מרפא/ה בעיסוק','מטפל/ת בהבעה ויצירה','פסיכולוג/ית חינוכי/ת','אחר']
 const HEALTH_FUNDS = ['כללית','מכבי','מאוחדת','לאומית']
 const PRACT_LANGUAGES = ['עברית','ערבית','אנגלית','רוסית','אמהרית','צרפתית']
@@ -676,7 +676,7 @@ export default function Admin() {
                             </div>
                             {p.treatment_types?.length  > 0 && <div style={{ fontSize: 12, color: '#0F4C75', marginBottom: 3 }}>💊 {p.treatment_types.join(', ')}</div>}
                             {p.specializations?.length  > 0 && <div style={{ fontSize: 12, color: '#6d28d9', marginBottom: 3 }}>🎯 {p.specializations.join(', ')}</div>}
-                            {p.has_health_fund_agreement && <div style={{ fontSize: 12, color: '#059669' }}>🏥 הסדר קופות{p.health_funds?.length > 0 ? `: ${p.health_funds.join(', ')}` : ''}</div>}
+                            {p.health_funds?.length     > 0 && <div style={{ fontSize: 12, color: '#059669' }}>🏥 {p.health_funds.join(', ')}</div>}
                             {p.bio && <div style={{ fontSize: 13, color: '#666', marginTop: 8, fontStyle: 'italic', maxWidth: 500 }}>"{p.bio.substring(0, 120)}{p.bio.length > 120 ? '...' : ''}"</div>}
                           </div>
 
@@ -685,7 +685,7 @@ export default function Admin() {
                               <button onClick={async () => { await fetch('/api/admin/practitioners', { method: 'PATCH', headers: { 'Content-Type': 'application/json', adminkey: adminKey }, body: JSON.stringify({ id: p.id, status: 'approved' }) }); fetchAll(adminKey) }}
                                 style={{ background: '#059669', color: 'white', border: 'none', borderRadius: 20, padding: '8px 16px', fontWeight: 700, cursor: 'pointer', fontSize: 13 }}>✓ אישור</button>
                             )}
-                            <button onClick={() => { setEditingPractitioner(p); setEditPForm({ ...p, has_health_fund_agreement: p.has_health_fund_agreement || false, treatment_types: p.treatment_types || [], specializations: p.specializations || [], health_funds: p.health_funds || [], languages: p.languages || [] }) }}
+                            <button onClick={() => { setEditingPractitioner(p); setEditPForm({ ...p, treatment_types: p.treatment_types || [], specializations: p.specializations || [], health_funds: p.health_funds || [], languages: p.languages || [] }) }}
                               style={{ background: '#e0f2fe', color: '#0284c7', border: '2px solid #7dd3fc', borderRadius: 20, padding: '7px 14px', fontWeight: 700, cursor: 'pointer', fontSize: 12 }}>✏️ עריכה</button>
                             <button onClick={async () => { await fetch('/api/admin/practitioners', { method: 'PATCH', headers: { 'Content-Type': 'application/json', adminkey: adminKey }, body: JSON.stringify({ id: p.id, is_verified: !p.is_verified }) }); fetchAll(adminKey) }}
                               style={{ background: p.is_verified ? '#dbeafe' : 'white', color: p.is_verified ? '#1d4ed8' : '#0F4C75', border: '2px solid #0F4C75', borderRadius: 20, padding: '7px 14px', fontWeight: 700, cursor: 'pointer', fontSize: 12 }}>
@@ -787,21 +787,13 @@ export default function Admin() {
                   </div>
                 </div>
 
-                {/* הסדר קופות */}
-                <div style={{ marginBottom: editPForm.has_health_fund_agreement ? 8 : 14 }}>
-                  <label style={{ display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer', fontSize: 12, fontWeight: 700, color: '#059669' }}>
-                    <input type="checkbox" checked={!!editPForm.has_health_fund_agreement} onChange={e => setEditPForm(f => ({ ...f, has_health_fund_agreement: e.target.checked, health_funds: e.target.checked ? f.health_funds : [] }))} style={{ width: 15, height: 15 }} />
-                    עובד/ת בהסדר עם קופות חולים 🏥
-                  </label>
-                </div>
-                {editPForm.has_health_fund_agreement && (
-                  <div style={{ marginBottom: 14, marginRight: 20 }}>
-                    <div style={{ fontSize: 11, color: '#666', marginBottom: 6, fontWeight: 600 }}>עם אילו קופות?</div>
-                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
-                      {HEALTH_FUNDS.map(hf => { const s = (editPForm.health_funds||[]).includes(hf); return <button key={hf} onClick={() => togglePEditArray('health_funds', hf)} style={{ padding: '4px 12px', borderRadius: 999, fontSize: 12, fontWeight: 700, cursor: 'pointer', border: `1.5px solid ${s?'#059669':'#d1fae5'}`, background: s?'#059669':'white', color: s?'white':'#059669' }}>{hf}</button> })}
-                    </div>
+                {/* קופות חולים */}
+                <div style={{ marginBottom: 14 }}>
+                  <label style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#059669', marginBottom: 6 }}>קופות חולים</label>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+                    {HEALTH_FUNDS.map(hf => { const s = (editPForm.health_funds||[]).includes(hf); return <button key={hf} onClick={() => togglePEditArray('health_funds', hf)} style={{ padding: '4px 12px', borderRadius: 999, fontSize: 12, fontWeight: 700, cursor: 'pointer', border: `1.5px solid ${s?'#059669':'#d1fae5'}`, background: s?'#059669':'white', color: s?'white':'#059669' }}>{hf}</button> })}
                   </div>
-                )}
+                </div>
 
                 {/* שפות */}
                 <div style={{ marginBottom: 14 }}>
