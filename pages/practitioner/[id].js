@@ -1,11 +1,6 @@
 // pages/practitioner/[id].js
 import Head from 'next/head'
-import { useState, useEffect } from 'react'
-import { useRouter } from 'next/router'
 import { PRACTITIONER_COLOR as COLOR, PRACTITIONER_DARK as DARK } from '../../lib/practitioner-constants'
-import { BasketButton, BasketPanel } from '../../components/ServiceBasket'
-
-const NAV = [['/', 'ראשי'], ['/rehab', 'שיקום'], ['/treatment', 'טיפול'], ['/map', 'מפה'], ['/register', 'הוספת שירות'], ['/about', 'אודות'], ['/contact', 'צור קשר'], ['/admin', 'ניהול']]
 
 const normalizePhotoUrl = (url) => {
   if (!url) return null
@@ -17,69 +12,25 @@ const normalizePhotoUrl = (url) => {
 }
 
 export default function PractitionerPage({ practitioner: raw }) {
-  const router = useRouter()
   const p = raw ? { ...raw, photo_url: normalizePhotoUrl(raw.photo_url) } : null
-
-  // back navigation — go back in history if possible, else /treatment
-  const handleBack = () => {
-    if (typeof window !== 'undefined' && window.history.length > 1) {
-      router.back()
-    } else {
-      router.push('/treatment')
-    }
-  }
-
   if (!p) return (
     <div dir="rtl" style={{ textAlign: 'center', padding: '80px 24px', fontFamily: 'Arial' }}>
       <div style={{ fontSize: 40, marginBottom: 16 }}>🔍</div>
       <h2 style={{ color: '#555' }}>המטפל/ת לא נמצא/ה</h2>
-      <a href="/treatment" style={{ color: COLOR }}>← חזרה לטיפול</a>
+      <a href="/practitioners" style={{ color: COLOR }}>← חזרה לרשימה</a>
     </div>
   )
-
-  const basketService = { ...p, type: 'practitioner' }
 
   return (
     <>
       <Head>
         <title>{p.name} | מטפלים פרטיים</title>
-        <meta name="description" content={p.bio || `${p.name} – ${p.profession || 'מטפל/ת מוסמך/ת'}`} />
-        <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
+        <meta name="description" content={p.bio || `${p.name} – ${p.professions?.length ? p.professions.join(', ') : 'מטפל/ת מוסמך/ת'}`} />
       </Head>
       <div dir="rtl" style={{ minHeight: '100vh', background: '#f0f7ff', fontFamily: "'Nunito','Arial',sans-serif" }}>
 
-        {/* ── Header מלא ── */}
-        <header style={{
-          background: 'linear-gradient(135deg, #164E63, #0891B2)', color: 'white',
-          padding: '10px 20px', display: 'flex', alignItems: 'center',
-          justifyContent: 'space-between', boxShadow: '0 2px 12px rgba(22,78,99,0.2)',
-          flexWrap: 'wrap', gap: 8, position: 'sticky', top: 0, zIndex: 100,
-        }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-            <img src="/logo.png" alt="בריאות נפש בישראל" style={{ width: 44, height: 44, objectFit: 'contain', filter: 'brightness(0) invert(1)' }} />
-            <div>
-              <div style={{ fontWeight: 800, fontSize: 18 }}>בריאות נפש בישראל</div>
-              <div style={{ fontSize: 11, opacity: 0.8 }}>מטפלים פרטיים</div>
-            </div>
-          </div>
-          <a href="/calculator" style={{ background: 'rgba(255,255,200,0.18)', border: '1.5px solid rgba(255,255,150,0.5)', color: 'white', borderRadius: '999px', padding: '8px 18px', fontWeight: 800, fontSize: 13, textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 6, whiteSpace: 'nowrap' }}>🧭 מחשבון מסלול</a>
-          <a href="https://links.payboxapp.com/g9hdYBPr71b" target="_blank" rel="noopener noreferrer" style={{ background: 'rgba(255,255,255,0.15)', border: '1.5px solid rgba(255,255,255,0.35)', color: 'white', borderRadius: '999px', padding: '8px 18px', fontWeight: 700, fontSize: 13, textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 6, whiteSpace: 'nowrap' }}>💙 תמכו</a>
-          <nav aria-label="ניווט ראשי" style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-            {NAV.map(([href, label]) => (
-              <a key={href} href={href} style={{
-                color: 'white',
-                background: href === '/treatment' ? 'rgba(255,255,255,0.25)' : 'rgba(255,255,255,0.1)',
-                borderRadius: '999px', padding: '6px 14px', fontWeight: 600, fontSize: 12,
-                border: href === '/treatment' ? '1.5px solid rgba(255,255,255,0.6)' : '1.5px solid rgba(255,255,255,0.2)',
-                textDecoration: 'none',
-              }}>{label}</a>
-            ))}
-          </nav>
-        </header>
-
-        {/* ── כפתור חזרה ── */}
-        <div style={{ background: `linear-gradient(135deg,${DARK},${COLOR})`, padding: '12px 24px' }}>
-          <button onClick={handleBack} style={{ color: 'rgba(255,255,255,.85)', background: 'none', border: 'none', cursor: 'pointer', fontSize: 14, fontWeight: 700, fontFamily: 'inherit', padding: 0 }}>← חזרה</button>
+        <div style={{ background: `linear-gradient(135deg,${DARK},${COLOR})`, padding: '16px 24px' }}>
+          <a href="/practitioners" style={{ color: 'rgba(255,255,255,.8)', textDecoration: 'none', fontSize: 14, fontWeight: 700 }}>← חזרה לרשימת המטפלים</a>
         </div>
 
         <main style={{ maxWidth: 700, margin: '32px auto', padding: '0 16px' }}>
@@ -92,18 +43,17 @@ export default function PractitionerPage({ practitioner: raw }) {
                   ? <img src={p.photo_url} alt={p.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                   : <span style={{ fontSize: 36 }}>👤</span>}
               </div>
-              <div style={{ flex: 1 }}>
+              <div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
                   <h1 style={{ margin: 0, fontSize: 24, fontWeight: 900 }}>{p.name}</h1>
                   {p.is_verified && <span style={{ background: 'rgba(255,255,255,.25)', borderRadius: 20, padding: '3px 12px', fontSize: 12, fontWeight: 700 }}>✓ מאומת</span>}
                 </div>
-                {p.profession && <div style={{ opacity: .9, marginTop: 4, fontSize: 15 }}>{p.profession}</div>}
+                {p.professions?.length > 0 && <div style={{ opacity: .9, marginTop: 4, fontSize: 15 }}>{p.professions.join(" · ")}</div>}
                 <div style={{ opacity: .75, fontSize: 13, marginTop: 4 }}>
                   {p.city}{p.district ? `, ${p.district}` : ''}
                   {p.is_online && <span style={{ marginRight: 10 }}>· 🌐 אונליין</span>}
                 </div>
               </div>
-              <BasketButton service={basketService} style={{ width: 40, height: 40, fontSize: 18, background: 'rgba(255,255,255,0.15)', border: '2px solid rgba(255,255,255,0.5)', color: 'white', flexShrink: 0 }} />
             </div>
 
             <div style={{ padding: '28px 32px' }}>
@@ -193,8 +143,6 @@ export default function PractitionerPage({ practitioner: raw }) {
             </div>
           </div>
         </main>
-
-        <BasketPanel />
 
         <footer style={{ background: `linear-gradient(135deg,${DARK},${COLOR})`, color: 'rgba(255,255,255,.75)', textAlign: 'center', padding: '24px', fontSize: 13, marginTop: 48 }}>
           בריאות נפש בישראל © 2026
