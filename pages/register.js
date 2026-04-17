@@ -186,14 +186,36 @@ export default function Register() {
       <div dir="rtl" style={{ minHeight: '100vh', background: tab === 'practitioner' ? '#f0f7ff' : isRehab ? '#faf5ff' : '#f0faff', fontFamily: "'Nunito','Arial',sans-serif" }}>
 
         {/* ניווט */}
-        <nav style={{ background: `linear-gradient(135deg,${darkColor || '#1A3A5C'},${color || '#2563EB'})`, padding: '0 24px', display: 'flex', alignItems: 'center', gap: 4, overflowX: 'auto', position: 'sticky', top: 0, zIndex: 100, boxShadow: '0 2px 12px rgba(0,0,0,.15)' }}>
-          {NAV.map(([href, label]) => (
-            <a key={href} href={href} style={{ color: 'rgba(255,255,255,.85)', textDecoration: 'none', padding: '16px 14px', fontSize: 13.5, fontWeight: 700, whiteSpace: 'nowrap', borderBottom: href === '/register' ? '3px solid white' : '3px solid transparent' }}>{label}</a>
-          ))}
-        </nav>
+        <header style={{
+          background: `linear-gradient(135deg,${darkColor || '#1A3A5C'},${color || '#2563EB'})`,
+          color: 'white', padding: '10px 20px', display: 'flex', alignItems: 'center',
+          justifyContent: 'space-between', boxShadow: '0 2px 12px rgba(0,0,0,.2)',
+          flexWrap: 'wrap', gap: 8, position: 'sticky', top: 0, zIndex: 100,
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <img src="/logo.png" alt="בריאות נפש בישראל" style={{ width: 40, height: 40, objectFit: 'contain', filter: 'brightness(0) invert(1)' }} />
+            <div>
+              <div style={{ fontWeight: 800, fontSize: 17 }}>בריאות נפש בישראל</div>
+              <div style={{ fontSize: 11, opacity: 0.8 }}>הוספת שירות</div>
+            </div>
+          </div>
+          <a href="/calculator" style={{ background: 'rgba(255,255,200,0.18)', border: '1.5px solid rgba(255,255,150,0.5)', color: 'white', borderRadius: '999px', padding: '8px 16px', fontWeight: 800, fontSize: 13, textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 6, whiteSpace: 'nowrap' }}>🧭 מחשבון מסלול</a>
+          <a href="https://links.payboxapp.com/g9hdYBPr71b" target="_blank" rel="noopener noreferrer" style={{ background: 'rgba(255,255,255,0.15)', border: '1.5px solid rgba(255,255,255,0.35)', color: 'white', borderRadius: '999px', padding: '8px 16px', fontWeight: 700, fontSize: 13, textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 6, whiteSpace: 'nowrap' }}>💙 תמכו</a>
+          <nav aria-label="ניווט ראשי" style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+            {NAV.map(([href, label]) => (
+              <a key={href} href={href} style={{
+                color: 'white',
+                background: href === '/register' ? 'rgba(255,255,255,0.25)' : 'rgba(255,255,255,0.1)',
+                borderRadius: '999px', padding: '6px 14px', fontWeight: 600, fontSize: 12,
+                border: href === '/register' ? '1.5px solid rgba(255,255,255,0.6)' : '1.5px solid rgba(255,255,255,0.2)',
+                textDecoration: 'none',
+              }}>{label}</a>
+            ))}
+          </nav>
+        </header>
 
         {/* כותרת */}
-        <div style={{ background: `linear-gradient(135deg,${darkColor || '#1A3A5C'},${color || '#2563EB'})`, padding: '40px 24px 48px', textAlign: 'center', color: 'white' }}>
+        <div style={{ background: `linear-gradient(135deg,${darkColor || '#1A3A5C'},${color || '#2563EB'})`, padding: '32px 24px 52px', textAlign: 'center', color: 'white' }}>
           <h1 style={{ margin: '0 0 8px', fontSize: 26, fontWeight: 900 }}>הוספת שירות למאגר</h1>
           <p style={{ margin: 0, opacity: .8, fontSize: 14 }}>כל השירותים עוברים אישור לפני פרסום</p>
         </div>
