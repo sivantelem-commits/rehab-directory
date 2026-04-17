@@ -6,10 +6,8 @@ import ServiceDetailModal from '../components/ServiceDetailModal'
 import FilterBottomSheet from '../components/FilterBottomSheet'
 import {
   PRACTITIONER_TREATMENT_TYPES,
-  PRACTITIONER_CERTIFICATIONS,
   PRACTITIONER_SPECIALIZATIONS,
   HEALTH_FUNDS,
-  DISTRICTS as PRACTITIONER_DISTRICTS,
 } from '../lib/practitioner-constants'
 
 const PRACT_COLOR = '#0F4C75'
@@ -145,9 +143,7 @@ export default function TreatmentList() {
   const [practitioners, setPractitioners] = useState([])
   const [practLoading, setPractLoading] = useState(false)
   const [practSearch, setPractSearch] = useState('')
-  const [practDistrict, setPractDistrict] = useState('')
   const [practTreatmentType, setPractTreatmentType] = useState('')
-  const [practCertification, setPractCertification]   = useState('')
   const [practSpecialization, setPractSpecialization] = useState('')
   const [practHealthFund, setPractHealthFund] = useState('')
   const [practOnline, setPractOnline] = useState(false)
@@ -165,6 +161,7 @@ export default function TreatmentList() {
     if (router.isReady) {
       if (router.query.district) setDistrict(router.query.district)
       if (router.query.category) setCategory(router.query.category)
+      if (router.query.tab === 'practitioners') setMainTab('practitioners')
     }
   }, [router.isReady, router.query])
 
@@ -206,9 +203,7 @@ export default function TreatmentList() {
     if (mainTab !== 'practitioners') return
     setPractLoading(true)
     const p = new URLSearchParams()
-    if (practDistrict)       p.set('district', practDistrict)
-    if (practTreatmentType)   p.set('treatment_type', practTreatmentType)
-    if (practCertification)    p.set('certification', practCertification)
+    if (practTreatmentType)  p.set('treatment_type', practTreatmentType)
     if (practSpecialization) p.set('specialization', practSpecialization)
     if (practHealthFund)     p.set('health_fund', practHealthFund)
     if (practOnline)         p.set('online', 'true')
@@ -219,7 +214,7 @@ export default function TreatmentList() {
       .then(d => setPractitioners(Array.isArray(d) ? d : []))
       .catch(() => setPractitioners([]))
       .finally(() => setPractLoading(false))
-  }, [mainTab, practDistrict, practTreatmentType, practCertification, practSpecialization, practHealthFund, practOnline, practDefense, practSearch])
+  }, [mainTab, practTreatmentType, practSpecialization, practHealthFund, practOnline, practDefense, practSearch])
 
   const activeExtraFilters = [...ageGroups, ...diagnoses, ...populations].filter(Boolean).length
 
@@ -358,17 +353,12 @@ export default function TreatmentList() {
 
             {/* פילטרים */}
             <div style={{ background: 'white', borderRadius: 14, padding: '16px 20px', marginBottom: 20, boxShadow: '0 2px 10px rgba(0,0,0,.05)', border: '1px solid #d0edf8' }}>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(150px,1fr))', gap: 10, marginBottom: 14 }}>
-                {[
-                  [practDistrict,   setPractDistrict,   'כל המחוזות',      PRACTITIONER_DISTRICTS],
-                  [practHealthFund, setPractHealthFund, 'כל קופות החולים', HEALTH_FUNDS],
-                ].map(([val, setter, ph, opts]) => (
-                  <select key={ph} value={val} onChange={e => setter(e.target.value)}
-                    style={{ padding: '9px 12px', borderRadius: 10, border: '1.5px solid #a0d8e8', fontSize: 13, fontFamily: 'inherit', background: 'white', outline: 'none', cursor: 'pointer' }}>
-                    <option value="">{ph}</option>
-                    {opts.map(o => <option key={o}>{o}</option>)}
-                  </select>
-                ))}
+              <div style={{ marginBottom: 14 }}>
+                <select value={practHealthFund} onChange={e => setPractHealthFund(e.target.value)}
+                  style={{ padding: '9px 12px', borderRadius: 10, border: '1.5px solid #a0d8e8', fontSize: 13, fontFamily: 'inherit', background: 'white', outline: 'none', cursor: 'pointer', minWidth: 200 }}>
+                  <option value="">כל קופות החולים</option>
+                  {HEALTH_FUNDS.map(o => <option key={o}>{o}</option>)}
+                </select>
               </div>
               <div style={{ marginBottom: 12 }}>
                 <div style={{ fontSize: 11, fontWeight: 700, color: '#888', marginBottom: 6 }}>סוג טיפול</div>
@@ -376,15 +366,6 @@ export default function TreatmentList() {
                   {PRACTITIONER_TREATMENT_TYPES.map(t => {
                     const sel = practTreatmentType === t
                     return <button key={t} onClick={() => setPractTreatmentType(sel ? '' : t)} style={{ padding: '5px 12px', borderRadius: 999, fontSize: 12, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit', transition: 'all .15s', border: `1.5px solid ${sel ? PRACT_COLOR : '#a0d8e8'}`, background: sel ? PRACT_COLOR : 'white', color: sel ? 'white' : PRACT_COLOR }}>{t}</button>
-                  })}
-                </div>
-              </div>
-              <div style={{ marginBottom: 12 }}>
-                <div style={{ fontSize: 11, fontWeight: 700, color: '#888', marginBottom: 6 }}>הסמכה</div>
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
-                  {PRACTITIONER_CERTIFICATIONS.map(c => {
-                    const sel = practCertification === c
-                    return <button key={c} onClick={() => setPractCertification(sel ? '' : c)} style={{ padding: '5px 12px', borderRadius: 999, fontSize: 12, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit', transition: 'all .15s', border: `1.5px solid ${sel ? '#0284C7' : '#a0d8e8'}`, background: sel ? '#0284C7' : 'white', color: sel ? 'white' : '#0284C7' }}>{c}</button>
                   })}
                 </div>
               </div>
@@ -401,8 +382,8 @@ export default function TreatmentList() {
                 {[[practOnline, setPractOnline, '🌐 אונליין'], [practDefense, setPractDefense, '🎗️ ספק משרד הביטחון']].map(([v, setter, label]) => (
                   <button key={label} onClick={() => setter(!v)} style={{ padding: '5px 14px', borderRadius: 999, fontSize: 12, fontWeight: 700, cursor: 'pointer', border: `1.5px solid ${v ? PRACT_COLOR : '#a0d8e8'}`, background: v ? PRACT_COLOR : 'white', color: v ? 'white' : PRACT_COLOR }}>{label}</button>
                 ))}
-                {(practDistrict || practTreatmentType || practCertification || practSpecialization || practHealthFund || practOnline || practDefense || practSearch) && (
-                  <button onClick={() => { setPractDistrict(''); setPractTreatmentType(''); setPractCertification(''); setPractSpecialization(''); setPractHealthFund(''); setPractOnline(false); setPractDefense(false); setPractSearch('') }} style={{ padding: '5px 14px', borderRadius: 999, fontSize: 12, fontWeight: 700, cursor: 'pointer', border: '1.5px solid #fca5a5', background: '#fff5f5', color: '#dc2626' }}>✕ נקה הכל</button>
+                {(practTreatmentType || practSpecialization || practHealthFund || practOnline || practDefense || practSearch) && (
+                  <button onClick={() => { setPractTreatmentType(''); setPractSpecialization(''); setPractHealthFund(''); setPractOnline(false); setPractDefense(false); setPractSearch('') }} style={{ padding: '5px 14px', borderRadius: 999, fontSize: 12, fontWeight: 700, cursor: 'pointer', border: '1.5px solid #fca5a5', background: '#fff5f5', color: '#dc2626' }}>✕ נקה הכל</button>
                 )}
               </div>
             </div>
@@ -436,7 +417,7 @@ export default function TreatmentList() {
                           {p.profession && <span style={{ background: PRACT_COLOR, color: 'white', borderRadius: 20, padding: '3px 10px', fontSize: 12, fontWeight: 700 }}>{p.profession}</span>}
                         </div>
                         <div style={{ fontSize: 13, color: '#666', marginBottom: 6, display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-                          {p.city && <span>📍 {p.city}{p.district ? `, ${p.district}` : ''}</span>}
+                          {p.city && <span>📍 {p.city}</span>}
                           {p.is_online && <span style={{ color: '#0891B2', fontWeight: 700 }}>🌐 אונליין</span>}
                           {p.whatsapp_available && <span style={{ color: '#25D366', fontWeight: 700 }}>💬 וואטסאפ</span>}
                           {p.price_range && <span>💰 ₪{p.price_range} לשעה</span>}
