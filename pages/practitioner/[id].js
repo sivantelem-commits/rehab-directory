@@ -1,6 +1,5 @@
 // pages/practitioner/[id].js
 import Head from 'next/head'
-import { useRouter } from 'next/router'
 import { PRACTITIONER_COLOR as COLOR, PRACTITIONER_DARK as DARK } from '../../lib/practitioner-constants'
 
 const normalizePhotoUrl = (url) => {
@@ -13,7 +12,6 @@ const normalizePhotoUrl = (url) => {
 }
 
 export default function PractitionerPage({ practitioner: raw }) {
-  const router = useRouter()
   const p = raw ? { ...raw, photo_url: normalizePhotoUrl(raw.photo_url) } : null
   if (!p) return (
     <div dir="rtl" style={{ textAlign: 'center', padding: '80px 24px', fontFamily: 'Arial' }}>
@@ -99,15 +97,19 @@ export default function PractitionerPage({ practitioner: raw }) {
                 </div>
               )}
 
-              {/* קופות חולים */}
-              {p.health_funds?.length > 0 && (
+              {/* הסדר קופות חולים */}
+              {p.has_health_fund_agreement && (
                 <div style={{ marginBottom: 20 }}>
-                  <h3 style={h3}>קופות חולים</h3>
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-                    {p.health_funds.map(hf => (
-                      <span key={hf} style={{ background: '#f0fdf4', color: '#059669', borderRadius: 20, padding: '5px 14px', fontSize: 13, fontWeight: 600 }}>🏥 {hf}</span>
-                    ))}
-                  </div>
+                  <h3 style={h3}>הסדר קופות חולים</h3>
+                  {p.health_funds?.length > 0 ? (
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                      {p.health_funds.map(hf => (
+                        <span key={hf} style={{ background: '#f0fdf4', color: '#059669', borderRadius: 20, padding: '5px 14px', fontSize: 13, fontWeight: 600 }}>🏥 {hf}</span>
+                      ))}
+                    </div>
+                  ) : (
+                    <p style={{ color: '#059669', fontSize: 14, margin: 0, fontWeight: 600 }}>🏥 עובד/ת בהסדר עם קופות חולים</p>
+                  )}
                 </div>
               )}
 
