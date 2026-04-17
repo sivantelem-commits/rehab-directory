@@ -21,11 +21,17 @@ export default async function handler(req, res) {
   }
 
   if (req.method === 'PATCH') {
-    const { id, status, is_verified } = req.body
+    const { id, status, is_verified, ...fields } = req.body
     if (!id) return res.status(400).json({ error: 'Missing id' })
     const updates = { updated_at: new Date().toISOString() }
     if (status      !== undefined) updates.status      = status
     if (is_verified !== undefined) updates.is_verified = is_verified
+    // full-field edit
+    const EDITABLE = ['name','profession','city','district','phone','website','price_range','bio','photo_url',
+                      'treatment_types','specializations','health_funds','languages','is_online','is_defense_ministry','license_number']
+    for (const key of EDITABLE) {
+      if (fields[key] !== undefined) updates[key] = fields[key]
+    }
     const { error } = await supabase.from('practitioners').update(updates).eq('id', id)
     if (error) return res.status(500).json({ error: error.message })
     return res.status(200).json({ success: true })
