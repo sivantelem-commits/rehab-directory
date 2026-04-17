@@ -355,17 +355,12 @@ export default function TreatmentList() {
 
             {/* פילטרים */}
             <div style={{ background: 'white', borderRadius: 14, padding: '16px 20px', marginBottom: 20, boxShadow: '0 2px 10px rgba(0,0,0,.05)', border: '1px solid #d0edf8' }}>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(150px,1fr))', gap: 10, marginBottom: 14 }}>
-                {[
-                  [practDistrict,   setPractDistrict,   'כל המחוזות',      PRACTITIONER_DISTRICTS],
-                  [practHealthFund, setPractHealthFund, 'כל קופות החולים', HEALTH_FUNDS],
-                ].map(([val, setter, ph, opts]) => (
-                  <select key={ph} value={val} onChange={e => setter(e.target.value)}
-                    style={{ padding: '9px 12px', borderRadius: 10, border: '1.5px solid #a0d8e8', fontSize: 13, fontFamily: 'inherit', background: 'white', outline: 'none', cursor: 'pointer' }}>
-                    <option value="">{ph}</option>
-                    {opts.map(o => <option key={o}>{o}</option>)}
-                  </select>
-                ))}
+              <div style={{ marginBottom: 14 }}>
+                <select value={practHealthFund} onChange={e => setPractHealthFund(e.target.value)}
+                  style={{ padding: '9px 12px', borderRadius: 10, border: '1.5px solid #a0d8e8', fontSize: 13, fontFamily: 'inherit', background: 'white', outline: 'none', cursor: 'pointer', minWidth: 200 }}>
+                  <option value="">כל קופות החולים</option>
+                  {HEALTH_FUNDS.map(o => <option key={o}>{o}</option>)}
+                </select>
               </div>
               <div style={{ marginBottom: 12 }}>
                 <div style={{ fontSize: 11, fontWeight: 700, color: '#888', marginBottom: 6 }}>סוג טיפול</div>
@@ -426,7 +421,6 @@ export default function TreatmentList() {
                         <div style={{ fontSize: 13, color: '#666', marginBottom: 6, display: 'flex', gap: 10, flexWrap: 'wrap' }}>
                           {p.city && <span>📍 {p.city}{p.district ? `, ${p.district}` : ''}</span>}
                           {p.is_online && <span style={{ color: '#0891B2', fontWeight: 700 }}>🌐 אונליין</span>}
-                          {p.subsidized && <span style={{ color: '#0891B2', fontWeight: 600 }}>💙 מוזל</span>}
                           {p.whatsapp_available && <span style={{ color: '#25D366', fontWeight: 700 }}>💬 וואטסאפ</span>}
                           {p.price_range && <span>💰 ₪{p.price_range} לשעה</span>}
                         </div>
