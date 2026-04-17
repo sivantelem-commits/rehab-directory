@@ -50,7 +50,7 @@ export default function PractitionerPage({ practitioner: raw }) {
                 </div>
                 {p.profession && <div style={{ opacity: .9, marginTop: 4, fontSize: 15 }}>{p.profession}</div>}
                 <div style={{ opacity: .75, fontSize: 13, marginTop: 4 }}>
-                  {p.city}{p.district ? `, ${p.district}` : ''}
+                  {p.city}
                   {p.is_online && <span style={{ marginRight: 10 }}>· 🌐 אונליין</span>}
                 </div>
               </div>
@@ -97,19 +97,15 @@ export default function PractitionerPage({ practitioner: raw }) {
                 </div>
               )}
 
-              {/* הסדר קופות חולים */}
-              {p.has_health_fund_agreement && (
+              {/* קופות חולים */}
+              {p.health_funds?.length > 0 && (
                 <div style={{ marginBottom: 20 }}>
-                  <h3 style={h3}>הסדר קופות חולים</h3>
-                  {p.health_funds?.length > 0 ? (
-                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-                      {p.health_funds.map(hf => (
-                        <span key={hf} style={{ background: '#f0fdf4', color: '#059669', borderRadius: 20, padding: '5px 14px', fontSize: 13, fontWeight: 600 }}>🏥 {hf}</span>
-                      ))}
-                    </div>
-                  ) : (
-                    <p style={{ color: '#059669', fontSize: 14, margin: 0, fontWeight: 600 }}>🏥 עובד/ת בהסדר עם קופות חולים</p>
-                  )}
+                  <h3 style={h3}>קופות חולים</h3>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                    {p.health_funds.map(hf => (
+                      <span key={hf} style={{ background: '#f0fdf4', color: '#059669', borderRadius: 20, padding: '5px 14px', fontSize: 13, fontWeight: 600 }}>🏥 {hf}</span>
+                    ))}
+                  </div>
                 </div>
               )}
 
