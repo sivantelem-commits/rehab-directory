@@ -1,4 +1,4 @@
-// pages/api/admin/practitioners.js
+// pages/api/practitioners.js
 import { createClient } from '@supabase/supabase-js'
 
 const supabase = createClient(
@@ -7,54 +7,41 @@ const supabase = createClient(
 )
 
 export default async function handler(req, res) {
-  const adminKey = req.headers['adminkey']
-  if (adminKey !== process.env.ADMIN_PASSWORD)
-    return res.status(401).json({ error: 'Unauthorized' })
+  if (req.method !== 'GET') return res.status(405).end()
 
-  if (req.method === 'GET') {
-    const { status } = req.query
-    let query = supabase.from('practitioners').select('*')
-    if (status) query = query.eq('status', status)
-    const { data, error } = await query.order('created_at', { ascending: false })
-    if (error) return res.status(500).json({ error: error.message })
-    return res.status(200).json(data || [])
+  const { id, treatment_type, specialization, health_fund, online, defense, search } = req.query
+
+  if (id) {
+    const { data, error } = await supabase
+      .from('practitioners')
+      .select('*')
+      .eq('id', id)
+      .eq('status', 'approved')
+      .single()
+    if (error) return res.status(404).json({ error: 'Not found' })
+    return res.status(200).json(data)
   }
 
-  if (req.method === 'PATCH') {
-    const { id, status, is_verified, ...fields } = req.body
-    if (!id) return res.status(400).json({ error: 'Missing id' })
+  let query = supabase
+    .from('practitioners')
+    .select('*')
+    .eq('status', 'approved')
 
-    const normalizePhotoUrl = (url) => {
-      if (!url) return url
-      const fileMatch = url.match(/drive\.google\.com\/file\/d\/([^/]+)/)
-      if (fileMatch) return `https://drive.google.com/thumbnail?sz=w400&id=${fileMatch[1]}`
-      const openMatch = url.match(/drive\.google\.com\/open\?id=([^&]+)/)
-      if (openMatch) return `https://drive.google.com/thumbnail?sz=w400&id=${openMatch[1]}`
-      return url
-    }
+  if (treatment_type)  query = query.contains('treatment_types', [treatment_type])
+  if (specialization)  query = query.contains('specializations', [specialization])
+  if (health_fund)     query = query.contains('health_funds', [health_fund])
+  if (online === 'true')  query = query.eq('is_online', true)
+  if (defense === 'true') query = query.eq('is_defense_ministry', true)
 
-    const updates = { updated_at: new Date().toISOString() }
-    if (status      !== undefined) updates.status      = status
-    if (is_verified !== undefined) updates.is_verified = is_verified
-    // full-field edit
-    const EDITABLE = ['name','profession','city','district','phone','website','price_range','bio','photo_url',
-                      'profession','certifications','treatment_types','specializations','health_funds','languages','is_online','is_defense_ministry','license_number','whatsapp_available','subsidized']
-    for (const key of EDITABLE) {
-      if (fields[key] !== undefined) {
-        updates[key] = key === 'photo_url' ? normalizePhotoUrl(fields[key]) : fields[key]
-      }
-    }
-    const { error } = await supabase.from('practitioners').update(updates).eq('id', id)
-    if (error) return res.status(500).json({ error: error.message })
-    return res.status(200).json({ success: true })
+  if (search) {
+    query = query.or(
+      `name.ilike.%${search}%,city.ilike.%${search}%,bio.ilike.%${search}%`
+    )
   }
 
-  if (req.method === 'DELETE') {
-    const { id } = req.query
-    const { error } = await supabase.from('practitioners').delete().eq('id', id)
-    if (error) return res.status(500).json({ error: error.message })
-    return res.status(200).json({ success: true })
-  }
+  const { data, error } = await query
+    .order('created_at', { ascending: false })
 
-  res.status(405).end()
+  if (error) return res.status(500).json({ error: error.message })
+  res.status(200).json(data || [])
 }
