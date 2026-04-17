@@ -4,6 +4,11 @@ import { CATEGORIES, CATEGORY_NAMES, getCategoryColor } from '../lib/categories'
 import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts'
 
 const DISTRICTS = ['צפון', 'חיפה', 'מרכז', 'תל אביב', 'ירושלים', 'דרום', 'יהודה ושומרון']
+const PRACT_TREATMENT_TYPES = ['טיפול רגשי','טיפול זוגי','טיפול רגשי לילדים','טיפול במתבגרים','CBT','EMDR','הדרכת הורים','טיפול מוזל','ריפוי בעיסוק','קלינאית תקשורת','טיפולים בהבעה ויצירה','מטפלים לקהילה הגאה']
+const PRACT_SPECIALIZATIONS = ['טיפול בדיכאון','טיפול בחרדה','טראומה','הפרעות אכילה','טיפול בנערות ונשים צעירות','לקויות למידה והפרעות קשב','נכויות ומחלות כרוניות','אבחונים','התמכרויות','מיינדפולנס','פסיכולוגיה תעסוקתית','פסיכודרמה','התפתחות הילד','גיל ההתבגרות','בעיות משפחתיות וזוגיות','אבל ואובדן','טיפול רגשי בילדים','הגיל השלישי']
+const PRACT_PROFESSIONS = ['פסיכולוג/ית קלינית','פסיכיאטר/ית','עובד/ת סוציאלי/ת','מטפל/ת CBT מוסמך/ת','מטפל/ת EMDR מוסמך/ת','פסיכותרפיסט/ית','קלינאי/ת תקשורת','מרפא/ה בעיסוק','מטפל/ת בהבעה ויצירה','פסיכולוג/ית חינוכי/ת','אחר']
+const HEALTH_FUNDS = ['כללית','מכבי','מאוחדת','לאומית']
+const PRACT_LANGUAGES = ['עברית','ערבית','אנגלית','רוסית','אמהרית','צרפתית']
 const TREATMENT_CATEGORIES = ['בתים מאזנים', 'מחלקות אשפוז', 'טיפול יום', 'מרפאות בריאות נפש', 'חדרי מיון', 'אשפוז בית', 'שירותים נוספים']
 const TREATMENT_COLORS = { 'בתים מאזנים': '#0A3040', 'מחלקות אשפוז': '#0A6080', 'טיפול יום': '#0891B2', 'מרפאות בריאות נפש': '#0284C7', 'חדרי מיון': '#06B6D4', 'אשפוז בית': '#0E7490', 'שירותים נוספים': '#0A6080' }
 
@@ -61,6 +66,9 @@ export default function Admin() {
   const [approvedPractitioners, setApprovedPractitioners] = useState([])
   const [practitionersTab,      setPractitionersTab]      = useState('pending')
   const [practitionerSearch,    setPractitionerSearch]    = useState('')
+  const [editingPractitioner,   setEditingPractitioner]   = useState(null)
+  const [editPForm,             setEditPForm]             = useState({})
+  const [savingPractitioner,    setSavingPractitioner]    = useState(false)
 
   useEffect(() => { setMounted(true) }, [])
 
@@ -210,6 +218,25 @@ export default function Admin() {
       })
       setEditingService(null); fetchAll(adminKey)
     } finally { setSaving(false) }
+  }
+
+  const savePractitionerEdit = async () => {
+    setSavingPractitioner(true)
+    try {
+      await fetch('/api/admin/practitioners', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json', adminkey: adminKey },
+        body: JSON.stringify(editPForm),
+      })
+      setEditingPractitioner(null); fetchAll(adminKey)
+    } finally { setSavingPractitioner(false) }
+  }
+
+  const togglePEditArray = (field, value) => {
+    setEditPForm(f => {
+      const arr = f[field] || []
+      return arr.includes(value) ? { ...f, [field]: arr.filter(x => x !== value) } : { ...f, [field]: [...arr, value] }
+    })
   }
 
   const sendRejectEmail = async () => {
@@ -658,6 +685,8 @@ export default function Admin() {
                               <button onClick={async () => { await fetch('/api/admin/practitioners', { method: 'PATCH', headers: { 'Content-Type': 'application/json', adminkey: adminKey }, body: JSON.stringify({ id: p.id, status: 'approved' }) }); fetchAll(adminKey) }}
                                 style={{ background: '#059669', color: 'white', border: 'none', borderRadius: 20, padding: '8px 16px', fontWeight: 700, cursor: 'pointer', fontSize: 13 }}>✓ אישור</button>
                             )}
+                            <button onClick={() => { setEditingPractitioner(p); setEditPForm({ ...p, treatment_types: p.treatment_types || [], specializations: p.specializations || [], health_funds: p.health_funds || [], languages: p.languages || [] }) }}
+                              style={{ background: '#e0f2fe', color: '#0284c7', border: '2px solid #7dd3fc', borderRadius: 20, padding: '7px 14px', fontWeight: 700, cursor: 'pointer', fontSize: 12 }}>✏️ עריכה</button>
                             <button onClick={async () => { await fetch('/api/admin/practitioners', { method: 'PATCH', headers: { 'Content-Type': 'application/json', adminkey: adminKey }, body: JSON.stringify({ id: p.id, is_verified: !p.is_verified }) }); fetchAll(adminKey) }}
                               style={{ background: p.is_verified ? '#dbeafe' : 'white', color: p.is_verified ? '#1d4ed8' : '#0F4C75', border: '2px solid #0F4C75', borderRadius: 20, padding: '7px 14px', fontWeight: 700, cursor: 'pointer', fontSize: 12 }}>
                               {p.is_verified ? '✓ מאומת' : 'סמן כמאומת'}
@@ -678,6 +707,126 @@ export default function Admin() {
             </>
           )}
         </main>
+
+        {/* ══ מודל עריכת מטפל/ת ══ */}
+        {editingPractitioner && (
+          <div onClick={() => setEditingPractitioner(null)} style={{ position: 'fixed', inset: 0, background: 'rgba(15,76,117,0.55)', zIndex: 200, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
+            <div onClick={e => e.stopPropagation()} style={{ background: 'white', borderRadius: 20, maxWidth: 560, width: '100%', maxHeight: '90vh', overflowY: 'auto', boxShadow: '0 24px 64px rgba(0,0,0,0.25)' }}>
+              <div style={{ height: 6, background: 'linear-gradient(90deg,#0F4C75,#0891B2)', borderRadius: '20px 20px 0 0' }} />
+              <div style={{ padding: '22px 24px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
+                  <h2 style={{ margin: 0, fontSize: 18, fontWeight: 800, color: '#0F4C75' }}>✏️ עריכת מטפל/ת — {editingPractitioner.name}</h2>
+                  <button onClick={() => setEditingPractitioner(null)} style={{ background: 'none', border: 'none', fontSize: 22, cursor: 'pointer', color: '#aaa' }}>✕</button>
+                </div>
+
+                {/* שם + מקצוע */}
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 14 }}>
+                  <div>
+                    <label style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#0F4C75', marginBottom: 5 }}>שם מלא</label>
+                    <input value={editPForm.name || ''} onChange={e => setEditPForm(f => ({ ...f, name: e.target.value }))} style={{ width: '100%', padding: '9px 12px', borderRadius: 10, border: '1.5px solid #a0d8e8', fontSize: 14, outline: 'none', boxSizing: 'border-box', fontFamily: 'inherit' }} />
+                  </div>
+                  <div>
+                    <label style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#0F4C75', marginBottom: 5 }}>מקצוע</label>
+                    <select value={editPForm.profession || ''} onChange={e => setEditPForm(f => ({ ...f, profession: e.target.value }))} style={{ width: '100%', padding: '9px 12px', borderRadius: 10, border: '1.5px solid #a0d8e8', fontSize: 14, outline: 'none', background: 'white', fontFamily: 'inherit' }}>
+                      <option value="">בחרו מקצוע</option>
+                      {PRACT_PROFESSIONS.map(p => <option key={p}>{p}</option>)}
+                    </select>
+                  </div>
+                </div>
+
+                {/* עיר + מחוז */}
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 14 }}>
+                  <div>
+                    <label style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#0F4C75', marginBottom: 5 }}>עיר</label>
+                    <input value={editPForm.city || ''} onChange={e => setEditPForm(f => ({ ...f, city: e.target.value }))} style={{ width: '100%', padding: '9px 12px', borderRadius: 10, border: '1.5px solid #a0d8e8', fontSize: 14, outline: 'none', boxSizing: 'border-box', fontFamily: 'inherit' }} />
+                  </div>
+                  <div>
+                    <label style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#0F4C75', marginBottom: 5 }}>מחוז</label>
+                    <select value={editPForm.district || ''} onChange={e => setEditPForm(f => ({ ...f, district: e.target.value }))} style={{ width: '100%', padding: '9px 12px', borderRadius: 10, border: '1.5px solid #a0d8e8', fontSize: 14, outline: 'none', background: 'white', fontFamily: 'inherit' }}>
+                      <option value="">בחרו מחוז</option>
+                      {DISTRICTS.map(d => <option key={d}>{d}</option>)}
+                    </select>
+                  </div>
+                </div>
+
+                {/* טלפון + מחיר */}
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 14 }}>
+                  <div>
+                    <label style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#0F4C75', marginBottom: 5 }}>טלפון</label>
+                    <input value={editPForm.phone || ''} onChange={e => setEditPForm(f => ({ ...f, phone: e.target.value }))} style={{ width: '100%', padding: '9px 12px', borderRadius: 10, border: '1.5px solid #a0d8e8', fontSize: 14, outline: 'none', boxSizing: 'border-box', fontFamily: 'inherit' }} />
+                  </div>
+                  <div>
+                    <label style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#0F4C75', marginBottom: 5 }}>מחיר לשעה (₪)</label>
+                    <input value={editPForm.price_range || ''} onChange={e => setEditPForm(f => ({ ...f, price_range: e.target.value }))} placeholder="300-400" style={{ width: '100%', padding: '9px 12px', borderRadius: 10, border: '1.5px solid #a0d8e8', fontSize: 14, outline: 'none', boxSizing: 'border-box', fontFamily: 'inherit' }} />
+                  </div>
+                </div>
+
+                {/* אתר + תמונה */}
+                <div style={{ marginBottom: 14 }}>
+                  <label style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#0F4C75', marginBottom: 5 }}>אתר</label>
+                  <input value={editPForm.website || ''} onChange={e => setEditPForm(f => ({ ...f, website: e.target.value }))} style={{ width: '100%', padding: '9px 12px', borderRadius: 10, border: '1.5px solid #a0d8e8', fontSize: 14, outline: 'none', boxSizing: 'border-box', fontFamily: 'inherit' }} />
+                </div>
+                <div style={{ marginBottom: 14 }}>
+                  <label style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#0F4C75', marginBottom: 5 }}>קישור לתמונת פרופיל</label>
+                  <input value={editPForm.photo_url || ''} onChange={e => setEditPForm(f => ({ ...f, photo_url: e.target.value }))} style={{ width: '100%', padding: '9px 12px', borderRadius: 10, border: '1.5px solid #a0d8e8', fontSize: 14, outline: 'none', boxSizing: 'border-box', fontFamily: 'inherit' }} />
+                </div>
+
+                {/* סוגי טיפול */}
+                <div style={{ marginBottom: 14 }}>
+                  <label style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#0F4C75', marginBottom: 6 }}>סוגי טיפול</label>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+                    {PRACT_TREATMENT_TYPES.map(t => { const s = (editPForm.treatment_types||[]).includes(t); return <button key={t} onClick={() => togglePEditArray('treatment_types', t)} style={{ padding: '4px 12px', borderRadius: 999, fontSize: 12, fontWeight: 700, cursor: 'pointer', border: `1.5px solid ${s?'#0F4C75':'#a0d8e8'}`, background: s?'#0F4C75':'white', color: s?'white':'#0F4C75' }}>{t}</button> })}
+                  </div>
+                </div>
+
+                {/* התמחויות */}
+                <div style={{ marginBottom: 14 }}>
+                  <label style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#6d28d9', marginBottom: 6 }}>תחומי התמחות</label>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+                    {PRACT_SPECIALIZATIONS.map(s => { const sel = (editPForm.specializations||[]).includes(s); return <button key={s} onClick={() => togglePEditArray('specializations', s)} style={{ padding: '4px 12px', borderRadius: 999, fontSize: 12, fontWeight: 700, cursor: 'pointer', border: `1.5px solid ${sel?'#6d28d9':'#ddd6fe'}`, background: sel?'#6d28d9':'white', color: sel?'white':'#6d28d9' }}>{s}</button> })}
+                  </div>
+                </div>
+
+                {/* קופות חולים */}
+                <div style={{ marginBottom: 14 }}>
+                  <label style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#059669', marginBottom: 6 }}>קופות חולים</label>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+                    {HEALTH_FUNDS.map(hf => { const s = (editPForm.health_funds||[]).includes(hf); return <button key={hf} onClick={() => togglePEditArray('health_funds', hf)} style={{ padding: '4px 12px', borderRadius: 999, fontSize: 12, fontWeight: 700, cursor: 'pointer', border: `1.5px solid ${s?'#059669':'#d1fae5'}`, background: s?'#059669':'white', color: s?'white':'#059669' }}>{hf}</button> })}
+                  </div>
+                </div>
+
+                {/* שפות */}
+                <div style={{ marginBottom: 14 }}>
+                  <label style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#7C3AED', marginBottom: 6 }}>שפות טיפול</label>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+                    {PRACT_LANGUAGES.map(l => { const s = (editPForm.languages||[]).includes(l); return <button key={l} onClick={() => togglePEditArray('languages', l)} style={{ padding: '4px 12px', borderRadius: 999, fontSize: 12, fontWeight: 700, cursor: 'pointer', border: `1.5px solid ${s?'#7C3AED':'#ede9fe'}`, background: s?'#7C3AED':'white', color: s?'white':'#7C3AED' }}>{l}</button> })}
+                  </div>
+                </div>
+
+                {/* צ'קבוקסים */}
+                <div style={{ display: 'flex', gap: 20, marginBottom: 14 }}>
+                  {[['is_online', '🌐 אונליין'], ['is_defense_ministry', '🎗️ ספק משרד הביטחון']].map(([field, label]) => (
+                    <label key={field} style={{ display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer', fontSize: 13, fontWeight: 700, color: '#555' }}>
+                      <input type="checkbox" checked={!!editPForm[field]} onChange={e => setEditPForm(f => ({ ...f, [field]: e.target.checked }))} style={{ width: 16, height: 16 }} />
+                      {label}
+                    </label>
+                  ))}
+                </div>
+
+                {/* ביו */}
+                <div style={{ marginBottom: 20 }}>
+                  <label style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#0F4C75', marginBottom: 5 }}>קצת עליי</label>
+                  <textarea value={editPForm.bio || ''} onChange={e => setEditPForm(f => ({ ...f, bio: e.target.value }))} rows={3} style={{ width: '100%', padding: '9px 12px', borderRadius: 10, border: '1.5px solid #a0d8e8', fontSize: 14, outline: 'none', resize: 'vertical', fontFamily: 'inherit', boxSizing: 'border-box' }} />
+                </div>
+
+                <div style={{ display: 'flex', gap: 10 }}>
+                  <button onClick={savePractitionerEdit} disabled={savingPractitioner} style={{ flex: 1, background: savingPractitioner ? '#ccc' : 'linear-gradient(135deg,#0F4C75,#0891B2)', color: 'white', border: 'none', borderRadius: 20, padding: '12px 0', fontWeight: 700, fontSize: 14, cursor: savingPractitioner ? 'not-allowed' : 'pointer' }}>{savingPractitioner ? 'שומר...' : '💾 שמור שינויים'}</button>
+                  <button onClick={() => setEditingPractitioner(null)} style={{ flex: 1, background: '#f0f9ff', color: '#0F4C75', border: '1.5px solid #a0d8e8', borderRadius: 20, padding: '12px 0', fontWeight: 700, fontSize: 14, cursor: 'pointer' }}>ביטול</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
 
         {rejectEmailModal && (
           <div onClick={() => setRejectEmailModal(null)} style={{ position: 'fixed', inset: 0, background: 'rgba(26,58,92,0.6)', zIndex: 200, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
