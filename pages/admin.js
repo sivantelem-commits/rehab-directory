@@ -734,19 +734,10 @@ export default function Admin() {
                   </div>
                 </div>
 
-                {/* עיר + מחוז */}
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 14 }}>
-                  <div>
-                    <label style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#0F4C75', marginBottom: 5 }}>עיר</label>
-                    <input value={editPForm.city || ''} onChange={e => setEditPForm(f => ({ ...f, city: e.target.value }))} style={{ width: '100%', padding: '9px 12px', borderRadius: 10, border: '1.5px solid #a0d8e8', fontSize: 14, outline: 'none', boxSizing: 'border-box', fontFamily: 'inherit' }} />
-                  </div>
-                  <div>
-                    <label style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#0F4C75', marginBottom: 5 }}>מחוז</label>
-                    <select value={editPForm.district || ''} onChange={e => setEditPForm(f => ({ ...f, district: e.target.value }))} style={{ width: '100%', padding: '9px 12px', borderRadius: 10, border: '1.5px solid #a0d8e8', fontSize: 14, outline: 'none', background: 'white', fontFamily: 'inherit' }}>
-                      <option value="">בחרו מחוז</option>
-                      {DISTRICTS.map(d => <option key={d}>{d}</option>)}
-                    </select>
-                  </div>
+                {/* עיר */}
+                <div style={{ marginBottom: 14 }}>
+                  <label style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#0F4C75', marginBottom: 5 }}>עיר</label>
+                  <input value={editPForm.city || ''} onChange={e => setEditPForm(f => ({ ...f, city: e.target.value }))} style={{ width: '100%', padding: '9px 12px', borderRadius: 10, border: '1.5px solid #a0d8e8', fontSize: 14, outline: 'none', boxSizing: 'border-box', fontFamily: 'inherit' }} />
                 </div>
 
                 {/* טלפון + מחיר */}
