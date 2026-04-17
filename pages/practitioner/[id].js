@@ -14,9 +14,6 @@ const normalizePhotoUrl = (url) => {
 
 export default function PractitionerPage({ practitioner: raw }) {
   const router = useRouter()
-  const backHref = typeof window !== 'undefined' && document.referrer.includes('/practitioners')
-    ? '/practitioners'
-    : '/treatment?tab=practitioners'
   const p = raw ? { ...raw, photo_url: normalizePhotoUrl(raw.photo_url) } : null
   if (!p) return (
     <div dir="rtl" style={{ textAlign: 'center', padding: '80px 24px', fontFamily: 'Arial' }}>
@@ -35,7 +32,7 @@ export default function PractitionerPage({ practitioner: raw }) {
       <div dir="rtl" style={{ minHeight: '100vh', background: '#f0f7ff', fontFamily: "'Nunito','Arial',sans-serif" }}>
 
         <div style={{ background: `linear-gradient(135deg,${DARK},${COLOR})`, padding: '16px 24px' }}>
-          <a href={backHref} style={{ color: 'rgba(255,255,255,.8)', textDecoration: 'none', fontSize: 14, fontWeight: 700 }}>← חזרה למטפלים</a>
+          <a href="/treatment?tab=practitioners" style={{ color: 'rgba(255,255,255,.8)', textDecoration: 'none', fontSize: 14, fontWeight: 700 }}>← חזרה למטפלים</a>
         </div>
 
         <main style={{ maxWidth: 700, margin: '32px auto', padding: '0 16px' }}>
