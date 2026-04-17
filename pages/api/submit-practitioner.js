@@ -23,7 +23,7 @@ export default async function handler(req, res) {
   }
 
   const {
-    name, email, license_number, profession,
+    name, email, license_number, professions,
     treatment_types, specializations,
     city, district, is_online,
     health_funds, is_defense_ministry,
@@ -39,7 +39,7 @@ export default async function handler(req, res) {
     .from('practitioners')
     .insert([{
       name, email, license_number,
-      profession: profession || null,
+      professions: Array.isArray(professions) ? professions : [],
       treatment_types:  Array.isArray(treatment_types)  ? treatment_types  : [],
       specializations:  Array.isArray(specializations)  ? specializations  : [],
       city,
@@ -75,7 +75,7 @@ export default async function handler(req, res) {
           <div style="background:white;padding:32px;border:1px solid #e0f0ff;border-radius:0 0 12px 12px">
             <h2 style="margin:0 0 8px;color:#0F4C75">${name}</h2>
             <p style="color:#666;font-size:14px;margin:0;line-height:1.8">
-              🏷️ ${profession || 'לא צוין מקצוע'}<br/>
+              🏷️ ${professions?.length ? professions.join(', ') : 'לא צוין מקצוע'}<br/>
               📍 ${city}${district ? `, ${district}` : ''}<br/>
               📜 מספר רישיון: ${license_number}<br/>
               ✉️ ${email}<br/>
