@@ -207,7 +207,7 @@ export default function TreatmentList() {
     if (practDistrict)       p.set('district', practDistrict)
     if (practTreatmentType)  p.set('treatment_type', practTreatmentType)
     if (practSpecialization) p.set('specialization', practSpecialization)
-    if (practHealthFund)     p.set('health_fund_agreement', 'true')
+    if (practHealthFund)     p.set('health_fund', practHealthFund)
     if (practOnline)         p.set('online', 'true')
     if (practDefense)        p.set('defense', 'true')
     if (practSearch)         p.set('search', practSearch)
@@ -240,13 +240,13 @@ export default function TreatmentList() {
   return (
     <>
       <Head>
-        <title>שירותי טיפול בבריאות הנפש | בריאות נפש בישראל</title>
-        <meta name="description" content="מאגר שירותי טיפול בבריאות הנפש בישראל – בתים מאזנים, מחלקות אשפוז, טיפול יום ומרפאות פסיכיאטריות לפי אזור. מצאו שירות טיפולי מתאים בצפון, מרכז, תל אביב, ירושלים ודרום." />
+        <title>טיפול בבריאות הנפש | בריאות נפש בישראל</title>
+        <meta name="description" content="מאגר שירותי טיפול בבריאות הנפש בישראל – מרכזי טיפול, מרפאות ומטפלים פרטיים. מצאו שירות טיפולי מתאים לפי אזור, קטגוריה ותחום התמחות." />
         <meta name="robots" content="index, follow" />
         <link rel="canonical" href={`${BASE_URL}/treatment`} />
         <meta property="og:type" content="website" />
-        <meta property="og:title" content="שירותי טיפול בבריאות הנפש | בריאות נפש בישראל" />
-        <meta property="og:description" content="מאגר שירותי טיפול בבריאות הנפש – בתים מאזנים, מחלקות אשפוז, טיפול יום ומרפאות לפי אזור בישראל." />
+        <meta property="og:title" content="טיפול בבריאות הנפש | בריאות נפש בישראל" />
+        <meta property="og:description" content="מאגר שירותי טיפול בבריאות הנפש – מרכזי טיפול, מרפאות ומטפלים פרטיים בכל רחבי ישראל." />
         <meta property="og:url" content={`${BASE_URL}/treatment`} />
         <meta property="og:image" content={`${BASE_URL}/icon-512.png`} />
         <meta property="og:image:width" content="512" />
@@ -279,7 +279,7 @@ export default function TreatmentList() {
             <img src="/logo.png" alt="בריאות נפש בישראל" style={{ width: 44, height: 44, objectFit: 'contain', filter: 'brightness(0) invert(1)' }} />
             <div>
               <div style={{ fontWeight: 800, fontSize: 18 }}>בריאות נפש בישראל</div>
-              <div style={{ fontSize: 11, opacity: 0.8 }}>שירותי טיפול</div>
+              <div style={{ fontSize: 11, opacity: 0.8 }}>טיפול ומטפלים פרטיים</div>
             </div>
           </div>
           <a href="/calculator" style={{ background: 'rgba(255,255,200,0.18)', border: '1.5px solid rgba(255,255,150,0.5)', color: 'white', borderRadius: '999px', padding: '8px 18px', fontWeight: 800, fontSize: 13, textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 6, whiteSpace: 'nowrap' }}>🧭 מחשבון מסלול</a>
@@ -299,14 +299,14 @@ export default function TreatmentList() {
 
         <div style={{ background: 'linear-gradient(160deg, #164E63, #0891B2)', color: 'white', padding: '24px 20px', textAlign: 'center' }}>
           <img src='/treatment-logo.png' alt='' role='presentation' style={{ width: 180, height: 180, objectFit: 'contain', marginBottom: -30, filter: 'invert(1) brightness(10)' }} />
-          <h1 style={{ fontSize: 28, fontWeight: 800, margin: '0 0 8px', letterSpacing: '-0.3px' }}>שירותי טיפול בבריאות הנפש בישראל</h1>
-          <p style={{ fontSize: 15, opacity: 0.85, margin: '0 0 8px', fontWeight: 500 }}>מצאו שירותי טיפול בבריאות הנפש לפי אזור וקטגוריה</p>
+          <h1 style={{ fontSize: 28, fontWeight: 800, margin: '0 0 8px', letterSpacing: '-0.3px' }}>טיפול בבריאות הנפש בישראל</h1>
+          <p style={{ fontSize: 15, opacity: 0.85, margin: '0 0 8px', fontWeight: 500 }}>מרכזי טיפול ומטפלים פרטיים – מצאו את השירות המתאים לכם</p>
           <p style={{ fontSize: 13, opacity: 0.75, margin: '0 auto 20px', fontWeight: 400, maxWidth: 520, lineHeight: 1.6, textAlign: 'center' }}>
-            מאגר שירותי טיפול בבריאות הנפש – בתים מאזנים, מחלקות אשפוז, טיפול יום, מרפאות בריאות נפש וחדרי מיון פסיכיאטריים בכל רחבי ישראל. סינון לפי מחוז, קטגוריה, גיל ואבחנה.
+            מאגר שירותי טיפול בבריאות הנפש – מרכזים, מרפאות, בתים מאזנים ומטפלים פרטיים מוסמכים בכל רחבי ישראל. סינון לפי קטגוריה, גיל, אבחנה ותחום התמחות.
           </p>
           <div style={{ maxWidth: 480, margin: '0 auto' }}>
             <label htmlFor="treatment-search" style={{ position: 'absolute', width: 1, height: 1, overflow: 'hidden', clip: 'rect(0,0,0,0)', whiteSpace: 'nowrap' }}>חיפוש שירותי טיפול</label>
-            <input id="treatment-search" type="text" placeholder="חפשו לפי שם, עיר או תיאור..." value={search}
+            <input id="treatment-search" type="text" placeholder="חפשו לפי שם, עיר, מטפל או תיאור..." value={search}
               onChange={e => setSearch(e.target.value)}
               style={{
                 width: '100%', padding: '14px 22px', borderRadius: '999px', border: 'none',
@@ -435,7 +435,7 @@ export default function TreatmentList() {
                             {p.treatment_types.length > 3 && <span style={{ fontSize: 11, color: '#888' }}>+{p.treatment_types.length - 3}</span>}
                           </div>
                         )}
-                        {p.has_health_fund_agreement && <div style={{ fontSize: 12, color: '#059669', fontWeight: 600 }}>🏥 הסדר קופות{p.health_funds?.length > 0 ? ': ' + p.health_funds.join(', ') : ''}</div>}
+                        {p.health_funds?.length > 0 && <div style={{ fontSize: 12, color: '#059669', fontWeight: 600 }}>🏥 {p.health_funds.join(', ')}</div>}
                         {p.bio && <div style={{ fontSize: 13, color: '#556', marginTop: 5, lineHeight: 1.5, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{p.bio}</div>}
                       </div>
                     </div>
