@@ -34,8 +34,8 @@ const emptyPractitionerForm = {
   name: '', email: '', license_number: '', profession: '',
   certifications: [], treatment_types: [], specializations: [],
   city: '', is_online: false,
-  health_funds: [], has_health_fund_agreement: false, is_defense_ministry: false,
-  subsidized: false, whatsapp_available: false,
+  health_funds: [], has_health_fund_agreement: false,
+  subsidized: false, whatsapp_available: false, is_defense_ministry: false,
   languages: [], price_range: '', bio: '', photo_url: '',
   phone: '', website: '',
 }
@@ -594,7 +594,7 @@ export default function Register() {
                     {/* הסדר קופות חולים */}
                     <div style={{ marginBottom: pForm.has_health_fund_agreement ? 12 : 20 }}>
                       <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', fontSize: 13.5, fontWeight: 700, color: '#059669' }}>
-                        <input type="checkbox" checked={pForm.has_health_fund_agreement} onChange={e => setPForm(f => ({ ...f, has_health_fund_agreement: e.target.checked, health_funds: e.target.checked ? f.health_funds : [] }))}
+                        <input type="checkbox" checked={pForm.has_health_fund_agreement || false} onChange={e => setPForm(f => ({ ...f, has_health_fund_agreement: e.target.checked, health_funds: e.target.checked ? f.health_funds : [] }))}
                           style={{ width: 18, height: 18, accentColor: '#059669' }} />
                         עובד/ת בהסדר עם קופות חולים 🏥
                       </label>
