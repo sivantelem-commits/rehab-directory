@@ -12,8 +12,7 @@ import {
 
 const NAV = [
   ['/', 'ראשי'], ['/rehab', 'שיקום'], ['/treatment', 'טיפול'],
-  ['/practitioners', 'מטפלים פרטיים'], ['/map', 'מפה'],
-  ['/register', 'הוספת שירות'], ['/about', 'אודות'],
+  ['/map', 'מפה'], ['/register', 'הוספת שירות'], ['/about', 'אודות'],
   ['/contact', 'צור קשר'], ['/admin', 'ניהול'],
 ]
 
@@ -74,13 +73,41 @@ export default function Practitioners() {
       </Head>
       <div dir="rtl" style={{ minHeight: '100vh', background: '#f0f7ff', fontFamily: "'Nunito','Arial',sans-serif" }}>
 
-        <nav style={{ background: `linear-gradient(135deg,${DARK},${COLOR})`, padding: '0 24px', display: 'flex', alignItems: 'center', gap: 4, overflowX: 'auto', boxShadow: '0 2px 12px rgba(0,0,0,.15)', position: 'sticky', top: 0, zIndex: 100 }}>
-          {NAV.map(([href, label]) => (
-            <a key={href} href={href} style={{ color: 'rgba(255,255,255,.85)', textDecoration: 'none', padding: '16px 14px', fontSize: 13.5, fontWeight: 700, whiteSpace: 'nowrap', borderBottom: href === '/practitioners' ? '3px solid white' : '3px solid transparent' }}>{label}</a>
-          ))}
-        </nav>
+        <header style={{
+          background: 'linear-gradient(135deg, #164E63, #0891B2)', color: 'white',
+          padding: '10px 20px', display: 'flex', alignItems: 'center',
+          justifyContent: 'space-between', boxShadow: '0 2px 12px rgba(22,78,99,0.2)',
+          flexWrap: 'wrap', gap: 8, position: 'sticky', top: 0, zIndex: 100,
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+            <img src="/logo.png" alt="בריאות נפש בישראל" style={{ width: 44, height: 44, objectFit: 'contain', filter: 'brightness(0) invert(1)' }} />
+            <div>
+              <div style={{ fontWeight: 800, fontSize: 18 }}>בריאות נפש בישראל</div>
+              <div style={{ fontSize: 11, opacity: 0.8 }}>מטפלים פרטיים</div>
+            </div>
+          </div>
+          <a href="/calculator" style={{ background: 'rgba(255,255,200,0.18)', border: '1.5px solid rgba(255,255,150,0.5)', color: 'white', borderRadius: '999px', padding: '8px 18px', fontWeight: 800, fontSize: 13, textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 6, whiteSpace: 'nowrap' }}>🧭 מחשבון מסלול</a>
+          <a href="https://links.payboxapp.com/g9hdYBPr71b" target="_blank" rel="noopener noreferrer" style={{ background: 'rgba(255,255,255,0.15)', border: '1.5px solid rgba(255,255,255,0.35)', color: 'white', borderRadius: '999px', padding: '8px 18px', fontWeight: 700, fontSize: 13, textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 6, whiteSpace: 'nowrap' }}>💙 תמכו</a>
+          <nav aria-label="ניווט ראשי" style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+            {NAV.map(([href, label]) => (
+              <a key={href} href={href} style={{
+                color: 'white',
+                background: href === '/treatment' ? 'rgba(255,255,255,0.25)' : 'rgba(255,255,255,0.1)',
+                borderRadius: '999px', padding: '6px 14px', fontWeight: 600, fontSize: 12,
+                border: href === '/treatment' ? '1.5px solid rgba(255,255,255,0.6)' : '1.5px solid rgba(255,255,255,0.2)',
+                textDecoration: 'none',
+              }}>{label}</a>
+            ))}
+          </nav>
+        </header>
 
-        <div style={{ background: `linear-gradient(135deg,${DARK},${COLOR})`, padding: '40px 24px 56px', textAlign: 'center', color: 'white' }}>
+        {/* באנר הפניה */}
+        <div style={{ background: '#e0f2fe', borderBottom: '1px solid #bae6fd', padding: '10px 20px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, fontSize: 13, color: '#0369a1', fontWeight: 600 }}>
+          💡 מטפלים פרטיים נמצאים עכשיו גם תחת עמוד
+          <a href="/treatment" style={{ color: '#0891B2', fontWeight: 800, textDecoration: 'none', borderBottom: '1.5px solid #0891B2' }}>טיפול ←</a>
+        </div>
+
+        <div style={{ background: 'linear-gradient(135deg, #164E63, #0891B2)', padding: '40px 24px 56px', textAlign: 'center', color: 'white' }}>
           <div style={{ fontSize: 44, marginBottom: 12 }}>🧠</div>
           <h1 style={{ margin: '0 0 10px', fontSize: 28, fontWeight: 900 }}>מטפלים פרטיים</h1>
           <p style={{ margin: 0, opacity: .85, fontSize: 15 }}>פסיכולוגים, פסיכיאטרים, מטפלים רגשיים ועוד – כולם בעלי רישיון מוסמך</p>
@@ -190,7 +217,7 @@ export default function Practitioners() {
           )}
         </main>
 
-        <footer style={{ background: `linear-gradient(135deg,${DARK},${COLOR})`, color: 'rgba(255,255,255,.75)', textAlign: 'center', padding: '24px', fontSize: 13, marginTop: 48, fontWeight: 500 }}>
+        <footer style={{ background: 'linear-gradient(135deg, #0A3040, #164E63)', color: 'rgba(255,255,255,.75)', textAlign: 'center', padding: '24px', fontSize: 13, marginTop: 48, fontWeight: 500 }}>
           <div style={{ marginBottom: 8 }}>
             <a href="/contact" style={{ color: 'rgba(255,255,255,.7)', textDecoration: 'none' }}>צור קשר</a>
             <span style={{ margin: '0 8px', opacity: .4 }}>·</span>
