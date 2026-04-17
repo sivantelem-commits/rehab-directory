@@ -15,10 +15,10 @@ export default async function handler(req, res) {
     if (!url) return null
     // https://drive.google.com/file/d/FILE_ID/view
     const fileMatch = url.match(/drive\.google\.com\/file\/d\/([^/]+)/)
-    if (fileMatch) return `https://drive.google.com/uc?export=view&id=${fileMatch[1]}`
+    if (fileMatch) return `https://drive.google.com/thumbnail?sz=w400&id=${fileMatch[1]}`
     // https://drive.google.com/open?id=FILE_ID
     const openMatch = url.match(/drive\.google\.com\/open\?id=([^&]+)/)
-    if (openMatch) return `https://drive.google.com/uc?export=view&id=${openMatch[1]}`
+    if (openMatch) return `https://drive.google.com/thumbnail?sz=w400&id=${openMatch[1]}`
     return url
   }
 
@@ -28,7 +28,7 @@ export default async function handler(req, res) {
     city, district, is_online,
     health_funds, is_defense_ministry,
     languages, price_range, bio, photo_url,
-    phone, website,
+    phone, website, whatsapp_available,
   } = req.body
 
   if (!name || !email || !license_number || !city) {
@@ -47,6 +47,7 @@ export default async function handler(req, res) {
       is_online: !!is_online,
       health_funds:     Array.isArray(health_funds)     ? health_funds     : [],
       is_defense_ministry: !!is_defense_ministry,
+      whatsapp_available: !!whatsapp_available,
       languages:        Array.isArray(languages)        ? languages        : [],
       price_range: price_range || null,
       bio:       bio       || null,
