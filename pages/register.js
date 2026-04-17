@@ -6,6 +6,7 @@ import Head from 'next/head'
 import { CATEGORIES, CATEGORY_NAMES } from '../lib/categories'
 import {
   PRACTITIONER_TREATMENT_TYPES,
+  PRACTITIONER_CERTIFICATIONS,
   PRACTITIONER_SPECIALIZATIONS,
   PRACTITIONER_PROFESSIONS,
   HEALTH_FUNDS,
@@ -31,11 +32,12 @@ const emptyForm = {
 
 const emptyPractitionerForm = {
   name: '', email: '', license_number: '', profession: '',
-  treatment_types: [], specializations: [],
-  city: '', district: '', is_online: false,
-  health_funds: [], is_defense_ministry: false,
+  certifications: [], treatment_types: [], specializations: [],
+  city: '', is_online: false,
+  health_funds: [], has_health_fund_agreement: false, is_defense_ministry: false,
+  subsidized: false, whatsapp_available: false,
   languages: [], price_range: '', bio: '', photo_url: '',
-  phone: '', website: '', whatsapp_available: false,
+  phone: '', website: '',
 }
 
 export default function Register() {
@@ -513,13 +515,24 @@ export default function Register() {
                         onChange={e => setPForm(f => ({ ...f, license_number: e.target.value }))} style={pInp} />
                     </div>
 
-                    {/* מקצוע */}
+                    {/* מקצוע ראשי */}
                     <div style={{ marginBottom: 16 }}>
-                      <label style={pLbl}>מקצוע</label>
+                      <label style={pLbl}>מקצוע ראשי *</label>
                       <select value={pForm.profession} onChange={e => setPForm(f => ({ ...f, profession: e.target.value }))} style={pInp}>
                         <option value="">בחרו מקצוע</option>
                         {PRACTITIONER_PROFESSIONS.map(p => <option key={p}>{p}</option>)}
                       </select>
+                    </div>
+
+                    {/* הסמכות נוספות */}
+                    <div style={{ marginBottom: 20 }}>
+                      <label style={pLbl}>הסמכות נוספות <span style={{ fontWeight: 400, color: '#9ca3af' }}>(ניתן לסמן כמה)</span></label>
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 7 }}>
+                        {PRACTITIONER_CERTIFICATIONS.map(c => {
+                          const sel = (pForm.certifications || []).includes(c)
+                          return <button key={c} type="button" onClick={() => togglePField('certifications', c)} style={{ padding: '6px 14px', borderRadius: 999, fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: "'Nunito',sans-serif", transition: 'all .15s', border: `2px solid ${sel ? '#0284C7' : '#bae6fd'}`, background: sel ? '#0284C7' : 'white', color: sel ? 'white' : '#0284C7' }}>{c}</button>
+                        })}
+                      </div>
                     </div>
 
                     {/* סוגי טיפול */}
@@ -569,16 +582,34 @@ export default function Register() {
                       </label>
                     </div>
 
-                    {/* קופות חולים */}
-                    <div style={{ marginBottom: 20 }}>
-                      <label style={pLbl}>קופות חולים <span style={{ fontWeight: 400, color: '#9ca3af' }}>(אופציונלי)</span></label>
-                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 7 }}>
-                        {HEALTH_FUNDS.map(hf => {
-                          const sel = pForm.health_funds.includes(hf)
-                          return <button key={hf} type="button" onClick={() => togglePField('health_funds', hf)} style={{ padding: '6px 14px', borderRadius: 999, fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: "'Nunito',sans-serif", transition: 'all .15s', border: `2px solid ${sel ? '#059669' : '#d1fae5'}`, background: sel ? '#059669' : 'white', color: sel ? 'white' : '#059669' }}>{hf}</button>
-                        })}
-                      </div>
+                    {/* טיפול מוזל */}
+                    <div style={{ marginBottom: 16 }}>
+                      <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', fontSize: 13.5, fontWeight: 700, color: '#0891B2' }}>
+                        <input type="checkbox" checked={pForm.subsidized || false} onChange={e => setPForm(f => ({ ...f, subsidized: e.target.checked }))}
+                          style={{ width: 18, height: 18, accentColor: '#0891B2' }} />
+                        מציע/ה טיפול מוזל 💙
+                      </label>
                     </div>
+
+                    {/* הסדר קופות חולים */}
+                    <div style={{ marginBottom: pForm.has_health_fund_agreement ? 12 : 20 }}>
+                      <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', fontSize: 13.5, fontWeight: 700, color: '#059669' }}>
+                        <input type="checkbox" checked={pForm.has_health_fund_agreement} onChange={e => setPForm(f => ({ ...f, has_health_fund_agreement: e.target.checked, health_funds: e.target.checked ? f.health_funds : [] }))}
+                          style={{ width: 18, height: 18, accentColor: '#059669' }} />
+                        עובד/ת בהסדר עם קופות חולים 🏥
+                      </label>
+                    </div>
+                    {pForm.has_health_fund_agreement && (
+                      <div style={{ marginBottom: 20, marginRight: 26 }}>
+                        <div style={{ fontSize: 12, color: '#666', marginBottom: 8, fontWeight: 600 }}>עם אילו קופות?</div>
+                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 7 }}>
+                          {HEALTH_FUNDS.map(hf => {
+                            const sel = pForm.health_funds.includes(hf)
+                            return <button key={hf} type="button" onClick={() => togglePField('health_funds', hf)} style={{ padding: '6px 14px', borderRadius: 999, fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: "'Nunito',sans-serif", transition: 'all .15s', border: `2px solid ${sel ? '#059669' : '#d1fae5'}`, background: sel ? '#059669' : 'white', color: sel ? 'white' : '#059669' }}>{hf}</button>
+                          })}
+                        </div>
+                      </div>
+                    )}
 
                     {/* משרד הביטחון */}
                     <div style={{ marginBottom: 16 }}>
