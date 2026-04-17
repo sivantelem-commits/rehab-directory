@@ -6,7 +6,6 @@ import Head from 'next/head'
 import { CATEGORIES, CATEGORY_NAMES } from '../lib/categories'
 import {
   PRACTITIONER_TREATMENT_TYPES,
-  PRACTITIONER_CERTIFICATIONS,
   PRACTITIONER_SPECIALIZATIONS,
   PRACTITIONER_PROFESSIONS,
   HEALTH_FUNDS,
@@ -14,6 +13,12 @@ import {
   PRACTITIONER_COLOR,
   PRACTITIONER_DARK,
 } from '../lib/practitioner-constants'
+
+const PRACTITIONER_CERTIFICATIONS = [
+  'CBT', 'DBT', 'EMDR', 'פסיכודרמה', 'מיינדפולנס',
+  'טיפול סכמה', 'ACT', 'טיפול דינמי', 'ריפוי בעיסוק',
+  'קלינאות תקשורת', 'טיפולים בהבעה ויצירה', 'TFCBT',
+]
 
 const DISTRICTS           = ['צפון', 'חיפה', 'מרכז', 'תל אביב', 'ירושלים', 'דרום', 'יהודה ושומרון']
 const TREATMENT_CATEGORIES = ['בתים מאזנים', 'מחלקות אשפוז', 'טיפול יום', 'מרפאות בריאות נפש', 'חדרי מיון', 'שירותים נוספים']
