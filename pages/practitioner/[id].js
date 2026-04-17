@@ -17,7 +17,7 @@ export default function PractitionerPage({ practitioner: raw }) {
     <div dir="rtl" style={{ textAlign: 'center', padding: '80px 24px', fontFamily: 'Arial' }}>
       <div style={{ fontSize: 40, marginBottom: 16 }}>🔍</div>
       <h2 style={{ color: '#555' }}>המטפל/ת לא נמצא/ה</h2>
-      <a href="/practitioners" style={{ color: COLOR }}>← חזרה לרשימה</a>
+      <a href="/treatment" style={{ color: COLOR }}>← חזרה למטפלים</a>
     </div>
   )
 
@@ -30,7 +30,7 @@ export default function PractitionerPage({ practitioner: raw }) {
       <div dir="rtl" style={{ minHeight: '100vh', background: '#f0f7ff', fontFamily: "'Nunito','Arial',sans-serif" }}>
 
         <div style={{ background: `linear-gradient(135deg,${DARK},${COLOR})`, padding: '16px 24px' }}>
-          <a href="/practitioners" style={{ color: 'rgba(255,255,255,.8)', textDecoration: 'none', fontSize: 14, fontWeight: 700 }}>← חזרה לרשימת המטפלים</a>
+          <a href="/treatment" style={{ color: 'rgba(255,255,255,.8)', textDecoration: 'none', fontSize: 14, fontWeight: 700 }}>← חזרה למטפלים</a>
         </div>
 
         <main style={{ maxWidth: 700, margin: '32px auto', padding: '0 16px' }}>
