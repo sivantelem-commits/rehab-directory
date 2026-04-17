@@ -12,7 +12,8 @@ import {
 
 const NAV = [
   ['/', 'ראשי'], ['/rehab', 'שיקום'], ['/treatment', 'טיפול'],
-  ['/map', 'מפה'], ['/register', 'הוספת שירות'], ['/about', 'אודות'],
+  ['/practitioners', 'מטפלים פרטיים'], ['/map', 'מפה'],
+  ['/register', 'הוספת שירות'], ['/about', 'אודות'],
   ['/contact', 'צור קשר'], ['/admin', 'ניהול'],
 ]
 
@@ -28,7 +29,6 @@ export default function Practitioners() {
   const [practitioners, setPractitioners] = useState([])
   const [loading, setLoading]             = useState(true)
   const [search, setSearch]               = useState('')
-  const [district, setDistrict]           = useState('')
   const [treatmentType, setTreatmentType] = useState('')
   const [specialization, setSpecialization] = useState('')
   const [healthFund, setHealthFund]       = useState('')
@@ -44,7 +44,6 @@ export default function Practitioners() {
       setLoading(true)
       try {
         const p = new URLSearchParams()
-        if (district)       p.set('district', district)
         if (treatmentType)  p.set('treatment_type', treatmentType)
         if (specialization) p.set('specialization', specialization)
         if (healthFund)     p.set('health_fund', healthFund)
@@ -58,10 +57,10 @@ export default function Practitioners() {
       finally   { setLoading(false) }
     }
     fetchData()
-  }, [mounted, district, treatmentType, specialization, healthFund, onlineOnly, defenseOnly, search])
+  }, [mounted, treatmentType, specialization, healthFund, onlineOnly, defenseOnly, search])
 
-  const hasFilters = district || treatmentType || specialization || healthFund || onlineOnly || defenseOnly || search
-  const clearAll   = () => { setDistrict(''); setTreatmentType(''); setSpecialization(''); setHealthFund(''); setOnlineOnly(false); setDefenseOnly(false); setSearch('') }
+  const hasFilters = treatmentType || specialization || healthFund || onlineOnly || defenseOnly || search
+  const clearAll   = () => { setTreatmentType(''); setSpecialization(''); setHealthFund(''); setOnlineOnly(false); setDefenseOnly(false); setSearch('') }
 
   if (!mounted) return null
 
@@ -73,41 +72,13 @@ export default function Practitioners() {
       </Head>
       <div dir="rtl" style={{ minHeight: '100vh', background: '#f0f7ff', fontFamily: "'Nunito','Arial',sans-serif" }}>
 
-        <header style={{
-          background: 'linear-gradient(135deg, #164E63, #0891B2)', color: 'white',
-          padding: '10px 20px', display: 'flex', alignItems: 'center',
-          justifyContent: 'space-between', boxShadow: '0 2px 12px rgba(22,78,99,0.2)',
-          flexWrap: 'wrap', gap: 8, position: 'sticky', top: 0, zIndex: 100,
-        }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-            <img src="/logo.png" alt="בריאות נפש בישראל" style={{ width: 44, height: 44, objectFit: 'contain', filter: 'brightness(0) invert(1)' }} />
-            <div>
-              <div style={{ fontWeight: 800, fontSize: 18 }}>בריאות נפש בישראל</div>
-              <div style={{ fontSize: 11, opacity: 0.8 }}>מטפלים פרטיים</div>
-            </div>
-          </div>
-          <a href="/calculator" style={{ background: 'rgba(255,255,200,0.18)', border: '1.5px solid rgba(255,255,150,0.5)', color: 'white', borderRadius: '999px', padding: '8px 18px', fontWeight: 800, fontSize: 13, textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 6, whiteSpace: 'nowrap' }}>🧭 מחשבון מסלול</a>
-          <a href="https://links.payboxapp.com/g9hdYBPr71b" target="_blank" rel="noopener noreferrer" style={{ background: 'rgba(255,255,255,0.15)', border: '1.5px solid rgba(255,255,255,0.35)', color: 'white', borderRadius: '999px', padding: '8px 18px', fontWeight: 700, fontSize: 13, textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 6, whiteSpace: 'nowrap' }}>💙 תמכו</a>
-          <nav aria-label="ניווט ראשי" style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-            {NAV.map(([href, label]) => (
-              <a key={href} href={href} style={{
-                color: 'white',
-                background: href === '/treatment' ? 'rgba(255,255,255,0.25)' : 'rgba(255,255,255,0.1)',
-                borderRadius: '999px', padding: '6px 14px', fontWeight: 600, fontSize: 12,
-                border: href === '/treatment' ? '1.5px solid rgba(255,255,255,0.6)' : '1.5px solid rgba(255,255,255,0.2)',
-                textDecoration: 'none',
-              }}>{label}</a>
-            ))}
-          </nav>
-        </header>
+        <nav style={{ background: `linear-gradient(135deg,${DARK},${COLOR})`, padding: '0 24px', display: 'flex', alignItems: 'center', gap: 4, overflowX: 'auto', boxShadow: '0 2px 12px rgba(0,0,0,.15)', position: 'sticky', top: 0, zIndex: 100 }}>
+          {NAV.map(([href, label]) => (
+            <a key={href} href={href} style={{ color: 'rgba(255,255,255,.85)', textDecoration: 'none', padding: '16px 14px', fontSize: 13.5, fontWeight: 700, whiteSpace: 'nowrap', borderBottom: href === '/practitioners' ? '3px solid white' : '3px solid transparent' }}>{label}</a>
+          ))}
+        </nav>
 
-        {/* באנר הפניה */}
-        <div style={{ background: '#e0f2fe', borderBottom: '1px solid #bae6fd', padding: '10px 20px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, fontSize: 13, color: '#0369a1', fontWeight: 600 }}>
-          💡 מטפלים פרטיים נמצאים עכשיו גם תחת עמוד
-          <a href="/treatment" style={{ color: '#0891B2', fontWeight: 800, textDecoration: 'none', borderBottom: '1.5px solid #0891B2' }}>טיפול ←</a>
-        </div>
-
-        <div style={{ background: 'linear-gradient(135deg, #164E63, #0891B2)', padding: '40px 24px 56px', textAlign: 'center', color: 'white' }}>
+        <div style={{ background: `linear-gradient(135deg,${DARK},${COLOR})`, padding: '40px 24px 56px', textAlign: 'center', color: 'white' }}>
           <div style={{ fontSize: 44, marginBottom: 12 }}>🧠</div>
           <h1 style={{ margin: '0 0 10px', fontSize: 28, fontWeight: 900 }}>מטפלים פרטיים</h1>
           <p style={{ margin: 0, opacity: .85, fontSize: 15 }}>פסיכולוגים, פסיכיאטרים, מטפלים רגשיים ועוד – כולם בעלי רישיון מוסמך</p>
@@ -121,17 +92,12 @@ export default function Practitioners() {
 
         <main style={{ maxWidth: 920, margin: '0 auto', padding: '28px 16px' }}>
           <div style={{ background: 'white', borderRadius: 16, padding: '20px 24px', marginBottom: 24, boxShadow: '0 2px 12px rgba(0,0,0,.06)' }}>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(160px,1fr))', gap: 10, marginBottom: 16 }}>
-              {[
-                [district,   setDistrict,   'כל המחוזות',      DISTRICTS],
-                [healthFund, setHealthFund, 'כל קופות החולים', HEALTH_FUNDS],
-              ].map(([val, setter, placeholder, opts]) => (
-                <select key={placeholder} value={val} onChange={e => setter(e.target.value)}
-                  style={{ padding: '10px 14px', borderRadius: 12, border: '1.5px solid #c0d8e8', fontSize: 13.5, fontFamily: "'Nunito',sans-serif", background: 'white', color: '#333', outline: 'none', cursor: 'pointer' }}>
-                  <option value="">{placeholder}</option>
-                  {opts.map(o => <option key={o}>{o}</option>)}
-                </select>
-              ))}
+            <div style={{ marginBottom: 16 }}>
+              <select value={healthFund} onChange={e => setHealthFund(e.target.value)}
+                style={{ padding: '10px 14px', borderRadius: 12, border: '1.5px solid #c0d8e8', fontSize: 13.5, fontFamily: "'Nunito',sans-serif", background: 'white', color: '#333', outline: 'none', cursor: 'pointer', minWidth: 200 }}>
+                <option value="">כל קופות החולים</option>
+                {HEALTH_FUNDS.map(o => <option key={o}>{o}</option>)}
+              </select>
             </div>
 
             <div style={{ marginBottom: 14 }}>
@@ -191,7 +157,7 @@ export default function Practitioners() {
                         {p.profession && <span style={{ background: COLOR, color: 'white', borderRadius: 20, padding: '3px 12px', fontSize: 12, fontWeight: 700 }}>{p.profession}</span>}
                       </div>
                       <div style={{ fontSize: 13, color: '#666', marginBottom: 8, display: 'flex', gap: 12, flexWrap: 'wrap' }}>
-                        {p.city        && <span>📍 {p.city}{p.district ? `, ${p.district}` : ''}</span>}
+                        {p.city        && <span>📍 {p.city}</span>}
                         {p.is_online   && <span style={{ color: '#0891B2', fontWeight: 700 }}>🌐 אונליין</span>}
                         {p.price_range && <span>💰 ₪{p.price_range} לשעה</span>}
                       </div>
@@ -217,7 +183,7 @@ export default function Practitioners() {
           )}
         </main>
 
-        <footer style={{ background: 'linear-gradient(135deg, #0A3040, #164E63)', color: 'rgba(255,255,255,.75)', textAlign: 'center', padding: '24px', fontSize: 13, marginTop: 48, fontWeight: 500 }}>
+        <footer style={{ background: `linear-gradient(135deg,${DARK},${COLOR})`, color: 'rgba(255,255,255,.75)', textAlign: 'center', padding: '24px', fontSize: 13, marginTop: 48, fontWeight: 500 }}>
           <div style={{ marginBottom: 8 }}>
             <a href="/contact" style={{ color: 'rgba(255,255,255,.7)', textDecoration: 'none' }}>צור קשר</a>
             <span style={{ margin: '0 8px', opacity: .4 }}>·</span>
