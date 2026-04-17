@@ -385,7 +385,7 @@ export default function Register() {
                       <span style={{ fontSize: 13, color: '#444', lineHeight: 1.6 }}>אני מצהיר/ה שהמידע שמסרתי הוא מלא, נכון ומדויק, וכי יש לי הסמכה למסור פרטים אלה בשם השירות הנרשם.</span>
                     </label>
 
-                    <button onClick={handleSubmit} disabled={loading} style={{ width: '100%', background: loading ? '#ccc' : isRehab ? 'linear-gradient(160deg,#8B00D4,#4C0080)' : 'linear-gradient(160deg,#0891B2,#164E63)', color: 'white', border: 'none', borderRadius: 999, padding: '14px 0', fontWeight: 800, fontSize: 15, cursor: loading ? 'not-allowed' : 'pointer', fontFamily: "'Nunito',sans-serif", boxShadow: loading ? 'none' : `0 4px 0 ${darkColor},0 8px 20px ${color}44` }}>
+                    <button onClick={handleSubmit} disabled={loading} style={{ width: '100%', background: loading ? '#ccc' : `linear-gradient(160deg,${isRehab ? '#8B00D4,#4C0080' : '#0891B2,#164E63'})`, color: 'white', border: 'none', borderRadius: 999, padding: '14px 0', fontWeight: 800, fontSize: 15, cursor: loading ? 'not-allowed' : 'pointer', fontFamily: "'Nunito',sans-serif", boxShadow: loading ? 'none' : `0 4px 0 ${darkColor},0 8px 20px ${color}44` }}>
                       {loading ? 'שולח...' : 'שליחת בקשה לאישור ←'}
                     </button>
                   </div>
