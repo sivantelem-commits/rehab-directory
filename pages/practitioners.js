@@ -149,7 +149,7 @@ export default function Practitioners() {
           ) : (
             <div style={{ display: 'grid', gap: 14 }}>
               {practitioners.map(p => (
-                <a key={p.id} href={`/practitioner/${p.id}`} style={{ textDecoration: 'none' }}>
+                <a key={p.id} href={`/practitioner/${p.id}?from=practitioners`} style={{ textDecoration: 'none' }}>
                   <div style={{ background: 'white', borderRadius: 16, padding: '20px 24px', boxShadow: '0 2px 12px rgba(0,0,0,.06)', border: `1.5px solid ${p.is_verified ? '#bfdbfe' : '#e0eef8'}`, borderTop: `4px solid ${COLOR}`, display: 'flex', gap: 16, alignItems: 'flex-start' }}>
                     <div style={{ width: 64, height: 64, borderRadius: '50%', flexShrink: 0, background: p.photo_url ? 'transparent' : `linear-gradient(135deg,${COLOR},${DARK})`, overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                       {p.photo_url ? <img src={p.photo_url} alt={p.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <span style={{ fontSize: 26, color: 'white' }}>👤</span>}
@@ -159,7 +159,7 @@ export default function Practitioners() {
                         <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
                           <span style={{ fontWeight: 800, fontSize: 17, color: '#1A3A5C' }}>{p.name}</span>
                           {p.is_verified         && <span style={{ background: '#dbeafe', color: '#1d4ed8', borderRadius: 20, padding: '2px 10px', fontSize: 11, fontWeight: 700 }}>✓ מאומת</span>}
-                          {p.is_defense_ministry && <span style={{ background: '#ede9fe', color: '#6d28d9', borderRadius: 20, padding: '2px 8px', fontSize: 11, fontWeight: 700 }}>🎗️ ספק משרד הביטחון</span>}
+                          {p.is_defense_ministry && <span style={{ background: '#ede9fe', color: '#6d28d9', borderRadius: 20, padding: '2px 8px', fontSize: 11, fontWeight: 700 }}>🎗️ מה"ב</span>}
                         </div>
                         {p.profession && <span style={{ background: COLOR, color: 'white', borderRadius: 20, padding: '3px 12px', fontSize: 12, fontWeight: 700 }}>{p.profession}</span>}
                       </div>
