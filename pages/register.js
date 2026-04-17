@@ -544,20 +544,11 @@ export default function Register() {
                       </div>
                     </div>
 
-                    {/* עיר + מחוז */}
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 16 }}>
-                      <div>
-                        <label style={pLbl}>עיר *</label>
-                        <input type="text" placeholder="תל אביב" value={pForm.city}
-                          onChange={e => setPForm(f => ({ ...f, city: e.target.value }))} style={pInp} />
-                      </div>
-                      <div>
-                        <label style={pLbl}>מחוז</label>
-                        <select value={pForm.district} onChange={e => setPForm(f => ({ ...f, district: e.target.value }))} style={pInp}>
-                          <option value="">בחרו מחוז</option>
-                          {DISTRICTS.map(d => <option key={d}>{d}</option>)}
-                        </select>
-                      </div>
+                    {/* עיר */}
+                    <div style={{ marginBottom: 16 }}>
+                      <label style={pLbl}>עיר *</label>
+                      <input type="text" placeholder="תל אביב" value={pForm.city}
+                        onChange={e => setPForm(f => ({ ...f, city: e.target.value }))} style={pInp} />
                     </div>
 
                     {/* אונליין */}
