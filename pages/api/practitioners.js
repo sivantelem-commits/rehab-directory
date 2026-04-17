@@ -9,7 +9,7 @@ const supabase = createClient(
 export default async function handler(req, res) {
   if (req.method !== 'GET') return res.status(405).end()
 
-  const { id, treatment_type, specialization, health_fund, health_fund_agreement, online, defense, search } = req.query
+  const { id, district, treatment_type, specialization, health_fund, online, defense, search } = req.query
 
   if (id) {
     const { data, error } = await supabase
@@ -27,9 +27,11 @@ export default async function handler(req, res) {
     .select('*')
     .eq('status', 'approved')
 
-  if (treatment_type)  query = query.contains('treatment_types', [treatment_type])
+  if (district)        query = query.eq('district', district)
+  if (treatment_type)   query = query.contains('treatment_types', [treatment_type])
+  if (certification)     query = query.contains('certifications', [certification])
   if (specialization)  query = query.contains('specializations', [specialization])
-  if (health_fund_agreement === 'true') query = query.eq('has_health_fund_agreement', true)
+  if (health_fund)     query = query.contains('health_funds', [health_fund])
   if (online === 'true')  query = query.eq('is_online', true)
   if (defense === 'true') query = query.eq('is_defense_ministry', true)
 
