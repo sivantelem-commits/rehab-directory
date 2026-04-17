@@ -163,6 +163,7 @@ export default function TreatmentList() {
     if (router.isReady) {
       if (router.query.district) setDistrict(router.query.district)
       if (router.query.category) setCategory(router.query.category)
+      if (router.query.tab === 'practitioners') setMainTab('practitioners')
     }
   }, [router.isReady, router.query])
 
@@ -355,12 +356,17 @@ export default function TreatmentList() {
 
             {/* פילטרים */}
             <div style={{ background: 'white', borderRadius: 14, padding: '16px 20px', marginBottom: 20, boxShadow: '0 2px 10px rgba(0,0,0,.05)', border: '1px solid #d0edf8' }}>
-              <div style={{ marginBottom: 14 }}>
-                <select value={practHealthFund} onChange={e => setPractHealthFund(e.target.value)}
-                  style={{ padding: '9px 12px', borderRadius: 10, border: '1.5px solid #a0d8e8', fontSize: 13, fontFamily: 'inherit', background: 'white', outline: 'none', cursor: 'pointer', minWidth: 200 }}>
-                  <option value="">כל קופות החולים</option>
-                  {HEALTH_FUNDS.map(o => <option key={o}>{o}</option>)}
-                </select>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(150px,1fr))', gap: 10, marginBottom: 14 }}>
+                {[
+                  [practDistrict,   setPractDistrict,   'כל המחוזות',      PRACTITIONER_DISTRICTS],
+                  [practHealthFund, setPractHealthFund, 'כל קופות החולים', HEALTH_FUNDS],
+                ].map(([val, setter, ph, opts]) => (
+                  <select key={ph} value={val} onChange={e => setter(e.target.value)}
+                    style={{ padding: '9px 12px', borderRadius: 10, border: '1.5px solid #a0d8e8', fontSize: 13, fontFamily: 'inherit', background: 'white', outline: 'none', cursor: 'pointer' }}>
+                    <option value="">{ph}</option>
+                    {opts.map(o => <option key={o}>{o}</option>)}
+                  </select>
+                ))}
               </div>
               <div style={{ marginBottom: 12 }}>
                 <div style={{ fontSize: 11, fontWeight: 700, color: '#888', marginBottom: 6 }}>סוג טיפול</div>
