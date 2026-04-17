@@ -48,7 +48,7 @@ export default function Practitioners() {
         if (district)       p.set('district', district)
         if (treatmentType)  p.set('treatment_type', treatmentType)
         if (specialization) p.set('specialization', specialization)
-        if (healthFund)     p.set('health_fund', healthFund)
+        if (healthFund)     p.set('health_fund_agreement', 'true')
         if (onlineOnly)     p.set('online', 'true')
         if (defenseOnly)    p.set('defense', 'true')
         if (search)         p.set('search', search)
@@ -180,7 +180,7 @@ export default function Practitioners() {
                           {p.specializations.length > 3 && <span style={{ fontSize: 11, color: '#888' }}>+{p.specializations.length - 3}</span>}
                         </div>
                       )}
-                      {p.health_funds?.length > 0 && <div style={{ fontSize: 12, color: '#059669', fontWeight: 600 }}>🏥 {p.health_funds.join(', ')}</div>}
+                      {p.has_health_fund_agreement && <div style={{ fontSize: 12, color: '#059669', fontWeight: 600 }}>🏥 הסדר קופות{p.health_funds?.length > 0 ? ': ' + p.health_funds.join(', ') : ''}</div>}
                       {p.bio && <div style={{ fontSize: 13, color: '#556', marginTop: 6, lineHeight: 1.5, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{p.bio}</div>}
                     </div>
                   </div>
