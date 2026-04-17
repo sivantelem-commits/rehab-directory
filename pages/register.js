@@ -6,6 +6,7 @@ import Head from 'next/head'
 import { CATEGORIES, CATEGORY_NAMES } from '../lib/categories'
 import {
   PRACTITIONER_TREATMENT_TYPES,
+  PRACTITIONER_CERTIFICATIONS,
   PRACTITIONER_SPECIALIZATIONS,
   PRACTITIONER_PROFESSIONS,
   HEALTH_FUNDS,
@@ -30,12 +31,12 @@ const emptyForm = {
 }
 
 const emptyPractitionerForm = {
-  name: '', email: '', license_number: '', professions: [],
+  name: '', email: '', license_number: '', profession: '', certifications: [],
   treatment_types: [], specializations: [],
   city: '', district: '', is_online: false,
   health_funds: [], is_defense_ministry: false,
   languages: [], price_range: '', bio: '', photo_url: '',
-  phone: '', website: '', whatsapp_available: false,
+  phone: '', website: '', whatsapp_available: false, subsidized: false,
 }
 
 export default function Register() {
@@ -513,13 +514,22 @@ export default function Register() {
                         onChange={e => setPForm(f => ({ ...f, license_number: e.target.value }))} style={pInp} />
                     </div>
 
-                    {/* מקצוע */}
+                    {/* מקצוע ראשי */}
+                    <div style={{ marginBottom: 16 }}>
+                      <label style={pLbl}>מקצוע ראשי *</label>
+                      <select value={pForm.profession} onChange={e => setPForm(f => ({ ...f, profession: e.target.value }))} style={pInp}>
+                        <option value="">בחרו מקצוע</option>
+                        {PRACTITIONER_PROFESSIONS.map(p => <option key={p}>{p}</option>)}
+                      </select>
+                    </div>
+
+                    {/* הסמכות נוספות */}
                     <div style={{ marginBottom: 20 }}>
-                      <label style={pLbl}>מקצוע <span style={{ fontWeight: 400, color: '#9ca3af' }}>(ניתן לסמן כמה)</span></label>
+                      <label style={pLbl}>הסמכות נוספות <span style={{ fontWeight: 400, color: '#9ca3af' }}>(ניתן לסמן כמה)</span></label>
                       <div style={{ display: 'flex', flexWrap: 'wrap', gap: 7 }}>
-                        {PRACTITIONER_PROFESSIONS.map(prof => {
-                          const sel = (pForm.professions || []).includes(prof)
-                          return <button key={prof} type="button" onClick={() => togglePField('professions', prof)} style={{ padding: '6px 14px', borderRadius: 999, fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: "'Nunito',sans-serif", transition: 'all .15s', border: `2px solid ${sel ? PRACTITIONER_COLOR : '#c0d8e8'}`, background: sel ? PRACTITIONER_COLOR : 'white', color: sel ? 'white' : PRACTITIONER_COLOR }}>{prof}</button>
+                        {PRACTITIONER_CERTIFICATIONS.map(c => {
+                          const sel = (pForm.certifications || []).includes(c)
+                          return <button key={c} type="button" onClick={() => togglePField('certifications', c)} style={{ padding: '6px 14px', borderRadius: 999, fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: "'Nunito',sans-serif", transition: 'all .15s', border: `2px solid ${sel ? '#0284C7' : '#bae6fd'}`, background: sel ? '#0284C7' : 'white', color: sel ? 'white' : '#0284C7' }}>{c}</button>
                         })}
                       </div>
                     </div>
@@ -577,6 +587,15 @@ export default function Register() {
                         <input type="checkbox" checked={pForm.whatsapp_available} onChange={e => setPForm(f => ({ ...f, whatsapp_available: e.target.checked }))}
                           style={{ width: 18, height: 18, accentColor: '#25D366' }} />
                         ניתן לפנות בוואטסאפ 💬
+                      </label>
+                    </div>
+
+                    {/* טיפול מוזל */}
+                    <div style={{ marginBottom: 16 }}>
+                      <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', fontSize: 13.5, fontWeight: 700, color: '#0891B2' }}>
+                        <input type="checkbox" checked={pForm.subsidized || false} onChange={e => setPForm(f => ({ ...f, subsidized: e.target.checked }))}
+                          style={{ width: 18, height: 18, accentColor: '#0891B2' }} />
+                        מציע/ה טיפול מוזל 💙
                       </label>
                     </div>
 
