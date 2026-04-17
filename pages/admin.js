@@ -668,7 +668,7 @@ export default function Admin() {
                               {p.is_online           && <span style={{ background: '#e0f2fe', color: '#0284c7', borderRadius: 20, padding: '2px 8px', fontSize: 11, fontWeight: 700 }}>🌐 אונליין</span>}
                             </div>
                             <div style={{ fontSize: 13, color: '#555', display: 'flex', gap: 16, flexWrap: 'wrap', marginBottom: 6 }}>
-                              {p.profession && <span>🏷️ {p.profession}</span>}
+                              {p.professions?.length > 0 && <span>🏷️ {p.professions.join(", ")}</span>}
                               {p.city       && <span>📍 {p.city}{p.district ? `, ${p.district}` : ''}</span>}
                               <span>📜 {p.license_number}</span>
                               <span>✉️ {p.email}</span>
@@ -685,7 +685,7 @@ export default function Admin() {
                               <button onClick={async () => { await fetch('/api/admin/practitioners', { method: 'PATCH', headers: { 'Content-Type': 'application/json', adminkey: adminKey }, body: JSON.stringify({ id: p.id, status: 'approved' }) }); fetchAll(adminKey) }}
                                 style={{ background: '#059669', color: 'white', border: 'none', borderRadius: 20, padding: '8px 16px', fontWeight: 700, cursor: 'pointer', fontSize: 13 }}>✓ אישור</button>
                             )}
-                            <button onClick={() => { setEditingPractitioner(p); setEditPForm({ ...p, treatment_types: p.treatment_types || [], specializations: p.specializations || [], health_funds: p.health_funds || [], languages: p.languages || [] }) }}
+                            <button onClick={() => { setEditingPractitioner(p); setEditPForm({ ...p, professions: p.professions || [], treatment_types: p.treatment_types || [], specializations: p.specializations || [], health_funds: p.health_funds || [], languages: p.languages || [] }) }}
                               style={{ background: '#e0f2fe', color: '#0284c7', border: '2px solid #7dd3fc', borderRadius: 20, padding: '7px 14px', fontWeight: 700, cursor: 'pointer', fontSize: 12 }}>✏️ עריכה</button>
                             <button onClick={async () => { await fetch('/api/admin/practitioners', { method: 'PATCH', headers: { 'Content-Type': 'application/json', adminkey: adminKey }, body: JSON.stringify({ id: p.id, is_verified: !p.is_verified }) }); fetchAll(adminKey) }}
                               style={{ background: p.is_verified ? '#dbeafe' : 'white', color: p.is_verified ? '#1d4ed8' : '#0F4C75', border: '2px solid #0F4C75', borderRadius: 20, padding: '7px 14px', fontWeight: 700, cursor: 'pointer', fontSize: 12 }}>
@@ -720,24 +720,30 @@ export default function Admin() {
                 </div>
 
                 {/* שם + מקצוע */}
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 14 }}>
-                  <div>
-                    <label style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#0F4C75', marginBottom: 5 }}>שם מלא</label>
-                    <input value={editPForm.name || ''} onChange={e => setEditPForm(f => ({ ...f, name: e.target.value }))} style={{ width: '100%', padding: '9px 12px', borderRadius: 10, border: '1.5px solid #a0d8e8', fontSize: 14, outline: 'none', boxSizing: 'border-box', fontFamily: 'inherit' }} />
-                  </div>
-                  <div>
-                    <label style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#0F4C75', marginBottom: 5 }}>מקצוע</label>
-                    <select value={editPForm.profession || ''} onChange={e => setEditPForm(f => ({ ...f, profession: e.target.value }))} style={{ width: '100%', padding: '9px 12px', borderRadius: 10, border: '1.5px solid #a0d8e8', fontSize: 14, outline: 'none', background: 'white', fontFamily: 'inherit' }}>
-                      <option value="">בחרו מקצוע</option>
-                      {PRACT_PROFESSIONS.map(p => <option key={p}>{p}</option>)}
-                    </select>
+                <div style={{ marginBottom: 14 }}>
+                  <label style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#0F4C75', marginBottom: 5 }}>שם מלא</label>
+                  <input value={editPForm.name || ''} onChange={e => setEditPForm(f => ({ ...f, name: e.target.value }))} style={{ width: '100%', padding: '9px 12px', borderRadius: 10, border: '1.5px solid #a0d8e8', fontSize: 14, outline: 'none', boxSizing: 'border-box', fontFamily: 'inherit' }} />
+                </div>
+                <div style={{ marginBottom: 14 }}>
+                  <label style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#0F4C75', marginBottom: 6 }}>מקצוע <span style={{ fontWeight: 400, color: '#9ca3af' }}>(ניתן לסמן כמה)</span></label>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+                    {PRACT_PROFESSIONS.map(prof => { const s = (editPForm.professions||[]).includes(prof); return <button key={prof} onClick={() => togglePEditArray('professions', prof)} style={{ padding: '4px 12px', borderRadius: 999, fontSize: 12, fontWeight: 700, cursor: 'pointer', border: `1.5px solid ${s?'#0F4C75':'#a0d8e8'}`, background: s?'#0F4C75':'white', color: s?'white':'#0F4C75' }}>{prof}</button> })}
                   </div>
                 </div>
 
-                {/* עיר */}
-                <div style={{ marginBottom: 14 }}>
-                  <label style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#0F4C75', marginBottom: 5 }}>עיר</label>
-                  <input value={editPForm.city || ''} onChange={e => setEditPForm(f => ({ ...f, city: e.target.value }))} style={{ width: '100%', padding: '9px 12px', borderRadius: 10, border: '1.5px solid #a0d8e8', fontSize: 14, outline: 'none', boxSizing: 'border-box', fontFamily: 'inherit' }} />
+                {/* עיר + מחוז */}
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 14 }}>
+                  <div>
+                    <label style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#0F4C75', marginBottom: 5 }}>עיר</label>
+                    <input value={editPForm.city || ''} onChange={e => setEditPForm(f => ({ ...f, city: e.target.value }))} style={{ width: '100%', padding: '9px 12px', borderRadius: 10, border: '1.5px solid #a0d8e8', fontSize: 14, outline: 'none', boxSizing: 'border-box', fontFamily: 'inherit' }} />
+                  </div>
+                  <div>
+                    <label style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#0F4C75', marginBottom: 5 }}>מחוז</label>
+                    <select value={editPForm.district || ''} onChange={e => setEditPForm(f => ({ ...f, district: e.target.value }))} style={{ width: '100%', padding: '9px 12px', borderRadius: 10, border: '1.5px solid #a0d8e8', fontSize: 14, outline: 'none', background: 'white', fontFamily: 'inherit' }}>
+                      <option value="">בחרו מחוז</option>
+                      {DISTRICTS.map(d => <option key={d}>{d}</option>)}
+                    </select>
+                  </div>
                 </div>
 
                 {/* טלפון + מחיר */}
