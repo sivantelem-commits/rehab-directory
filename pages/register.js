@@ -41,6 +41,7 @@ const emptyPractitionerForm = {
 export default function Register() {
   // ── state קיים ──
   const [tab, setTab]                     = useState('')
+  const [treatmentExpanded, setTreatmentExpanded] = useState(false)
   const [form, setForm]                   = useState(emptyForm)
   const [loading, setLoading]             = useState(false)
   const [success, setSuccess]             = useState(false)
@@ -83,7 +84,14 @@ export default function Register() {
   }, [form.name, form.city, form.category, tab])
 
   function handleTabChange(newTab) {
-    setTab(newTab)
+    // לחיצה על "טיפול" הכרטיסייה הגדולה — פותח תת-בחירה אבל לא טופס
+    if (newTab === 'treatment' && (tab === '' || tab === 'rehab')) {
+      setTab('treatment-parent')
+      setTreatmentExpanded(true)
+    } else {
+      setTab(newTab)
+      setTreatmentExpanded(newTab === 'treatment' || newTab === 'practitioner')
+    }
     setForm(emptyForm)
     setPForm(emptyPractitionerForm)
     setError(''); setPError('')
@@ -158,8 +166,11 @@ export default function Register() {
     finally { setPLoading(false) }
   }
 
-  const isRehab  = tab === 'rehab'
-  const color    = isRehab ? '#8B00D4' : '#0891B2'
+  const isRehab   = tab === 'rehab'
+  const isTreatment = tab === 'treatment'
+  const isPractitioner = tab === 'practitioner'
+  const treatmentActive = treatmentExpanded // treatment parent or sub-tab
+  const color     = isRehab ? '#8B00D4' : '#0891B2'
   const darkColor = isRehab ? '#4C0080' : '#164E63'
 
   const subcategories = isRehab && form.category ? (CATEGORIES[form.category]?.subcategories || []) : []
@@ -223,56 +234,86 @@ export default function Register() {
         <main style={{ maxWidth: 640, margin: '-20px auto 0', padding: '0 16px 60px', position: 'relative' }}>
           <div style={{ background: 'white', borderRadius: 20, padding: '32px 28px', boxShadow: '0 8px 32px rgba(0,0,0,.1)' }}>
 
-            {/* ── טאבים ראשיים ── */}
-            <div style={{ display: 'flex', gap: 12, marginBottom: tab === 'treatment' || tab === 'practitioner' ? 16 : 32, flexWrap: 'wrap' }}>
-              {[
-                ['rehab',     '♿ שיקום', '#8B00D4'],
-                ['treatment', '🏥 טיפול', '#0891B2'],
-              ].map(([id, label, col]) => {
-                const active = (id === 'rehab' && tab === 'rehab') || (id === 'treatment' && (tab === 'treatment' || tab === 'practitioner'))
-                return (
-                  <button key={id} onClick={() => handleTabChange(id)} style={{
-                    padding: '10px 28px', borderRadius: 999, fontWeight: 800, fontSize: 15,
-                    cursor: 'pointer', fontFamily: "'Nunito',sans-serif", transition: 'all .15s',
-                    border: `2px solid ${active ? col : '#e0e0e0'}`,
-                    background: active ? col : 'white',
-                    color: active ? 'white' : '#666',
-                    boxShadow: active ? `0 4px 12px ${col}44` : 'none',
-                  }}>{label}</button>
-                )
-              })}
+            {/* ── בחירת סוג שירות ── */}
+            <div style={{ marginBottom: 32 }}>
+              <div style={{ fontSize: 13, fontWeight: 700, color: '#aaa', textAlign: 'center', marginBottom: 16, letterSpacing: 1, textTransform: 'uppercase' }}>איזה שירות תרצו להוסיף?</div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+
+                {/* שיקום */}
+                <button onClick={() => handleTabChange('rehab')} style={{
+                  padding: '20px 16px', borderRadius: 16, cursor: 'pointer',
+                  fontFamily: "'Nunito',sans-serif", transition: 'all .2s',
+                  border: `2px solid ${tab === 'rehab' ? '#8B00D4' : '#ede9fe'}`,
+                  background: tab === 'rehab' ? 'linear-gradient(135deg,#8B00D4,#6D28D9)' : 'white',
+                  color: tab === 'rehab' ? 'white' : '#4C0080',
+                  boxShadow: tab === 'rehab' ? '0 6px 20px rgba(139,0,212,0.3)' : '0 2px 8px rgba(0,0,0,0.04)',
+                  display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8, textAlign: 'center',
+                }}>
+                  <span style={{ fontSize: 32 }}>♿</span>
+                  <div>
+                    <div style={{ fontWeight: 800, fontSize: 15 }}>שיקום</div>
+                    <div style={{ fontSize: 11, opacity: 0.75, marginTop: 3, fontWeight: 500 }}>סל שיקום בקהילה</div>
+                  </div>
+                </button>
+
+                {/* טיפול */}
+                <button onClick={() => handleTabChange('treatment')} style={{
+                  padding: '20px 16px', borderRadius: 16, cursor: 'pointer',
+                  fontFamily: "'Nunito',sans-serif", transition: 'all .2s',
+                  border: `2px solid ${treatmentActive ? '#0891B2' : '#d0edf8'}`,
+                  background: treatmentActive ? 'linear-gradient(135deg,#0891B2,#164E63)' : 'white',
+                  color: treatmentActive ? 'white' : '#0A6080',
+                  boxShadow: treatmentActive ? '0 6px 20px rgba(8,145,178,0.3)' : '0 2px 8px rgba(0,0,0,0.04)',
+                  display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8, textAlign: 'center',
+                }}>
+                  <span style={{ fontSize: 32 }}>🏥</span>
+                  <div>
+                    <div style={{ fontWeight: 800, fontSize: 15 }}>טיפול</div>
+                    <div style={{ fontSize: 11, opacity: 0.75, marginTop: 3, fontWeight: 500 }}>מרכזים, מרפאות ומטפלים</div>
+                  </div>
+                </button>
+
+              </div>
+
+              {/* ── תת-בחירה של טיפול ── */}
+              {treatmentActive && (
+                <div style={{ marginTop: 12, padding: '4px', background: '#f0faff', borderRadius: 14, display: 'flex', gap: 4 }}>
+                  {[
+                    ['treatment',    '🏨', 'מרכז טיפול',     'בתים מאזנים, אשפוז, מרפאות'],
+                    ['practitioner', '🧠', 'מטפל/ת פרטי/ת',  'פסיכולוגים, מטפלים מוסמכים'],
+                  ].map(([id, icon, title, sub]) => (
+                    <button key={id} onClick={() => handleTabChange(id)} style={{
+                      flex: 1, padding: '12px 10px', borderRadius: 11, cursor: 'pointer',
+                      fontFamily: "'Nunito',sans-serif", transition: 'all .15s', border: 'none',
+                      background: tab === id ? 'white' : 'transparent',
+                      color: tab === id ? '#0891B2' : '#7ba8b8',
+                      boxShadow: tab === id ? '0 2px 10px rgba(8,145,178,0.12)' : 'none',
+                      display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3,
+                    }}>
+                      <span style={{ fontSize: 20 }}>{icon}</span>
+                      <div style={{ fontWeight: 800, fontSize: 13 }}>{title}</div>
+                      <div style={{ fontSize: 10, opacity: 0.7 }}>{sub}</div>
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
 
-            {/* ── תת-טאבים של טיפול ── */}
-            {(tab === 'treatment' || tab === 'practitioner') && (
-              <div style={{ display: 'flex', gap: 8, marginBottom: 28, background: '#f0faff', borderRadius: 14, padding: 6 }}>
-                {[
-                  ['treatment',    '🏨 מרכז טיפול'],
-                  ['practitioner', '🧠 מטפל/ת פרטי/ת'],
-                ].map(([id, label]) => (
-                  <button key={id} onClick={() => handleTabChange(id)} style={{
-                    flex: 1, padding: '9px 16px', borderRadius: 10, fontWeight: 700, fontSize: 13,
-                    cursor: 'pointer', fontFamily: "'Nunito',sans-serif", transition: 'all .15s',
-                    border: 'none',
-                    background: tab === id ? 'white' : 'transparent',
-                    color: tab === id ? '#0891B2' : '#888',
-                    boxShadow: tab === id ? '0 2px 8px rgba(0,0,0,0.1)' : 'none',
-                  }}>{label}</button>
-                ))}
+            {/* ── בחרו סוג ── */}
+            {(!tab || tab === 'treatment-parent') && (
+              <div style={{ textAlign: 'center', padding: '20px 0 32px', color: '#bbb' }}>
+                <div style={{ fontSize: 13, fontWeight: 600 }}>{tab === 'treatment-parent' ? 'בחרו את סוג שירות הטיפול למעלה' : 'בחרו סוג שירות למעלה כדי להמשיך'}</div>
               </div>
             )}
 
-            {/* ── בחרו סוג ── */}
-            {!tab && (
-              <div style={{ textAlign: 'center', padding: '40px 0', color: '#aaa' }}>
-                <div style={{ fontSize: 40, marginBottom: 12 }}>👆</div>
-                <div style={{ fontSize: 15 }}>בחרו את סוג השירות לעיל</div>
-              </div>
+            {(tab === 'rehab' || tab === 'treatment' || tab === 'practitioner') && (
+              <div style={{ height: 1, background: 'linear-gradient(90deg, transparent, #e0e0e0, transparent)', marginBottom: 28 }} />
             )}
 
             {/* ══════════════════════════════════════
                 טופס שיקום + טיפול (קיים)
             ══════════════════════════════════════ */}
+            {/* ══ טופס שיקום + מרכז טיפול ══ */}
             {(tab === 'rehab' || tab === 'treatment') && (
               <div>
                 {success ? (
