@@ -426,6 +426,7 @@ export default function TreatmentList() {
                         <div style={{ fontSize: 13, color: '#666', marginBottom: 6, display: 'flex', gap: 10, flexWrap: 'wrap' }}>
                           {p.city && <span>📍 {p.city}{p.district ? `, ${p.district}` : ''}</span>}
                           {p.is_online && <span style={{ color: '#0891B2', fontWeight: 700 }}>🌐 אונליין</span>}
+                          {p.whatsapp_available && <span style={{ color: '#25D366', fontWeight: 700 }}>💬 וואטסאפ</span>}
                           {p.price_range && <span>💰 ₪{p.price_range} לשעה</span>}
                         </div>
                         {p.treatment_types?.length > 0 && (
