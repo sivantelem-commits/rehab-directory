@@ -18,6 +18,32 @@ const TREATMENT_COLORS = {
 
 const DISTRICTS = ['הכל', 'צפון', 'חיפה', 'מרכז', 'תל אביב', 'ירושלים', 'דרום', 'יהודה ושומרון']
 
+
+const PRACTITIONER_COLOR_MAP = '#0F4C75'
+
+const CITY_COORDS = {
+  'תל אביב': [32.0853, 34.7818], 'ירושלים': [31.7683, 35.2137], 'חיפה': [32.7940, 34.9896],
+  'באר שבע': [31.2530, 34.7915], 'ראשון לציון': [31.9730, 34.7898], 'פתח תקווה': [32.0871, 34.8878],
+  'אשדוד': [31.8044, 34.6553], 'נתניה': [32.3215, 34.8532], 'בני ברק': [32.0840, 34.8340],
+  'חולון': [32.0114, 34.7800], 'בת ים': [32.0200, 34.7500], 'רמת גן': [32.0700, 34.8200],
+  'אשקלון': [31.6689, 34.5742], 'רחובות': [31.8928, 34.8113], 'הרצליה': [32.1664, 34.8438],
+  'חדרה': [32.4340, 34.9196], 'מודיעין': [31.8960, 35.0100], 'כפר סבא': [32.1787, 34.9087],
+  'לוד': [31.9516, 34.8951], 'רמלה': [31.9285, 34.8730], 'נס ציונה': [31.9301, 34.7993],
+  'אילת': [29.5577, 34.9519], 'רעננה': [32.1840, 34.8705], 'גבעתיים': [32.0700, 34.8100],
+  'קריית גת': [31.6098, 34.7642], 'נהריה': [33.0068, 35.0979], 'עכו': [32.9230, 35.0767],
+  'טבריה': [32.7940, 35.5300], 'צפת': [32.9648, 35.4961], 'קריית שמונה': [33.2075, 35.5700],
+  'נצרת': [32.7021, 35.2981], 'אום אל פחם': [32.5154, 35.1525], 'קריית ביאליק': [32.8350, 35.0900],
+  'קריית אתא': [32.8091, 35.1068], 'קריית מוצקין': [32.8357, 35.0741], 'יקנעם עלית': [32.6596, 35.1047],
+  'זכרון יעקב': [32.5712, 34.9537], 'עפולה': [32.6079, 35.2895], 'בית שאן': [32.4960, 35.4990],
+  'דימונה': [31.0671, 35.0314], 'ערד': [31.2589, 35.2119], 'מצפה רמון': [30.6105, 34.8018],
+  'שדרות': [31.5244, 34.5966], 'קריית ים': [32.8490, 35.0702], 'טייבה': [32.2680, 35.0030],
+  'ראש העין': [32.0961, 34.9557], 'אלעד': [32.0528, 34.9511], 'בית שמש': [31.7435, 34.9875],
+  'מעלה אדומים': [31.7760, 35.2972], 'אריאל': [32.1063, 35.1680], 'יבנה': [31.8766, 34.7406],
+  'רמת השרון': [32.1461, 34.8378], 'הוד השרון': [32.1512, 34.8879], 'כפר יונה': [32.3138, 34.9362],
+  'נוף הגליל': [32.7083, 35.3218], 'שפרעם': [32.8087, 35.1694], 'מגדל העמק': [32.6767, 35.2388],
+  'גן יבנה': [31.7886, 34.7063], 'גדרה': [31.8135, 34.7754],
+}
+
 const NAV = [['/', 'ראשי'], ['/rehab', 'שיקום'], ['/treatment', 'טיפול'], ['/map', 'מפה'], ['/register', 'הוספת שירות'], ['/about', 'אודות'], ['/contact', 'צור קשר'], ['/admin', 'ניהול']]
 
 
@@ -98,9 +124,11 @@ function applySpiral(services) {
 export default function MapPage() {
   const [rehabServices, setRehabServices] = useState([])
   const [treatmentServices, setTreatmentServices] = useState([])
+  const [practitioners, setPractitioners] = useState([])
   const [mapLoading, setMapLoading] = useState(true)
   const [showRehab, setShowRehab] = useState(true)
   const [showTreatment, setShowTreatment] = useState(true)
+  const [showPractitioners, setShowPractitioners] = useState(true)
   const [rehabCategory, setRehabCategory] = useState('הכל')
   const [rehabSubcategory, setRehabSubcategory] = useState('הכל')
   const [treatmentCategory, setTreatmentCategory] = useState('הכל')
@@ -131,6 +159,7 @@ export default function MapPage() {
     Promise.all([
       fetch('/api/services').then(r => r.json()).then(data => setRehabServices(Array.isArray(data) ? data : [])),
       fetch('/api/treatment').then(r => r.json()).then(data => setTreatmentServices(Array.isArray(data) ? data : [])),
+      fetch('/api/practitioners').then(r => r.json()).then(data => setPractitioners(Array.isArray(data) ? data : [])),
     ]).finally(() => setMapLoading(false))
   }, [])
 
@@ -246,7 +275,26 @@ export default function MapPage() {
         markersRef.current.push(marker)
       }
     })
-  }, [mounted, rehabServices, treatmentServices, showRehab, showTreatment, rehabCategory, rehabSubcategory, treatmentCategory, district, showNationalOnly, ageGroup, diagnosis, populations, searchText])
+
+    // ── מטפלים פרטיים ──
+    if (showPractitioners) {
+      practitioners
+        .filter(p => p.city && CITY_COORDS[p.city])
+        .forEach(p => {
+          const [lat, lng] = CITY_COORDS[p.city]
+          const jLat = lat + (Math.random() - 0.5) * 0.008
+          const jLng = lng + (Math.random() - 0.5) * 0.008
+          const icon = L.divIcon({
+            html: '<div style="width:22px;height:22px;border-radius:50%;background:#0F4C75;border:2.5px solid white;box-shadow:0 2px 6px rgba(0,0,0,0.35);display:flex;align-items:center;justify-content:center;font-size:10px;">🧠</div>',
+            className: '', iconSize: [22, 22], iconAnchor: [11, 11],
+          })
+          const marker = L.marker([jLat, jLng], { icon })
+          marker.on('click', () => setSelected({ ...p, type: 'practitioner', lat: jLat, lng: jLng }))
+          marker.addTo(mapRef.current)
+          markersRef.current.push(marker)
+        })
+    }
+  }, [mounted, rehabServices, treatmentServices, practitioners, showRehab, showTreatment, showPractitioners, rehabCategory, rehabSubcategory, treatmentCategory, district, showNationalOnly, ageGroup, diagnosis, populations, searchText])
 
   if (!mounted) return null
 
@@ -401,7 +449,7 @@ export default function MapPage() {
               )
             })()}
             <div style={{ fontSize: 13, color: '#888', marginRight: 'auto', fontWeight: 600 }}>
-              {(showRehab ? filteredRehabCount : 0) + (showTreatment ? filteredTreatmentCount : 0)} שירותים
+              {(showRehab ? filteredRehabCount : 0) + (showTreatment ? filteredTreatmentCount : 0) + (showPractitioners ? practitioners.filter(p => p.city && CITY_COORDS[p.city]).length : 0)} שירותים ומטפלים
             </div>
           </div>
           {showAdvanced && (() => {
@@ -496,6 +544,7 @@ export default function MapPage() {
                   <div style={{ display: 'flex', gap: 8 }}>
                     <button onClick={() => setShowRehab(v => !v)} style={{ flex: 1, padding: '10px', borderRadius: 12, border: `2px solid ${showRehab ? '#8B00D4' : '#ddd'}`, background: showRehab ? '#f7f0ff' : 'white', color: showRehab ? '#4C0080' : '#aaa', fontWeight: 700, fontSize: 13, cursor: 'pointer', fontFamily: "'Nunito', sans-serif" }}>♿ שיקום</button>
                     <button onClick={() => setShowTreatment(v => !v)} style={{ flex: 1, padding: '10px', borderRadius: 12, border: `2px solid ${showTreatment ? '#0891B2' : '#ddd'}`, background: showTreatment ? '#f0faff' : 'white', color: showTreatment ? '#0A6080' : '#aaa', fontWeight: 700, fontSize: 13, cursor: 'pointer', fontFamily: "'Nunito', sans-serif" }}>🏥 טיפול</button>
+                    <button onClick={() => setShowPractitioners(v => !v)} style={{ flex: 1, padding: '10px', borderRadius: 12, border: `2px solid ${showPractitioners ? '#0F4C75' : '#ddd'}`, background: showPractitioners ? '#e0f0ff' : 'white', color: showPractitioners ? '#0F4C75' : '#aaa', fontWeight: 700, fontSize: 13, cursor: 'pointer', fontFamily: "'Nunito', sans-serif" }}>🧠 מטפלים</button>
                   </div>
                 </div>
                 {/* קטגוריית שיקום */}
@@ -655,7 +704,7 @@ export default function MapPage() {
               borderRadius: isMobile ? '16px 16px 0 0' : 16,
               padding: '16px',
               boxShadow: '0 -4px 24px rgba(0,0,0,0.18)',
-              borderTop: `4px solid ${selected.type === 'rehab' ? (REHAB_COLORS[selected.category] || '#4aab78') : (TREATMENT_COLORS[selected.category] || '#ee7a50')}`,
+              borderTop: `4px solid ${selected.type === 'rehab' ? (REHAB_COLORS[selected.category] || '#4aab78') : selected.type === 'practitioner' ? '#0F4C75' : (TREATMENT_COLORS[selected.category] || '#ee7a50')}`,
               zIndex: 1000,
             }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 8 }}>
@@ -663,7 +712,16 @@ export default function MapPage() {
                   <div style={{ fontWeight: 700, fontSize: 15, color: '#1A3A5C' }}>
                     {selected.name} {selected.is_national && <span title="פריסה ארצית">🌍</span>}
                   </div>
-                  <div style={{ fontSize: 12, color: '#888', marginTop: 2 }}>📍 {selected.city}{selected.district ? `, ${selected.district}` : ''}{selected._districtLabel && <span style={{ marginRight: 6, background: '#EEF2FF', color: '#1A3A5C', borderRadius: 999, padding: '1px 7px', fontSize: 11 }}>🗺️ שירות איזורי - {selected._districtLabel}</span>}</div>
+                  {selected.type === 'practitioner' ? (
+                    <div style={{ fontSize: 12, color: '#888', marginTop: 2 }}>
+                      {selected.profession && <span style={{ background: '#0F4C75', color: 'white', borderRadius: 20, padding: '1px 8px', fontWeight: 700, marginLeft: 6 }}>{selected.profession}</span>}
+                      📍 {selected.city}
+                      {selected.is_online && <span style={{ color: '#0891B2', fontWeight: 700, marginRight: 6 }}> · 🌐 אונליין</span>}
+                      {selected.price_range && <span> · ₪{selected.price_range}/שעה</span>}
+                    </div>
+                  ) : (
+                    <div style={{ fontSize: 12, color: '#888', marginTop: 2 }}>📍 {selected.city}{selected.district ? `, ${selected.district}` : ''}{selected._districtLabel && <span style={{ marginRight: 6, background: '#EEF2FF', color: '#1A3A5C', borderRadius: 999, padding: '1px 7px', fontSize: 11 }}>🗺️ שירות איזורי - {selected._districtLabel}</span>}</div>
+                  )}
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                   <BasketButton service={selected} />
@@ -685,15 +743,32 @@ export default function MapPage() {
                   {selected.description}
                 </div>
               )}
-              <a href={`/${selected.type === 'rehab' ? 'service' : 'treatment'}/${selected.id}`}
-                style={{ display: 'block', textAlign: 'center', background: selected.type === 'rehab' ? '#8B00D4' : '#0891B2', color: 'white', borderRadius: '999px', padding: '8px 0', fontWeight: 700, fontSize: 13, textDecoration: 'none' }}>
-                לפרטים המלאים ←
-              </a>
+              {selected.type === 'practitioner' ? (
+                <div style={{ display: 'flex', gap: 8 }}>
+                  <a href={`/practitioner/${selected.id}`} style={{ flex: 1, display: 'block', textAlign: 'center', background: '#0F4C75', color: 'white', borderRadius: '999px', padding: '8px 0', fontWeight: 700, fontSize: 13, textDecoration: 'none' }}>לפרטים המלאים ←</a>
+                  {selected.whatsapp_available && selected.phone && (
+                    <a href={`https://wa.me/972${selected.phone.replace(/^0/, '').replace(/[-\s]/g, '')}`} target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center', gap: 5, padding: '8px 14px', background: '#25D366', color: 'white', borderRadius: '999px', fontWeight: 700, fontSize: 13, textDecoration: 'none' }}>💬</a>
+                  )}
+                </div>
+              ) : (
+                <a href={`/${selected.type === 'rehab' ? 'service' : 'treatment'}/${selected.id}`}
+                  style={{ display: 'block', textAlign: 'center', background: selected.type === 'rehab' ? '#8B00D4' : '#0891B2', color: 'white', borderRadius: '999px', padding: '8px 0', fontWeight: 700, fontSize: 13, textDecoration: 'none' }}>
+                  לפרטים המלאים ←
+                </a>
+              )}
             </div>
           )}
         </div>
       </div>
       <BasketPanel />
+
+        {/* ── Legend ── */}
+        <div style={{ position: 'fixed', bottom: isMobile ? 80 : 24, left: 16, background: 'rgba(255,255,255,0.95)', borderRadius: 12, padding: '10px 14px', boxShadow: '0 2px 12px rgba(0,0,0,0.15)', zIndex: 900, fontSize: 12, fontFamily: "'Nunito',sans-serif", lineHeight: 2 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}><span style={{ width: 12, height: 12, borderRadius: '50%', background: '#8B00D4', display: 'inline-block' }} />שיקום</div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}><span style={{ width: 12, height: 12, borderRadius: '50%', background: '#0891B2', display: 'inline-block' }} />טיפול</div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}><span style={{ width: 12, height: 12, borderRadius: '50%', background: '#0F4C75', display: 'inline-block', fontSize: 9, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', color: 'white' }}>🧠</span>מטפל/ת פרטי/ת</div>
+        </div>
+
         <footer style={{ background: '#1A3A5C', color: 'rgba(255,255,255,0.7)', textAlign: 'center', padding: '12px', fontSize: 12 }}>
           <a href="/accessibility" style={{ color: 'rgba(255,255,255,0.7)', textDecoration: 'none', margin: '0 8px' }}>הצהרת נגישות</a>
           <span style={{ opacity: 0.4 }}>·</span>
