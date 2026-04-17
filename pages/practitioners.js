@@ -149,7 +149,7 @@ export default function Practitioners() {
           ) : (
             <div style={{ display: 'grid', gap: 14 }}>
               {practitioners.map(p => (
-                <a key={p.id} href={`/practitioner/${p.id}?from=practitioners`} style={{ textDecoration: 'none' }}>
+                <a key={p.id} href={`/practitioner/${p.id}`} style={{ textDecoration: 'none' }}>
                   <div style={{ background: 'white', borderRadius: 16, padding: '20px 24px', boxShadow: '0 2px 12px rgba(0,0,0,.06)', border: `1.5px solid ${p.is_verified ? '#bfdbfe' : '#e0eef8'}`, borderTop: `4px solid ${COLOR}`, display: 'flex', gap: 16, alignItems: 'flex-start' }}>
                     <div style={{ width: 64, height: 64, borderRadius: '50%', flexShrink: 0, background: p.photo_url ? 'transparent' : `linear-gradient(135deg,${COLOR},${DARK})`, overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                       {p.photo_url ? <img src={p.photo_url} alt={p.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <span style={{ fontSize: 26, color: 'white' }}>👤</span>}
