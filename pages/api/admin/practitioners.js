@@ -38,7 +38,7 @@ export default async function handler(req, res) {
     if (is_verified !== undefined) updates.is_verified = is_verified
     // full-field edit
     const EDITABLE = ['name','profession','city','district','phone','website','price_range','bio','photo_url',
-                      'professions','treatment_types','specializations','health_funds','languages','is_online','is_defense_ministry','license_number','whatsapp_available']
+                      'treatment_types','specializations','health_funds','languages','is_online','is_defense_ministry','license_number','whatsapp_available','has_health_fund_agreement']
     for (const key of EDITABLE) {
       if (fields[key] !== undefined) {
         updates[key] = key === 'photo_url' ? normalizePhotoUrl(fields[key]) : fields[key]
