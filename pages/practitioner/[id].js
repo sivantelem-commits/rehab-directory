@@ -2,7 +2,17 @@
 import Head from 'next/head'
 import { PRACTITIONER_COLOR as COLOR, PRACTITIONER_DARK as DARK } from '../../lib/practitioner-constants'
 
-export default function PractitionerPage({ practitioner: p }) {
+const normalizePhotoUrl = (url) => {
+  if (!url) return null
+  const fileMatch = url.match(/drive\.google\.com\/file\/d\/([^/]+)/)
+  if (fileMatch) return `https://drive.google.com/uc?export=view&id=${fileMatch[1]}`
+  const openMatch = url.match(/drive\.google\.com\/open\?id=([^&]+)/)
+  if (openMatch) return `https://drive.google.com/uc?export=view&id=${openMatch[1]}`
+  return url
+}
+
+export default function PractitionerPage({ practitioner: raw }) {
+  const p = raw ? { ...raw, photo_url: normalizePhotoUrl(raw.photo_url) } : null
   if (!p) return (
     <div dir="rtl" style={{ textAlign: 'center', padding: '80px 24px', fontFamily: 'Arial' }}>
       <div style={{ fontSize: 40, marginBottom: 16 }}>🔍</div>
