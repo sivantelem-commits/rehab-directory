@@ -11,6 +11,17 @@ const resend = new Resend(process.env.RESEND_API_KEY)
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).end()
 
+  const normalizePhotoUrl = (url) => {
+    if (!url) return null
+    // https://drive.google.com/file/d/FILE_ID/view
+    const fileMatch = url.match(/drive\.google\.com\/file\/d\/([^/]+)/)
+    if (fileMatch) return `https://drive.google.com/uc?export=view&id=${fileMatch[1]}`
+    // https://drive.google.com/open?id=FILE_ID
+    const openMatch = url.match(/drive\.google\.com\/open\?id=([^&]+)/)
+    if (openMatch) return `https://drive.google.com/uc?export=view&id=${openMatch[1]}`
+    return url
+  }
+
   const {
     name, email, license_number, profession,
     treatment_types, specializations,
@@ -39,7 +50,7 @@ export default async function handler(req, res) {
       languages:        Array.isArray(languages)        ? languages        : [],
       price_range: price_range || null,
       bio:       bio       || null,
-      photo_url: photo_url || null,
+      photo_url: normalizePhotoUrl(photo_url),
       phone:     phone     || null,
       website:   website   || null,
       status: 'pending',
