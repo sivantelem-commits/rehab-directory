@@ -6,6 +6,7 @@ import ServiceDetailModal from '../components/ServiceDetailModal'
 import FilterBottomSheet from '../components/FilterBottomSheet'
 import {
   PRACTITIONER_TREATMENT_TYPES,
+  PRACTITIONER_CERTIFICATIONS,
   PRACTITIONER_SPECIALIZATIONS,
   HEALTH_FUNDS,
   DISTRICTS as PRACTITIONER_DISTRICTS,
@@ -146,6 +147,7 @@ export default function TreatmentList() {
   const [practSearch, setPractSearch] = useState('')
   const [practDistrict, setPractDistrict] = useState('')
   const [practTreatmentType, setPractTreatmentType] = useState('')
+  const [practCertification, setPractCertification]   = useState('')
   const [practSpecialization, setPractSpecialization] = useState('')
   const [practHealthFund, setPractHealthFund] = useState('')
   const [practOnline, setPractOnline] = useState(false)
@@ -205,7 +207,8 @@ export default function TreatmentList() {
     setPractLoading(true)
     const p = new URLSearchParams()
     if (practDistrict)       p.set('district', practDistrict)
-    if (practTreatmentType)  p.set('treatment_type', practTreatmentType)
+    if (practTreatmentType)   p.set('treatment_type', practTreatmentType)
+    if (practCertification)    p.set('certification', practCertification)
     if (practSpecialization) p.set('specialization', practSpecialization)
     if (practHealthFund)     p.set('health_fund', practHealthFund)
     if (practOnline)         p.set('online', 'true')
@@ -216,7 +219,7 @@ export default function TreatmentList() {
       .then(d => setPractitioners(Array.isArray(d) ? d : []))
       .catch(() => setPractitioners([]))
       .finally(() => setPractLoading(false))
-  }, [mainTab, practDistrict, practTreatmentType, practSpecialization, practHealthFund, practOnline, practDefense, practSearch])
+  }, [mainTab, practDistrict, practTreatmentType, practCertification, practSpecialization, practHealthFund, practOnline, practDefense, practSearch])
 
   const activeExtraFilters = [...ageGroups, ...diagnoses, ...populations].filter(Boolean).length
 
@@ -240,13 +243,13 @@ export default function TreatmentList() {
   return (
     <>
       <Head>
-        <title>טיפול בבריאות הנפש | בריאות נפש בישראל</title>
-        <meta name="description" content="מאגר שירותי טיפול בבריאות הנפש בישראל – מרכזי טיפול, מרפאות ומטפלים פרטיים. מצאו שירות טיפולי מתאים לפי אזור, קטגוריה ותחום התמחות." />
+        <title>שירותי טיפול בבריאות הנפש | בריאות נפש בישראל</title>
+        <meta name="description" content="מאגר שירותי טיפול בבריאות הנפש בישראל – בתים מאזנים, מחלקות אשפוז, טיפול יום ומרפאות פסיכיאטריות לפי אזור. מצאו שירות טיפולי מתאים בצפון, מרכז, תל אביב, ירושלים ודרום." />
         <meta name="robots" content="index, follow" />
         <link rel="canonical" href={`${BASE_URL}/treatment`} />
         <meta property="og:type" content="website" />
-        <meta property="og:title" content="טיפול בבריאות הנפש | בריאות נפש בישראל" />
-        <meta property="og:description" content="מאגר שירותי טיפול בבריאות הנפש – מרכזי טיפול, מרפאות ומטפלים פרטיים בכל רחבי ישראל." />
+        <meta property="og:title" content="שירותי טיפול בבריאות הנפש | בריאות נפש בישראל" />
+        <meta property="og:description" content="מאגר שירותי טיפול בבריאות הנפש – בתים מאזנים, מחלקות אשפוז, טיפול יום ומרפאות לפי אזור בישראל." />
         <meta property="og:url" content={`${BASE_URL}/treatment`} />
         <meta property="og:image" content={`${BASE_URL}/icon-512.png`} />
         <meta property="og:image:width" content="512" />
@@ -279,7 +282,7 @@ export default function TreatmentList() {
             <img src="/logo.png" alt="בריאות נפש בישראל" style={{ width: 44, height: 44, objectFit: 'contain', filter: 'brightness(0) invert(1)' }} />
             <div>
               <div style={{ fontWeight: 800, fontSize: 18 }}>בריאות נפש בישראל</div>
-              <div style={{ fontSize: 11, opacity: 0.8 }}>טיפול ומטפלים פרטיים</div>
+              <div style={{ fontSize: 11, opacity: 0.8 }}>שירותי טיפול</div>
             </div>
           </div>
           <a href="/calculator" style={{ background: 'rgba(255,255,200,0.18)', border: '1.5px solid rgba(255,255,150,0.5)', color: 'white', borderRadius: '999px', padding: '8px 18px', fontWeight: 800, fontSize: 13, textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 6, whiteSpace: 'nowrap' }}>🧭 מחשבון מסלול</a>
@@ -299,14 +302,14 @@ export default function TreatmentList() {
 
         <div style={{ background: 'linear-gradient(160deg, #164E63, #0891B2)', color: 'white', padding: '24px 20px', textAlign: 'center' }}>
           <img src='/treatment-logo.png' alt='' role='presentation' style={{ width: 180, height: 180, objectFit: 'contain', marginBottom: -30, filter: 'invert(1) brightness(10)' }} />
-          <h1 style={{ fontSize: 28, fontWeight: 800, margin: '0 0 8px', letterSpacing: '-0.3px' }}>טיפול בבריאות הנפש בישראל</h1>
-          <p style={{ fontSize: 15, opacity: 0.85, margin: '0 0 8px', fontWeight: 500 }}>מרכזי טיפול ומטפלים פרטיים – מצאו את השירות המתאים לכם</p>
+          <h1 style={{ fontSize: 28, fontWeight: 800, margin: '0 0 8px', letterSpacing: '-0.3px' }}>שירותי טיפול בבריאות הנפש בישראל</h1>
+          <p style={{ fontSize: 15, opacity: 0.85, margin: '0 0 8px', fontWeight: 500 }}>מצאו שירותי טיפול בבריאות הנפש לפי אזור וקטגוריה</p>
           <p style={{ fontSize: 13, opacity: 0.75, margin: '0 auto 20px', fontWeight: 400, maxWidth: 520, lineHeight: 1.6, textAlign: 'center' }}>
-            מאגר שירותי טיפול בבריאות הנפש – מרכזים, מרפאות, בתים מאזנים ומטפלים פרטיים מוסמכים בכל רחבי ישראל. סינון לפי קטגוריה, גיל, אבחנה ותחום התמחות.
+            מאגר שירותי טיפול בבריאות הנפש – בתים מאזנים, מחלקות אשפוז, טיפול יום, מרפאות בריאות נפש וחדרי מיון פסיכיאטריים בכל רחבי ישראל. סינון לפי מחוז, קטגוריה, גיל ואבחנה.
           </p>
           <div style={{ maxWidth: 480, margin: '0 auto' }}>
             <label htmlFor="treatment-search" style={{ position: 'absolute', width: 1, height: 1, overflow: 'hidden', clip: 'rect(0,0,0,0)', whiteSpace: 'nowrap' }}>חיפוש שירותי טיפול</label>
-            <input id="treatment-search" type="text" placeholder="חפשו לפי שם, עיר, מטפל או תיאור..." value={search}
+            <input id="treatment-search" type="text" placeholder="חפשו לפי שם, עיר או תיאור..." value={search}
               onChange={e => setSearch(e.target.value)}
               style={{
                 width: '100%', padding: '14px 22px', borderRadius: '999px', border: 'none',
@@ -377,6 +380,15 @@ export default function TreatmentList() {
                 </div>
               </div>
               <div style={{ marginBottom: 12 }}>
+                <div style={{ fontSize: 11, fontWeight: 700, color: '#888', marginBottom: 6 }}>הסמכה</div>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+                  {PRACTITIONER_CERTIFICATIONS.map(c => {
+                    const sel = practCertification === c
+                    return <button key={c} onClick={() => setPractCertification(sel ? '' : c)} style={{ padding: '5px 12px', borderRadius: 999, fontSize: 12, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit', transition: 'all .15s', border: `1.5px solid ${sel ? '#0284C7' : '#a0d8e8'}`, background: sel ? '#0284C7' : 'white', color: sel ? 'white' : '#0284C7' }}>{c}</button>
+                  })}
+                </div>
+              </div>
+              <div style={{ marginBottom: 12 }}>
                 <div style={{ fontSize: 11, fontWeight: 700, color: '#888', marginBottom: 6 }}>תחום התמחות</div>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
                   {PRACTITIONER_SPECIALIZATIONS.map(s => {
@@ -389,8 +401,8 @@ export default function TreatmentList() {
                 {[[practOnline, setPractOnline, '🌐 אונליין'], [practDefense, setPractDefense, '🎗️ ספק משרד הביטחון']].map(([v, setter, label]) => (
                   <button key={label} onClick={() => setter(!v)} style={{ padding: '5px 14px', borderRadius: 999, fontSize: 12, fontWeight: 700, cursor: 'pointer', border: `1.5px solid ${v ? PRACT_COLOR : '#a0d8e8'}`, background: v ? PRACT_COLOR : 'white', color: v ? 'white' : PRACT_COLOR }}>{label}</button>
                 ))}
-                {(practDistrict || practTreatmentType || practSpecialization || practHealthFund || practOnline || practDefense || practSearch) && (
-                  <button onClick={() => { setPractDistrict(''); setPractTreatmentType(''); setPractSpecialization(''); setPractHealthFund(''); setPractOnline(false); setPractDefense(false); setPractSearch('') }} style={{ padding: '5px 14px', borderRadius: 999, fontSize: 12, fontWeight: 700, cursor: 'pointer', border: '1.5px solid #fca5a5', background: '#fff5f5', color: '#dc2626' }}>✕ נקה הכל</button>
+                {(practDistrict || practTreatmentType || practCertification || practSpecialization || practHealthFund || practOnline || practDefense || practSearch) && (
+                  <button onClick={() => { setPractDistrict(''); setPractTreatmentType(''); setPractCertification(''); setPractSpecialization(''); setPractHealthFund(''); setPractOnline(false); setPractDefense(false); setPractSearch('') }} style={{ padding: '5px 14px', borderRadius: 999, fontSize: 12, fontWeight: 700, cursor: 'pointer', border: '1.5px solid #fca5a5', background: '#fff5f5', color: '#dc2626' }}>✕ נקה הכל</button>
                 )}
               </div>
             </div>
