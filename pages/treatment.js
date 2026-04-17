@@ -317,21 +317,27 @@ export default function TreatmentList() {
           </div>
         </div>
 
-        {/* ── לשוניות ראשיות: שירותי טיפול / מטפלים פרטיים ── */}
-        <div style={{ background: 'white', borderBottom: '2px solid #d0edf8', padding: '0 16px', display: 'flex', gap: 0 }}>
-          {[
-            ['services',      '🏥 שירותי טיפול'],
-            ['practitioners', '🧠 מטפלים פרטיים'],
-          ].map(([id, label]) => (
-            <button key={id} onClick={() => setMainTab(id)} style={{
-              padding: '13px 22px', fontWeight: 800, fontSize: 14,
-              cursor: 'pointer', fontFamily: "'Nunito', sans-serif", transition: 'all .15s',
-              background: 'none', border: 'none',
-              borderBottom: mainTab === id ? '3px solid #0891B2' : '3px solid transparent',
-              color: mainTab === id ? '#0891B2' : '#888',
-              marginBottom: -2,
-            }}>{label}</button>
-          ))}
+        {/* ── בחירת תצוגה: שירותי טיפול / מטפלים פרטיים ── */}
+        <div style={{ background: 'linear-gradient(160deg, #164E63, #0891B2)', paddingBottom: 24, display: 'flex', justifyContent: 'center' }}>
+          <div style={{ display: 'inline-flex', background: 'rgba(0,0,0,0.2)', borderRadius: 999, padding: 4, gap: 4 }}>
+            {[
+              ['services',      '🏥', 'שירותי טיפול',    'בתים מאזנים, אשפוז ועוד'],
+              ['practitioners', '🧠', 'מטפלים פרטיים',   'פסיכולוגים, מטפלים ועוד'],
+            ].map(([id, icon, title, sub]) => (
+              <button key={id} onClick={() => setMainTab(id)} style={{
+                padding: '10px 24px', borderRadius: 999, fontFamily: "'Nunito', sans-serif",
+                cursor: 'pointer', transition: 'all .2s', border: 'none',
+                background: mainTab === id ? 'white' : 'transparent',
+                color: mainTab === id ? '#0891B2' : 'rgba(255,255,255,0.75)',
+                boxShadow: mainTab === id ? '0 2px 12px rgba(0,0,0,0.15)' : 'none',
+                display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2,
+                minWidth: 140,
+              }}>
+                <span style={{ fontSize: 16 }}>{icon} <span style={{ fontWeight: 800, fontSize: 14 }}>{title}</span></span>
+                <span style={{ fontSize: 11, opacity: mainTab === id ? 0.6 : 0.7 }}>{sub}</span>
+              </button>
+            ))}
+          </div>
         </div>
 
         {/* ══════════════════════════════════
@@ -380,7 +386,7 @@ export default function TreatmentList() {
                 </div>
               </div>
               <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-                {[[practOnline, setPractOnline, '🌐 אונליין'], [practDefense, setPractDefense, '🎗️ מה"ב']].map(([v, setter, label]) => (
+                {[[practOnline, setPractOnline, '🌐 אונליין'], [practDefense, setPractDefense, '🎗️ ספק משרד הביטחון']].map(([v, setter, label]) => (
                   <button key={label} onClick={() => setter(!v)} style={{ padding: '5px 14px', borderRadius: 999, fontSize: 12, fontWeight: 700, cursor: 'pointer', border: `1.5px solid ${v ? PRACT_COLOR : '#a0d8e8'}`, background: v ? PRACT_COLOR : 'white', color: v ? 'white' : PRACT_COLOR }}>{label}</button>
                 ))}
                 {(practDistrict || practTreatmentType || practSpecialization || practHealthFund || practOnline || practDefense || practSearch) && (
@@ -413,7 +419,7 @@ export default function TreatmentList() {
                           <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
                             <span style={{ fontWeight: 800, fontSize: 16, color: '#1A3A5C' }}>{p.name}</span>
                             {p.is_verified && <span style={{ background: '#dbeafe', color: '#1d4ed8', borderRadius: 20, padding: '2px 8px', fontSize: 11, fontWeight: 700 }}>✓ מאומת</span>}
-                            {p.is_defense_ministry && <span style={{ background: '#ede9fe', color: '#6d28d9', borderRadius: 20, padding: '2px 8px', fontSize: 11, fontWeight: 700 }}>🎗️ מה"ב</span>}
+                            {p.is_defense_ministry && <span style={{ background: '#ede9fe', color: '#6d28d9', borderRadius: 20, padding: '2px 8px', fontSize: 11, fontWeight: 700 }}>🎗️ ספק משרד הביטחון</span>}
                           </div>
                           {p.profession && <span style={{ background: PRACT_COLOR, color: 'white', borderRadius: 20, padding: '3px 10px', fontSize: 12, fontWeight: 700 }}>{p.profession}</span>}
                         </div>
