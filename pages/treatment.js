@@ -163,6 +163,7 @@ export default function TreatmentList() {
     if (router.isReady) {
       if (router.query.district) setDistrict(router.query.district)
       if (router.query.category) setCategory(router.query.category)
+      if (router.query.tab === "practitioners") setMainTab("practitioners")
     }
   }, [router.isReady, router.query])
 
@@ -409,7 +410,7 @@ export default function TreatmentList() {
             ) : (
               <div style={{ display: 'grid', gap: 12 }}>
                 {practitioners.map(p => (
-                  <a key={p.id} href={`/practitioner/${p.id}`} style={{ textDecoration: 'none' }}>
+                  <a key={p.id} href={`/practitioner/${p.id}?from=treatment`} style={{ textDecoration: 'none' }}>
                     <div style={{ background: 'white', borderRadius: 14, padding: '18px 22px', boxShadow: '0 2px 10px rgba(0,0,0,.06)', border: '1.5px solid #d0edf8', borderTop: `4px solid ${PRACT_COLOR}`, display: 'flex', gap: 14, alignItems: 'flex-start' }}>
                       <div style={{ width: 56, height: 56, borderRadius: '50%', flexShrink: 0, background: p.photo_url ? 'transparent' : `linear-gradient(135deg,${PRACT_COLOR},${PRACT_DARK})`, overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                         {p.photo_url ? <img src={p.photo_url} alt={p.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <span style={{ fontSize: 22, color: 'white' }}>👤</span>}
@@ -421,7 +422,7 @@ export default function TreatmentList() {
                             {p.is_verified && <span style={{ background: '#dbeafe', color: '#1d4ed8', borderRadius: 20, padding: '2px 8px', fontSize: 11, fontWeight: 700 }}>✓ מאומת</span>}
                             {p.is_defense_ministry && <span style={{ background: '#ede9fe', color: '#6d28d9', borderRadius: 20, padding: '2px 8px', fontSize: 11, fontWeight: 700 }}>🎗️ ספק משרד הביטחון</span>}
                           </div>
-                          {p.professions?.length > 0 && <span style={{ background: PRACT_COLOR, color: 'white', borderRadius: 20, padding: '3px 10px', fontSize: 12, fontWeight: 700 }}>{p.professions.join(' · ')}</span>}
+                          {p.profession && <span style={{ background: PRACT_COLOR, color: 'white', borderRadius: 20, padding: '3px 10px', fontSize: 12, fontWeight: 700 }}>{p.profession}</span>}
                         </div>
                         <div style={{ fontSize: 13, color: '#666', marginBottom: 6, display: 'flex', gap: 10, flexWrap: 'wrap' }}>
                           {p.city && <span>📍 {p.city}{p.district ? `, ${p.district}` : ''}</span>}
