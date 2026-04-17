@@ -56,6 +56,12 @@ export default function Admin() {
   const [rejectReason, setRejectReason] = useState('')
   const [sendingRejectEmail, setSendingRejectEmail] = useState(false)
 
+  // ── מטפלים פרטיים ──
+  const [pendingPractitioners,  setPendingPractitioners]  = useState([])
+  const [approvedPractitioners, setApprovedPractitioners] = useState([])
+  const [practitionersTab,      setPractitionersTab]      = useState('pending')
+  const [practitionerSearch,    setPractitionerSearch]    = useState('')
+
   useEffect(() => { setMounted(true) }, [])
 
   const login = async () => {
@@ -72,16 +78,20 @@ export default function Admin() {
   const fetchAll = async (key) => {
     setLoading(true)
     try {
-      const [p, a, pt, at] = await Promise.all([
+      const [p, a, pt, at, pp, ap] = await Promise.all([
         fetch('/api/admin/services', { headers: { adminkey: key } }),
         fetch('/api/services'),
         fetch('/api/admin/treatment-services?status=pending', { headers: { adminkey: key } }),
         fetch('/api/admin/treatment-services?status=approved', { headers: { adminkey: key } }),
+        fetch('/api/admin/practitioners?status=pending',  { headers: { adminkey: key } }),
+        fetch('/api/admin/practitioners?status=approved', { headers: { adminkey: key } }),
       ])
       setPending(await p.json())
       setApproved(await a.json())
       setPendingTreatment(await pt.json())
       setApprovedTreatment(await at.json())
+      setPendingPractitioners(pp.ok  ? await pp.json() : [])
+      setApprovedPractitioners(ap.ok ? await ap.json() : [])
     } finally { setLoading(false) }
   }
 
@@ -411,7 +421,7 @@ export default function Admin() {
           ) : (
             <>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: 12, marginBottom: 28 }}>
-                {[['♿', 'שיקום פעילים', approved.length, '#8B00D4'], ['⏳', 'שיקום ממתינים', pending.length, '#6B21A8'], ['🏥', 'טיפול פעילים', approvedTreatment.length, '#0891B2'], ['⏳', 'טיפול ממתינים', pendingTreatment.length, '#164E63']].map(([icon, label, val, color]) => (
+                {[['♿', 'שיקום פעילים', approved.length, '#8B00D4'], ['⏳', 'שיקום ממתינים', pending.length, '#6B21A8'], ['🏥', 'טיפול פעילים', approvedTreatment.length, '#0891B2'], ['⏳', 'טיפול ממתינים', pendingTreatment.length, '#164E63'], ['🧠', 'מטפלים פעילים', approvedPractitioners.length, '#0F4C75'], ['⏳', 'מטפלים ממתינים', pendingPractitioners.length, '#082840']].map(([icon, label, val, color]) => (
                   <div key={label} style={{ background: 'white', borderRadius: 16, padding: '14px 16px', display: 'flex', alignItems: 'center', gap: 10, borderRight: `5px solid ${color}`, boxShadow: '0 4px 16px rgba(0,0,0,0.07)' }}>
                     <span style={{ fontSize: 22 }}>{icon}</span>
                     <div>
@@ -423,10 +433,13 @@ export default function Admin() {
               </div>
 
               <div style={{ display: 'flex', gap: 12, marginBottom: 24, flexWrap: 'wrap' }}>
-                {[['rehab', '♿ שיקום', '#8B00D4'], ['treatment', '🏥 טיפול', '#0891B2'], ['duplicates', '🔁 כפילויות', '#5E35B1'], ['stats', '📊 סטטיסטיקות', '#2A5298'], ['history', '📝 היסטוריה', '#5E35B1']].map(([id, label, color]) => (
+                {[['rehab', '♿ שיקום', '#8B00D4'], ['treatment', '🏥 טיפול', '#0891B2'], ['practitioners', '🧠 מטפלים פרטיים', '#0F4C75'], ['duplicates', '🔁 כפילויות', '#5E35B1'], ['stats', '📊 סטטיסטיקות', '#2A5298'], ['history', '📝 היסטוריה', '#5E35B1']].map(([id, label, color]) => (
                   <button key={id} onClick={() => { setSection(id); if (id === 'duplicates') fetchDuplicates(adminKey); if (id === 'history') fetchHistory(adminKey) }}
                     style={{ flex: 1, minWidth: 120, padding: '14px 0', borderRadius: 16, fontWeight: 800, fontSize: 15, background: section === id ? color : 'white', color: section === id ? 'white' : color, border: `2px solid ${color}`, cursor: 'pointer', boxShadow: section === id ? `0 4px 16px ${color}44` : 'none' }}>
                     {label}
+                    {id === 'practitioners' && pendingPractitioners.length > 0 && (
+                      <span style={{ background: '#ef4444', color: 'white', borderRadius: '50%', width: 20, height: 20, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 800, marginRight: 6 }}>{pendingPractitioners.length}</span>
+                    )}
                   </button>
                 ))}
               </div>
@@ -599,7 +612,67 @@ export default function Admin() {
                     )
                   })()}
                 </div>
-              )}
+              ) : section === 'practitioners' ? (
+                <div>
+                  <div style={{ display: 'flex', gap: 10, marginBottom: 20, alignItems: 'center', flexWrap: 'wrap' }}>
+                    {[['pending', 'ממתינים לאישור', pendingPractitioners.length], ['approved', 'מאושרים', approvedPractitioners.length]].map(([id, label, count]) => (
+                      <button key={id} onClick={() => setPractitionersTab(id)} style={{ padding: '8px 20px', borderRadius: 999, fontWeight: 700, fontSize: 14, cursor: 'pointer', border: '2px solid #0F4C75', background: practitionersTab === id ? '#0F4C75' : 'white', color: practitionersTab === id ? 'white' : '#0F4C75' }}>
+                        {label} ({count})
+                      </button>
+                    ))}
+                    <input type="text" placeholder="חיפוש לפי שם / עיר..." value={practitionerSearch}
+                      onChange={e => setPractitionerSearch(e.target.value)}
+                      style={{ padding: '8px 16px', borderRadius: 20, border: '1.5px solid #c0d8e8', fontSize: 13, fontFamily: 'inherit', outline: 'none', marginRight: 'auto' }} />
+                  </div>
+
+                  {(practitionersTab === 'pending' ? pendingPractitioners : approvedPractitioners)
+                    .filter(p => !practitionerSearch || p.name?.includes(practitionerSearch) || p.city?.includes(practitionerSearch) || p.profession?.includes(practitionerSearch))
+                    .map(p => (
+                      <div key={p.id} style={{ background: 'white', borderRadius: 16, padding: '20px 24px', marginBottom: 14, boxShadow: '0 2px 12px rgba(0,0,0,.06)', border: `1.5px solid ${p.is_verified ? '#bfdbfe' : '#e0eef8'}`, borderRight: '4px solid #0F4C75' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 12 }}>
+                          <div style={{ flex: 1 }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6, flexWrap: 'wrap' }}>
+                              {p.photo_url && <img src={p.photo_url} alt="" style={{ width: 36, height: 36, borderRadius: '50%', objectFit: 'cover' }} />}
+                              <strong style={{ fontSize: 16, color: '#1A3A5C' }}>{p.name}</strong>
+                              {p.is_verified         && <span style={{ background: '#dbeafe', color: '#1d4ed8', borderRadius: 20, padding: '2px 8px', fontSize: 11, fontWeight: 700 }}>✓ מאומת</span>}
+                              {p.is_defense_ministry && <span style={{ background: '#ede9fe', color: '#6d28d9', borderRadius: 20, padding: '2px 8px', fontSize: 11, fontWeight: 700 }}>🎗️ מה"ב</span>}
+                              {p.is_online           && <span style={{ background: '#e0f2fe', color: '#0284c7', borderRadius: 20, padding: '2px 8px', fontSize: 11, fontWeight: 700 }}>🌐 אונליין</span>}
+                            </div>
+                            <div style={{ fontSize: 13, color: '#555', display: 'flex', gap: 16, flexWrap: 'wrap', marginBottom: 6 }}>
+                              {p.profession && <span>🏷️ {p.profession}</span>}
+                              {p.city       && <span>📍 {p.city}{p.district ? `, ${p.district}` : ''}</span>}
+                              <span>📜 {p.license_number}</span>
+                              <span>✉️ {p.email}</span>
+                              {p.phone      && <span>📞 {p.phone}</span>}
+                            </div>
+                            {p.treatment_types?.length  > 0 && <div style={{ fontSize: 12, color: '#0F4C75', marginBottom: 3 }}>💊 {p.treatment_types.join(', ')}</div>}
+                            {p.specializations?.length  > 0 && <div style={{ fontSize: 12, color: '#6d28d9', marginBottom: 3 }}>🎯 {p.specializations.join(', ')}</div>}
+                            {p.health_funds?.length     > 0 && <div style={{ fontSize: 12, color: '#059669' }}>🏥 {p.health_funds.join(', ')}</div>}
+                            {p.bio && <div style={{ fontSize: 13, color: '#666', marginTop: 8, fontStyle: 'italic', maxWidth: 500 }}>"{p.bio.substring(0, 120)}{p.bio.length > 120 ? '...' : ''}"</div>}
+                          </div>
+
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: 8, minWidth: 140 }}>
+                            {practitionersTab === 'pending' && (
+                              <button onClick={async () => { await fetch('/api/admin/practitioners', { method: 'PATCH', headers: { 'Content-Type': 'application/json', adminkey: adminKey }, body: JSON.stringify({ id: p.id, status: 'approved' }) }); fetchAll(adminKey) }}
+                                style={{ background: '#059669', color: 'white', border: 'none', borderRadius: 20, padding: '8px 16px', fontWeight: 700, cursor: 'pointer', fontSize: 13 }}>✓ אישור</button>
+                            )}
+                            <button onClick={async () => { await fetch('/api/admin/practitioners', { method: 'PATCH', headers: { 'Content-Type': 'application/json', adminkey: adminKey }, body: JSON.stringify({ id: p.id, is_verified: !p.is_verified }) }); fetchAll(adminKey) }}
+                              style={{ background: p.is_verified ? '#dbeafe' : 'white', color: p.is_verified ? '#1d4ed8' : '#0F4C75', border: '2px solid #0F4C75', borderRadius: 20, padding: '7px 14px', fontWeight: 700, cursor: 'pointer', fontSize: 12 }}>
+                              {p.is_verified ? '✓ מאומת' : 'סמן כמאומת'}
+                            </button>
+                            {practitionersTab === 'pending' && (
+                              <button onClick={async () => { await fetch('/api/admin/practitioners', { method: 'PATCH', headers: { 'Content-Type': 'application/json', adminkey: adminKey }, body: JSON.stringify({ id: p.id, status: 'rejected' }) }); fetchAll(adminKey) }}
+                                style={{ background: '#fee2e2', color: '#dc2626', border: 'none', borderRadius: 20, padding: '7px 14px', fontWeight: 700, cursor: 'pointer', fontSize: 13 }}>✕ דחייה</button>
+                            )}
+                            <button onClick={async () => { if (!confirm(`למחוק את ${p.name}?`)) return; await fetch(`/api/admin/practitioners?id=${p.id}`, { method: 'DELETE', headers: { adminkey: adminKey } }); fetchAll(adminKey) }}
+                              style={{ background: '#fff5f5', color: '#ef4444', border: '1px solid #fca5a5', borderRadius: 20, padding: '7px 14px', fontWeight: 700, cursor: 'pointer', fontSize: 12 }}>🗑️ מחיקה</button>
+                          </div>
+                        </div>
+                      </div>
+                    ))
+                  }
+                </div>
+              ) : null}
             </>
           )}
         </main>
