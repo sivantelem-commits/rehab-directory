@@ -152,8 +152,7 @@ function buildSearchQueries(recommendation, answers) {
   }
   const format = answers.format || 'both'
   if (recommendation === 'treatment' || recommendation === 'combined') {
-    if (format === 'private') {
-      const ageSpec = { 'קשישים': 'הגיל השלישי', 'נוער': 'גיל ההתבגרות' }
+    const ageSpec = { 'קשישים': 'הגיל השלישי', 'נוער': 'גיל ההתבגרות' }
     const practSpec = ageSpec[answers.age] || null
     const practUrl = '/api/practitioners' + (practSpec ? `?specialization=${encodeURIComponent(practSpec)}` : '')
     if (format === 'private') {
