@@ -153,12 +153,16 @@ function buildSearchQueries(recommendation, answers) {
   const format = answers.format || 'both'
   if (recommendation === 'treatment' || recommendation === 'combined') {
     if (format === 'private') {
-      queries.push({ label: 'מטפלים פרטיים', url: '/api/practitioners', page: 'practitioners' })
+      const ageSpec = { 'קשישים': 'הגיל השלישי', 'נוער': 'גיל ההתבגרות' }
+    const practSpec = ageSpec[answers.age] || null
+    const practUrl = '/api/practitioners' + (practSpec ? `?specialization=${encodeURIComponent(practSpec)}` : '')
+    if (format === 'private') {
+      queries.push({ label: 'מטפלים פרטיים', url: practUrl, page: 'practitioners' })
     } else if (format === 'center') {
       queries.push(p(null, 'treatment'))
     } else {
       queries.push(p(null, 'treatment'))
-      queries.push({ label: 'מטפלים פרטיים', url: '/api/practitioners', page: 'practitioners' })
+      queries.push({ label: 'מטפלים פרטיים', url: practUrl, page: 'practitioners' })
     }
   }
   if (recommendation === 'rehab' || recommendation === 'combined') {
