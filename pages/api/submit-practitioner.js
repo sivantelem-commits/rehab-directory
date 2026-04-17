@@ -23,12 +23,12 @@ export default async function handler(req, res) {
   }
 
   const {
-    name, email, license_number, professions,
+    name, email, license_number, profession, certifications,
     treatment_types, specializations,
     city, district, is_online,
     health_funds, is_defense_ministry,
     languages, price_range, bio, photo_url,
-    phone, website, whatsapp_available,
+    phone, website, whatsapp_available, subsidized,
   } = req.body
 
   if (!name || !email || !license_number || !city) {
@@ -39,7 +39,7 @@ export default async function handler(req, res) {
     .from('practitioners')
     .insert([{
       name, email, license_number,
-      professions: Array.isArray(professions) ? professions : [],
+      profession: profession || null,
       treatment_types:  Array.isArray(treatment_types)  ? treatment_types  : [],
       specializations:  Array.isArray(specializations)  ? specializations  : [],
       city,
@@ -48,6 +48,8 @@ export default async function handler(req, res) {
       health_funds:     Array.isArray(health_funds)     ? health_funds     : [],
       is_defense_ministry: !!is_defense_ministry,
       whatsapp_available: !!whatsapp_available,
+      subsidized: !!subsidized,
+      certifications: Array.isArray(certifications) ? certifications : [],
       languages:        Array.isArray(languages)        ? languages        : [],
       price_range: price_range || null,
       bio:       bio       || null,
@@ -75,7 +77,7 @@ export default async function handler(req, res) {
           <div style="background:white;padding:32px;border:1px solid #e0f0ff;border-radius:0 0 12px 12px">
             <h2 style="margin:0 0 8px;color:#0F4C75">${name}</h2>
             <p style="color:#666;font-size:14px;margin:0;line-height:1.8">
-              🏷️ ${professions?.length ? professions.join(', ') : 'לא צוין מקצוע'}<br/>
+              🏷️ ${profession || 'לא צוין מקצוע'}<br/>
               📍 ${city}${district ? `, ${district}` : ''}<br/>
               📜 מספר רישיון: ${license_number}<br/>
               ✉️ ${email}<br/>
