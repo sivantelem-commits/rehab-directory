@@ -170,6 +170,33 @@ function buildSearchQueries(recommendation, answers) {
   return queries.length > 0 ? queries : [p(null, 'rehab')]
 }
 
+
+function PractitionerCard({ p }) {
+  const COLOR = '#0F4C75'
+  return (
+    <div style={{ background: 'white', borderRadius: 16, padding: '18px 20px', boxShadow: '0 2px 10px rgba(0,0,0,.06)', border: '1.5px solid #d0edf8', borderTop: `4px solid ${COLOR}`, display: 'flex', gap: 14, alignItems: 'flex-start', height: '100%', boxSizing: 'border-box' }}>
+      <div style={{ width: 52, height: 52, borderRadius: '50%', flexShrink: 0, background: p.photo_url ? 'transparent' : `linear-gradient(135deg,${COLOR},#082840)`, overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        {p.photo_url ? <img src={p.photo_url} alt={p.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <span style={{ fontSize: 20, color: 'white' }}>👤</span>}
+      </div>
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{ fontWeight: 800, fontSize: 15, color: '#1A3A5C', marginBottom: 3 }}>{p.name}</div>
+        {p.profession && <div style={{ fontSize: 12, background: COLOR, color: 'white', borderRadius: 20, padding: '2px 10px', display: 'inline-block', fontWeight: 700, marginBottom: 5 }}>{p.profession}</div>}
+        <div style={{ fontSize: 12, color: '#666', marginBottom: 5, display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+          {p.city && <span>📍 {p.city}</span>}
+          {p.is_online && <span style={{ color: '#0891B2', fontWeight: 700 }}>🌐 אונליין</span>}
+          {p.price_range && <span>💰 ₪{p.price_range}/שעה</span>}
+        </div>
+        {p.treatment_types?.length > 0 && (
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
+            {p.treatment_types.slice(0, 2).map(t => <span key={t} style={{ background: '#e0f0ff', color: COLOR, borderRadius: 20, padding: '2px 8px', fontSize: 11, fontWeight: 600 }}>{t}</span>)}
+          </div>
+        )}
+        {p.bio && <div style={{ fontSize: 12, color: '#556', marginTop: 5, lineHeight: 1.4, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{p.bio}</div>}
+      </div>
+    </div>
+  )
+}
+
 function ProgressBar({ current, total }) {
   return (
     <div style={{ display: 'flex', gap: 6, marginBottom: 8 }}>
@@ -361,13 +388,15 @@ export default function Calculator() {
               <div key={gi} style={{ marginBottom: 36 }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14 }}>
                   <span style={{ background: group.page === 'treatment' ? 'linear-gradient(160deg, #0891B2, #164E63)' : group.page === 'practitioners' ? 'linear-gradient(160deg, #0F4C75, #0891B2)' : `linear-gradient(160deg, #8B00D4, ${DEEP})`, color: '#fff', fontSize: 12, fontWeight: 700, padding: '4px 14px', borderRadius: 999 }}>{group.label}</span>
-                  <span style={{ fontSize: 13, color: '#9ca3af', fontWeight: 600 }}>{group.services.length} שירותים</span>
+                  <span style={{ fontSize: 13, color: '#9ca3af', fontWeight: 600 }}>{group.services.length} {group.page === 'practitioners' ? 'מטפלים' : 'שירותים'}</span>
                   <a href={group.page === 'rehab' ? '/rehab' : group.page === 'practitioners' ? '/treatment?tab=practitioners' : '/treatment'} style={{ marginRight: 'auto', fontSize: 13, color: PURPLE, fontWeight: 700, textDecoration: 'none' }}>ראה הכל ←</a>
                 </div>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 16 }}>
                   {group.services.slice(0, 6).map(s => (
                     <div key={s.id} onClick={() => router.push(group.page === 'treatment' ? `/treatment/${s.id}` : group.page === 'practitioners' ? `/practitioner/${s.id}?from=calculator` : `/service/${s.id}`)} style={{ cursor: 'pointer' }}>
-                      <ServiceCard service={{ ...s, _forcedType: group.page }} />
+                      {group.page === 'practitioners'
+                        ? <PractitionerCard p={s} />
+                        : <ServiceCard service={{ ...s, _forcedType: group.page }} />}
                     </div>
                   ))}
                 </div>
