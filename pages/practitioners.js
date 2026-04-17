@@ -29,7 +29,6 @@ export default function Practitioners() {
   const [practitioners, setPractitioners] = useState([])
   const [loading, setLoading]             = useState(true)
   const [search, setSearch]               = useState('')
-  const [district, setDistrict]           = useState('')
   const [treatmentType, setTreatmentType] = useState('')
   const [specialization, setSpecialization] = useState('')
   const [healthFund, setHealthFund]       = useState('')
@@ -45,10 +44,9 @@ export default function Practitioners() {
       setLoading(true)
       try {
         const p = new URLSearchParams()
-        if (district)       p.set('district', district)
         if (treatmentType)  p.set('treatment_type', treatmentType)
         if (specialization) p.set('specialization', specialization)
-        if (healthFund)     p.set('health_fund_agreement', 'true')
+        if (healthFund)     p.set('health_fund', healthFund)
         if (onlineOnly)     p.set('online', 'true')
         if (defenseOnly)    p.set('defense', 'true')
         if (search)         p.set('search', search)
@@ -59,10 +57,10 @@ export default function Practitioners() {
       finally   { setLoading(false) }
     }
     fetchData()
-  }, [mounted, district, treatmentType, specialization, healthFund, onlineOnly, defenseOnly, search])
+  }, [mounted, treatmentType, specialization, healthFund, onlineOnly, defenseOnly, search])
 
-  const hasFilters = district || treatmentType || specialization || healthFund || onlineOnly || defenseOnly || search
-  const clearAll   = () => { setDistrict(''); setTreatmentType(''); setSpecialization(''); setHealthFund(''); setOnlineOnly(false); setDefenseOnly(false); setSearch('') }
+  const hasFilters = treatmentType || specialization || healthFund || onlineOnly || defenseOnly || search
+  const clearAll   = () => { setTreatmentType(''); setSpecialization(''); setHealthFund(''); setOnlineOnly(false); setDefenseOnly(false); setSearch('') }
 
   if (!mounted) return null
 
@@ -94,17 +92,12 @@ export default function Practitioners() {
 
         <main style={{ maxWidth: 920, margin: '0 auto', padding: '28px 16px' }}>
           <div style={{ background: 'white', borderRadius: 16, padding: '20px 24px', marginBottom: 24, boxShadow: '0 2px 12px rgba(0,0,0,.06)' }}>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(160px,1fr))', gap: 10, marginBottom: 16 }}>
-              {[
-                [district,   setDistrict,   'כל המחוזות',      DISTRICTS],
-                [healthFund, setHealthFund, 'כל קופות החולים', HEALTH_FUNDS],
-              ].map(([val, setter, placeholder, opts]) => (
-                <select key={placeholder} value={val} onChange={e => setter(e.target.value)}
-                  style={{ padding: '10px 14px', borderRadius: 12, border: '1.5px solid #c0d8e8', fontSize: 13.5, fontFamily: "'Nunito',sans-serif", background: 'white', color: '#333', outline: 'none', cursor: 'pointer' }}>
-                  <option value="">{placeholder}</option>
-                  {opts.map(o => <option key={o}>{o}</option>)}
-                </select>
-              ))}
+            <div style={{ marginBottom: 16 }}>
+              <select value={healthFund} onChange={e => setHealthFund(e.target.value)}
+                style={{ padding: '10px 14px', borderRadius: 12, border: '1.5px solid #c0d8e8', fontSize: 13.5, fontFamily: "'Nunito',sans-serif", background: 'white', color: '#333', outline: 'none', cursor: 'pointer', minWidth: 200 }}>
+                <option value="">כל קופות החולים</option>
+                {HEALTH_FUNDS.map(o => <option key={o}>{o}</option>)}
+              </select>
             </div>
 
             <div style={{ marginBottom: 14 }}>
@@ -164,7 +157,7 @@ export default function Practitioners() {
                         {p.profession && <span style={{ background: COLOR, color: 'white', borderRadius: 20, padding: '3px 12px', fontSize: 12, fontWeight: 700 }}>{p.profession}</span>}
                       </div>
                       <div style={{ fontSize: 13, color: '#666', marginBottom: 8, display: 'flex', gap: 12, flexWrap: 'wrap' }}>
-                        {p.city        && <span>📍 {p.city}{p.district ? `, ${p.district}` : ''}</span>}
+                        {p.city        && <span>📍 {p.city}</span>}
                         {p.is_online   && <span style={{ color: '#0891B2', fontWeight: 700 }}>🌐 אונליין</span>}
                         {p.price_range && <span>💰 ₪{p.price_range} לשעה</span>}
                       </div>
@@ -180,7 +173,7 @@ export default function Practitioners() {
                           {p.specializations.length > 3 && <span style={{ fontSize: 11, color: '#888' }}>+{p.specializations.length - 3}</span>}
                         </div>
                       )}
-                      {p.has_health_fund_agreement && <div style={{ fontSize: 12, color: '#059669', fontWeight: 600 }}>🏥 הסדר קופות{p.health_funds?.length > 0 ? ': ' + p.health_funds.join(', ') : ''}</div>}
+                      {p.health_funds?.length > 0 && <div style={{ fontSize: 12, color: '#059669', fontWeight: 600 }}>🏥 {p.health_funds.join(', ')}</div>}
                       {p.bio && <div style={{ fontSize: 13, color: '#556', marginTop: 6, lineHeight: 1.5, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{p.bio}</div>}
                     </div>
                   </div>
