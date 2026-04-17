@@ -1,6 +1,5 @@
 // pages/practitioner/[id].js
 import Head from 'next/head'
-import { useRouter } from 'next/router'
 import { PRACTITIONER_COLOR as COLOR, PRACTITIONER_DARK as DARK } from '../../lib/practitioner-constants'
 
 const normalizePhotoUrl = (url) => {
@@ -13,15 +12,12 @@ const normalizePhotoUrl = (url) => {
 }
 
 export default function PractitionerPage({ practitioner: raw }) {
-  const router = useRouter()
   const p = raw ? { ...raw, photo_url: normalizePhotoUrl(raw.photo_url) } : null
-  const backHref = router.query.from === 'practitioners' ? '/practitioners' : '/treatment?tab=practitioners'
-  const backLabel = '← חזרה למטפלים' 
   if (!p) return (
     <div dir="rtl" style={{ textAlign: 'center', padding: '80px 24px', fontFamily: 'Arial' }}>
       <div style={{ fontSize: 40, marginBottom: 16 }}>🔍</div>
       <h2 style={{ color: '#555' }}>המטפל/ת לא נמצא/ה</h2>
-      <a href={backHref} style={{ color: COLOR }}>{backLabel}</a>
+      <a href="/practitioners" style={{ color: COLOR }}>← חזרה לרשימה</a>
     </div>
   )
 
@@ -34,7 +30,7 @@ export default function PractitionerPage({ practitioner: raw }) {
       <div dir="rtl" style={{ minHeight: '100vh', background: '#f0f7ff', fontFamily: "'Nunito','Arial',sans-serif" }}>
 
         <div style={{ background: `linear-gradient(135deg,${DARK},${COLOR})`, padding: '16px 24px' }}>
-          <a href={backHref} style={{ color: 'rgba(255,255,255,.8)', textDecoration: 'none', fontSize: 14, fontWeight: 700 }}>{backLabel}</a>
+          <a href="/practitioners" style={{ color: 'rgba(255,255,255,.8)', textDecoration: 'none', fontSize: 14, fontWeight: 700 }}>← חזרה לרשימת המטפלים</a>
         </div>
 
         <main style={{ maxWidth: 700, margin: '32px auto', padding: '0 16px' }}>
@@ -65,6 +61,7 @@ export default function PractitionerPage({ practitioner: raw }) {
               {/* תגיות */}
               <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginBottom: 24 }}>
                 {p.is_defense_ministry && <span style={{ background: '#ede9fe', color: '#6d28d9', borderRadius: 20, padding: '6px 16px', fontSize: 13, fontWeight: 700 }}>🎗️ ספק מאושר משרד הביטחון</span>}
+                {p.subsidized && <span style={{ background: '#e0f2fe', color: '#0891B2', borderRadius: 20, padding: '6px 16px', fontSize: 13, fontWeight: 700 }}>💙 טיפול מוזל</span>}
                 {p.price_range         && <span style={{ background: '#fef3c7', color: '#92400e', borderRadius: 20, padding: '6px 16px', fontSize: 13, fontWeight: 700 }}>💰 ₪{p.price_range} לשעה</span>}
                 {p.languages?.length > 0 && <span style={{ background: '#f0fdf4', color: '#166534', borderRadius: 20, padding: '6px 16px', fontSize: 13, fontWeight: 700 }}>🗣️ {p.languages.join(', ')}</span>}
               </div>
@@ -74,6 +71,18 @@ export default function PractitionerPage({ practitioner: raw }) {
                 <div style={{ marginBottom: 24 }}>
                   <h3 style={h3}>קצת עליי</h3>
                   <p style={{ color: '#334', lineHeight: 1.7, fontSize: 14, margin: 0 }}>{p.bio}</p>
+                </div>
+              )}
+
+              {/* הסמכות נוספות */}
+              {p.certifications?.length > 0 && (
+                <div style={{ marginBottom: 20 }}>
+                  <h3 style={h3}>הסמכות נוספות</h3>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                    {p.certifications.map(c => (
+                      <span key={c} style={{ background: '#e0f2fe', color: '#0284C7', borderRadius: 20, padding: '5px 14px', fontSize: 13, fontWeight: 600 }}>{c}</span>
+                    ))}
+                  </div>
                 </div>
               )}
 
