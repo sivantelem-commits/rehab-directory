@@ -4,6 +4,15 @@ import Head from 'next/head'
 import { BasketButton, BasketPanel } from '../components/ServiceBasket'
 import ServiceDetailModal from '../components/ServiceDetailModal'
 import FilterBottomSheet from '../components/FilterBottomSheet'
+import {
+  PRACTITIONER_TREATMENT_TYPES,
+  PRACTITIONER_SPECIALIZATIONS,
+  HEALTH_FUNDS,
+  DISTRICTS as PRACTITIONER_DISTRICTS,
+} from '../lib/practitioner-constants'
+
+const PRACT_COLOR = '#0F4C75'
+const PRACT_DARK  = '#082840'
 
 const CATEGORIES = {
   'בתים מאזנים': { color: '#0A3040', icon: '🏠' },
@@ -114,6 +123,7 @@ function TreatmentCard({ service }) {
 
 export default function TreatmentList() {
   const router = useRouter()
+  const [mainTab, setMainTab] = useState('services') // 'services' | 'practitioners'
   const [services, setServices] = useState([])
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
@@ -129,6 +139,17 @@ export default function TreatmentList() {
   const [modalService, setModalService] = useState(null)
   const [showSheet, setShowSheet] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
+
+  // practitioners state
+  const [practitioners, setPractitioners] = useState([])
+  const [practLoading, setPractLoading] = useState(false)
+  const [practSearch, setPractSearch] = useState('')
+  const [practDistrict, setPractDistrict] = useState('')
+  const [practTreatmentType, setPractTreatmentType] = useState('')
+  const [practSpecialization, setPractSpecialization] = useState('')
+  const [practHealthFund, setPractHealthFund] = useState('')
+  const [practOnline, setPractOnline] = useState(false)
+  const [practDefense, setPractDefense] = useState(false)
 
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < 768)
@@ -177,6 +198,25 @@ export default function TreatmentList() {
   }, [district, category, ageGroups, diagnoses, populations, debouncedSearch])
 
   useEffect(() => { fetchServices() }, [fetchServices])
+
+  // fetch practitioners when tab is active
+  useEffect(() => {
+    if (mainTab !== 'practitioners') return
+    setPractLoading(true)
+    const p = new URLSearchParams()
+    if (practDistrict)       p.set('district', practDistrict)
+    if (practTreatmentType)  p.set('treatment_type', practTreatmentType)
+    if (practSpecialization) p.set('specialization', practSpecialization)
+    if (practHealthFund)     p.set('health_fund', practHealthFund)
+    if (practOnline)         p.set('online', 'true')
+    if (practDefense)        p.set('defense', 'true')
+    if (practSearch)         p.set('search', practSearch)
+    fetch(`/api/practitioners?${p}`)
+      .then(r => r.json())
+      .then(d => setPractitioners(Array.isArray(d) ? d : []))
+      .catch(() => setPractitioners([]))
+      .finally(() => setPractLoading(false))
+  }, [mainTab, practDistrict, practTreatmentType, practSpecialization, practHealthFund, practOnline, practDefense, practSearch])
 
   const activeExtraFilters = [...ageGroups, ...diagnoses, ...populations].filter(Boolean).length
 
@@ -277,8 +317,130 @@ export default function TreatmentList() {
           </div>
         </div>
 
+        {/* ── לשוניות ראשיות: שירותי טיפול / מטפלים פרטיים ── */}
+        <div style={{ background: 'white', borderBottom: '2px solid #d0edf8', padding: '0 16px', display: 'flex', gap: 0 }}>
+          {[
+            ['services',      '🏥 שירותי טיפול'],
+            ['practitioners', '🧠 מטפלים פרטיים'],
+          ].map(([id, label]) => (
+            <button key={id} onClick={() => setMainTab(id)} style={{
+              padding: '13px 22px', fontWeight: 800, fontSize: 14,
+              cursor: 'pointer', fontFamily: "'Nunito', sans-serif", transition: 'all .15s',
+              background: 'none', border: 'none',
+              borderBottom: mainTab === id ? '3px solid #0891B2' : '3px solid transparent',
+              color: mainTab === id ? '#0891B2' : '#888',
+              marginBottom: -2,
+            }}>{label}</button>
+          ))}
+        </div>
+
+        {/* ══════════════════════════════════
+            תצוגת מטפלים פרטיים
+        ══════════════════════════════════ */}
+        {mainTab === 'practitioners' && (
+          <main style={{ maxWidth: 920, margin: '0 auto', padding: '24px 16px' }}>
+
+            {/* חיפוש */}
+            <div style={{ marginBottom: 16 }}>
+              <input type="text" placeholder="חיפוש לפי שם, עיר, התמחות..." value={practSearch}
+                onChange={e => setPractSearch(e.target.value)}
+                style={{ width: '100%', padding: '13px 18px', borderRadius: 999, fontSize: 14, border: '1.5px solid #a0d8e8', outline: 'none', boxSizing: 'border-box', fontFamily: 'inherit' }} />
+            </div>
+
+            {/* פילטרים */}
+            <div style={{ background: 'white', borderRadius: 14, padding: '16px 20px', marginBottom: 20, boxShadow: '0 2px 10px rgba(0,0,0,.05)', border: '1px solid #d0edf8' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(150px,1fr))', gap: 10, marginBottom: 14 }}>
+                {[
+                  [practDistrict,   setPractDistrict,   'כל המחוזות',      PRACTITIONER_DISTRICTS],
+                  [practHealthFund, setPractHealthFund, 'כל קופות החולים', HEALTH_FUNDS],
+                ].map(([val, setter, ph, opts]) => (
+                  <select key={ph} value={val} onChange={e => setter(e.target.value)}
+                    style={{ padding: '9px 12px', borderRadius: 10, border: '1.5px solid #a0d8e8', fontSize: 13, fontFamily: 'inherit', background: 'white', outline: 'none', cursor: 'pointer' }}>
+                    <option value="">{ph}</option>
+                    {opts.map(o => <option key={o}>{o}</option>)}
+                  </select>
+                ))}
+              </div>
+              <div style={{ marginBottom: 12 }}>
+                <div style={{ fontSize: 11, fontWeight: 700, color: '#888', marginBottom: 6 }}>סוג טיפול</div>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+                  {PRACTITIONER_TREATMENT_TYPES.map(t => {
+                    const sel = practTreatmentType === t
+                    return <button key={t} onClick={() => setPractTreatmentType(sel ? '' : t)} style={{ padding: '5px 12px', borderRadius: 999, fontSize: 12, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit', transition: 'all .15s', border: `1.5px solid ${sel ? PRACT_COLOR : '#a0d8e8'}`, background: sel ? PRACT_COLOR : 'white', color: sel ? 'white' : PRACT_COLOR }}>{t}</button>
+                  })}
+                </div>
+              </div>
+              <div style={{ marginBottom: 12 }}>
+                <div style={{ fontSize: 11, fontWeight: 700, color: '#888', marginBottom: 6 }}>תחום התמחות</div>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+                  {PRACTITIONER_SPECIALIZATIONS.map(s => {
+                    const sel = practSpecialization === s
+                    return <button key={s} onClick={() => setPractSpecialization(sel ? '' : s)} style={{ padding: '5px 12px', borderRadius: 999, fontSize: 12, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit', transition: 'all .15s', border: `1.5px solid ${sel ? '#0284C7' : '#a0d8e8'}`, background: sel ? '#0284C7' : 'white', color: sel ? 'white' : '#0284C7' }}>{s}</button>
+                  })}
+                </div>
+              </div>
+              <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                {[[practOnline, setPractOnline, '🌐 אונליין'], [practDefense, setPractDefense, '🎗️ מה"ב']].map(([v, setter, label]) => (
+                  <button key={label} onClick={() => setter(!v)} style={{ padding: '5px 14px', borderRadius: 999, fontSize: 12, fontWeight: 700, cursor: 'pointer', border: `1.5px solid ${v ? PRACT_COLOR : '#a0d8e8'}`, background: v ? PRACT_COLOR : 'white', color: v ? 'white' : PRACT_COLOR }}>{label}</button>
+                ))}
+                {(practDistrict || practTreatmentType || practSpecialization || practHealthFund || practOnline || practDefense || practSearch) && (
+                  <button onClick={() => { setPractDistrict(''); setPractTreatmentType(''); setPractSpecialization(''); setPractHealthFund(''); setPractOnline(false); setPractDefense(false); setPractSearch('') }} style={{ padding: '5px 14px', borderRadius: 999, fontSize: 12, fontWeight: 700, cursor: 'pointer', border: '1.5px solid #fca5a5', background: '#fff5f5', color: '#dc2626' }}>✕ נקה הכל</button>
+                )}
+              </div>
+            </div>
+
+            <div style={{ fontSize: 13, color: '#666', marginBottom: 12, fontWeight: 600 }}>
+              {practLoading ? 'טוען...' : `${practitioners.length} מטפלים נמצאו`}
+            </div>
+
+            {practLoading ? (
+              <div style={{ textAlign: 'center', padding: '60px 0', color: PRACT_COLOR, fontSize: 16 }}>טוען מטפלים...</div>
+            ) : practitioners.length === 0 ? (
+              <div style={{ textAlign: 'center', padding: '60px 0', color: '#888' }}>
+                <div style={{ fontSize: 40, marginBottom: 12 }}>🔍</div>
+                <div>לא נמצאו מטפלים עם הפילטרים הנוכחיים</div>
+              </div>
+            ) : (
+              <div style={{ display: 'grid', gap: 12 }}>
+                {practitioners.map(p => (
+                  <a key={p.id} href={`/practitioner/${p.id}`} style={{ textDecoration: 'none' }}>
+                    <div style={{ background: 'white', borderRadius: 14, padding: '18px 22px', boxShadow: '0 2px 10px rgba(0,0,0,.06)', border: '1.5px solid #d0edf8', borderTop: `4px solid ${PRACT_COLOR}`, display: 'flex', gap: 14, alignItems: 'flex-start' }}>
+                      <div style={{ width: 56, height: 56, borderRadius: '50%', flexShrink: 0, background: p.photo_url ? 'transparent' : `linear-gradient(135deg,${PRACT_COLOR},${PRACT_DARK})`, overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        {p.photo_url ? <img src={p.photo_url} alt={p.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <span style={{ fontSize: 22, color: 'white' }}>👤</span>}
+                      </div>
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 6, marginBottom: 4 }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+                            <span style={{ fontWeight: 800, fontSize: 16, color: '#1A3A5C' }}>{p.name}</span>
+                            {p.is_verified && <span style={{ background: '#dbeafe', color: '#1d4ed8', borderRadius: 20, padding: '2px 8px', fontSize: 11, fontWeight: 700 }}>✓ מאומת</span>}
+                            {p.is_defense_ministry && <span style={{ background: '#ede9fe', color: '#6d28d9', borderRadius: 20, padding: '2px 8px', fontSize: 11, fontWeight: 700 }}>🎗️ מה"ב</span>}
+                          </div>
+                          {p.profession && <span style={{ background: PRACT_COLOR, color: 'white', borderRadius: 20, padding: '3px 10px', fontSize: 12, fontWeight: 700 }}>{p.profession}</span>}
+                        </div>
+                        <div style={{ fontSize: 13, color: '#666', marginBottom: 6, display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+                          {p.city && <span>📍 {p.city}{p.district ? `, ${p.district}` : ''}</span>}
+                          {p.is_online && <span style={{ color: '#0891B2', fontWeight: 700 }}>🌐 אונליין</span>}
+                          {p.price_range && <span>💰 ₪{p.price_range} לשעה</span>}
+                        </div>
+                        {p.treatment_types?.length > 0 && (
+                          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 5, marginBottom: 4 }}>
+                            {p.treatment_types.slice(0, 3).map(t => <span key={t} style={{ background: '#e0f0ff', color: PRACT_COLOR, borderRadius: 20, padding: '2px 9px', fontSize: 11, fontWeight: 600 }}>{t}</span>)}
+                            {p.treatment_types.length > 3 && <span style={{ fontSize: 11, color: '#888' }}>+{p.treatment_types.length - 3}</span>}
+                          </div>
+                        )}
+                        {p.health_funds?.length > 0 && <div style={{ fontSize: 12, color: '#059669', fontWeight: 600 }}>🏥 {p.health_funds.join(', ')}</div>}
+                        {p.bio && <div style={{ fontSize: 13, color: '#556', marginTop: 5, lineHeight: 1.5, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{p.bio}</div>}
+                      </div>
+                    </div>
+                  </a>
+                ))}
+              </div>
+            )}
+          </main>
+        )}
+
         {/* ── פילטרים - דסקטופ ── */}
-        {!isMobile && (<>
+        {mainTab === 'services' && !isMobile && (<>
           <div style={{ background: 'white', borderBottom: '1px solid #a0d8e8', padding: '10px 16px', display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
             {DISTRICTS.map(d => {
               const isNat = d === 'ארצי'
@@ -329,7 +491,7 @@ export default function TreatmentList() {
         </>)}
 
         {/* ── פילטרים - נייד ── */}
-        {isMobile && (
+        {mainTab === 'services' && isMobile && (
           <div style={{ background: 'white', borderBottom: '1px solid #a0d8e8', padding: '8px 12px 10px' }}>
             {/* שורה עליונה: פילטרים + מונה */}
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
@@ -393,6 +555,7 @@ export default function TreatmentList() {
         </FilterBottomSheet>
 
         <main id="main-content" style={{ maxWidth: 1100, margin: '0 auto', padding: '28px 16px' }}>
+          {mainTab === 'services' && (<>
           {loading ? (
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 16 }}>
               {Array.from({ length: 9 }).map((_, i) => <SkeletonCard key={i} />)}
@@ -412,6 +575,7 @@ export default function TreatmentList() {
               ))}
             </div>
           )}
+          </>)}
         </main>
 
         {showTop && (
