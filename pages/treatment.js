@@ -163,7 +163,6 @@ export default function TreatmentList() {
     if (router.isReady) {
       if (router.query.district) setDistrict(router.query.district)
       if (router.query.category) setCategory(router.query.category)
-      if (router.query.tab === 'practitioners') setMainTab('practitioners')
     }
   }, [router.isReady, router.query])
 
@@ -208,7 +207,7 @@ export default function TreatmentList() {
     if (practDistrict)       p.set('district', practDistrict)
     if (practTreatmentType)  p.set('treatment_type', practTreatmentType)
     if (practSpecialization) p.set('specialization', practSpecialization)
-    if (practHealthFund)     p.set('health_fund', practHealthFund)
+    if (practHealthFund)     p.set('health_fund_agreement', 'true')
     if (practOnline)         p.set('online', 'true')
     if (practDefense)        p.set('defense', 'true')
     if (practSearch)         p.set('search', practSearch)
@@ -436,7 +435,7 @@ export default function TreatmentList() {
                             {p.treatment_types.length > 3 && <span style={{ fontSize: 11, color: '#888' }}>+{p.treatment_types.length - 3}</span>}
                           </div>
                         )}
-                        {p.health_funds?.length > 0 && <div style={{ fontSize: 12, color: '#059669', fontWeight: 600 }}>🏥 {p.health_funds.join(', ')}</div>}
+                        {p.has_health_fund_agreement && <div style={{ fontSize: 12, color: '#059669', fontWeight: 600 }}>🏥 הסדר קופות{p.health_funds?.length > 0 ? ': ' + p.health_funds.join(', ') : ''}</div>}
                         {p.bio && <div style={{ fontSize: 13, color: '#556', marginTop: 5, lineHeight: 1.5, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{p.bio}</div>}
                       </div>
                     </div>
