@@ -612,7 +612,9 @@ export default function Admin() {
                     )
                   })()}
                 </div>
-              ) : section === 'practitioners' ? (
+              )}
+
+              {section === 'practitioners' && (
                 <div>
                   <div style={{ display: 'flex', gap: 10, marginBottom: 20, alignItems: 'center', flexWrap: 'wrap' }}>
                     {[['pending', 'ממתינים לאישור', pendingPractitioners.length], ['approved', 'מאושרים', approvedPractitioners.length]].map(([id, label, count]) => (
@@ -672,7 +674,7 @@ export default function Admin() {
                     ))
                   }
                 </div>
-              ) : null}
+              )}
             </>
           )}
         </main>
