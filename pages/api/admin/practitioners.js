@@ -23,6 +23,16 @@ export default async function handler(req, res) {
   if (req.method === 'PATCH') {
     const { id, status, is_verified, ...fields } = req.body
     if (!id) return res.status(400).json({ error: 'Missing id' })
+
+    const normalizePhotoUrl = (url) => {
+      if (!url) return url
+      const fileMatch = url.match(/drive\.google\.com\/file\/d\/([^/]+)/)
+      if (fileMatch) return `https://drive.google.com/uc?export=view&id=${fileMatch[1]}`
+      const openMatch = url.match(/drive\.google\.com\/open\?id=([^&]+)/)
+      if (openMatch) return `https://drive.google.com/uc?export=view&id=${openMatch[1]}`
+      return url
+    }
+
     const updates = { updated_at: new Date().toISOString() }
     if (status      !== undefined) updates.status      = status
     if (is_verified !== undefined) updates.is_verified = is_verified
@@ -30,7 +40,9 @@ export default async function handler(req, res) {
     const EDITABLE = ['name','profession','city','district','phone','website','price_range','bio','photo_url',
                       'treatment_types','specializations','health_funds','languages','is_online','is_defense_ministry','license_number']
     for (const key of EDITABLE) {
-      if (fields[key] !== undefined) updates[key] = fields[key]
+      if (fields[key] !== undefined) {
+        updates[key] = key === 'photo_url' ? normalizePhotoUrl(fields[key]) : fields[key]
+      }
     }
     const { error } = await supabase.from('practitioners').update(updates).eq('id', id)
     if (error) return res.status(500).json({ error: error.message })
