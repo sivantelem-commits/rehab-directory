@@ -30,7 +30,7 @@ const emptyForm = {
 }
 
 const emptyPractitionerForm = {
-  name: '', email: '', license_number: '', profession: '',
+  name: '', email: '', license_number: '', professions: [],
   treatment_types: [], specializations: [],
   city: '', district: '', is_online: false,
   health_funds: [], is_defense_ministry: false,
@@ -514,12 +514,14 @@ export default function Register() {
                     </div>
 
                     {/* מקצוע */}
-                    <div style={{ marginBottom: 16 }}>
-                      <label style={pLbl}>מקצוע</label>
-                      <select value={pForm.profession} onChange={e => setPForm(f => ({ ...f, profession: e.target.value }))} style={pInp}>
-                        <option value="">בחרו מקצוע</option>
-                        {PRACTITIONER_PROFESSIONS.map(p => <option key={p}>{p}</option>)}
-                      </select>
+                    <div style={{ marginBottom: 20 }}>
+                      <label style={pLbl}>מקצוע <span style={{ fontWeight: 400, color: '#9ca3af' }}>(ניתן לסמן כמה)</span></label>
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 7 }}>
+                        {PRACTITIONER_PROFESSIONS.map(prof => {
+                          const sel = (pForm.professions || []).includes(prof)
+                          return <button key={prof} type="button" onClick={() => togglePField('professions', prof)} style={{ padding: '6px 14px', borderRadius: 999, fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: "'Nunito',sans-serif", transition: 'all .15s', border: `2px solid ${sel ? PRACTITIONER_COLOR : '#c0d8e8'}`, background: sel ? PRACTITIONER_COLOR : 'white', color: sel ? 'white' : PRACTITIONER_COLOR }}>{prof}</button>
+                        })}
+                      </div>
                     </div>
 
                     {/* סוגי טיפול */}
@@ -544,11 +546,20 @@ export default function Register() {
                       </div>
                     </div>
 
-                    {/* עיר */}
-                    <div style={{ marginBottom: 16 }}>
-                      <label style={pLbl}>עיר *</label>
-                      <input type="text" placeholder="תל אביב" value={pForm.city}
-                        onChange={e => setPForm(f => ({ ...f, city: e.target.value }))} style={pInp} />
+                    {/* עיר + מחוז */}
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 16 }}>
+                      <div>
+                        <label style={pLbl}>עיר *</label>
+                        <input type="text" placeholder="תל אביב" value={pForm.city}
+                          onChange={e => setPForm(f => ({ ...f, city: e.target.value }))} style={pInp} />
+                      </div>
+                      <div>
+                        <label style={pLbl}>מחוז</label>
+                        <select value={pForm.district} onChange={e => setPForm(f => ({ ...f, district: e.target.value }))} style={pInp}>
+                          <option value="">בחרו מחוז</option>
+                          {DISTRICTS.map(d => <option key={d}>{d}</option>)}
+                        </select>
+                      </div>
                     </div>
 
                     {/* אונליין */}
