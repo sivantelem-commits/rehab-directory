@@ -35,7 +35,7 @@ const emptyPractitionerForm = {
   city: '', district: '', is_online: false,
   health_funds: [], is_defense_ministry: false,
   languages: [], price_range: '', bio: '', photo_url: '',
-  phone: '', website: '',
+  phone: '', website: '', whatsapp_available: false,
 }
 
 export default function Register() {
@@ -566,6 +566,15 @@ export default function Register() {
                         <input type="checkbox" checked={pForm.is_online} onChange={e => setPForm(f => ({ ...f, is_online: e.target.checked }))}
                           style={{ width: 18, height: 18, accentColor: PRACTITIONER_COLOR }} />
                         מטפל/ת אונליין 🌐
+                      </label>
+                    </div>
+
+                    {/* וואטסאפ */}
+                    <div style={{ marginBottom: 16 }}>
+                      <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', fontSize: 13.5, fontWeight: 700, color: '#25D366' }}>
+                        <input type="checkbox" checked={pForm.whatsapp_available} onChange={e => setPForm(f => ({ ...f, whatsapp_available: e.target.checked }))}
+                          style={{ width: 18, height: 18, accentColor: '#25D366' }} />
+                        ניתן לפנות בוואטסאפ 💬
                       </label>
                     </div>
 
