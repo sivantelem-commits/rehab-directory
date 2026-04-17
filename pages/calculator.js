@@ -265,7 +265,7 @@ export default function Calculator() {
     setLoading(true)
     const res = calcResult(finalAnswers)
     setResult(res)
-    if (finalAnswers.sal === 'unknown') setSalNote('אם עדיין אין זכאות - פנה לביטוח לאומי ואז למשרד הבריאות לקבלת סל שיקום.')
+    if (finalAnswers.sal === 'unknown' && res.recommendation !== 'treatment') setSalNote('אם עדיין אין זכאות - פנה לביטוח לאומי ואז למשרד הבריאות לקבלת סל שיקום.')
     const queries = buildSearchQueries(res.recommendation, finalAnswers)
     try {
       // אם יש מחוזות מרובים - שולחים בקשה לכל מחוז ומאחדים תוצאות
