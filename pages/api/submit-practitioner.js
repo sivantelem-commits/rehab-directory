@@ -23,12 +23,12 @@ export default async function handler(req, res) {
   }
 
   const {
-    name, email, license_number, profession, certifications,
+    name, email, license_number, profession,
     treatment_types, specializations,
     city, district, is_online,
     health_funds, is_defense_ministry,
     languages, price_range, bio, photo_url,
-    phone, website, whatsapp_available, subsidized,
+    phone, website, whatsapp_available, has_health_fund_agreement,
   } = req.body
 
   if (!name || !email || !license_number || !city) {
@@ -48,8 +48,7 @@ export default async function handler(req, res) {
       health_funds:     Array.isArray(health_funds)     ? health_funds     : [],
       is_defense_ministry: !!is_defense_ministry,
       whatsapp_available: !!whatsapp_available,
-      subsidized: !!subsidized,
-      certifications: Array.isArray(certifications) ? certifications : [],
+      has_health_fund_agreement: !!has_health_fund_agreement,
       languages:        Array.isArray(languages)        ? languages        : [],
       price_range: price_range || null,
       bio:       bio       || null,
