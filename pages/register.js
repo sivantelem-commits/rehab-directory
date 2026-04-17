@@ -159,8 +159,8 @@ export default function Register() {
   }
 
   const isRehab  = tab === 'rehab'
-  const color    = tab === 'treatment' ? '#0891B2' : tab === 'practitioner' ? PRACTITIONER_COLOR : '#8B00D4'
-  const darkColor = tab === 'treatment' ? '#164E63' : tab === 'practitioner' ? PRACTITIONER_DARK  : '#4C0080'
+  const color    = isRehab ? '#8B00D4' : '#0891B2'
+  const darkColor = isRehab ? '#4C0080' : '#164E63'
 
   const subcategories = isRehab && form.category ? (CATEGORIES[form.category]?.subcategories || []) : []
 
@@ -173,8 +173,8 @@ export default function Register() {
   const lbl = { display: 'block', fontSize: 13, fontWeight: 700, color: darkColor, marginBottom: 6 }
 
   // סגנונות ספציפיים למטפלים
-  const pInp = { ...inp, border: '1.5px solid #a0c8e0' }
-  const pLbl = { ...lbl, color: PRACTITIONER_DARK }
+  const pInp = { ...inp, border: '1.5px solid #a0d8e8' }
+  const pLbl = { ...lbl, color: '#164E63' }
 
   if (!mounted) return null
 
@@ -183,7 +183,7 @@ export default function Register() {
       <Head>
         <title>הוספת שירות | מאגר בריאות הנפש</title>
       </Head>
-      <div dir="rtl" style={{ minHeight: '100vh', background: tab === 'practitioner' ? '#f0f7ff' : isRehab ? '#faf5ff' : '#f0faff', fontFamily: "'Nunito','Arial',sans-serif" }}>
+      <div dir="rtl" style={{ minHeight: '100vh', background: isRehab ? '#faf5ff' : '#f0faff', fontFamily: "'Nunito','Arial',sans-serif" }}>
 
         {/* ניווט */}
         <header style={{
@@ -223,23 +223,44 @@ export default function Register() {
         <main style={{ maxWidth: 640, margin: '-20px auto 0', padding: '0 16px 60px', position: 'relative' }}>
           <div style={{ background: 'white', borderRadius: 20, padding: '32px 28px', boxShadow: '0 8px 32px rgba(0,0,0,.1)' }}>
 
-            {/* ── כפתורי טאב ── */}
-            <div style={{ display: 'flex', gap: 10, marginBottom: 32, flexWrap: 'wrap' }}>
+            {/* ── טאבים ראשיים ── */}
+            <div style={{ display: 'flex', gap: 12, marginBottom: tab === 'treatment' || tab === 'practitioner' ? 16 : 32, flexWrap: 'wrap' }}>
               {[
-                ['rehab',        '♿ שיקום',           '#8B00D4'],
-                ['treatment',    '🏥 טיפול',           '#0891B2'],
-                ['practitioner', '🧠 מטפל/ת פרטי/ת',  PRACTITIONER_COLOR],
-              ].map(([id, label, col]) => (
-                <button key={id} onClick={() => handleTabChange(id)} style={{
-                  padding: '10px 20px', borderRadius: 999, fontWeight: 800, fontSize: 14,
-                  cursor: 'pointer', fontFamily: "'Nunito',sans-serif", transition: 'all .15s',
-                  border: `2px solid ${tab === id ? col : '#e0e0e0'}`,
-                  background: tab === id ? col : 'white',
-                  color: tab === id ? 'white' : '#666',
-                  boxShadow: tab === id ? `0 4px 12px ${col}44` : 'none',
-                }}>{label}</button>
-              ))}
+                ['rehab',     '♿ שיקום', '#8B00D4'],
+                ['treatment', '🏥 טיפול', '#0891B2'],
+              ].map(([id, label, col]) => {
+                const active = (id === 'rehab' && tab === 'rehab') || (id === 'treatment' && (tab === 'treatment' || tab === 'practitioner'))
+                return (
+                  <button key={id} onClick={() => handleTabChange(id)} style={{
+                    padding: '10px 28px', borderRadius: 999, fontWeight: 800, fontSize: 15,
+                    cursor: 'pointer', fontFamily: "'Nunito',sans-serif", transition: 'all .15s',
+                    border: `2px solid ${active ? col : '#e0e0e0'}`,
+                    background: active ? col : 'white',
+                    color: active ? 'white' : '#666',
+                    boxShadow: active ? `0 4px 12px ${col}44` : 'none',
+                  }}>{label}</button>
+                )
+              })}
             </div>
+
+            {/* ── תת-טאבים של טיפול ── */}
+            {(tab === 'treatment' || tab === 'practitioner') && (
+              <div style={{ display: 'flex', gap: 8, marginBottom: 28, background: '#f0faff', borderRadius: 14, padding: 6 }}>
+                {[
+                  ['treatment',    '🏨 מרכז טיפול'],
+                  ['practitioner', '🧠 מטפל/ת פרטי/ת'],
+                ].map(([id, label]) => (
+                  <button key={id} onClick={() => handleTabChange(id)} style={{
+                    flex: 1, padding: '9px 16px', borderRadius: 10, fontWeight: 700, fontSize: 13,
+                    cursor: 'pointer', fontFamily: "'Nunito',sans-serif", transition: 'all .15s',
+                    border: 'none',
+                    background: tab === id ? 'white' : 'transparent',
+                    color: tab === id ? '#0891B2' : '#888',
+                    boxShadow: tab === id ? '0 2px 8px rgba(0,0,0,0.1)' : 'none',
+                  }}>{label}</button>
+                ))}
+              </div>
+            )}
 
             {/* ── בחרו סוג ── */}
             {!tab && (
