@@ -1,5 +1,6 @@
 // pages/practitioner/[id].js
 import Head from 'next/head'
+import { useRouter } from 'next/router'
 import { PRACTITIONER_COLOR as COLOR, PRACTITIONER_DARK as DARK } from '../../lib/practitioner-constants'
 
 const normalizePhotoUrl = (url) => {
@@ -12,12 +13,15 @@ const normalizePhotoUrl = (url) => {
 }
 
 export default function PractitionerPage({ practitioner: raw }) {
+  const router = useRouter()
   const p = raw ? { ...raw, photo_url: normalizePhotoUrl(raw.photo_url) } : null
+  const backHref = router.query.from === 'practitioners' ? '/practitioners' : '/treatment?tab=practitioners'
+  const backLabel = '← חזרה למטפלים' 
   if (!p) return (
     <div dir="rtl" style={{ textAlign: 'center', padding: '80px 24px', fontFamily: 'Arial' }}>
       <div style={{ fontSize: 40, marginBottom: 16 }}>🔍</div>
       <h2 style={{ color: '#555' }}>המטפל/ת לא נמצא/ה</h2>
-      <a href="/treatment" style={{ color: COLOR }}>← חזרה למטפלים</a>
+      <a href={backHref} style={{ color: COLOR }}>{backLabel}</a>
     </div>
   )
 
@@ -25,12 +29,12 @@ export default function PractitionerPage({ practitioner: raw }) {
     <>
       <Head>
         <title>{p.name} | מטפלים פרטיים</title>
-        <meta name="description" content={p.bio || `${p.name} – ${p.professions?.length ? p.professions.join(', ') : 'מטפל/ת מוסמך/ת'}`} />
+        <meta name="description" content={p.bio || `${p.name} – ${p.profession || 'מטפל/ת מוסמך/ת'}`} />
       </Head>
       <div dir="rtl" style={{ minHeight: '100vh', background: '#f0f7ff', fontFamily: "'Nunito','Arial',sans-serif" }}>
 
         <div style={{ background: `linear-gradient(135deg,${DARK},${COLOR})`, padding: '16px 24px' }}>
-          <a href="/treatment" style={{ color: 'rgba(255,255,255,.8)', textDecoration: 'none', fontSize: 14, fontWeight: 700 }}>← חזרה למטפלים</a>
+          <a href={backHref} style={{ color: 'rgba(255,255,255,.8)', textDecoration: 'none', fontSize: 14, fontWeight: 700 }}>{backLabel}</a>
         </div>
 
         <main style={{ maxWidth: 700, margin: '32px auto', padding: '0 16px' }}>
@@ -48,7 +52,7 @@ export default function PractitionerPage({ practitioner: raw }) {
                   <h1 style={{ margin: 0, fontSize: 24, fontWeight: 900 }}>{p.name}</h1>
                   {p.is_verified && <span style={{ background: 'rgba(255,255,255,.25)', borderRadius: 20, padding: '3px 12px', fontSize: 12, fontWeight: 700 }}>✓ מאומת</span>}
                 </div>
-                {p.professions?.length > 0 && <div style={{ opacity: .9, marginTop: 4, fontSize: 15 }}>{p.professions.join(" · ")}</div>}
+                {p.profession && <div style={{ opacity: .9, marginTop: 4, fontSize: 15 }}>{p.profession}</div>}
                 <div style={{ opacity: .75, fontSize: 13, marginTop: 4 }}>
                   {p.city}{p.district ? `, ${p.district}` : ''}
                   {p.is_online && <span style={{ marginRight: 10 }}>· 🌐 אונליין</span>}
