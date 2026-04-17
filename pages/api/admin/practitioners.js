@@ -27,9 +27,9 @@ export default async function handler(req, res) {
     const normalizePhotoUrl = (url) => {
       if (!url) return url
       const fileMatch = url.match(/drive\.google\.com\/file\/d\/([^/]+)/)
-      if (fileMatch) return `https://drive.google.com/uc?export=view&id=${fileMatch[1]}`
+      if (fileMatch) return `https://drive.google.com/thumbnail?sz=w400&id=${fileMatch[1]}`
       const openMatch = url.match(/drive\.google\.com\/open\?id=([^&]+)/)
-      if (openMatch) return `https://drive.google.com/uc?export=view&id=${openMatch[1]}`
+      if (openMatch) return `https://drive.google.com/thumbnail?sz=w400&id=${openMatch[1]}`
       return url
     }
 
@@ -38,7 +38,7 @@ export default async function handler(req, res) {
     if (is_verified !== undefined) updates.is_verified = is_verified
     // full-field edit
     const EDITABLE = ['name','profession','city','district','phone','website','price_range','bio','photo_url',
-                      'treatment_types','specializations','health_funds','languages','is_online','is_defense_ministry','license_number']
+                      'treatment_types','specializations','health_funds','languages','is_online','is_defense_ministry','license_number','whatsapp_available']
     for (const key of EDITABLE) {
       if (fields[key] !== undefined) {
         updates[key] = key === 'photo_url' ? normalizePhotoUrl(fields[key]) : fields[key]
