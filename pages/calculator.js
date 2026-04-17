@@ -69,6 +69,18 @@ const STEPS = [
     ],
   },
   {
+    id: 'format',
+    question: 'מה עדיף לך יותר?',
+    hint: 'אם מתאים טיפול – האם מרכז מאורגן או מטפל/ת פרטי/ת?',
+    multi: false,
+    options: [
+      { label: 'מרכז טיפול / מרפאה מסודרת', value: 'center', scores: { treatment: 1 } },
+      { label: 'מטפל/ת פרטי/ת', value: 'private', scores: { treatment: 1 } },
+      { label: 'לא משנה לי / שניהם', value: 'both', scores: {} },
+      { label: 'לא רלוונטי (מחפש/ת שיקום)', value: 'rehab_only', scores: { rehab: 1 } },
+    ],
+  },
+  {
     id: 'district',
     question: 'באיזה אזור?',
     hint: 'ניתן לבחור יותר מאחד',
@@ -138,7 +150,17 @@ function buildSearchQueries(recommendation, answers) {
     if (districts.length === 1) return buildForDistrict(districts[0], cat, page)
     return buildForDistrict(districts[0], cat, page)
   }
-  if (recommendation === 'treatment' || recommendation === 'combined') queries.push(p(null, 'treatment'))
+  const format = answers.format || 'both'
+  if (recommendation === 'treatment' || recommendation === 'combined') {
+    if (format === 'private') {
+      queries.push({ label: 'מטפלים פרטיים', url: '/api/practitioners', page: 'practitioners' })
+    } else if (format === 'center') {
+      queries.push(p(null, 'treatment'))
+    } else {
+      queries.push(p(null, 'treatment'))
+      queries.push({ label: 'מטפלים פרטיים', url: '/api/practitioners', page: 'practitioners' })
+    }
+  }
   if (recommendation === 'rehab' || recommendation === 'combined') {
     const rehabCats = { work: 'תעסוקה', education: 'השכלה', social: 'חברה ופנאי', housing: 'דיור', daily: 'ליווי ותמיכה' }
     const added = new Set()
@@ -271,9 +293,9 @@ export default function Calculator() {
   function reset() { setStep(0); setAnswers({}); setResult(null); setServices(null); setSalNote(null) }
 
   const recConfig = {
-    treatment: { title: 'טיפול נפשי', color: '#0E7490', light: '#ecfeff', border: '#06B6D4', desc: 'נראה שהצורך המרכזי כרגע הוא טיפולי-נפשי. כדאי לבדוק טיפול רגשי, מרפאת בריאות הנפש ו/או הערכה פסיכיאטרית.' },
+    treatment: { title: 'טיפול נפשי', color: '#0E7490', light: '#ecfeff', border: '#06B6D4', desc: 'נראה שהצורך המרכזי כרגע הוא טיפולי-נפשי. כדאי לבדוק טיפול רגשי, מרפאת בריאות הנפש, מטפל/ת פרטי/ת ו/או הערכה פסיכיאטרית.' },
     rehab: { title: 'שיקום בקהילה', color: DEEP, light: '#f5f3ff', border: PURPLE, desc: 'נראה שהצורך המרכזי כרגע הוא שיקומי. כדאי לבדוק שירותי סל שיקום כמו דיור מוגן, תעסוקה נתמכת, מועדון חברתי או ליווי לימודי.' },
-    combined: { title: 'שילוב טיפול ושיקום', color: '#5E35B1', light: '#f5f0ff', border: '#7C3AED', desc: 'נראה שמתאים שילוב של טיפול נפשי לצד שירותי שיקום בקהילה.' },
+    combined: { title: 'שילוב טיפול ושיקום', color: '#5E35B1', light: '#f5f0ff', border: '#7C3AED', desc: 'נראה שמתאים שילוב של טיפול נפשי (מרכז או מטפל/ת פרטי/ת) לצד שירותי שיקום בקהילה.' },
   }
 
   if (step === 0) return (
@@ -281,8 +303,8 @@ export default function Calculator() {
       <div style={{ maxWidth: 560, margin: '0 auto', padding: '48px 16px' }}>
         <div style={{ background: '#fff', borderRadius: 20, border: '1px solid #e9d5ff', padding: '40px 28px', textAlign: 'center', boxShadow: '0 4px 24px rgba(76,0,128,0.08)' }}>
           <div style={{ fontSize: 52, marginBottom: 16 }}>🧭</div>
-          <h1 style={{ fontSize: 24, fontWeight: 800, color: '#3d2a6e', marginBottom: 10 }}>מחשבון איתור מסלול</h1>
-          <p style={{ fontSize: 15, color: '#6b7280', lineHeight: 1.7, marginBottom: 12 }}>7 שאלות קצרות - וקבל המלצה מותאמת אישית.</p>
+          <h1 style={{ fontSize: 24, fontWeight: 800, color: '#3d2a6e', marginBottom: 10 }}>מחשבון איתור שירות</h1>
+          <p style={{ fontSize: 15, color: '#6b7280', lineHeight: 1.7, marginBottom: 12 }}>כמה שאלות קצרות – וקבל המלצה מותאמת אישית: שיקום, טיפול במרכז, או מטפל/ת פרטי/ת.</p>
           <p style={{ fontSize: 12, color: '#9ca3af', lineHeight: 1.6, marginBottom: 28, padding: '10px 14px', background: '#f9fafb', borderRadius: 10 }}>
             הכלי אינו אבחון ואינו מחליף איש מקצוע. הוא מסייע בכיוון ראשוני בלבד.<br />
             אם יש מצוקה חריפה או סיכון מיידי - יש לפנות בדחיפות לגורם רפואי.
@@ -338,20 +360,20 @@ export default function Calculator() {
             services.map((group, gi) => (
               <div key={gi} style={{ marginBottom: 36 }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14 }}>
-                  <span style={{ background: group.page === 'treatment' ? 'linear-gradient(160deg, #0891B2, #164E63)' : `linear-gradient(160deg, #8B00D4, ${DEEP})`, color: '#fff', fontSize: 12, fontWeight: 700, padding: '4px 14px', borderRadius: 999 }}>{group.label}</span>
+                  <span style={{ background: group.page === 'treatment' ? 'linear-gradient(160deg, #0891B2, #164E63)' : group.page === 'practitioners' ? 'linear-gradient(160deg, #0F4C75, #0891B2)' : `linear-gradient(160deg, #8B00D4, ${DEEP})`, color: '#fff', fontSize: 12, fontWeight: 700, padding: '4px 14px', borderRadius: 999 }}>{group.label}</span>
                   <span style={{ fontSize: 13, color: '#9ca3af', fontWeight: 600 }}>{group.services.length} שירותים</span>
-                  <a href={group.page === 'rehab' ? '/rehab' : '/treatment'} style={{ marginRight: 'auto', fontSize: 13, color: PURPLE, fontWeight: 700, textDecoration: 'none' }}>ראה הכל ←</a>
+                  <a href={group.page === 'rehab' ? '/rehab' : group.page === 'practitioners' ? '/treatment?tab=practitioners' : '/treatment'} style={{ marginRight: 'auto', fontSize: 13, color: PURPLE, fontWeight: 700, textDecoration: 'none' }}>ראה הכל ←</a>
                 </div>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 16 }}>
                   {group.services.slice(0, 6).map(s => (
-                    <div key={s.id} onClick={() => router.push(group.page === 'treatment' ? `/treatment/${s.id}` : `/service/${s.id}`)} style={{ cursor: 'pointer' }}>
+                    <div key={s.id} onClick={() => router.push(group.page === 'treatment' ? `/treatment/${s.id}` : group.page === 'practitioners' ? `/practitioner/${s.id}?from=calculator` : `/service/${s.id}`)} style={{ cursor: 'pointer' }}>
                       <ServiceCard service={{ ...s, _forcedType: group.page }} />
                     </div>
                   ))}
                 </div>
                 {group.services.length > 6 && (
                   <div style={{ textAlign: 'center', marginTop: 16 }}>
-                    <a href={group.page === 'rehab' ? '/rehab' : '/treatment'} style={{ fontSize: 14, fontWeight: 700, color: PURPLE, textDecoration: 'none' }}>+ {group.services.length - 6} שירותים נוספים ←</a>
+                    <a href={group.page === 'rehab' ? '/rehab' : group.page === 'practitioners' ? '/treatment?tab=practitioners' : '/treatment'} style={{ fontSize: 14, fontWeight: 700, color: PURPLE, textDecoration: 'none' }}>+ {group.services.length - 6} {group.page === 'practitioners' ? 'מטפלים נוספים' : 'שירותים נוספים'} ←</a>
                   </div>
                 )}
               </div>
