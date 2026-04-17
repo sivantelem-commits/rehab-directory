@@ -150,7 +150,7 @@ export default function Home() {
               onMouseUp={e => e.currentTarget.style.transform = 'translateY(-5px)'}
             >
               <span style={{ fontSize: 18, fontWeight: 800 }}>טיפול</span>
-              <span style={{ fontSize: 11, fontWeight: 500, opacity: 0.8 }}>בתים מאזנים, אשפוז ומרפאות</span>
+              <span style={{ fontSize: 11, fontWeight: 500, opacity: 0.8 }}>מרכזי טיפול, מרפאות ומטפלים פרטיים</span>
             </button>
 
           </div>
@@ -158,19 +158,19 @@ export default function Home() {
           {/* מפריד */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 12, margin: '36px 0 28px', width: '100%', boxSizing: 'border-box' }}>
             <div style={{ flex: 1, height: 1, background: '#ddd6f3' }} />
-            <span style={{ fontSize: 13, color: '#9b88bb', fontWeight: 600, whiteSpace: 'nowrap' }}>לא יודעים מאיזו מסגרת להתחיל?</span>
+            <span style={{ fontSize: 13, color: '#9b88bb', fontWeight: 600, whiteSpace: 'nowrap' }}>לא יודעים מאיפה להתחיל?</span>
             <div style={{ flex: 1, height: 1, background: '#ddd6f3' }} />
           </div>
 
           {/* כפתור מחשבון */}
-          <button aria-label="פתח מחשבון איתור מסלול שיקום" onClick={() => router.push('/calculator')} style={{ width: '100%', padding: '18px 24px', borderRadius: '999px', boxSizing: 'border-box', background: 'white', border: '2px solid #e9d5ff', color: '#4C0080', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, fontFamily: "'Nunito', sans-serif", boxShadow: '0 4px 16px rgba(76,0,128,0.08)', transition: 'all 0.2s ease' }}
+          <button aria-label="פתח מחשבון איתור שירות" onClick={() => router.push('/calculator')} style={{ width: '100%', padding: '18px 24px', borderRadius: '999px', boxSizing: 'border-box', background: 'white', border: '2px solid #e9d5ff', color: '#4C0080', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, fontFamily: "'Nunito', sans-serif", boxShadow: '0 4px 16px rgba(76,0,128,0.08)', transition: 'all 0.2s ease' }}
             onMouseEnter={e => { e.currentTarget.style.background = '#faf5ff'; e.currentTarget.style.borderColor = '#a855f7'; e.currentTarget.style.boxShadow = '0 6px 20px rgba(76,0,128,0.15)'; e.currentTarget.style.transform = 'translateY(-2px)' }}
             onMouseLeave={e => { e.currentTarget.style.background = 'white'; e.currentTarget.style.borderColor = '#e9d5ff'; e.currentTarget.style.boxShadow = '0 4px 16px rgba(76,0,128,0.08)'; e.currentTarget.style.transform = 'translateY(0)' }}
           >
             <span style={{ fontSize: 22 }}>🧭</span>
             <div style={{ textAlign: 'right' }}>
-              <div style={{ fontSize: 16, fontWeight: 800 }}>מחשבון איתור מסלול</div>
-              <div style={{ fontSize: 12, fontWeight: 500, color: '#9b88bb', marginTop: 2 }}>7 שאלות קצרות - וקבל המלצה מותאמת אישית</div>
+              <div style={{ fontSize: 16, fontWeight: 800 }}>מחשבון איתור שירות</div>
+              <div style={{ fontSize: 12, fontWeight: 500, color: '#9b88bb', marginTop: 2 }}>כמה שאלות קצרות – וקבל המלצה מותאמת אישית</div>
             </div>
             <span style={{ marginRight: 'auto', fontSize: 18, color: '#a855f7' }}>←</span>
           </button>
