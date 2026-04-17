@@ -249,7 +249,7 @@ export default function Register() {
                   boxShadow: tab === 'rehab' ? '0 6px 20px rgba(139,0,212,0.3)' : '0 2px 8px rgba(0,0,0,0.04)',
                   display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8, textAlign: 'center',
                 }}>
-                  <span style={{ fontSize: 32 }}>♿</span>
+                  <img src="/rehab-logo.png" alt="" role="presentation" style={{ width: 56, height: 56, objectFit: 'contain', filter: tab === 'rehab' ? 'invert(1) brightness(10)' : 'none', mixBlendMode: tab === 'rehab' ? 'normal' : 'multiply' }} />
                   <div>
                     <div style={{ fontWeight: 800, fontSize: 15 }}>שיקום</div>
                     <div style={{ fontSize: 11, opacity: 0.75, marginTop: 3, fontWeight: 500 }}>סל שיקום בקהילה</div>
@@ -266,7 +266,7 @@ export default function Register() {
                   boxShadow: treatmentActive ? '0 6px 20px rgba(8,145,178,0.3)' : '0 2px 8px rgba(0,0,0,0.04)',
                   display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8, textAlign: 'center',
                 }}>
-                  <span style={{ fontSize: 32 }}>🏥</span>
+                  <img src="/treatment-logo.png" alt="" role="presentation" style={{ width: 56, height: 56, objectFit: 'contain', filter: treatmentActive ? 'invert(1) brightness(10)' : 'none', mixBlendMode: treatmentActive ? 'normal' : 'multiply' }} />
                   <div>
                     <div style={{ fontWeight: 800, fontSize: 15 }}>טיפול</div>
                     <div style={{ fontSize: 11, opacity: 0.75, marginTop: 3, fontWeight: 500 }}>מרכזים, מרפאות ומטפלים</div>
