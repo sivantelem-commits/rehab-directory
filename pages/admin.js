@@ -3,82 +3,92 @@ import Head from 'next/head'
 import { CATEGORIES, CATEGORY_NAMES, getCategoryColor } from '../lib/categories'
 import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts'
 
+// ─── קבועים ────────────────────────────────────────────────────────────────
 const DISTRICTS = ['צפון', 'חיפה', 'מרכז', 'תל אביב', 'ירושלים', 'דרום', 'יהודה ושומרון']
 const PRACT_TREATMENT_TYPES = ['טיפול רגשי','טיפול זוגי','טיפול רגשי לילדים','טיפול במתבגרים','CBT','EMDR','הדרכת הורים','טיפול מוזל','ריפוי בעיסוק','קלינאית תקשורת','טיפולים בהבעה ויצירה','מטפלים לקהילה הגאה']
 const PRACT_SPECIALIZATIONS = ['טיפול בדיכאון','טיפול בחרדה','פוסט טראומה','פוסט טראומה מורכבת','הפרעות אכילה','טיפול בנערות ונשים צעירות','לקויות למידה והפרעות קשב','נכויות ומחלות כרוניות','אבחונים','התמכרויות','מיינדפולנס','פסיכולוגיה תעסוקתית','פסיכודרמה','התפתחות הילד','גיל ההתבגרות','בעיות משפחתיות וזוגיות','אבל ואובדן','טיפול רגשי בילדים','הגיל השלישי']
 const PRACT_PROFESSIONS = ['פסיכולוג/ית קלינית','פסיכיאטר/ית','עובד/ת סוציאלי/ת','מטפל/ת CBT מוסמך/ת','מטפל/ת EMDR מוסמך/ת','פסיכותרפיסט/ית','קלינאי/ת תקשורת','מרפא/ה בעיסוק','מטפל/ת בהבעה ויצירה','פסיכולוג/ית חינוכי/ת','אחר']
 const HEALTH_FUNDS = ['כללית','מכבי','מאוחדת','לאומית']
 const PRACT_LANGUAGES = ['עברית','ערבית','אנגלית','רוסית','אמהרית','צרפתית']
-const TREATMENT_CATEGORIES = ['בתים מאזנים', 'מחלקות אשפוז', 'טיפול יום', 'מרפאות בריאות נפש', 'חדרי מיון', 'אשפוז בית', 'שירותים נוספים']
-const TREATMENT_COLORS = { 'בתים מאזנים': '#0A3040', 'מחלקות אשפוז': '#0A6080', 'טיפול יום': '#0891B2', 'מרפאות בריאות נפש': '#0284C7', 'חדרי מיון': '#06B6D4', 'אשפוז בית': '#0E7490', 'שירותים נוספים': '#0A6080' }
-
-const CATEGORY_BG_COLORS = {
-  'דיור': 'FFF3E5F5', 'תעסוקה': 'FFFFF3E0', 'השכלה': 'FFE3F2FD',
-  'חברה ופנאי': 'FFE8F5E9', 'ליווי ותמיכה': 'FFE1F5FE',
-  'טיפולי שיניים': 'FFFCE4EC', 'שירותים נוספים': 'FFECEFF1',
-}
-const CATEGORY_TEXT_COLORS = {
-  'דיור': 'FF4C0080', 'תעסוקה': 'FF9B00CC', 'השכלה': 'FF1A3A5C',
-  'חברה ופנאי': 'FF5E35B1', 'ליווי ותמיכה': 'FF0891B2',
-  'טיפולי שיניים': 'FFC2185B', 'שירותים נוספים': 'FF546E7A',
-}
-
+const TREATMENT_CATEGORIES = ['בתים מאזנים','מחלקות אשפוז','טיפול יום','מרפאות בריאות נפש','חדרי מיון','אשפוז בית','שירותים נוספים']
+const TREATMENT_COLORS = { 'בתים מאזנים':'#0A3040','מחלקות אשפוז':'#1565A8','טיפול יום':'#0891B2','מרפאות בריאות נפש':'#0284C7','חדרי מיון':'#06B6D4','אשפוז בית':'#0E7490','שירותים נוספים':'#0A6080' }
+const CATEGORY_BG_COLORS = { 'דיור':'FFF3E5F5','תעסוקה':'FFFFF3E0','השכלה':'FFE3F2FD','חברה ופנאי':'FFE8F5E9','ליווי ותמיכה':'FFE1F5FE','טיפולי שיניים':'FFFCE4EC','שירותים נוספים':'FFECEFF1' }
+const CATEGORY_TEXT_COLORS = { 'דיור':'FF4C0080','תעסוקה':'FF9B00CC','השכלה':'FF1A3A5C','חברה ופנאי':'FF5E35B1','ליווי ותמיכה':'FF0891B2','טיפולי שיניים':'FFC2185B','שירותים נוספים':'FF546E7A' }
 const NAV = [['/', '🏠 ראשי'], ['/rehab', '♿ שיקום'], ['/treatment', '🏥 טיפול'], ['/map', '🗺️ מפה'], ['/register', 'הוספת שירות'], ['/about', 'אודות'], ['/contact', '✉️ צור קשר'], ['/admin', 'ניהול']]
 
+// ─── עיצוב כפתורים ────────────────────────────────────────────────────────
+const btn = (color, outline = false) => ({
+  padding: '7px 14px', borderRadius: 20, fontWeight: 700, fontSize: 12, cursor: 'pointer',
+  fontFamily: 'inherit', border: `1.5px solid ${color}`,
+  background: outline ? 'white' : color,
+  color: outline ? color : 'white',
+  display: 'inline-flex', alignItems: 'center', gap: 5, whiteSpace: 'nowrap',
+  transition: 'all 0.12s',
+})
+const btnSm = (color, outline = false) => ({ ...btn(color, outline), padding: '5px 11px', fontSize: 11 })
+
 export default function Admin() {
-  const [authed, setAuthed] = useState(false)
-  const [password, setPassword] = useState('')
+  const [authed, setAuthed]       = useState(false)
+  const [password, setPassword]   = useState('')
   const [loginError, setLoginError] = useState('')
-  const [pending, setPending] = useState([])
-  const [approved, setApproved] = useState([])
-  const [pendingTreatment, setPendingTreatment] = useState([])
+  const [adminKey, setAdminKey]   = useState('')
+  const [loading, setLoading]     = useState(false)
+  const [mounted, setMounted]     = useState(false)
+
+  // ── נתונים ──
+  const [pending, setPending]           = useState([])
+  const [approved, setApproved]         = useState([])
+  const [pendingTreatment, setPendingTreatment]   = useState([])
   const [approvedTreatment, setApprovedTreatment] = useState([])
-  const [loading, setLoading] = useState(false)
-  const [section, setSection] = useState('rehab')
-  const [rehabTab, setRehabTab] = useState('pending')
-  const [treatmentTab, setTreatmentTab] = useState('pending')
-  const [adminKey, setAdminKey] = useState('')
-  const [editingService, setEditingService] = useState(null)
-  const [editForm, setEditForm] = useState({})
-  const [saving, setSaving] = useState(false)
-  const [rehabSearch, setRehabSearch] = useState('')
-  const [rehabSort, setRehabSort] = useState('date')
-  const [treatmentSearch, setTreatmentSearch] = useState('')
-  const [treatmentSort, setTreatmentSort] = useState('date')
-  const [locationService, setLocationService] = useState(null)
-  const [mounted, setMounted] = useState(false)
-  const [showExportRehab, setShowExportRehab] = useState(false)
-  const [showExportTreatment, setShowExportTreatment] = useState(false)
-  const [exportFilters, setExportFilters] = useState({ status: 'approved', district: '', category: '', subcategory: '' })
-  const [exportTreatmentFilters, setExportTreatmentFilters] = useState({ status: 'approved', district: '', category: '' })
-  const [exporting, setExporting] = useState(false)
-  const [stats, setStats] = useState(null)
+  const [pendingPractitioners, setPendingPractitioners]   = useState([])
+  const [approvedPractitioners, setApprovedPractitioners] = useState([])
+  const [stats, setStats]         = useState(null)
   const [duplicates, setDuplicates] = useState([])
   const [loadingDuplicates, setLoadingDuplicates] = useState(false)
-  const [history, setHistory] = useState([])
+  const [history, setHistory]     = useState([])
   const [loadingHistory, setLoadingHistory] = useState(false)
+
+  // ── UI ──
+  const [section, setSection]     = useState('inbox')
+  const [rehabTab, setRehabTab]   = useState('pending')
+  const [treatmentTab, setTreatmentTab] = useState('pending')
+  const [practitionersTab, setPractitionersTab] = useState('pending')
+  const [rehabSearch, setRehabSearch]   = useState('')
+  const [rehabSort, setRehabSort]       = useState('date')
+  const [treatmentSearch, setTreatmentSearch] = useState('')
+  const [treatmentSort, setTreatmentSort]     = useState('date')
+  const [practitionerSearch, setPractitionerSearch] = useState('')
+  const [inboxSearch, setInboxSearch]   = useState('')
+
+  // ── מודלים ──
+  const [editingService, setEditingService] = useState(null)
+  const [editForm, setEditForm]             = useState({})
+  const [editTab, setEditTab]               = useState('basic')
+  const [saving, setSaving]                 = useState(false)
+  const [editingPractitioner, setEditingPractitioner] = useState(null)
+  const [editPForm, setEditPForm]           = useState({})
+  const [editPTab, setEditPTab]             = useState('basic')
+  const [savingPractitioner, setSavingPractitioner] = useState(false)
+  const [locationService, setLocationService] = useState(null)
+  const [pendingApproval, setPendingApproval] = useState(null) // שירות שממתין לאישור + מיקום
   const [rejectEmailModal, setRejectEmailModal] = useState(null)
-  const [rejectReason, setRejectReason] = useState('')
+  const [rejectReason, setRejectReason]     = useState('')
   const [sendingRejectEmail, setSendingRejectEmail] = useState(false)
 
-  // ── מטפלים פרטיים ──
-  const [pendingPractitioners,  setPendingPractitioners]  = useState([])
-  const [approvedPractitioners, setApprovedPractitioners] = useState([])
-  const [practitionersTab,      setPractitionersTab]      = useState('pending')
-  const [practitionerSearch,    setPractitionerSearch]    = useState('')
-  const [editingPractitioner,   setEditingPractitioner]   = useState(null)
-  const [editPForm,             setEditPForm]             = useState({})
-  const [savingPractitioner,    setSavingPractitioner]    = useState(false)
+  // ── ייצוא ──
+  const [showExportRehab, setShowExportRehab]         = useState(false)
+  const [showExportTreatment, setShowExportTreatment] = useState(false)
+  const [showExportPract, setShowExportPract]         = useState(false)
+  const [exportFilters, setExportFilters]             = useState({ status: 'approved', district: '', category: '', subcategory: '' })
+  const [exportTreatmentFilters, setExportTreatmentFilters] = useState({ status: 'approved', district: '', category: '' })
+  const [exporting, setExporting]                     = useState(false)
 
   useEffect(() => { setMounted(true) }, [])
 
+  // ── כניסה ──
   const login = async () => {
     setLoginError('')
-    const res = await fetch('/api/admin/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ password }),
-    })
+    const res = await fetch('/api/admin/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ password }) })
     if (res.ok) { setAuthed(true); setAdminKey(password) }
     else setLoginError('סיסמה שגויה')
   }
@@ -91,14 +101,14 @@ export default function Admin() {
         fetch('/api/services'),
         fetch('/api/admin/treatment-services?status=pending', { headers: { adminkey: key } }),
         fetch('/api/admin/treatment-services?status=approved', { headers: { adminkey: key } }),
-        fetch('/api/admin/practitioners?status=pending',  { headers: { adminkey: key } }),
+        fetch('/api/admin/practitioners?status=pending', { headers: { adminkey: key } }),
         fetch('/api/admin/practitioners?status=approved', { headers: { adminkey: key } }),
       ])
       setPending(await p.json())
       setApproved(await a.json())
       setPendingTreatment(await pt.json())
       setApprovedTreatment(await at.json())
-      setPendingPractitioners(pp.ok  ? await pp.json() : [])
+      setPendingPractitioners(pp.ok ? await pp.json() : [])
       setApprovedPractitioners(ap.ok ? await ap.json() : [])
     } finally { setLoading(false) }
   }
@@ -117,21 +127,37 @@ export default function Admin() {
       ])
       const rehab = await rehabRes.json()
       const treatment = await treatmentRes.json()
+
+      // נרמול שם לצורך השוואה
+      const normalize = (name = '') => name
+        .replace(/בע"מ|בע''מ|ישראל|שירותי|מרכז|בית|קהילת/g, '')
+        .replace(/\s+/g, ' ').trim().toLowerCase()
+
       const findDups = (list, type) => {
         const pairs = []
         for (let i = 0; i < list.length; i++) {
           for (let j = i + 1; j < list.length; j++) {
             const a = list[i], b = list[j]
-            const nameSim = a.name && b.name && (a.name.trim() === b.name.trim() || a.name.includes(b.name) || b.name.includes(a.name))
+            const na = normalize(a.name), nb = normalize(b.name)
+            // דמיון שם: כולל, שווה, או מרחק Levenshtein קטן
+            const nameSim = na === nb || na.includes(nb) || nb.includes(na) ||
+              (na.length > 4 && nb.length > 4 && levenshtein(na, nb) <= 2)
             const citySim = !a.city || !b.city || a.city.trim() === b.city.trim()
-            const catSim = !a.category || !b.category || a.category === b.category
-            if (nameSim && citySim && catSim) pairs.push({ a: { ...a, _type: type }, b: { ...b, _type: type }, dismissed: false })
+            if (nameSim && citySim) pairs.push({ a: { ...a, _type: type }, b: { ...b, _type: type }, dismissed: false })
           }
         }
         return pairs
       }
       setDuplicates([...findDups(Array.isArray(rehab) ? rehab : [], 'rehab'), ...findDups(Array.isArray(treatment) ? treatment : [], 'treatment')])
     } finally { setLoadingDuplicates(false) }
+  }
+
+  const levenshtein = (a, b) => {
+    const m = a.length, n = b.length
+    const dp = Array.from({ length: m + 1 }, (_, i) => Array.from({ length: n + 1 }, (_, j) => i === 0 ? j : j === 0 ? i : 0))
+    for (let i = 1; i <= m; i++) for (let j = 1; j <= n; j++)
+      dp[i][j] = a[i-1] === b[j-1] ? dp[i-1][j-1] : 1 + Math.min(dp[i-1][j], dp[i][j-1], dp[i-1][j-1])
+    return dp[m][n]
   }
 
   const fetchHistory = async (key) => {
@@ -146,31 +172,30 @@ export default function Admin() {
     if (authed) { fetchAll(adminKey); fetchStats(adminKey) }
   }, [authed])
 
-  const updateStatus = async (id, status) => {
-    await fetch('/api/admin/services', {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json', adminkey: adminKey },
-      body: JSON.stringify({ id, status }),
-    })
-    if (status === 'approved') {
-      const service = pending.find(s => s.id === id)
-      if (service?.email) {
-        await fetch('/api/admin/approve-email', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', adminkey: adminKey },
-          body: JSON.stringify({ serviceName: service.name, serviceEmail: service.email, contactEmail: service.contact_email }),
-        })
-      }
+  // ── פעולות שיקום ──
+  const updateStatus = async (id, status, service) => {
+    await fetch('/api/admin/services', { method: 'PATCH', headers: { 'Content-Type': 'application/json', adminkey: adminKey }, body: JSON.stringify({ id, status }) })
+    if (status === 'approved' && service?.email) {
+      await fetch('/api/admin/approve-email', { method: 'POST', headers: { 'Content-Type': 'application/json', adminkey: adminKey }, body: JSON.stringify({ serviceName: service.name, serviceEmail: service.email, contactEmail: service.contact_email }) })
     }
     fetchAll(adminKey); fetchStats(adminKey)
   }
 
+  const approveWithLocation = (service, type) => {
+    // פותח LocationPicker, ולאחר שמירה — מאשר
+    setPendingApproval({ service, type })
+    setLocationService({ ...service, _table: type === 'treatment' ? 'treatment' : 'services', _pendingApproval: true })
+  }
+
+  const deleteService = async (id) => {
+    if (!confirm('למחוק שירות זה לצמיתות?')) return
+    await fetch(`/api/admin/services?id=${id}`, { method: 'DELETE', headers: { adminkey: adminKey } })
+    fetchAll(adminKey)
+  }
+
+  // ── פעולות טיפול ──
   const updateTreatmentStatus = async (id, status) => {
-    await fetch('/api/admin/treatment-services', {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json', adminkey: adminKey },
-      body: JSON.stringify({ id, status }),
-    })
+    await fetch('/api/admin/treatment-services', { method: 'PATCH', headers: { 'Content-Type': 'application/json', adminkey: adminKey }, body: JSON.stringify({ id, status }) })
     fetchAll(adminKey)
   }
 
@@ -180,24 +205,11 @@ export default function Admin() {
     fetchAll(adminKey)
   }
 
-  const deleteService = async (id) => {
-    if (!confirm('למחוק שירות זה לצמיתות?')) return
-    await fetch(`/api/admin/services?id=${id}`, { method: 'DELETE', headers: { adminkey: adminKey } })
-    fetchAll(adminKey)
-  }
-
+  // ── עריכה ──
   const openEdit = (service, table = 'services') => {
     setEditingService(service)
-    setEditForm({
-      ...service,
-      _table: table,
-      age_groups: service.age_groups || [],
-      diagnoses: service.diagnoses || [],
-      populations: service.populations || [],
-      categories: service.categories || [],
-      districts: service.districts || [],
-      is_regional: service.is_regional || false,
-    })
+    setEditTab('basic')
+    setEditForm({ ...service, _table: table, age_groups: service.age_groups || [], diagnoses: service.diagnoses || [], populations: service.populations || [], categories: service.categories || [], districts: service.districts || [], is_regional: service.is_regional || false })
   }
 
   const toggleEditArray = (field, value) => {
@@ -211,11 +223,7 @@ export default function Admin() {
     setSaving(true)
     try {
       const { _table, ...fields } = editForm
-      await fetch('/api/admin/edit', {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json', adminkey: adminKey },
-        body: JSON.stringify({ ...fields, table: _table }),
-      })
+      await fetch('/api/admin/edit', { method: 'PATCH', headers: { 'Content-Type': 'application/json', adminkey: adminKey }, body: JSON.stringify({ ...fields, table: _table }) })
       setEditingService(null); fetchAll(adminKey)
     } finally { setSaving(false) }
   }
@@ -223,11 +231,7 @@ export default function Admin() {
   const savePractitionerEdit = async () => {
     setSavingPractitioner(true)
     try {
-      await fetch('/api/admin/practitioners', {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json', adminkey: adminKey },
-        body: JSON.stringify(editPForm),
-      })
+      await fetch('/api/admin/practitioners', { method: 'PATCH', headers: { 'Content-Type': 'application/json', adminkey: adminKey }, body: JSON.stringify(editPForm) })
       setEditingPractitioner(null); fetchAll(adminKey)
     } finally { setSavingPractitioner(false) }
   }
@@ -239,27 +243,20 @@ export default function Admin() {
     })
   }
 
-  const sendRejectEmail = async () => {
-    if (!rejectEmailModal?.email) return
-    setSendingRejectEmail(true)
-    try {
-      await fetch('/api/admin/reject-email', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', adminkey: adminKey },
-        body: JSON.stringify({ serviceEmail: rejectEmailModal.email, contactEmail: rejectEmailModal.contactEmail, serviceName: rejectEmailModal.name, reason: rejectReason }),
-      })
-      setRejectEmailModal(null); setRejectReason('')
-    } finally { setSendingRejectEmail(false) }
-  }
-
+  // ── מיקום ──
   const saveLocation = async (lat, lng) => {
     const isTreatment = locationService._table === 'treatment'
     const endpoint = isTreatment ? '/api/admin/treatment-services' : '/api/admin/services'
-    await fetch(endpoint, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', adminkey: adminKey },
-      body: JSON.stringify({ id: locationService.id, lat, lng }),
-    })
+    await fetch(endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json', adminkey: adminKey }, body: JSON.stringify({ id: locationService.id, lat, lng }) })
+
+    // אם זה אישור עם מיקום — גם מאשר
+    if (locationService._pendingApproval && pendingApproval) {
+      const { service, type } = pendingApproval
+      if (type === 'treatment') await updateTreatmentStatus(service.id, 'approved')
+      else await updateStatus(service.id, 'approved', service)
+      setPendingApproval(null)
+    }
+
     setLocationService(null); fetchAll(adminKey)
   }
 
@@ -267,144 +264,357 @@ export default function Admin() {
     if (!confirm('להסיר את המיקום מהמפה?')) return
     const isTreatment = table === 'treatment'
     const endpoint = isTreatment ? '/api/admin/treatment-services' : '/api/admin/services'
-    await fetch(endpoint, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', adminkey: adminKey },
-      body: JSON.stringify({ id, lat: null, lng: null }),
-    })
+    await fetch(endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json', adminkey: adminKey }, body: JSON.stringify({ id, lat: null, lng: null }) })
     fetchAll(adminKey)
   }
 
-  const exportRehabToExcel = async () => {
-    setExporting(true)
+  // ── דחייה עם מייל ──
+  const sendRejectEmail = async () => {
+    if (!rejectEmailModal?.email) return
+    setSendingRejectEmail(true)
     try {
-      const params = new URLSearchParams()
-      if (exportFilters.status) params.set('status', exportFilters.status)
-      if (exportFilters.district) params.set('district', exportFilters.district)
-      if (exportFilters.category) params.set('category', exportFilters.category)
-      if (exportFilters.subcategory) params.set('subcategory', exportFilters.subcategory)
-      const res = await fetch(`/api/admin/export?${params}`, { headers: { adminkey: adminKey } })
-      const data = await res.json()
-      const ExcelJS = (await import('exceljs')).default
-      const wb = new ExcelJS.Workbook()
-      wb.views = [{ rightToLeft: true }]
-      const ws = wb.addWorksheet('שירותי שיקום', { views: [{ rightToLeft: true }] })
-      ws.columns = [
-        { header: 'שם השירות', key: 'name', width: 28 }, { header: 'קטגוריה', key: 'category', width: 16 },
-        { header: 'תת קטגוריה', key: 'subcategory', width: 18 }, { header: 'מחוז', key: 'district', width: 12 },
-        { header: 'עיר', key: 'city', width: 14 }, { header: 'כתובת', key: 'address', width: 24 },
-        { header: 'טלפון', key: 'phone', width: 16 }, { header: 'מייל', key: 'email', width: 26 },
-        { header: 'אתר', key: 'website', width: 28 }, { header: 'תיאור', key: 'description', width: 40 },
-        { header: 'ארצי', key: 'is_national', width: 10 }, { header: 'סטטוס', key: 'status', width: 12 },
-        { header: 'תאריך הוספה', key: 'created_at', width: 16 },
-      ]
-      const headerRow = ws.getRow(1)
-      headerRow.height = 28
-      headerRow.eachCell(cell => {
-        cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF1A3A5C' } }
-        cell.font = { bold: true, color: { argb: 'FFFFFFFF' }, size: 12, name: 'Arial' }
-        cell.alignment = { horizontal: 'center', vertical: 'middle', readingOrder: 'rightToLeft' }
-        cell.border = { bottom: { style: 'medium', color: { argb: 'FFF47B20' } } }
-      })
-      data.forEach(s => {
-        const row = ws.addRow({
-          name: s.name, category: s.category, subcategory: s.subcategory || '',
-          district: s.district, city: s.city, address: s.address || '',
-          phone: s.phone || '', email: s.email || '', website: s.website || '',
-          description: s.description || '', is_national: s.is_national ? '✓' : '',
-          status: s.status === 'approved' ? 'פעיל' : s.status === 'pending' ? 'ממתין' : 'נדחה',
-          created_at: new Date(s.created_at).toLocaleDateString('he-IL'),
-        })
-        const bg = CATEGORY_BG_COLORS[s.category] || 'FFFFFFFF'
-        const textColor = CATEGORY_TEXT_COLORS[s.category] || 'FF333333'
-        row.height = 22
-        row.eachCell((cell, colNumber) => {
-          cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: bg } }
-          cell.alignment = { horizontal: 'right', vertical: 'middle', readingOrder: 'rightToLeft' }
-          cell.border = { bottom: { style: 'thin', color: { argb: 'FFDDDDDD' } }, right: { style: 'thin', color: { argb: 'FFDDDDDD' } } }
-          cell.font = colNumber === 2 ? { bold: true, color: { argb: textColor }, name: 'Arial' } : { color: { argb: 'FF333333' }, name: 'Arial' }
-        })
-      })
-      ws.autoFilter = { from: 'A1', to: `M${data.length + 1}` }
-      const buffer = await wb.xlsx.writeBuffer()
-      const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
-      const url = URL.createObjectURL(blob)
-      const a = document.createElement('a')
-      a.href = url; a.download = `שירותי-שיקום-${new Date().toLocaleDateString('he-IL').replace(/\//g, '-')}.xlsx`
-      a.click(); URL.revokeObjectURL(url)
-      setShowExportRehab(false)
-    } finally { setExporting(false) }
+      await fetch('/api/admin/reject-email', { method: 'POST', headers: { 'Content-Type': 'application/json', adminkey: adminKey }, body: JSON.stringify({ serviceEmail: rejectEmailModal.email, contactEmail: rejectEmailModal.contactEmail, serviceName: rejectEmailModal.name, reason: rejectReason }) })
+      setRejectEmailModal(null); setRejectReason('')
+    } finally { setSendingRejectEmail(false) }
   }
 
-  const exportTreatmentToExcel = async () => {
+  // ── ייצוא ──
+  const exportToExcel = async (type) => {
     setExporting(true)
     try {
-      const params = new URLSearchParams()
-      if (exportTreatmentFilters.status) params.set('status', exportTreatmentFilters.status)
-      if (exportTreatmentFilters.district) params.set('district', exportTreatmentFilters.district)
-      if (exportTreatmentFilters.category) params.set('category', exportTreatmentFilters.category)
-      const res = await fetch(`/api/admin/export-treatment?${params}`, { headers: { adminkey: adminKey } })
-      const data = await res.json()
-      const ExcelJS = (await import('exceljs')).default
-      const wb = new ExcelJS.Workbook()
-      wb.views = [{ rightToLeft: true }]
-      const ws = wb.addWorksheet('שירותי טיפול', { views: [{ rightToLeft: true }] })
-      ws.columns = [
-        { header: 'שם השירות', key: 'name', width: 28 }, { header: 'קטגוריה', key: 'category', width: 18 },
-        { header: 'מחוז', key: 'district', width: 12 }, { header: 'עיר', key: 'city', width: 14 },
-        { header: 'כתובת', key: 'address', width: 24 }, { header: 'טלפון', key: 'phone', width: 16 },
-        { header: 'מייל', key: 'email', width: 26 }, { header: 'אתר', key: 'website', width: 28 },
-        { header: 'תיאור', key: 'description', width: 40 }, { header: 'סטטוס', key: 'status', width: 12 },
-        { header: 'תאריך הוספה', key: 'created_at', width: 16 },
-      ]
-      const CAT_COLORS = {
-        'בתים מאזנים': { bg: 'FFE3F2FD', text: 'FF0891B2' }, 'מחלקות אשפוז': { bg: 'FFF3E5F5', text: 'FF7B2D8B' },
-        'טיפול יום': { bg: 'FFE8F5E9', text: 'FF164E63' }, 'מרפאות בריאות נפש': { bg: 'FFE0F2FE', text: 'FF0284C7' }, 'חדרי מיון': { bg: 'FFFFEBEE', text: 'FFC62828' },
+      let data, filename, sheetName, headerColor
+      if (type === 'rehab') {
+        const params = new URLSearchParams()
+        if (exportFilters.status) params.set('status', exportFilters.status)
+        if (exportFilters.district) params.set('district', exportFilters.district)
+        if (exportFilters.category) params.set('category', exportFilters.category)
+        if (exportFilters.subcategory) params.set('subcategory', exportFilters.subcategory)
+        data = await fetch(`/api/admin/export?${params}`, { headers: { adminkey: adminKey } }).then(r => r.json())
+        filename = `שיקום-${new Date().toLocaleDateString('he-IL').replace(/\//g,'-')}.xlsx`
+        sheetName = 'שירותי שיקום'; headerColor = 'FF1A3A5C'
+      } else if (type === 'treatment') {
+        const params = new URLSearchParams()
+        if (exportTreatmentFilters.status) params.set('status', exportTreatmentFilters.status)
+        if (exportTreatmentFilters.district) params.set('district', exportTreatmentFilters.district)
+        if (exportTreatmentFilters.category) params.set('category', exportTreatmentFilters.category)
+        data = await fetch(`/api/admin/export-treatment?${params}`, { headers: { adminkey: adminKey } }).then(r => r.json())
+        filename = `טיפול-${new Date().toLocaleDateString('he-IL').replace(/\//g,'-')}.xlsx`
+        sheetName = 'שירותי טיפול'; headerColor = 'FF0277BD'
+      } else {
+        // מטפלים פרטיים
+        data = [...approvedPractitioners]
+        filename = `מטפלים-${new Date().toLocaleDateString('he-IL').replace(/\//g,'-')}.xlsx`
+        sheetName = 'מטפלים פרטיים'; headerColor = 'FF0F4C75'
       }
+
+      const ExcelJS = (await import('exceljs')).default
+      const wb = new ExcelJS.Workbook()
+      wb.views = [{ rightToLeft: true }]
+      const ws = wb.addWorksheet(sheetName, { views: [{ rightToLeft: true }] })
+
+      if (type === 'practitioners') {
+        ws.columns = [
+          { header: 'שם', key: 'name', width: 22 }, { header: 'מקצוע', key: 'profession', width: 20 },
+          { header: 'עיר', key: 'city', width: 14 }, { header: 'מחוז', key: 'district', width: 12 },
+          { header: 'טלפון', key: 'phone', width: 16 }, { header: 'מייל', key: 'email', width: 26 },
+          { header: 'אתר', key: 'website', width: 26 }, { header: 'מחיר/שעה', key: 'price_range', width: 12 },
+          { header: 'סוגי טיפול', key: 'treatment_types', width: 30 }, { header: 'התמחויות', key: 'specializations', width: 30 },
+          { header: 'שפות', key: 'languages', width: 18 }, { header: 'אונליין', key: 'is_online', width: 10 },
+        ]
+        data.forEach(p => {
+          ws.addRow({ name: p.name, profession: p.profession, city: p.city, district: p.district || '', phone: p.phone || '', email: p.email || '', website: p.website || '', price_range: p.price_range || '', treatment_types: (p.treatment_types || []).join(', '), specializations: (p.specializations || []).join(', '), languages: (p.languages || []).join(', '), is_online: p.is_online ? '✓' : '' })
+        })
+      } else {
+        ws.columns = type === 'rehab'
+          ? [{ header: 'שם השירות', key: 'name', width: 28 }, { header: 'קטגוריה', key: 'category', width: 16 }, { header: 'תת קטגוריה', key: 'subcategory', width: 18 }, { header: 'מחוז', key: 'district', width: 12 }, { header: 'עיר', key: 'city', width: 14 }, { header: 'כתובת', key: 'address', width: 24 }, { header: 'טלפון', key: 'phone', width: 16 }, { header: 'מייל', key: 'email', width: 26 }, { header: 'אתר', key: 'website', width: 28 }, { header: 'תיאור', key: 'description', width: 40 }, { header: 'ארצי', key: 'is_national', width: 10 }, { header: 'סטטוס', key: 'status', width: 12 }, { header: 'תאריך הוספה', key: 'created_at', width: 16 }]
+          : [{ header: 'שם השירות', key: 'name', width: 28 }, { header: 'קטגוריה', key: 'category', width: 18 }, { header: 'מחוז', key: 'district', width: 12 }, { header: 'עיר', key: 'city', width: 14 }, { header: 'כתובת', key: 'address', width: 24 }, { header: 'טלפון', key: 'phone', width: 16 }, { header: 'מייל', key: 'email', width: 26 }, { header: 'אתר', key: 'website', width: 28 }, { header: 'תיאור', key: 'description', width: 40 }, { header: 'סטטוס', key: 'status', width: 12 }, { header: 'תאריך הוספה', key: 'created_at', width: 16 }]
+        data.forEach(s => {
+          const row = { name: s.name, category: s.category, district: s.district, city: s.city, address: s.address || '', phone: s.phone || '', email: s.email || '', website: s.website || '', description: s.description || '', status: s.status === 'approved' ? 'פעיל' : s.status === 'pending' ? 'ממתין' : 'נדחה', created_at: new Date(s.created_at).toLocaleDateString('he-IL') }
+          if (type === 'rehab') { row.subcategory = s.subcategory || ''; row.is_national = s.is_national ? '✓' : '' }
+          ws.addRow(row)
+        })
+      }
+
+      // עיצוב כותרות
       const headerRow = ws.getRow(1)
-      headerRow.height = 28
+      headerRow.height = 26
       headerRow.eachCell(cell => {
-        cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF0277BD' } }
+        cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: headerColor } }
         cell.font = { bold: true, color: { argb: 'FFFFFFFF' }, size: 12, name: 'Arial' }
         cell.alignment = { horizontal: 'center', vertical: 'middle', readingOrder: 'rightToLeft' }
-        cell.border = { bottom: { style: 'medium', color: { argb: 'FF0288D1' } } }
       })
-      data.forEach(s => {
-        const row = ws.addRow({
-          name: s.name, category: s.category, district: s.district, city: s.city,
-          address: s.address || '', phone: s.phone || '', email: s.email || '',
-          website: s.website || '', description: s.description || '',
-          status: s.status === 'approved' ? 'פעיל' : s.status === 'pending' ? 'ממתין' : 'נדחה',
-          created_at: new Date(s.created_at).toLocaleDateString('he-IL'),
-        })
-        const colors = CAT_COLORS[s.category] || { bg: 'FFFFFFFF', text: 'FF333333' }
-        row.height = 22
-        row.eachCell((cell, colNumber) => {
-          cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: colors.bg } }
-          cell.alignment = { horizontal: 'right', vertical: 'middle', readingOrder: 'rightToLeft' }
-          cell.border = { bottom: { style: 'thin', color: { argb: 'FFDDDDDD' } }, right: { style: 'thin', color: { argb: 'FFDDDDDD' } } }
-          cell.font = colNumber === 2 ? { bold: true, color: { argb: colors.text }, name: 'Arial' } : { color: { argb: 'FF333333' }, name: 'Arial' }
-        })
-      })
-      ws.autoFilter = { from: 'A1', to: `K${data.length + 1}` }
+      ws.autoFilter = { from: 'A1', to: `${String.fromCharCode(64 + ws.columns.length)}${data.length + 1}` }
+
       const buffer = await wb.xlsx.writeBuffer()
       const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
       const url = URL.createObjectURL(blob)
       const a = document.createElement('a')
-      a.href = url; a.download = `שירותי-טיפול-${new Date().toLocaleDateString('he-IL').replace(/\//g, '-')}.xlsx`
-      a.click(); URL.revokeObjectURL(url)
-      setShowExportTreatment(false)
+      a.href = url; a.download = filename; a.click(); URL.revokeObjectURL(url)
+      setShowExportRehab(false); setShowExportTreatment(false); setShowExportPract(false)
     } finally { setExporting(false) }
   }
 
-  const inp = { width: '100%', padding: '10px 14px', borderRadius: 12, border: `1.5px solid ${editForm._table === 'treatment' ? '#a0d8e8' : '#d4b0f0'}`, fontSize: 14, background: editForm._table === 'treatment' ? '#f0faff' : '#f7f0ff', outline: 'none', boxSizing: 'border-box', fontFamily: 'inherit' }
-  const lbl = { display: 'block', fontSize: 13, fontWeight: 700, color: '#1A3A5C', marginBottom: 5 }
+  // ── computed ──
   const isTreatmentEdit = editForm._table === 'treatment'
   const editSubcategories = (!isTreatmentEdit && editForm.category) ? CATEGORIES[editForm.category]?.subcategories || [] : []
   const exportSubcategories = exportFilters.category ? CATEGORIES[exportFilters.category]?.subcategories || [] : []
 
+  // Inbox: כל הממתינים ביחד
+  const allPending = [
+    ...pending.map(s => ({ ...s, _itype: 'rehab' })),
+    ...pendingTreatment.map(s => ({ ...s, _itype: 'treatment' })),
+    ...pendingPractitioners.map(s => ({ ...s, _itype: 'practitioner' })),
+  ].filter(s => !inboxSearch || [s.name, s.city, s.category, s.profession].some(f => f?.includes(inboxSearch)))
+   .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+
+  const noLocationCount = approved.filter(s => !s.lat).length + approvedTreatment.filter(s => !s.lat).length
+
+  const inp = { width: '100%', padding: '9px 12px', borderRadius: 10, border: `1.5px solid ${isTreatmentEdit ? '#a0d8e8' : '#d4b0f0'}`, fontSize: 14, background: isTreatmentEdit ? '#f0faff' : '#f7f0ff', outline: 'none', boxSizing: 'border-box', fontFamily: 'inherit' }
+  const lbl = { display: 'block', fontSize: 13, fontWeight: 700, color: '#1A3A5C', marginBottom: 5 }
+
   if (!mounted) return null
 
+  // ─── סקשן: ממתינים פנויות ──────────────────────────────────────────────
+  const renderInbox = () => (
+    <div>
+      <div style={{ display: 'flex', gap: 10, marginBottom: 16, alignItems: 'center' }}>
+        <input placeholder="חיפוש בממתינים..." value={inboxSearch} onChange={e => setInboxSearch(e.target.value)}
+          style={{ flex: 1, padding: '8px 14px', borderRadius: 20, border: '1.5px solid #ddd', fontSize: 13, outline: 'none', fontFamily: 'inherit' }} />
+        <div style={{ fontSize: 13, color: '#888', fontWeight: 600, whiteSpace: 'nowrap' }}>{allPending.length} ממתינים</div>
+      </div>
+      {allPending.length === 0 ? (
+        <div style={{ textAlign: 'center', padding: 52, color: '#aaa' }}>
+          <div style={{ fontSize: 40, marginBottom: 10 }}>🎉</div>
+          <div style={{ fontWeight: 600 }}>אין בקשות ממתינות</div>
+        </div>
+      ) : allPending.map(s => {
+        const isRehab = s._itype === 'rehab'
+        const isTreatment = s._itype === 'treatment'
+        const isPract = s._itype === 'practitioner'
+        const color = isRehab ? getCategoryColor(s.category, s.subcategory) : isTreatment ? (TREATMENT_COLORS[s.category] || '#0891B2') : '#0F4C75'
+        const typeLabel = isRehab ? '♿ שיקום' : isTreatment ? '🏥 טיפול' : '🧠 מטפל/ת'
+        return (
+          <div key={s.id + s._itype} style={{ background: 'white', borderRadius: 14, padding: '16px', marginBottom: 12, boxShadow: '0 2px 10px rgba(0,0,0,0.07)', borderRight: `5px solid ${color}` }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 8 }}>
+              <div>
+                <span style={{ background: color + '22', color, borderRadius: 20, padding: '2px 10px', fontSize: 11, fontWeight: 700, marginBottom: 5, display: 'inline-block' }}>{typeLabel}</span>
+                <div style={{ fontWeight: 700, fontSize: 15, color: '#1A3A5C' }}>{s.name}</div>
+                <div style={{ fontSize: 12, color: '#888', marginTop: 2 }}>
+                  {s.city && `📍 ${s.city}`}{s.district ? `, ${s.district}` : ''}
+                  {s.category && <span style={{ marginRight: 8 }}>{s.category}{s.subcategory ? ` › ${s.subcategory}` : ''}</span>}
+                  {s.profession && <span> · {s.profession}</span>}
+                </div>
+              </div>
+              <div style={{ fontSize: 11, color: '#bbb' }}>{new Date(s.created_at).toLocaleDateString('he-IL')}</div>
+            </div>
+            {s.description && <div style={{ fontSize: 12, color: '#666', marginBottom: 10, lineHeight: 1.5, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{s.description}</div>}
+            {s.bio && <div style={{ fontSize: 12, color: '#666', marginBottom: 10, fontStyle: 'italic' }}>"{s.bio.substring(0, 100)}{s.bio.length > 100 ? '...' : ''}"</div>}
+            <div style={{ fontSize: 12, color, marginBottom: 10 }}>
+              {s.phone && <span style={{ marginLeft: 12 }}>📞 {s.phone}</span>}
+              {s.email && <span>✉️ {s.email}</span>}
+            </div>
+            {/* כפתורי פעולה */}
+            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+              {/* אישור */}
+              <button onClick={() => {
+                if (isPract) fetch('/api/admin/practitioners', { method: 'PATCH', headers: { 'Content-Type': 'application/json', adminkey: adminKey }, body: JSON.stringify({ id: s.id, status: 'approved' }) }).then(() => fetchAll(adminKey))
+                else if (isTreatment) updateTreatmentStatus(s.id, 'approved')
+                else updateStatus(s.id, 'approved', s)
+              }} style={btn('#22c55e')}>✓ אשר</button>
+
+              {/* אישור + מיקום (לא למטפלים) */}
+              {!isPract && (
+                <button onClick={() => approveWithLocation(s, s._itype)} style={btn('#1A3A5C')}>✓ אשר + הוסף מיקום</button>
+              )}
+
+              {/* עריכה */}
+              <button onClick={() => {
+                if (isPract) { setEditingPractitioner(s); setEditPForm({ ...s, treatment_types: s.treatment_types || [], specializations: s.specializations || [], health_funds: s.health_funds || [], languages: s.languages || [] }); setEditPTab('basic') }
+                else openEdit(s, s._itype === 'treatment' ? 'treatment' : 'services')
+              }} style={btn('#1A3A5C', true)}>✏️ ערוך</button>
+
+              {/* דחייה */}
+              <button onClick={() => {
+                if (isPract) fetch('/api/admin/practitioners', { method: 'PATCH', headers: { 'Content-Type': 'application/json', adminkey: adminKey }, body: JSON.stringify({ id: s.id, status: 'rejected' }) }).then(() => fetchAll(adminKey))
+                else if (isTreatment) updateTreatmentStatus(s.id, 'rejected')
+                else { updateStatus(s.id, 'rejected', s); if (s.email) setRejectEmailModal({ name: s.name, email: s.email, contactEmail: s.contact_email }) }
+              }} style={btn('#ef4444', true)}>✕ דחה</button>
+            </div>
+          </div>
+        )
+      })}
+    </div>
+  )
+
+  // ─── סקשן: שיקום ───────────────────────────────────────────────────────
+  const renderRehab = () => {
+    const filtered = approved
+      .filter(s => !rehabSearch || s.name?.includes(rehabSearch) || s.city?.includes(rehabSearch) || s.district?.includes(rehabSearch))
+      .sort((a, b) => rehabSort === 'name' ? (a.name||'').localeCompare(b.name||'') : rehabSort === 'district' ? (a.district||'').localeCompare(b.district||'') : new Date(b.created_at) - new Date(a.created_at))
+    return (
+      <div>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16, flexWrap: 'wrap', gap: 10 }}>
+          <div style={{ display: 'flex', gap: 8 }}>
+            {[['approved', `✅ פעילים (${approved.length})`], ['no-location', `⚠️ ללא מיקום (${approved.filter(s=>!s.lat).length})`]].map(([id, label]) => (
+              <button key={id} onClick={() => setRehabTab(id)} style={{ padding: '8px 16px', borderRadius: 20, fontWeight: 700, fontSize: 13, background: rehabTab === id ? '#8B00D4' : 'white', color: rehabTab === id ? 'white' : '#8B00D4', border: `1.5px solid ${rehabTab===id?'#8B00D4':'#d4b0f0'}`, cursor: 'pointer' }}>{label}</button>
+            ))}
+          </div>
+          <button onClick={() => setShowExportRehab(true)} style={btn('#164E63')}>📥 ייצוא</button>
+        </div>
+        <div style={{ display: 'flex', gap: 10, marginBottom: 14, flexWrap: 'wrap' }}>
+          <input placeholder="חיפוש..." value={rehabSearch} onChange={e => setRehabSearch(e.target.value)} style={{ flex: 1, minWidth: 180, padding: '8px 14px', borderRadius: 20, border: '1.5px solid #d4b0f0', fontSize: 13, outline: 'none', fontFamily: 'inherit', background: '#f7f0ff' }} />
+          <select value={rehabSort} onChange={e => setRehabSort(e.target.value)} style={{ padding: '8px 14px', borderRadius: 20, border: '1.5px solid #d4b0f0', fontSize: 13, background: '#f7f0ff', fontFamily: 'inherit', cursor: 'pointer' }}>
+            <option value="date">מיון: תאריך</option><option value="name">מיון: שם</option><option value="district">מיון: מחוז</option>
+          </select>
+        </div>
+        {(() => {
+          const list = rehabTab === 'no-location' ? approved.filter(s => !s.lat) : filtered
+          return list.length === 0 ? <div style={{ textAlign: 'center', padding: 52, color: '#aaa' }}>אין תוצאות</div> : (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+              {list.map(s => {
+                const color = getCategoryColor(s.category, s.subcategory)
+                return (
+                  <div key={s.id} style={{ background: 'white', borderRadius: 12, padding: '12px 16px', boxShadow: '0 2px 8px rgba(0,0,0,0.06)', borderRight: `4px solid ${color}` }}>
+                    <div style={{ fontWeight: 700, fontSize: 14, color: '#1A3A5C', marginBottom: 2 }}>{s.name} {s.is_national && '🌍'}</div>
+                    <div style={{ fontSize: 12, color: '#aaa', marginBottom: 6 }}>📍 {s.city} · {s.category}{s.subcategory ? ` › ${s.subcategory}` : ''}</div>
+                    {!s.lat && (
+                      <div style={{ background: '#FFF3E0', border: '1.5px solid #FFB74D', borderRadius: 8, padding: '5px 10px', fontSize: 11, color: '#E65100', fontWeight: 700, marginBottom: 8, display: 'inline-block' }}>
+                        ⚠️ לא מופיע במפה — חסר מיקום
+                      </div>
+                    )}
+                    <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                      <button onClick={() => openEdit(s, 'services')} style={btnSm('#1A3A5C', true)}>✏️ ערוך</button>
+                      <button onClick={() => setLocationService({ ...s, _table: 'services' })} style={btnSm(s.lat ? '#2E7D32' : '#8B00D4', !s.lat)}>📍 {s.lat ? 'עדכן מיקום' : 'הוסף מיקום'}</button>
+                      {s.lat && <button onClick={() => clearLocation(s.id, 'services')} style={btnSm('#ef4444', true)}>🗑 הסר מיקום</button>}
+                      <button onClick={() => deleteService(s.id)} style={btnSm('#ef4444', true)}>🗑 מחק</button>
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          )
+        })()}
+      </div>
+    )
+  }
+
+  // ─── סקשן: טיפול ───────────────────────────────────────────────────────
+  const renderTreatment = () => {
+    const base = treatmentTab === 'pending' ? pendingTreatment : treatmentTab === 'no-location' ? approvedTreatment.filter(s => !s.lat) : approvedTreatment
+    const filtered = treatmentTab !== 'pending'
+      ? base.filter(s => !treatmentSearch || s.name?.includes(treatmentSearch) || s.city?.includes(treatmentSearch)).sort((a, b) => treatmentSort === 'name' ? (a.name||'').localeCompare(b.name||'') : new Date(b.created_at) - new Date(a.created_at))
+      : base.filter(s => !treatmentSearch || s.name?.includes(treatmentSearch))
+    return (
+      <div>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16, flexWrap: 'wrap', gap: 10 }}>
+          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+            {[['pending', `⏳ ממתינים (${pendingTreatment.length})`], ['approved', `✅ פעילים (${approvedTreatment.length})`], ['no-location', `⚠️ ללא מיקום (${approvedTreatment.filter(s=>!s.lat).length})`]].map(([id, label]) => (
+              <button key={id} onClick={() => setTreatmentTab(id)} style={{ padding: '8px 14px', borderRadius: 20, fontWeight: 700, fontSize: 12, background: treatmentTab === id ? '#0891B2' : 'white', color: treatmentTab === id ? 'white' : '#0891B2', border: `1.5px solid ${treatmentTab===id?'#0891B2':'#a0d8e8'}`, cursor: 'pointer' }}>{label}</button>
+            ))}
+          </div>
+          <button onClick={() => setShowExportTreatment(true)} style={btn('#164E63')}>📥 ייצוא</button>
+        </div>
+        <div style={{ display: 'flex', gap: 10, marginBottom: 14 }}>
+          <input placeholder="חיפוש..." value={treatmentSearch} onChange={e => setTreatmentSearch(e.target.value)} style={{ flex: 1, padding: '8px 14px', borderRadius: 20, border: '1.5px solid #a0d8e8', fontSize: 13, outline: 'none', fontFamily: 'inherit', background: '#f0faff' }} />
+          {treatmentTab !== 'pending' && (
+            <select value={treatmentSort} onChange={e => setTreatmentSort(e.target.value)} style={{ padding: '8px 14px', borderRadius: 20, border: '1.5px solid #a0d8e8', fontSize: 13, background: '#f0faff', fontFamily: 'inherit', cursor: 'pointer' }}>
+              <option value="date">תאריך</option><option value="name">שם</option>
+            </select>
+          )}
+        </div>
+        {filtered.length === 0 ? <div style={{ textAlign: 'center', padding: 52, color: '#aaa' }}><div style={{ fontSize: 40, marginBottom: 10 }}>🎉</div><div>אין שירותים</div></div> : (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+            {filtered.map(s => {
+              const color = TREATMENT_COLORS[s.category] || '#0891B2'
+              return (
+                <div key={s.id} style={{ background: 'white', borderRadius: 12, padding: '14px 16px', boxShadow: '0 2px 8px rgba(0,0,0,0.06)', borderRight: `4px solid ${color}` }}>
+                  <div style={{ fontWeight: 700, fontSize: 14, color: '#1A3A5C', marginBottom: 4 }}>{s.name} {s.is_national && '🌍'}</div>
+                  <div style={{ fontSize: 12, color: '#aaa', marginBottom: 6 }}>📍 {s.city}, {s.district} · <span style={{ background: color + '22', color, borderRadius: 20, padding: '1px 8px', fontSize: 11, fontWeight: 700 }}>{s.category}</span></div>
+                  {!s.lat && treatmentTab !== 'pending' && (
+                    <div style={{ background: '#FFF3E0', border: '1.5px solid #FFB74D', borderRadius: 8, padding: '5px 10px', fontSize: 11, color: '#E65100', fontWeight: 700, marginBottom: 8, display: 'inline-block' }}>
+                      ⚠️ לא מופיע במפה — חסר מיקום
+                    </div>
+                  )}
+                  <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                    {treatmentTab === 'pending' && (
+                      <>
+                        <button onClick={() => updateTreatmentStatus(s.id, 'approved')} style={btnSm('#0891B2')}>✓ אשר</button>
+                        <button onClick={() => approveWithLocation(s, 'treatment')} style={btnSm('#1A3A5C')}>✓ אשר + מיקום</button>
+                        <button onClick={() => { updateTreatmentStatus(s.id, 'rejected'); if (s.email) setRejectEmailModal({ name: s.name, email: s.email, contactEmail: s.contact_email }) }} style={btnSm('#ef4444', true)}>✕ דחה</button>
+                      </>
+                    )}
+                    <button onClick={() => openEdit(s, 'treatment')} style={btnSm('#1A3A5C', true)}>✏️ ערוך</button>
+                    <button onClick={() => setLocationService({ ...s, _table: 'treatment' })} style={btnSm(s.lat ? '#2E7D32' : '#8B00D4', !s.lat)}>📍 {s.lat ? 'עדכן' : 'הוסף מיקום'}</button>
+                    {s.lat && <button onClick={() => clearLocation(s.id, 'treatment')} style={btnSm('#ef4444', true)}>🗑 הסר</button>}
+                    {treatmentTab !== 'pending' && <button onClick={() => deleteTreatmentService(s.id)} style={btnSm('#ef4444', true)}>🗑 מחק</button>}
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        )}
+      </div>
+    )
+  }
+
+  // ─── סקשן: מטפלים ──────────────────────────────────────────────────────
+  const renderPractitioners = () => {
+    const list = (practitionersTab === 'pending' ? pendingPractitioners : approvedPractitioners)
+      .filter(p => !practitionerSearch || p.name?.includes(practitionerSearch) || p.city?.includes(practitionerSearch) || p.profession?.includes(practitionerSearch))
+    return (
+      <div>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16, flexWrap: 'wrap', gap: 10 }}>
+          <div style={{ display: 'flex', gap: 8 }}>
+            {[['pending', `⏳ ממתינים (${pendingPractitioners.length})`], ['approved', `✅ פעילים (${approvedPractitioners.length})`]].map(([id, label]) => (
+              <button key={id} onClick={() => setPractitionersTab(id)} style={{ padding: '8px 14px', borderRadius: 20, fontWeight: 700, fontSize: 12, background: practitionersTab === id ? '#0F4C75' : 'white', color: practitionersTab === id ? 'white' : '#0F4C75', border: `1.5px solid #0F4C75`, cursor: 'pointer' }}>{label}</button>
+            ))}
+          </div>
+          <div style={{ display: 'flex', gap: 8 }}>
+            <input placeholder="חיפוש..." value={practitionerSearch} onChange={e => setPractitionerSearch(e.target.value)} style={{ padding: '8px 14px', borderRadius: 20, border: '1.5px solid #c0d8e8', fontSize: 13, outline: 'none', fontFamily: 'inherit' }} />
+            <button onClick={() => setShowExportPract(true)} style={btn('#0F4C75')}>📥 ייצוא</button>
+          </div>
+        </div>
+        {list.length === 0 ? <div style={{ textAlign: 'center', padding: 52, color: '#aaa' }}>אין מטפלים</div> : (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+            {list.map(p => (
+              <div key={p.id} style={{ background: 'white', borderRadius: 14, padding: '14px 16px', boxShadow: '0 2px 10px rgba(0,0,0,0.06)', borderRight: '4px solid #0F4C75' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6 }}>
+                  {p.photo_url && <img src={p.photo_url} alt="" style={{ width: 36, height: 36, borderRadius: '50%', objectFit: 'cover' }} />}
+                  <div>
+                    <div style={{ fontWeight: 700, fontSize: 14, color: '#1A3A5C' }}>{p.name}
+                      {p.is_verified && <span style={{ marginRight: 6, background: '#dbeafe', color: '#1d4ed8', borderRadius: 20, padding: '1px 7px', fontSize: 10, fontWeight: 700 }}>✓ מאומת</span>}
+                      {p.is_online && <span style={{ marginRight: 4, background: '#e0f2fe', color: '#0284c7', borderRadius: 20, padding: '1px 7px', fontSize: 10, fontWeight: 700 }}>🌐 אונליין</span>}
+                    </div>
+                    <div style={{ fontSize: 12, color: '#888' }}>
+                      {p.profession && <span>{p.profession}</span>}
+                      {p.city && <span style={{ marginRight: 8 }}>📍 {p.city}</span>}
+                      {p.email && <span style={{ marginRight: 8 }}>✉️ {p.email}</span>}
+                    </div>
+                  </div>
+                </div>
+                {p.treatment_types?.length > 0 && <div style={{ fontSize: 11, color: '#0F4C75', marginBottom: 3 }}>💊 {p.treatment_types.join(', ')}</div>}
+                {p.specializations?.length > 0 && <div style={{ fontSize: 11, color: '#6d28d9', marginBottom: 6 }}>🎯 {p.specializations.slice(0, 4).join(', ')}{p.specializations.length > 4 ? '...' : ''}</div>}
+                {/* כפתורי פעולה אופקיים */}
+                <div style={{ display: 'flex', gap: 7, flexWrap: 'wrap', marginTop: 8, paddingTop: 8, borderTop: '1px solid #f0f0f0' }}>
+                  {practitionersTab === 'pending' && (
+                    <button onClick={() => fetch('/api/admin/practitioners', { method: 'PATCH', headers: { 'Content-Type': 'application/json', adminkey: adminKey }, body: JSON.stringify({ id: p.id, status: 'approved' }) }).then(() => fetchAll(adminKey))} style={btnSm('#22c55e')}>✓ אשר</button>
+                  )}
+                  <button onClick={() => { setEditingPractitioner(p); setEditPForm({ ...p, treatment_types: p.treatment_types || [], specializations: p.specializations || [], health_funds: p.health_funds || [], languages: p.languages || [] }); setEditPTab('basic') }} style={btnSm('#1A3A5C', true)}>✏️ ערוך</button>
+                  <button onClick={() => fetch('/api/admin/practitioners', { method: 'PATCH', headers: { 'Content-Type': 'application/json', adminkey: adminKey }, body: JSON.stringify({ id: p.id, is_verified: !p.is_verified }) }).then(() => fetchAll(adminKey))} style={btnSm(p.is_verified ? '#1d4ed8' : '#6b7280', !p.is_verified)}>{p.is_verified ? '✓ מאומת' : 'סמן כמאומת'}</button>
+                  {practitionersTab === 'pending' && (
+                    <button onClick={() => fetch('/api/admin/practitioners', { method: 'PATCH', headers: { 'Content-Type': 'application/json', adminkey: adminKey }, body: JSON.stringify({ id: p.id, status: 'rejected' }) }).then(() => fetchAll(adminKey))} style={btnSm('#ef4444', true)}>✕ דחה</button>
+                  )}
+                  <button onClick={async () => { if (!confirm(`למחוק את ${p.name}?`)) return; await fetch(`/api/admin/practitioners?id=${p.id}`, { method: 'DELETE', headers: { adminkey: adminKey } }); fetchAll(adminKey) }} style={btnSm('#ef4444', true)}>🗑 מחק</button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    )
+  }
+
+  // ─── JSX ראשי ────────────────────────────────────────────────────────────
   return (
     <>
       <Head>
@@ -414,7 +624,7 @@ export default function Admin() {
       <div dir="rtl" style={{ fontFamily: "'Nunito', sans-serif", minHeight: '100vh', background: '#f5f5f5' }}>
         <header style={{ background: '#1A3A5C', color: 'white', padding: '10px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxShadow: '0 2px 12px rgba(0,0,0,0.15)', flexWrap: 'wrap', gap: 8 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-            <img src="/logo.png" alt="לוגו" style={{ width: 44, height: 44, objectFit: 'contain', filter: 'brightness(0) invert(1)' }} />
+            <img src="/logo.png" alt="" style={{ width: 44, height: 44, objectFit: 'contain', filter: 'brightness(0) invert(1)' }} />
             <div>
               <div style={{ fontWeight: 800, fontSize: 18 }}>בריאות נפש בישראל</div>
               <div style={{ fontSize: 11, opacity: 0.75 }}>פאנל ניהול</div>
@@ -427,45 +637,70 @@ export default function Admin() {
           </nav>
         </header>
 
-        <div style={{ background: 'linear-gradient(135deg, #1A3A5C, #2A5298)', color: 'white', padding: '32px 20px', textAlign: 'center' }}>
-          <div style={{ fontSize: 36, marginBottom: 10 }}>🔐</div>
-          <h1 style={{ fontSize: 24, fontWeight: 800, margin: '0 0 8px' }}>פאנל ניהול</h1>
-          <p style={{ fontSize: 14, opacity: 0.85, margin: 0 }}>אישור, עריכה ומחיקת שירותים</p>
-        </div>
-
-        <main style={{ maxWidth: 900, margin: '0 auto', padding: '24px 16px' }}>
+        <main style={{ maxWidth: 960, margin: '0 auto', padding: '24px 16px' }}>
           {!authed ? (
-            <div style={{ maxWidth: 380, margin: '0 auto', background: 'white', borderRadius: 20, padding: '40px 24px', boxShadow: '0 4px 20px rgba(244,123,32,0.12)', border: '1.5px solid #FFE8D6', textAlign: 'center' }}>
+            <div style={{ maxWidth: 380, margin: '60px auto', background: 'white', borderRadius: 20, padding: '40px 24px', boxShadow: '0 4px 20px rgba(0,0,0,0.1)', textAlign: 'center' }}>
               <div style={{ fontSize: 44, marginBottom: 14 }}>🔐</div>
               <div style={{ fontWeight: 700, fontSize: 18, marginBottom: 18, color: '#1A3A5C' }}>כניסת מנהל</div>
-              <input type="password" placeholder="סיסמת אדמין" value={password}
-                onChange={e => setPassword(e.target.value)}
-                onKeyDown={e => e.key === 'Enter' && login()}
-                style={{ width: '100%', padding: '12px 16px', borderRadius: 20, border: '1.5px solid #C5D0F0', fontSize: 15, textAlign: 'center', letterSpacing: 4, marginBottom: 10, background: '#F0F7FF', outline: 'none', boxSizing: 'border-box' }} />
+              <input type="password" placeholder="סיסמת אדמין" value={password} onChange={e => setPassword(e.target.value)} onKeyDown={e => e.key === 'Enter' && login()} style={{ width: '100%', padding: '12px 16px', borderRadius: 20, border: '1.5px solid #C5D0F0', fontSize: 15, textAlign: 'center', letterSpacing: 4, marginBottom: 10, background: '#F0F7FF', outline: 'none', boxSizing: 'border-box' }} />
               {loginError && <div style={{ color: '#C62828', fontSize: 13, marginBottom: 8 }}>{loginError}</div>}
               <button onClick={login} style={{ width: '100%', background: '#1A3A5C', color: 'white', border: 'none', borderRadius: 20, padding: '12px 0', fontWeight: 700, fontSize: 15, cursor: 'pointer' }}>כניסה</button>
             </div>
           ) : (
             <>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: 12, marginBottom: 28 }}>
-                {[['♿', 'שיקום פעילים', approved.length, '#8B00D4'], ['⏳', 'שיקום ממתינים', pending.length, '#6B21A8'], ['🏥', 'טיפול פעילים', approvedTreatment.length, '#0891B2'], ['⏳', 'טיפול ממתינים', pendingTreatment.length, '#164E63'], ['🧠', 'מטפלים פעילים', approvedPractitioners.length, '#0F4C75'], ['⏳', 'מטפלים ממתינים', pendingPractitioners.length, '#082840']].map(([icon, label, val, color]) => (
-                  <div key={label} style={{ background: 'white', borderRadius: 16, padding: '14px 16px', display: 'flex', alignItems: 'center', gap: 10, borderRight: `5px solid ${color}`, boxShadow: '0 4px 16px rgba(0,0,0,0.07)' }}>
-                    <span style={{ fontSize: 22 }}>{icon}</span>
+              {/* ── כרטיסי סטטיסטיקות ── */}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))', gap: 10, marginBottom: 24 }}>
+                {[
+                  ['♿', 'שיקום פעילים', approved.length, '#8B00D4'],
+                  ['⏳', 'שיקום ממתינים', pending.length, '#6B21A8'],
+                  ['🏥', 'טיפול פעילים', approvedTreatment.length, '#0891B2'],
+                  ['⏳', 'טיפול ממתינים', pendingTreatment.length, '#164E63'],
+                  ['🧠', 'מטפלים פעילים', approvedPractitioners.length, '#0F4C75'],
+                  ['⏳', 'מטפלים ממתינים', pendingPractitioners.length, '#082840'],
+                ].map(([icon, label, val, color]) => (
+                  <div key={label} style={{ background: 'white', borderRadius: 14, padding: '12px 14px', display: 'flex', alignItems: 'center', gap: 10, borderRight: `5px solid ${color}`, boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}>
+                    <span style={{ fontSize: 20 }}>{icon}</span>
                     <div>
-                      <div style={{ fontSize: 26, fontWeight: 800, color }}>{val}</div>
-                      <div style={{ fontSize: 11, color: '#888' }}>{label}</div>
+                      <div style={{ fontSize: 24, fontWeight: 800, color }}>{val}</div>
+                      <div style={{ fontSize: 10, color: '#888' }}>{label}</div>
                     </div>
                   </div>
                 ))}
               </div>
 
-              <div style={{ display: 'flex', gap: 12, marginBottom: 24, flexWrap: 'wrap' }}>
-                {[['rehab', '♿ שיקום', '#8B00D4'], ['treatment', '🏥 טיפול', '#0891B2'], ['practitioners', '🧠 מטפלים פרטיים', '#0F4C75'], ['duplicates', '🔁 כפילויות', '#5E35B1'], ['stats', '📊 סטטיסטיקות', '#2A5298'], ['history', '📝 היסטוריה', '#5E35B1']].map(([id, label, color]) => (
+              {/* ── באנר ללא מיקום ── */}
+              {noLocationCount > 0 && (
+                <div style={{ background: '#FFF3E0', border: '2px solid #FFB74D', borderRadius: 12, padding: '10px 16px', marginBottom: 16, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                    <span style={{ fontSize: 20 }}>⚠️</span>
+                    <div>
+                      <div style={{ fontWeight: 800, color: '#E65100', fontSize: 14 }}>{noLocationCount} שירותים מאושרים ללא מיקום במפה</div>
+                      <div style={{ fontSize: 12, color: '#bf360c' }}>שירותים אלו לא יופיעו בחיפוש המפה</div>
+                    </div>
+                  </div>
+                  <div style={{ display: 'flex', gap: 8 }}>
+                    <button onClick={() => { setSection('rehab'); setRehabTab('no-location') }} style={btnSm('#E65100')}>♿ שיקום ({approved.filter(s=>!s.lat).length})</button>
+                    <button onClick={() => { setSection('treatment'); setTreatmentTab('no-location') }} style={btnSm('#E65100')}>🏥 טיפול ({approvedTreatment.filter(s=>!s.lat).length})</button>
+                  </div>
+                </div>
+              )}
+
+              {/* ── ניווט סקשן ── */}
+              <div style={{ display: 'flex', gap: 8, marginBottom: 24, flexWrap: 'wrap' }}>
+                {[
+                  ['inbox', `📥 inbox (${allPending.length})`, '#1A3A5C'],
+                  ['rehab', '♿ שיקום', '#8B00D4'],
+                  ['treatment', '🏥 טיפול', '#0891B2'],
+                  ['practitioners', '🧠 מטפלים', '#0F4C75'],
+                  ['duplicates', '🔁 כפילויות', '#5E35B1'],
+                  ['stats', '📊 סטטיסטיקות', '#2A5298'],
+                  ['history', '📝 היסטוריה', '#5E35B1'],
+                ].map(([id, label, color]) => (
                   <button key={id} onClick={() => { setSection(id); if (id === 'duplicates') fetchDuplicates(adminKey); if (id === 'history') fetchHistory(adminKey) }}
-                    style={{ flex: 1, minWidth: 120, padding: '14px 0', borderRadius: 16, fontWeight: 800, fontSize: 15, background: section === id ? color : 'white', color: section === id ? 'white' : color, border: `2px solid ${color}`, cursor: 'pointer', boxShadow: section === id ? `0 4px 16px ${color}44` : 'none' }}>
+                    style={{ flex: 1, minWidth: 100, padding: '12px 8px', borderRadius: 14, fontWeight: 800, fontSize: 13, background: section === id ? color : 'white', color: section === id ? 'white' : color, border: `2px solid ${color}`, cursor: 'pointer', position: 'relative' }}>
                     {label}
-                    {id === 'practitioners' && pendingPractitioners.length > 0 && (
-                      <span style={{ background: '#ef4444', color: 'white', borderRadius: '50%', width: 20, height: 20, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 800, marginRight: 6 }}>{pendingPractitioners.length}</span>
+                    {id === 'inbox' && allPending.length > 0 && section !== 'inbox' && (
+                      <span style={{ position: 'absolute', top: -6, right: -6, background: '#ef4444', color: 'white', borderRadius: '50%', width: 18, height: 18, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, fontWeight: 800 }}>{allPending.length}</span>
                     )}
                   </button>
                 ))}
@@ -473,592 +708,130 @@ export default function Admin() {
 
               {loading ? (
                 <div style={{ textAlign: 'center', padding: 48, color: '#8B00D4' }}>טוען...</div>
-              ) : section === 'stats' ? (
-                <StatsTab stats={stats} />
-              ) : section === 'history' ? (
-                <HistoryTab history={history} loading={loadingHistory} />
-              ) : section === 'duplicates' ? (
-                <DuplicatesTab
-                  duplicates={duplicates} loading={loadingDuplicates}
-                  onDismiss={(i) => setDuplicates(d => d.map((p, idx) => idx === i ? { ...p, dismissed: true } : p))}
-                  onDelete={async (id, type) => {
-                    if (!confirm('למחוק שירות זה לצמיתות?')) return
-                    if (type === 'treatment') await fetch(`/api/admin/treatment-services?id=${id}`, { method: 'DELETE', headers: { adminkey: adminKey } })
-                    else await fetch(`/api/admin/services?id=${id}`, { method: 'DELETE', headers: { adminkey: adminKey } })
-                    fetchDuplicates(adminKey); fetchAll(adminKey)
-                  }}
-                />
-              ) : section === 'rehab' ? (
-                <div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16, flexWrap: 'wrap', gap: 10 }}>
-                    <div style={{ display: 'flex', gap: 8 }}>
-                      {[['pending', `⏳ ממתינים (${pending.length})`], ['approved', `✅ פעילים (${approved.length})`]].map(([id, label]) => (
-                        <button key={id} onClick={() => setRehabTab(id)} style={{ padding: '9px 18px', borderRadius: 20, fontWeight: 700, fontSize: 13, background: rehabTab === id ? '#8B00D4' : 'white', color: rehabTab === id ? 'white' : '#8B00D4', border: rehabTab === id ? 'none' : '1.5px solid #d4b0f0', cursor: 'pointer' }}>{label}</button>
-                      ))}
-                    </div>
-                    <button onClick={() => setShowExportRehab(true)} style={{ background: '#164E63', color: 'white', border: 'none', borderRadius: 20, padding: '9px 18px', fontWeight: 700, fontSize: 13, cursor: 'pointer' }}>📥 ייצוא לאקסל</button>
-                  </div>
-
-                  {rehabTab === 'pending' ? (
-                    pending.length === 0 ? (
-                      <div style={{ textAlign: 'center', padding: 52, color: '#aaa' }}><div style={{ fontSize: 40, marginBottom: 10 }}>🎉</div><div style={{ fontWeight: 600 }}>אין בקשות ממתינות</div></div>
-                    ) : (
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-                        {pending.map(s => {
-                          const color = getCategoryColor(s.category, s.subcategory)
-                          return (
-                            <div key={s.id} style={{ background: 'white', borderRadius: 16, padding: '20px', boxShadow: '0 4px 16px rgba(0,0,0,0.07)', borderRight: `5px solid ${color}` }}>
-                              <div style={{ fontWeight: 700, fontSize: 16, color: '#1A3A5C', marginBottom: 4 }}>{s.name} {s.is_national && <span title="פריסה ארצית">🌍</span>}</div>
-                              <div style={{ display: 'flex', gap: 6, marginBottom: 6, flexWrap: 'wrap' }}>
-                                <span style={{ background: color, color: 'white', borderRadius: 20, padding: '2px 10px', fontSize: 11, fontWeight: 700 }}>{s.category}</span>
-                                {s.subcategory && <span style={{ background: `${color}22`, color, borderRadius: 20, padding: '2px 8px', fontSize: 11 }}>{s.subcategory}</span>}
-                              </div>
-                              <div style={{ fontSize: 13, color: '#888', marginBottom: 6 }}>📍 {s.city}, {s.district}{s.districts?.length > 0 && <span style={{ marginRight: 6, fontSize: 11, color: '#9B00CC' }}>+ {s.districts.join(', ')}</span>}</div>
-                              <div style={{ fontSize: 13, color: '#445', marginBottom: 10, lineHeight: 1.55 }}>{s.description}</div>
-                              <div style={{ fontSize: 13, color, marginBottom: 12 }}>
-                                {s.phone && <span style={{ marginLeft: 12 }}>📞 {s.phone}</span>}
-                                {s.email && <span>✉️ {s.email}</span>}
-                              </div>
-                              <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-                                <button onClick={() => updateStatus(s.id, 'approved')} style={{ background: '#8B00D4', color: 'white', border: 'none', borderRadius: 20, padding: '8px 18px', fontWeight: 700, fontSize: 13, cursor: 'pointer' }}>✓ אשר</button>
-                                <button onClick={() => openEdit(s, 'services')} style={{ background: '#EEF2FF', color: '#1A3A5C', border: '1.5px solid #C5D0F0', borderRadius: 20, padding: '8px 18px', fontWeight: 700, fontSize: 13, cursor: 'pointer' }}>✏️ ערוך</button>
-                                <button onClick={() => setLocationService({ ...s, _table: 'services' })} style={{ background: s.lat ? '#E8F5E9' : '#FFF3E0', color: s.lat ? '#2E7D32' : '#6B21A8', border: `1.5px solid ${s.lat ? '#A5D6A7' : '#d4b0f0'}`, borderRadius: 20, padding: '8px 18px', fontWeight: 700, fontSize: 13, cursor: 'pointer' }}>📍 {s.lat ? 'עדכן מיקום' : 'הוסף מיקום'}</button>
-                                {s.lat && <button onClick={() => clearLocation(s.id, 'services')} style={{ background: '#FFF3E0', color: '#C62828', border: '1.5px solid #FFCCBC', borderRadius: 20, padding: '8px 18px', fontWeight: 700, fontSize: 13, cursor: 'pointer' }}>🗑️ הסר מיקום</button>}
-                                <button onClick={() => updateStatus(s.id, 'rejected')} style={{ background: '#FFF0F0', color: '#C62828', border: '1.5px solid #FFCDD2', borderRadius: 20, padding: '8px 18px', fontWeight: 700, fontSize: 13, cursor: 'pointer' }}>✕ דחה</button>
-                                {s.email && <button onClick={() => { updateStatus(s.id, 'rejected'); setRejectEmailModal({ name: s.name, email: s.email, contactEmail: s.contact_email }) }} style={{ background: '#FFF0F0', color: '#C62828', border: '1.5px solid #FFCDD2', borderRadius: 20, padding: '8px 18px', fontWeight: 700, fontSize: 13, cursor: 'pointer' }}>✕ דחה + מייל</button>}
-                              </div>
-                            </div>
-                          )
-                        })}
-                      </div>
-                    )
-                  ) : (
-                    <>
-                      <div style={{ display: 'flex', gap: 10, marginBottom: 14, flexWrap: 'wrap', alignItems: 'center' }}>
-                        <input placeholder="חיפוש..." value={rehabSearch} onChange={e => setRehabSearch(e.target.value)} style={{ flex: 1, minWidth: 180, padding: '8px 14px', borderRadius: 20, border: '1.5px solid #d4b0f0', fontSize: 13, outline: 'none', fontFamily: 'inherit', background: '#f7f0ff' }} />
-                        <select value={rehabSort} onChange={e => setRehabSort(e.target.value)} style={{ padding: '8px 14px', borderRadius: 20, border: '1.5px solid #d4b0f0', fontSize: 13, background: '#f7f0ff', fontFamily: 'inherit', cursor: 'pointer' }}>
-                          <option value="date">מיון: תאריך</option>
-                          <option value="name">מיון: שם</option>
-                          <option value="district">מיון: מחוז</option>
-                        </select>
-                      </div>
-                      {(() => {
-                        const filtered = approved
-                          .filter(s => !rehabSearch || s.name?.includes(rehabSearch) || s.city?.includes(rehabSearch) || s.district?.includes(rehabSearch))
-                          .sort((a, b) => rehabSort === 'name' ? (a.name || '').localeCompare(b.name || '') : rehabSort === 'district' ? (a.district || '').localeCompare(b.district || '') : new Date(b.created_at) - new Date(a.created_at))
-                        return filtered.length === 0 ? <div style={{ textAlign: 'center', padding: 52, color: '#aaa' }}>אין תוצאות</div> : (
-                          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                            {filtered.map(s => {
-                              const color = getCategoryColor(s.category, s.subcategory)
-                              return (
-                                <div key={s.id} style={{ background: 'white', borderRadius: 14, padding: '14px 16px', boxShadow: '0 2px 8px rgba(0,0,0,0.06)', borderRight: `4px solid ${color}` }}>
-                                  <div style={{ fontWeight: 600, fontSize: 14, color: '#1A3A5C', marginBottom: 2 }}>{s.name} {s.is_national && <span title="פריסה ארצית">🌍</span>}</div>
-                                  <div style={{ fontSize: 12, color: '#aaa', marginBottom: 6 }}>📍 {s.city} · {s.category}{s.subcategory ? ` › ${s.subcategory}` : ''}{s.districts?.length > 0 && <span style={{ marginRight: 6, color: '#9B00CC' }}>· {s.districts.join(', ')}</span>}</div>
-                                  {!s.lat && <div style={{ fontSize: 11, color: '#8B00D4', marginBottom: 6 }}>⚠️ אין מיקום במפה</div>}
-                                  <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-                                    <button onClick={() => openEdit(s, 'services')} style={{ background: '#EEF2FF', color: '#1A3A5C', border: '1.5px solid #C5D0F0', borderRadius: 20, padding: '5px 12px', fontSize: 12, cursor: 'pointer', fontWeight: 600 }}>✏️ ערוך</button>
-                                    <button onClick={() => setLocationService({ ...s, _table: 'services' })} style={{ background: s.lat ? '#f0fff4' : '#f7f0ff', color: s.lat ? '#2E7D32' : '#6B21A8', border: `1.5px solid ${s.lat ? '#A5D6A7' : '#d4b0f0'}`, borderRadius: 20, padding: '5px 12px', fontSize: 12, cursor: 'pointer', fontWeight: 600 }}>📍 {s.lat ? 'עדכן מיקום' : 'הוסף מיקום'}</button>
-                                    {s.lat && <button onClick={() => clearLocation(s.id, 'services')} style={{ background: '#FFF3E0', color: '#C62828', border: '1.5px solid #FFCCBC', borderRadius: 20, padding: '5px 12px', fontSize: 12, cursor: 'pointer', fontWeight: 600 }}>🗑️ הסר מיקום</button>}
-                                    <button onClick={() => deleteService(s.id)} style={{ background: 'none', border: '1.5px solid #FFCDD2', color: '#C62828', borderRadius: 20, padding: '5px 12px', fontSize: 12, cursor: 'pointer', fontWeight: 600 }}>🗑️ מחק</button>
-                                  </div>
-                                </div>
-                              )
-                            })}
-                          </div>
-                        )
-                      })()}
-                    </>
-                  )}
-                </div>
-              ) : (
-                <div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16, flexWrap: 'wrap', gap: 10 }}>
-                    <div style={{ display: 'flex', gap: 8 }}>
-                      {[['pending', `⏳ ממתינים (${pendingTreatment.length})`], ['approved', `✅ פעילים (${approvedTreatment.length})`]].map(([id, label]) => (
-                        <button key={id} onClick={() => setTreatmentTab(id)} style={{ padding: '9px 18px', borderRadius: 20, fontWeight: 700, fontSize: 13, background: treatmentTab === id ? '#0891B2' : 'white', color: treatmentTab === id ? 'white' : '#0891B2', border: treatmentTab === id ? 'none' : '1.5px solid #a0d8e8', cursor: 'pointer' }}>{label}</button>
-                      ))}
-                    </div>
-                    <button onClick={() => setShowExportTreatment(true)} style={{ background: '#164E63', color: 'white', border: 'none', borderRadius: 20, padding: '9px 18px', fontWeight: 700, fontSize: 13, cursor: 'pointer' }}>📥 ייצוא לאקסל</button>
-                  </div>
-
-                  {treatmentTab === 'approved' && (
-                    <div style={{ display: 'flex', gap: 10, marginBottom: 14, flexWrap: 'wrap', alignItems: 'center' }}>
-                      <input placeholder="חיפוש..." value={treatmentSearch} onChange={e => setTreatmentSearch(e.target.value)} style={{ flex: 1, minWidth: 180, padding: '8px 14px', borderRadius: 20, border: '1.5px solid #B3D4E8', fontSize: 13, outline: 'none', fontFamily: 'inherit', background: '#f0faff' }} />
-                      <select value={treatmentSort} onChange={e => setTreatmentSort(e.target.value)} style={{ padding: '8px 14px', borderRadius: 20, border: '1.5px solid #B3D4E8', fontSize: 13, background: '#f0faff', fontFamily: 'inherit', cursor: 'pointer' }}>
-                        <option value="date">מיון: תאריך</option>
-                        <option value="name">מיון: שם</option>
-                        <option value="district">מיון: מחוז</option>
-                      </select>
-                    </div>
-                  )}
-                  {(() => {
-                    const base = treatmentTab === 'pending' ? pendingTreatment : approvedTreatment
-                    const filtered = treatmentTab === 'approved'
-                      ? base.filter(s => !treatmentSearch || s.name?.includes(treatmentSearch) || s.city?.includes(treatmentSearch) || s.district?.includes(treatmentSearch))
-                        .sort((a, b) => treatmentSort === 'name' ? (a.name || '').localeCompare(b.name || '') : treatmentSort === 'district' ? (a.district || '').localeCompare(b.district || '') : new Date(b.created_at) - new Date(a.created_at))
-                      : base
-                    return filtered.length === 0 ? (
-                      <div style={{ textAlign: 'center', padding: 52, color: '#aaa' }}><div style={{ fontSize: 40, marginBottom: 10 }}>🎉</div><div style={{ fontWeight: 600 }}>אין שירותים</div></div>
-                    ) : (
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-                        {filtered.map(s => {
-                          const color = TREATMENT_COLORS[s.category] || '#0891B2'
-                          return (
-                            <div key={s.id} style={{ background: 'white', borderRadius: 14, padding: '16px', boxShadow: '0 2px 8px rgba(0,0,0,0.06)', borderRight: `4px solid ${color}` }}>
-                              <div style={{ fontWeight: 700, fontSize: 15, color: '#1A3A5C', marginBottom: 4 }}>{s.name} {s.is_national && <span title="פריסה ארצית">🌍</span>}</div>
-                              <span style={{ background: color, color: 'white', borderRadius: 20, padding: '2px 10px', fontSize: 11, fontWeight: 700 }}>{s.category}</span>
-                              <div style={{ fontSize: 13, color: '#888', margin: '6px 0' }}>📍 {s.city}, {s.district}{s.districts?.length > 0 && <span style={{ marginRight: 6, fontSize: 11, color: '#0891B2' }}>+ {s.districts.join(', ')}</span>}</div>
-                              {s.description && <div style={{ fontSize: 13, color: '#445', marginBottom: 8, lineHeight: 1.55 }}>{s.description}</div>}
-                              <div style={{ fontSize: 13, color, marginBottom: 10 }}>
-                                {s.phone && <span style={{ marginLeft: 12 }}>📞 {s.phone}</span>}
-                                {s.email && <span>✉️ {s.email}</span>}
-                              </div>
-                              <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-                                {treatmentTab === 'pending' ? (
-                                  <>
-                                    <button onClick={() => updateTreatmentStatus(s.id, 'approved')} style={{ background: '#0891B2', color: 'white', border: 'none', borderRadius: 20, padding: '7px 16px', fontWeight: 700, fontSize: 13, cursor: 'pointer' }}>✓ אשר</button>
-                                    <button onClick={() => openEdit(s, 'treatment')} style={{ background: '#EEF2FF', color: '#1A3A5C', border: '1.5px solid #C5D0F0', borderRadius: 20, padding: '7px 16px', fontWeight: 700, fontSize: 13, cursor: 'pointer' }}>✏️ ערוך</button>
-                                    <button onClick={() => setLocationService({ ...s, _table: 'treatment' })} style={{ background: s.lat ? '#E8F5E9' : '#FFF3E0', color: s.lat ? '#2E7D32' : '#6B21A8', border: `1.5px solid ${s.lat ? '#A5D6A7' : '#d4b0f0'}`, borderRadius: 20, padding: '7px 16px', fontWeight: 700, fontSize: 13, cursor: 'pointer' }}>📍 {s.lat ? 'עדכן מיקום' : 'הוסף מיקום'}</button>
-                                    {s.lat && <button onClick={() => clearLocation(s.id, 'treatment')} style={{ background: '#FFF3E0', color: '#C62828', border: '1.5px solid #FFCCBC', borderRadius: 20, padding: '7px 16px', fontWeight: 700, fontSize: 13, cursor: 'pointer' }}>🗑️ הסר מיקום</button>}
-                                    <button onClick={() => updateTreatmentStatus(s.id, 'rejected')} style={{ background: '#FFF0F0', color: '#C62828', border: '1.5px solid #FFCDD2', borderRadius: 20, padding: '7px 16px', fontWeight: 700, fontSize: 13, cursor: 'pointer' }}>✕ דחה</button>
-                                    {s.email && <button onClick={() => { updateTreatmentStatus(s.id, 'rejected'); setRejectEmailModal({ name: s.name, email: s.email, contactEmail: s.contact_email }) }} style={{ background: '#FFF0F0', color: '#C62828', border: '1.5px solid #FFCDD2', borderRadius: 20, padding: '7px 16px', fontWeight: 700, fontSize: 13, cursor: 'pointer' }}>✕ דחה + מייל</button>}
-                                  </>
-                                ) : (
-                                  <>
-                                    <button onClick={() => openEdit(s, 'treatment')} style={{ background: '#EEF2FF', color: '#1A3A5C', border: '1.5px solid #C5D0F0', borderRadius: 20, padding: '5px 12px', fontSize: 12, cursor: 'pointer', fontWeight: 600 }}>✏️ ערוך</button>
-                                    <button onClick={() => setLocationService({ ...s, _table: 'treatment' })} style={{ background: s.lat ? '#E8F5E9' : '#FFF3E0', color: s.lat ? '#2E7D32' : '#6B21A8', border: `1.5px solid ${s.lat ? '#A5D6A7' : '#d4b0f0'}`, borderRadius: 20, padding: '5px 12px', fontSize: 12, cursor: 'pointer', fontWeight: 600 }}>📍 {s.lat ? 'עדכן מיקום' : 'הוסף מיקום'}</button>
-                                    {s.lat && <button onClick={() => clearLocation(s.id, 'treatment')} style={{ background: '#FFF3E0', color: '#C62828', border: '1.5px solid #FFCCBC', borderRadius: 20, padding: '5px 12px', fontSize: 12, cursor: 'pointer', fontWeight: 600 }}>🗑️ הסר מיקום</button>}
-                                    <button onClick={() => deleteTreatmentService(s.id)} style={{ background: 'none', border: '1.5px solid #FFCDD2', color: '#C62828', borderRadius: 20, padding: '5px 12px', fontSize: 12, cursor: 'pointer', fontWeight: 600 }}>🗑️ מחק</button>
-                                  </>
-                                )}
-                              </div>
-                            </div>
-                          )
-                        })}
-                      </div>
-                    )
-                  })()}
-                </div>
-              )}
-
-              {section === 'practitioners' && (
-                <div>
-                  <div style={{ display: 'flex', gap: 10, marginBottom: 20, alignItems: 'center', flexWrap: 'wrap' }}>
-                    {[['pending', 'ממתינים לאישור', pendingPractitioners.length], ['approved', 'מאושרים', approvedPractitioners.length]].map(([id, label, count]) => (
-                      <button key={id} onClick={() => setPractitionersTab(id)} style={{ padding: '8px 20px', borderRadius: 999, fontWeight: 700, fontSize: 14, cursor: 'pointer', border: '2px solid #0F4C75', background: practitionersTab === id ? '#0F4C75' : 'white', color: practitionersTab === id ? 'white' : '#0F4C75' }}>
-                        {label} ({count})
-                      </button>
-                    ))}
-                    <input type="text" placeholder="חיפוש לפי שם / עיר..." value={practitionerSearch}
-                      onChange={e => setPractitionerSearch(e.target.value)}
-                      style={{ padding: '8px 16px', borderRadius: 20, border: '1.5px solid #c0d8e8', fontSize: 13, fontFamily: 'inherit', outline: 'none', marginRight: 'auto' }} />
-                  </div>
-
-                  {(practitionersTab === 'pending' ? pendingPractitioners : approvedPractitioners)
-                    .filter(p => !practitionerSearch || p.name?.includes(practitionerSearch) || p.city?.includes(practitionerSearch) || p.profession?.includes(practitionerSearch))
-                    .map(p => (
-                      <div key={p.id} style={{ background: 'white', borderRadius: 16, padding: '20px 24px', marginBottom: 14, boxShadow: '0 2px 12px rgba(0,0,0,.06)', border: `1.5px solid ${p.is_verified ? '#bfdbfe' : '#e0eef8'}`, borderRight: '4px solid #0F4C75' }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 12 }}>
-                          <div style={{ flex: 1 }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6, flexWrap: 'wrap' }}>
-                              {p.photo_url && <img src={p.photo_url} alt="" style={{ width: 36, height: 36, borderRadius: '50%', objectFit: 'cover' }} />}
-                              <strong style={{ fontSize: 16, color: '#1A3A5C' }}>{p.name}</strong>
-                              {p.is_verified         && <span style={{ background: '#dbeafe', color: '#1d4ed8', borderRadius: 20, padding: '2px 8px', fontSize: 11, fontWeight: 700 }}>✓ מאומת</span>}
-                              {p.is_defense_ministry && <span style={{ background: '#ede9fe', color: '#6d28d9', borderRadius: 20, padding: '2px 8px', fontSize: 11, fontWeight: 700 }}>🎗️ מה"ב</span>}
-                              {p.is_online           && <span style={{ background: '#e0f2fe', color: '#0284c7', borderRadius: 20, padding: '2px 8px', fontSize: 11, fontWeight: 700 }}>🌐 אונליין</span>}
-                            </div>
-                            <div style={{ fontSize: 13, color: '#555', display: 'flex', gap: 16, flexWrap: 'wrap', marginBottom: 6 }}>
-                              {p.profession && <span>🏷️ {p.profession}</span>}
-                              {p.city       && <span>📍 {p.city}{p.district ? `, ${p.district}` : ''}</span>}
-                              <span>📜 {p.license_number}</span>
-                              <span>✉️ {p.email}</span>
-                              {p.phone      && <span>📞 {p.phone}</span>}
-                            </div>
-                            {p.treatment_types?.length  > 0 && <div style={{ fontSize: 12, color: '#0F4C75', marginBottom: 3 }}>💊 {p.treatment_types.join(', ')}</div>}
-                            {p.specializations?.length  > 0 && <div style={{ fontSize: 12, color: '#6d28d9', marginBottom: 3 }}>🎯 {p.specializations.join(', ')}</div>}
-                            {p.health_funds?.length     > 0 && <div style={{ fontSize: 12, color: '#059669' }}>🏥 {p.health_funds.join(', ')}</div>}
-                            {p.bio && <div style={{ fontSize: 13, color: '#666', marginTop: 8, fontStyle: 'italic', maxWidth: 500 }}>"{p.bio.substring(0, 120)}{p.bio.length > 120 ? '...' : ''}"</div>}
-                          </div>
-
-                          <div style={{ display: 'flex', flexDirection: 'column', gap: 8, minWidth: 140 }}>
-                            {practitionersTab === 'pending' && (
-                              <button onClick={async () => { await fetch('/api/admin/practitioners', { method: 'PATCH', headers: { 'Content-Type': 'application/json', adminkey: adminKey }, body: JSON.stringify({ id: p.id, status: 'approved' }) }); fetchAll(adminKey) }}
-                                style={{ background: '#059669', color: 'white', border: 'none', borderRadius: 20, padding: '8px 16px', fontWeight: 700, cursor: 'pointer', fontSize: 13 }}>✓ אישור</button>
-                            )}
-                            <button onClick={() => { setEditingPractitioner(p); setEditPForm({ ...p, treatment_types: p.treatment_types || [], specializations: p.specializations || [], health_funds: p.health_funds || [], languages: p.languages || [] }) }}
-                              style={{ background: '#e0f2fe', color: '#0284c7', border: '2px solid #7dd3fc', borderRadius: 20, padding: '7px 14px', fontWeight: 700, cursor: 'pointer', fontSize: 12 }}>✏️ עריכה</button>
-                            <button onClick={async () => { await fetch('/api/admin/practitioners', { method: 'PATCH', headers: { 'Content-Type': 'application/json', adminkey: adminKey }, body: JSON.stringify({ id: p.id, is_verified: !p.is_verified }) }); fetchAll(adminKey) }}
-                              style={{ background: p.is_verified ? '#dbeafe' : 'white', color: p.is_verified ? '#1d4ed8' : '#0F4C75', border: '2px solid #0F4C75', borderRadius: 20, padding: '7px 14px', fontWeight: 700, cursor: 'pointer', fontSize: 12 }}>
-                              {p.is_verified ? '✓ מאומת' : 'סמן כמאומת'}
-                            </button>
-                            {practitionersTab === 'pending' && (
-                              <button onClick={async () => { await fetch('/api/admin/practitioners', { method: 'PATCH', headers: { 'Content-Type': 'application/json', adminkey: adminKey }, body: JSON.stringify({ id: p.id, status: 'rejected' }) }); fetchAll(adminKey) }}
-                                style={{ background: '#fee2e2', color: '#dc2626', border: 'none', borderRadius: 20, padding: '7px 14px', fontWeight: 700, cursor: 'pointer', fontSize: 13 }}>✕ דחייה</button>
-                            )}
-                            <button onClick={async () => { if (!confirm(`למחוק את ${p.name}?`)) return; await fetch(`/api/admin/practitioners?id=${p.id}`, { method: 'DELETE', headers: { adminkey: adminKey } }); fetchAll(adminKey) }}
-                              style={{ background: '#fff5f5', color: '#ef4444', border: '1px solid #fca5a5', borderRadius: 20, padding: '7px 14px', fontWeight: 700, cursor: 'pointer', fontSize: 12 }}>🗑️ מחיקה</button>
-                          </div>
-                        </div>
-                      </div>
-                    ))
-                  }
-                </div>
-              )}
+              ) : section === 'inbox' ? renderInbox()
+                : section === 'rehab' ? renderRehab()
+                : section === 'treatment' ? renderTreatment()
+                : section === 'practitioners' ? renderPractitioners()
+                : section === 'stats' ? <StatsTab stats={stats} />
+                : section === 'history' ? <HistoryTab history={history} loading={loadingHistory} />
+                : section === 'duplicates' ? (
+                  <DuplicatesTab duplicates={duplicates} loading={loadingDuplicates}
+                    onDismiss={(i) => setDuplicates(d => d.map((p, idx) => idx === i ? { ...p, dismissed: true } : p))}
+                    onDelete={async (id, type) => {
+                      if (!confirm('למחוק שירות זה לצמיתות?')) return
+                      if (type === 'treatment') await fetch(`/api/admin/treatment-services?id=${id}`, { method: 'DELETE', headers: { adminkey: adminKey } })
+                      else await fetch(`/api/admin/services?id=${id}`, { method: 'DELETE', headers: { adminkey: adminKey } })
+                      fetchDuplicates(adminKey); fetchAll(adminKey)
+                    }}
+                  />
+                ) : null}
             </>
           )}
         </main>
 
-        {/* ══ מודל עריכת מטפל/ת ══ */}
-        {editingPractitioner && (
-          <div onClick={() => setEditingPractitioner(null)} style={{ position: 'fixed', inset: 0, background: 'rgba(15,76,117,0.55)', zIndex: 200, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
-            <div onClick={e => e.stopPropagation()} style={{ background: 'white', borderRadius: 20, maxWidth: 560, width: '100%', maxHeight: '90vh', overflowY: 'auto', boxShadow: '0 24px 64px rgba(0,0,0,0.25)' }}>
-              <div style={{ height: 6, background: 'linear-gradient(90deg,#0F4C75,#0891B2)', borderRadius: '20px 20px 0 0' }} />
-              <div style={{ padding: '22px 24px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
-                  <h2 style={{ margin: 0, fontSize: 18, fontWeight: 800, color: '#0F4C75' }}>✏️ עריכת מטפל/ת — {editingPractitioner.name}</h2>
-                  <button onClick={() => setEditingPractitioner(null)} style={{ background: 'none', border: 'none', fontSize: 22, cursor: 'pointer', color: '#aaa' }}>✕</button>
-                </div>
-
-                {/* שם + מקצוע */}
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 14 }}>
-                  <div>
-                    <label style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#0F4C75', marginBottom: 5 }}>שם מלא</label>
-                    <input value={editPForm.name || ''} onChange={e => setEditPForm(f => ({ ...f, name: e.target.value }))} style={{ width: '100%', padding: '9px 12px', borderRadius: 10, border: '1.5px solid #a0d8e8', fontSize: 14, outline: 'none', boxSizing: 'border-box', fontFamily: 'inherit' }} />
-                  </div>
-                  <div>
-                    <label style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#0F4C75', marginBottom: 5 }}>מקצוע</label>
-                    <select value={editPForm.profession || ''} onChange={e => setEditPForm(f => ({ ...f, profession: e.target.value }))} style={{ width: '100%', padding: '9px 12px', borderRadius: 10, border: '1.5px solid #a0d8e8', fontSize: 14, outline: 'none', background: 'white', fontFamily: 'inherit' }}>
-                      <option value="">בחרו מקצוע</option>
-                      {PRACT_PROFESSIONS.map(p => <option key={p}>{p}</option>)}
-                    </select>
-                  </div>
-                </div>
-
-                {/* עיר + מחוז */}
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 14 }}>
-                  <div>
-                    <label style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#0F4C75', marginBottom: 5 }}>עיר</label>
-                    <input value={editPForm.city || ''} onChange={e => setEditPForm(f => ({ ...f, city: e.target.value }))} style={{ width: '100%', padding: '9px 12px', borderRadius: 10, border: '1.5px solid #a0d8e8', fontSize: 14, outline: 'none', boxSizing: 'border-box', fontFamily: 'inherit' }} />
-                  </div>
-                  <div>
-                    <label style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#0F4C75', marginBottom: 5 }}>מחוז</label>
-                    <select value={editPForm.district || ''} onChange={e => setEditPForm(f => ({ ...f, district: e.target.value }))} style={{ width: '100%', padding: '9px 12px', borderRadius: 10, border: '1.5px solid #a0d8e8', fontSize: 14, outline: 'none', background: 'white', fontFamily: 'inherit' }}>
-                      <option value="">בחרו מחוז</option>
-                      {DISTRICTS.map(d => <option key={d}>{d}</option>)}
-                    </select>
-                  </div>
-                </div>
-
-                {/* טלפון + מחיר */}
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 14 }}>
-                  <div>
-                    <label style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#0F4C75', marginBottom: 5 }}>טלפון</label>
-                    <input value={editPForm.phone || ''} onChange={e => setEditPForm(f => ({ ...f, phone: e.target.value }))} style={{ width: '100%', padding: '9px 12px', borderRadius: 10, border: '1.5px solid #a0d8e8', fontSize: 14, outline: 'none', boxSizing: 'border-box', fontFamily: 'inherit' }} />
-                  </div>
-                  <div>
-                    <label style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#0F4C75', marginBottom: 5 }}>מחיר לשעה (₪)</label>
-                    <input value={editPForm.price_range || ''} onChange={e => setEditPForm(f => ({ ...f, price_range: e.target.value }))} placeholder="300-400" style={{ width: '100%', padding: '9px 12px', borderRadius: 10, border: '1.5px solid #a0d8e8', fontSize: 14, outline: 'none', boxSizing: 'border-box', fontFamily: 'inherit' }} />
-                  </div>
-                </div>
-
-                {/* אתר + תמונה */}
-                <div style={{ marginBottom: 14 }}>
-                  <label style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#0F4C75', marginBottom: 5 }}>אתר</label>
-                  <input value={editPForm.website || ''} onChange={e => setEditPForm(f => ({ ...f, website: e.target.value }))} style={{ width: '100%', padding: '9px 12px', borderRadius: 10, border: '1.5px solid #a0d8e8', fontSize: 14, outline: 'none', boxSizing: 'border-box', fontFamily: 'inherit' }} />
-                </div>
-                <div style={{ marginBottom: 14 }}>
-                  <label style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#0F4C75', marginBottom: 5 }}>קישור לתמונת פרופיל</label>
-                  <input value={editPForm.photo_url || ''} onChange={e => setEditPForm(f => ({ ...f, photo_url: e.target.value }))} style={{ width: '100%', padding: '9px 12px', borderRadius: 10, border: '1.5px solid #a0d8e8', fontSize: 14, outline: 'none', boxSizing: 'border-box', fontFamily: 'inherit' }} />
-                </div>
-
-                {/* סוגי טיפול */}
-                <div style={{ marginBottom: 14 }}>
-                  <label style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#0F4C75', marginBottom: 6 }}>סוגי טיפול</label>
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
-                    {PRACT_TREATMENT_TYPES.map(t => { const s = (editPForm.treatment_types||[]).includes(t); return <button key={t} onClick={() => togglePEditArray('treatment_types', t)} style={{ padding: '4px 12px', borderRadius: 999, fontSize: 12, fontWeight: 700, cursor: 'pointer', border: `1.5px solid ${s?'#0F4C75':'#a0d8e8'}`, background: s?'#0F4C75':'white', color: s?'white':'#0F4C75' }}>{t}</button> })}
-                  </div>
-                </div>
-
-                {/* התמחויות */}
-                <div style={{ marginBottom: 14 }}>
-                  <label style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#6d28d9', marginBottom: 6 }}>תחומי התמחות</label>
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
-                    {PRACT_SPECIALIZATIONS.map(s => { const sel = (editPForm.specializations||[]).includes(s); return <button key={s} onClick={() => togglePEditArray('specializations', s)} style={{ padding: '4px 12px', borderRadius: 999, fontSize: 12, fontWeight: 700, cursor: 'pointer', border: `1.5px solid ${sel?'#6d28d9':'#ddd6fe'}`, background: sel?'#6d28d9':'white', color: sel?'white':'#6d28d9' }}>{s}</button> })}
-                  </div>
-                </div>
-
-                {/* קופות חולים */}
-                <div style={{ marginBottom: 14 }}>
-                  <label style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#059669', marginBottom: 6 }}>קופות חולים</label>
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
-                    {HEALTH_FUNDS.map(hf => { const s = (editPForm.health_funds||[]).includes(hf); return <button key={hf} onClick={() => togglePEditArray('health_funds', hf)} style={{ padding: '4px 12px', borderRadius: 999, fontSize: 12, fontWeight: 700, cursor: 'pointer', border: `1.5px solid ${s?'#059669':'#d1fae5'}`, background: s?'#059669':'white', color: s?'white':'#059669' }}>{hf}</button> })}
-                  </div>
-                </div>
-
-                {/* שפות */}
-                <div style={{ marginBottom: 14 }}>
-                  <label style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#7C3AED', marginBottom: 6 }}>שפות טיפול</label>
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
-                    {PRACT_LANGUAGES.map(l => { const s = (editPForm.languages||[]).includes(l); return <button key={l} onClick={() => togglePEditArray('languages', l)} style={{ padding: '4px 12px', borderRadius: 999, fontSize: 12, fontWeight: 700, cursor: 'pointer', border: `1.5px solid ${s?'#7C3AED':'#ede9fe'}`, background: s?'#7C3AED':'white', color: s?'white':'#7C3AED' }}>{l}</button> })}
-                  </div>
-                </div>
-
-                {/* צ'קבוקסים */}
-                <div style={{ display: 'flex', gap: 20, marginBottom: 14 }}>
-                  {[['is_online', '🌐 אונליין'], ['is_defense_ministry', '🎗️ ספק משרד הביטחון']].map(([field, label]) => (
-                    <label key={field} style={{ display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer', fontSize: 13, fontWeight: 700, color: '#555' }}>
-                      <input type="checkbox" checked={!!editPForm[field]} onChange={e => setEditPForm(f => ({ ...f, [field]: e.target.checked }))} style={{ width: 16, height: 16 }} />
-                      {label}
-                    </label>
-                  ))}
-                </div>
-
-                {/* ביו */}
-                <div style={{ marginBottom: 20 }}>
-                  <label style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#0F4C75', marginBottom: 5 }}>קצת עליי</label>
-                  <textarea value={editPForm.bio || ''} onChange={e => setEditPForm(f => ({ ...f, bio: e.target.value }))} rows={3} style={{ width: '100%', padding: '9px 12px', borderRadius: 10, border: '1.5px solid #a0d8e8', fontSize: 14, outline: 'none', resize: 'vertical', fontFamily: 'inherit', boxSizing: 'border-box' }} />
-                </div>
-
-                <div style={{ display: 'flex', gap: 10 }}>
-                  <button onClick={savePractitionerEdit} disabled={savingPractitioner} style={{ flex: 1, background: savingPractitioner ? '#ccc' : 'linear-gradient(135deg,#0F4C75,#0891B2)', color: 'white', border: 'none', borderRadius: 20, padding: '12px 0', fontWeight: 700, fontSize: 14, cursor: savingPractitioner ? 'not-allowed' : 'pointer' }}>{savingPractitioner ? 'שומר...' : '💾 שמור שינויים'}</button>
-                  <button onClick={() => setEditingPractitioner(null)} style={{ flex: 1, background: '#f0f9ff', color: '#0F4C75', border: '1.5px solid #a0d8e8', borderRadius: 20, padding: '12px 0', fontWeight: 700, fontSize: 14, cursor: 'pointer' }}>ביטול</button>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {rejectEmailModal && (
-          <div onClick={() => setRejectEmailModal(null)} style={{ position: 'fixed', inset: 0, background: 'rgba(26,58,92,0.6)', zIndex: 200, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
-            <div onClick={e => e.stopPropagation()} style={{ background: 'white', borderRadius: 20, maxWidth: 480, width: '100%', boxShadow: '0 24px 64px rgba(0,0,0,0.25)' }}>
-              <div style={{ height: 7, background: '#C62828', borderRadius: '20px 20px 0 0' }} />
-              <div style={{ padding: '24px 20px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-                  <h2 style={{ margin: 0, fontSize: 17, fontWeight: 800, color: '#1A3A5C' }}>✉️ שלח מייל דחייה</h2>
-                  <button onClick={() => setRejectEmailModal(null)} style={{ background: 'none', border: 'none', fontSize: 22, cursor: 'pointer', color: '#aaa' }}>✕</button>
-                </div>
-                <div style={{ fontSize: 13, color: '#666', marginBottom: 16 }}>שליחת מייל אל <strong>{rejectEmailModal.contactEmail || rejectEmailModal.email}</strong> בנוגע לבקשת <strong>{rejectEmailModal.name}</strong></div>
-                <div style={{ marginBottom: 16 }}>
-                  <label style={{ display: 'block', fontSize: 13, fontWeight: 700, color: '#1A3A5C', marginBottom: 6 }}>סיבת הדחייה <span style={{ fontWeight: 400, color: '#aaa' }}>(אופציונלי)</span></label>
-                  <textarea value={rejectReason} onChange={e => setRejectReason(e.target.value)} rows={4} placeholder="למשל: השירות אינו תואם את קריטריוני האתר, פרטים חסרים..." style={{ width: '100%', padding: '10px 14px', borderRadius: 12, border: '1.5px solid #FFCDD2', fontSize: 14, resize: 'vertical', fontFamily: 'inherit', outline: 'none', boxSizing: 'border-box' }} />
-                </div>
-                <div style={{ display: 'flex', gap: 10 }}>
-                  <button onClick={sendRejectEmail} disabled={sendingRejectEmail} style={{ flex: 1, background: '#C62828', color: 'white', border: 'none', borderRadius: 20, padding: '12px 0', fontWeight: 700, fontSize: 14, cursor: sendingRejectEmail ? 'not-allowed' : 'pointer' }}>{sendingRejectEmail ? 'שולח...' : '✉️ שלח מייל'}</button>
-                  <button onClick={() => setRejectEmailModal(null)} style={{ flex: 1, background: '#EEF2FF', color: '#1A3A5C', border: '1.5px solid #C5D0F0', borderRadius: 20, padding: '12px 0', fontWeight: 700, fontSize: 14, cursor: 'pointer' }}>ביטול</button>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {showExportRehab && (
-          <div onClick={() => setShowExportRehab(false)} style={{ position: 'fixed', inset: 0, background: 'rgba(26,58,92,0.6)', zIndex: 200, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
-            <div onClick={e => e.stopPropagation()} style={{ background: 'white', borderRadius: 20, maxWidth: 480, width: '100%', boxShadow: '0 24px 64px rgba(0,0,0,0.25)' }}>
-              <div style={{ height: 7, background: '#4C0080', borderRadius: '20px 20px 0 0' }} />
-              <div style={{ padding: '24px 20px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
-                  <h2 style={{ margin: 0, fontSize: 18, fontWeight: 800, color: '#4C0080' }}>📥 ייצוא שיקום לאקסל</h2>
-                  <button onClick={() => setShowExportRehab(false)} style={{ background: 'none', border: 'none', fontSize: 22, cursor: 'pointer', color: '#aaa' }}>✕</button>
-                </div>
-                {[['status', 'סטטוס', [['', 'הכל'], ['approved', 'פעילים'], ['pending', 'ממתינים'], ['rejected', 'נדחו']]], ['district', 'מחוז', [['', 'כל המחוזות'], ...DISTRICTS.map(d => [d, d])]], ['category', 'קטגוריה', [['', 'כל הקטגוריות'], ...CATEGORY_NAMES.map(c => [c, c])]]].map(([key, label, opts]) => (
-                  <div key={key} style={{ marginBottom: 14 }}>
-                    <label style={lbl}>{label}</label>
-                    <select value={exportFilters[key]} onChange={e => setExportFilters(f => ({ ...f, [key]: e.target.value, ...(key === 'category' ? { subcategory: '' } : {}) }))} style={inp}>
-                      {opts.map(([val, txt]) => <option key={val} value={val}>{txt}</option>)}
-                    </select>
-                  </div>
-                ))}
-                {exportSubcategories.length > 0 && (
-                  <div style={{ marginBottom: 14 }}>
-                    <label style={lbl}>תת קטגוריה</label>
-                    <select value={exportFilters.subcategory} onChange={e => setExportFilters(f => ({ ...f, subcategory: e.target.value }))} style={inp}>
-                      <option value="">כל תתי הקטגוריות</option>
-                      {exportSubcategories.map(s => <option key={s}>{s}</option>)}
-                    </select>
-                  </div>
-                )}
-                <div style={{ display: 'flex', gap: 10, marginTop: 8 }}>
-                  <button onClick={exportRehabToExcel} disabled={exporting} style={{ flex: 1, background: '#4C0080', color: 'white', border: 'none', borderRadius: 20, padding: '12px 0', fontWeight: 700, fontSize: 14, cursor: exporting ? 'not-allowed' : 'pointer' }}>{exporting ? 'מייצא...' : '📥 הורד אקסל'}</button>
-                  <button onClick={() => setShowExportRehab(false)} style={{ flex: 1, background: '#EEF2FF', color: '#1A3A5C', border: '1.5px solid #C5D0F0', borderRadius: 20, padding: '12px 0', fontWeight: 700, fontSize: 14, cursor: 'pointer' }}>ביטול</button>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {showExportTreatment && (
-          <div onClick={() => setShowExportTreatment(false)} style={{ position: 'fixed', inset: 0, background: 'rgba(26,58,92,0.6)', zIndex: 200, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
-            <div onClick={e => e.stopPropagation()} style={{ background: 'white', borderRadius: 20, maxWidth: 480, width: '100%', boxShadow: '0 24px 64px rgba(0,0,0,0.25)' }}>
-              <div style={{ height: 7, background: '#0891B2', borderRadius: '20px 20px 0 0' }} />
-              <div style={{ padding: '24px 20px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
-                  <h2 style={{ margin: 0, fontSize: 18, fontWeight: 800, color: '#0891B2' }}>📥 ייצוא טיפול לאקסל</h2>
-                  <button onClick={() => setShowExportTreatment(false)} style={{ background: 'none', border: 'none', fontSize: 22, cursor: 'pointer', color: '#aaa' }}>✕</button>
-                </div>
-                {[['status', 'סטטוס', [['', 'הכל'], ['approved', 'פעילים'], ['pending', 'ממתינים'], ['rejected', 'נדחו']]], ['district', 'מחוז', [['', 'כל המחוזות'], ...DISTRICTS.map(d => [d, d])]], ['category', 'קטגוריה', [['', 'כל הקטגוריות'], ...TREATMENT_CATEGORIES.map(c => [c, c])]]].map(([key, label, opts]) => (
-                  <div key={key} style={{ marginBottom: 14 }}>
-                    <label style={lbl}>{label}</label>
-                    <select value={exportTreatmentFilters[key]} onChange={e => setExportTreatmentFilters(f => ({ ...f, [key]: e.target.value }))} style={inp}>
-                      {opts.map(([val, txt]) => <option key={val} value={val}>{txt}</option>)}
-                    </select>
-                  </div>
-                ))}
-                <div style={{ display: 'flex', gap: 10, marginTop: 8 }}>
-                  <button onClick={exportTreatmentToExcel} disabled={exporting} style={{ flex: 1, background: '#0891B2', color: 'white', border: 'none', borderRadius: 20, padding: '12px 0', fontWeight: 700, fontSize: 14, cursor: exporting ? 'not-allowed' : 'pointer' }}>{exporting ? 'מייצא...' : '📥 הורד אקסל'}</button>
-                  <button onClick={() => setShowExportTreatment(false)} style={{ flex: 1, background: '#EEF2FF', color: '#1A3A5C', border: '1.5px solid #C5D0F0', borderRadius: 20, padding: '12px 0', fontWeight: 700, fontSize: 14, cursor: 'pointer' }}>ביטול</button>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* מודל עריכה */}
+        {/* ══ מודל עריכת שירות ══ */}
         {editingService && (
           <div onClick={() => setEditingService(null)} style={{ position: 'fixed', inset: 0, background: 'rgba(26,58,92,0.6)', zIndex: 200, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
             <div onClick={e => e.stopPropagation()} style={{ background: 'white', borderRadius: 20, maxWidth: 560, width: '100%', maxHeight: '90vh', overflowY: 'auto', boxShadow: '0 24px 64px rgba(0,0,0,0.25)' }}>
-              <div style={{ height: 7, background: isTreatmentEdit ? '#0891B2' : '#8B00D4', borderRadius: '20px 20px 0 0' }} />
-              <div style={{ padding: '24px 20px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
-                  <h2 style={{ margin: 0, fontSize: 18, fontWeight: 800, color: '#1A3A5C' }}>✏️ עריכת שירות {isTreatmentEdit ? 'טיפול' : 'שיקום'}</h2>
+              <div style={{ height: 6, background: isTreatmentEdit ? '#0891B2' : '#8B00D4', borderRadius: '20px 20px 0 0' }} />
+              <div style={{ padding: '20px 24px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+                  <h2 style={{ margin: 0, fontSize: 17, fontWeight: 800, color: '#1A3A5C' }}>✏️ עריכת שירות — {editingService.name}</h2>
                   <button onClick={() => setEditingService(null)} style={{ background: 'none', border: 'none', fontSize: 22, cursor: 'pointer', color: '#aaa' }}>✕</button>
                 </div>
 
-                {[['name', 'שם השירות', 'text'], ['city', 'עיר', 'text'], ['phone', 'טלפון', 'tel'], ['email', 'מייל', 'email'], ['address', 'כתובת', 'text'], ['website', 'אתר אינטרנט', 'url']].map(([key, label, type]) => (
-                  <div key={key} style={{ marginBottom: 14 }}>
-                    <label style={lbl}>{label}</label>
-                    <input type={type} value={editForm[key] || ''} onChange={e => setEditForm(f => ({ ...f, [key]: e.target.value }))} style={inp} />
-                  </div>
-                ))}
-
-                {/* מחוז ראשי */}
-                <div style={{ marginBottom: 14 }}>
-                  <label style={lbl}>מחוז ראשי</label>
-                  <select value={editForm.district || ''} onChange={e => setEditForm(f => ({ ...f, district: e.target.value }))} style={inp}>
-                    <option value="">בחרו מחוז</option>
-                    {DISTRICTS.map(d => <option key={d}>{d}</option>)}
-                  </select>
+                {/* טאבים */}
+                <div style={{ display: 'flex', gap: 6, marginBottom: 16 }}>
+                  {[['basic', 'מידע בסיסי'], ['advanced', 'פרטים מתקדמים']].map(([id, label]) => (
+                    <button key={id} onClick={() => setEditTab(id)} style={{ flex: 1, padding: '8px', borderRadius: 10, fontWeight: 700, fontSize: 13, cursor: 'pointer', border: `2px solid ${isTreatmentEdit ? '#0891B2' : '#8B00D4'}`, background: editTab === id ? (isTreatmentEdit ? '#0891B2' : '#8B00D4') : 'white', color: editTab === id ? 'white' : (isTreatmentEdit ? '#0891B2' : '#8B00D4') }}>{label}</button>
+                  ))}
                 </div>
 
-                {/* מחוזות נוספים */}
-                <div style={{ marginBottom: 14 }}>
-                  <label style={{ display: 'block', fontSize: 13, fontWeight: 700, color: '#1A3A5C', marginBottom: 6 }}>
-                    מחוזות נוספים
-                    <span style={{ fontWeight: 400, color: '#9ca3af', marginRight: 6 }}>(לשירות איזורי המשרת כמה מחוזות)</span>
-                  </label>
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
-                    {DISTRICTS.map(d => {
-                      const sel = (editForm.districts || []).includes(d)
-                      return (
-                        <button key={d} type="button" onClick={() => toggleEditArray('districts', d)} style={{
-                          padding: '5px 14px', borderRadius: '999px', fontSize: 12, fontWeight: 700,
-                          cursor: 'pointer', fontFamily: 'inherit', transition: 'all 0.15s',
-                          border: `1.5px solid ${sel ? '#1A3A5C' : '#d4b0f0'}`,
-                          background: sel ? '#1A3A5C' : 'white',
-                          color: sel ? 'white' : '#555',
-                        }}>{d}</button>
-                      )
-                    })}
-                  </div>
-                  {(editForm.districts || []).length > 0 && (
-                    <div style={{ fontSize: 12, color: '#9b88bb', marginTop: 6, fontWeight: 600 }}>
-                      ✓ נבחרו: {editForm.districts.join(', ')}
+                {editTab === 'basic' ? (
+                  <>
+                    {[['name','שם השירות','text'],['city','עיר','text'],['phone','טלפון','tel'],['email','מייל','email'],['address','כתובת','text'],['website','אתר','url']].map(([key, label, type]) => (
+                      <div key={key} style={{ marginBottom: 12 }}>
+                        <label style={lbl}>{label}</label>
+                        <input type={type} value={editForm[key] || ''} onChange={e => setEditForm(f => ({ ...f, [key]: e.target.value }))} style={inp} />
+                      </div>
+                    ))}
+                    <div style={{ marginBottom: 12 }}>
+                      <label style={lbl}>מחוז ראשי</label>
+                      <select value={editForm.district || ''} onChange={e => setEditForm(f => ({ ...f, district: e.target.value }))} style={inp}>
+                        <option value="">בחרו מחוז</option>
+                        {DISTRICTS.map(d => <option key={d}>{d}</option>)}
+                      </select>
                     </div>
-                  )}
-                </div>
-
-                {/* קטגוריה */}
-                <div style={{ marginBottom: 14 }}>
-                  <label style={lbl}>קטגוריה</label>
-                  <select value={editForm.category || ''} onChange={e => setEditForm(f => ({ ...f, category: e.target.value, subcategory: '' }))} style={inp}>
-                    <option value="">בחרו קטגוריה</option>
-                    {isTreatmentEdit ? TREATMENT_CATEGORIES.map(c => <option key={c}>{c}</option>) : CATEGORY_NAMES.map(c => <option key={c}>{c}</option>)}
-                  </select>
-                </div>
-
-                {!isTreatmentEdit && editSubcategories.length > 0 && (
-                  <div style={{ marginBottom: 14 }}>
-                    <label style={lbl}>תת קטגוריה</label>
-                    <select value={editForm.subcategory || ''} onChange={e => setEditForm(f => ({ ...f, subcategory: e.target.value }))} style={inp}>
-                      <option value="">בחרו תת קטגוריה</option>
-                      {editSubcategories.map(s => <option key={s}>{s}</option>)}
-                    </select>
-                  </div>
+                    <div style={{ marginBottom: 12 }}>
+                      <label style={lbl}>קטגוריה</label>
+                      <select value={editForm.category || ''} onChange={e => setEditForm(f => ({ ...f, category: e.target.value, subcategory: '' }))} style={inp}>
+                        <option value="">בחרו קטגוריה</option>
+                        {isTreatmentEdit ? TREATMENT_CATEGORIES.map(c => <option key={c}>{c}</option>) : CATEGORY_NAMES.map(c => <option key={c}>{c}</option>)}
+                      </select>
+                    </div>
+                    {!isTreatmentEdit && editSubcategories.length > 0 && (
+                      <div style={{ marginBottom: 12 }}>
+                        <label style={lbl}>תת קטגוריה</label>
+                        <select value={editForm.subcategory || ''} onChange={e => setEditForm(f => ({ ...f, subcategory: e.target.value }))} style={inp}>
+                          <option value="">בחרו</option>
+                          {editSubcategories.map(s => <option key={s}>{s}</option>)}
+                        </select>
+                      </div>
+                    )}
+                    <div style={{ marginBottom: 12 }}>
+                      <label style={lbl}>תיאור</label>
+                      <textarea value={editForm.description || ''} onChange={e => setEditForm(f => ({ ...f, description: e.target.value }))} rows={4} style={{ ...inp, resize: 'vertical', borderRadius: 10 }} />
+                    </div>
+                    <div style={{ display: 'flex', gap: 16 }}>
+                      {[['is_regional','🗺️ שירות איזורי'],['is_national','🌍 פריסה ארצית']].map(([field, label]) => (
+                        <label key={field} style={{ display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer', fontSize: 13, fontWeight: 700, color: '#555' }}>
+                          <input type="checkbox" checked={!!editForm[field]} onChange={e => setEditForm(f => ({ ...f, [field]: e.target.checked }))} style={{ width: 16, height: 16 }} />{label}
+                        </label>
+                      ))}
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    {/* מחוזות נוספים */}
+                    <div style={{ marginBottom: 12 }}>
+                      <label style={lbl}>מחוזות נוספים</label>
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+                        {DISTRICTS.map(d => { const sel = (editForm.districts||[]).includes(d); return <button key={d} type="button" onClick={() => toggleEditArray('districts', d)} style={{ padding: '5px 12px', borderRadius: 999, fontSize: 12, fontWeight: 700, cursor: 'pointer', border: `1.5px solid ${sel?'#1A3A5C':'#ddd'}`, background: sel?'#1A3A5C':'white', color: sel?'white':'#555', fontFamily: 'inherit' }}>{d}</button> })}
+                      </div>
+                    </div>
+                    {/* קבוצות גיל */}
+                    <div style={{ marginBottom: 12 }}>
+                      <label style={lbl}>קבוצות גיל</label>
+                      <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                        {['ילדים','נוער','צעירים','מבוגרים','קשישים'].map(ag => { const sel = (editForm.age_groups||[]).includes(ag); return <button key={ag} type="button" onClick={() => toggleEditArray('age_groups', ag)} style={{ padding: '5px 12px', borderRadius: 999, fontSize: 12, fontWeight: 700, cursor: 'pointer', border: `1.5px solid ${sel?'#8B00D4':'#d4b0f0'}`, background: sel?'#8B00D4':'white', color: sel?'white':'#555', fontFamily: 'inherit' }}>{ag}</button> })}
+                      </div>
+                    </div>
+                    {/* אבחנות */}
+                    <div style={{ marginBottom: 12 }}>
+                      <label style={lbl}>אבחנות / התמחויות</label>
+                      <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                        {['הפרעות אכילה','OCD','פוסט טראומה','פוסט טראומה מורכבת','התמכרויות'].map(d => { const sel = (editForm.diagnoses||[]).includes(d); return <button key={d} type="button" onClick={() => toggleEditArray('diagnoses', d)} style={{ padding: '5px 12px', borderRadius: 999, fontSize: 12, fontWeight: 700, cursor: 'pointer', border: `1.5px solid ${sel?'#0E7490':'#c8eaf2'}`, background: sel?'#0E7490':'white', color: sel?'white':'#0E7490', fontFamily: 'inherit' }}>{d}</button> })}
+                      </div>
+                    </div>
+                    {/* אוכלוסייה */}
+                    <div style={{ marginBottom: 12 }}>
+                      <label style={lbl}>אוכלוסייה ייעודית</label>
+                      <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                        {['נשים','דתי/מסורתי','חרדי','להט"ב'].map(p => { const sel = (editForm.populations||[]).includes(p); return <button key={p} type="button" onClick={() => toggleEditArray('populations', p)} style={{ padding: '5px 12px', borderRadius: 999, fontSize: 12, fontWeight: 700, cursor: 'pointer', border: `1.5px solid ${sel?'#5E35B1':'#e0d0f0'}`, background: sel?'#5E35B1':'white', color: sel?'white':'#5E35B1', fontFamily: 'inherit' }}>{p}</button> })}
+                      </div>
+                    </div>
+                    {/* קטגוריות נוספות */}
+                    <div style={{ marginBottom: 12 }}>
+                      <label style={lbl}>קטגוריות נוספות</label>
+                      <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                        {(isTreatmentEdit ? TREATMENT_CATEGORIES : CATEGORY_NAMES).filter(c => c !== editForm.category).map(cat => { const sel = (editForm.categories||[]).includes(cat); const catColor = isTreatmentEdit ? '#0891B2' : getCategoryColor(cat); return <button key={cat} type="button" onClick={() => toggleEditArray('categories', cat)} style={{ padding: '5px 12px', borderRadius: 999, fontSize: 12, fontWeight: 700, cursor: 'pointer', border: `1.5px solid ${sel?catColor:'#ddd'}`, background: sel?catColor:'white', color: sel?'white':catColor, fontFamily: 'inherit' }}>{cat}</button> })}
+                      </div>
+                    </div>
+                  </>
                 )}
 
-                <div style={{ marginBottom: 14 }}>
-                  <label style={lbl}>תיאור</label>
-                  <textarea value={editForm.description || ''} onChange={e => setEditForm(f => ({ ...f, description: e.target.value }))} rows={4} style={{ ...inp, resize: 'vertical', borderRadius: 12 }} />
-                </div>
-
-                {/* קבוצות גיל */}
-                <div style={{ marginBottom: 14 }}>
-                  <label style={{ display: 'block', fontSize: 13, fontWeight: 700, color: '#1A3A5C', marginBottom: 6 }}>קבוצות גיל</label>
-                  <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-                    {(isTreatmentEdit
-                      ? ['ילדים', 'נוער', 'צעירים', 'מבוגרים', 'קשישים']
-                      : ['צעירים', 'מבוגרים', 'קשישים']
-                    ).map(ag => {
-                      const sel = (editForm.age_groups || []).includes(ag)
-                      return <button key={ag} type="button" onClick={() => toggleEditArray('age_groups', ag)} style={{ padding: '5px 14px', borderRadius: '999px', fontSize: 12, fontWeight: 700, cursor: 'pointer', border: `1.5px solid ${sel ? '#8B00D4' : '#d4b0f0'}`, background: sel ? '#8B00D4' : 'white', color: sel ? 'white' : '#555', fontFamily: 'inherit' }}>{ag}</button>
-                    })}
-                  </div>
-                </div>
-
-                {/* אבחנות */}
-                <div style={{ marginBottom: 14 }}>
-                  <label style={{ display: 'block', fontSize: 13, fontWeight: 700, color: '#1A3A5C', marginBottom: 6 }}>אבחנות / התמחויות</label>
-                  <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-                    {['הפרעות אכילה', 'OCD', 'פוסט טראומה', 'פוסט טראומה מורכבת', 'התמכרויות'].map(d => {
-                      const sel = (editForm.diagnoses || []).includes(d)
-                      return <button key={d} type="button" onClick={() => toggleEditArray('diagnoses', d)} style={{ padding: '5px 14px', borderRadius: '999px', fontSize: 12, fontWeight: 700, cursor: 'pointer', border: `1.5px solid ${sel ? '#0E7490' : '#c8eaf2'}`, background: sel ? '#0E7490' : 'white', color: sel ? 'white' : '#0E7490', fontFamily: 'inherit' }}>{d}</button>
-                    })}
-                  </div>
-                </div>
-
-                {/* אוכלוסייה */}
-                <div style={{ marginBottom: 14 }}>
-                  <label style={{ display: 'block', fontSize: 13, fontWeight: 700, color: '#1A3A5C', marginBottom: 6 }}>אוכלוסייה ייעודית</label>
-                  <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-                    {['נשים', 'דתי/מסורתי', 'חרדי', 'להט"ב'].map(p => {
-                      const sel = (editForm.populations || []).includes(p)
-                      return <button key={p} type="button" onClick={() => toggleEditArray('populations', p)} style={{ padding: '5px 14px', borderRadius: '999px', fontSize: 12, fontWeight: 700, cursor: 'pointer', border: `1.5px solid ${sel ? '#5E35B1' : '#e0d0f0'}`, background: sel ? '#5E35B1' : 'white', color: sel ? 'white' : '#5E35B1', fontFamily: 'inherit' }}>{p}</button>
-                    })}
-                  </div>
-                </div>
-
-                {/* קטגוריות נוספות */}
-                <div style={{ marginBottom: 14 }}>
-                  <label style={{ display: 'block', fontSize: 13, fontWeight: 700, color: '#1A3A5C', marginBottom: 6 }}>קטגוריות נוספות</label>
-                  <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-                    {(isTreatmentEdit
-                      ? TREATMENT_CATEGORIES.filter(c => c !== editForm.category)
-                      : CATEGORY_NAMES.filter(c => c !== editForm.category)
-                    ).map(cat => {
-                      const sel = (editForm.categories || []).includes(cat)
-                      const catColor = isTreatmentEdit ? '#0891B2' : getCategoryColor(cat)
-                      return <button key={cat} type="button" onClick={() => toggleEditArray('categories', cat)} style={{ padding: '5px 14px', borderRadius: '999px', fontSize: 12, fontWeight: 700, cursor: 'pointer', border: `1.5px solid ${sel ? catColor : (isTreatmentEdit ? '#a0d8e8' : '#e0d0f0')}`, background: sel ? catColor : 'white', color: sel ? 'white' : catColor, fontFamily: 'inherit' }}>{cat}</button>
-                    })}
-                  </div>
-                </div>
-
-                <div style={{ marginBottom: 14, background: '#f0f7ff', borderRadius: 12, padding: '12px 14px', border: '1.5px solid #c5d0f0' }}>
-                  <label style={{ display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer' }}>
-                    <input type="checkbox" checked={editForm.is_regional || false} onChange={e => setEditForm(f => ({ ...f, is_regional: e.target.checked }))} style={{ width: 18, height: 18, accentColor: '#1A3A5C', cursor: 'pointer' }} />
-                    <div>
-                      <div style={{ fontSize: 14, fontWeight: 700, color: '#1A3A5C' }}>🗺️ שירות איזורי</div>
-                      <div style={{ fontSize: 11, color: '#6b7280', marginTop: 2 }}>יוצג במפה בנקודות מרכז המחוזות הנבחרים, בנוסף למיקומו הספציפי</div>
-                    </div>
-                  </label>
-                </div>
-                <div style={{ marginBottom: 22 }}>
-                  <label style={{ display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer' }}>
-                    <input type="checkbox" checked={editForm.is_national || false} onChange={e => setEditForm(f => ({ ...f, is_national: e.target.checked }))} style={{ width: 18, height: 18, accentColor: '#8B00D4', cursor: 'pointer' }} />
-                    <span style={{ fontSize: 14, fontWeight: 700, color: '#1A3A5C' }}>🌍 פריסה ארצית</span>
-                  </label>
-                </div>
-
-                <div style={{ display: 'flex', gap: 10 }}>
-                  <button onClick={saveEdit} disabled={saving} style={{ flex: 1, background: isTreatmentEdit ? '#0891B2' : '#8B00D4', color: 'white', border: 'none', borderRadius: 20, padding: '12px 0', fontWeight: 700, fontSize: 14, cursor: saving ? 'not-allowed' : 'pointer' }}>{saving ? 'שומר...' : '💾 שמור'}</button>
+                <div style={{ display: 'flex', gap: 10, marginTop: 16 }}>
+                  <button onClick={saveEdit} disabled={saving} style={{ flex: 1, background: saving ? '#ccc' : isTreatmentEdit ? '#0891B2' : '#8B00D4', color: 'white', border: 'none', borderRadius: 20, padding: '12px 0', fontWeight: 700, fontSize: 14, cursor: saving ? 'not-allowed' : 'pointer' }}>{saving ? 'שומר...' : '💾 שמור'}</button>
                   <button onClick={() => setEditingService(null)} style={{ flex: 1, background: '#EEF2FF', color: '#1A3A5C', border: '1.5px solid #C5D0F0', borderRadius: 20, padding: '12px 0', fontWeight: 700, fontSize: 14, cursor: 'pointer' }}>ביטול</button>
                 </div>
               </div>
@@ -1066,10 +839,199 @@ export default function Admin() {
           </div>
         )}
 
-        {locationService && <LocationPicker service={locationService} onSave={saveLocation} onClose={() => setLocationService(null)} />}
+        {/* ══ מודל עריכת מטפל/ת ══ */}
+        {editingPractitioner && (
+          <div onClick={() => setEditingPractitioner(null)} style={{ position: 'fixed', inset: 0, background: 'rgba(15,76,117,0.55)', zIndex: 200, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
+            <div onClick={e => e.stopPropagation()} style={{ background: 'white', borderRadius: 20, maxWidth: 560, width: '100%', maxHeight: '90vh', overflowY: 'auto', boxShadow: '0 24px 64px rgba(0,0,0,0.25)' }}>
+              <div style={{ height: 6, background: '#0F4C75', borderRadius: '20px 20px 0 0' }} />
+              <div style={{ padding: '20px 24px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+                  <h2 style={{ margin: 0, fontSize: 17, fontWeight: 800, color: '#0F4C75' }}>✏️ עריכת מטפל/ת — {editingPractitioner.name}</h2>
+                  <button onClick={() => setEditingPractitioner(null)} style={{ background: 'none', border: 'none', fontSize: 22, cursor: 'pointer', color: '#aaa' }}>✕</button>
+                </div>
 
-        <footer style={{ background: '#1A3A5C', color: 'rgba(255,255,255,0.7)', textAlign: 'center', padding: '24px', fontSize: 13, marginTop: 48 }}>
-          <div style={{ marginBottom: 8 }}><a href="/contact" style={{ color: 'rgba(255,255,255,0.7)', textDecoration: 'none' }}>✉️ צור קשר</a></div>
+                {/* טאבים */}
+                <div style={{ display: 'flex', gap: 6, marginBottom: 16 }}>
+                  {[['basic','פרטים בסיסיים'],['expertise','התמחויות']].map(([id, label]) => (
+                    <button key={id} onClick={() => setEditPTab(id)} style={{ flex: 1, padding: '8px', borderRadius: 10, fontWeight: 700, fontSize: 13, cursor: 'pointer', border: '2px solid #0F4C75', background: editPTab === id ? '#0F4C75' : 'white', color: editPTab === id ? 'white' : '#0F4C75' }}>{label}</button>
+                  ))}
+                </div>
+
+                {editPTab === 'basic' ? (
+                  <>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 12 }}>
+                      {[['name','שם מלא'],['city','עיר'],['phone','טלפון'],['price_range','מחיר/שעה (₪)']].map(([key, label]) => (
+                        <div key={key}>
+                          <label style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#0F4C75', marginBottom: 4 }}>{label}</label>
+                          <input value={editPForm[key] || ''} onChange={e => setEditPForm(f => ({ ...f, [key]: e.target.value }))} style={{ width: '100%', padding: '9px 12px', borderRadius: 10, border: '1.5px solid #a0d8e8', fontSize: 14, outline: 'none', boxSizing: 'border-box', fontFamily: 'inherit' }} />
+                        </div>
+                      ))}
+                    </div>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 12 }}>
+                      <div>
+                        <label style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#0F4C75', marginBottom: 4 }}>מקצוע</label>
+                        <select value={editPForm.profession || ''} onChange={e => setEditPForm(f => ({ ...f, profession: e.target.value }))} style={{ width: '100%', padding: '9px 12px', borderRadius: 10, border: '1.5px solid #a0d8e8', fontSize: 14, outline: 'none', background: 'white', fontFamily: 'inherit' }}>
+                          <option value="">בחרו</option>
+                          {PRACT_PROFESSIONS.map(p => <option key={p}>{p}</option>)}
+                        </select>
+                      </div>
+                      <div>
+                        <label style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#0F4C75', marginBottom: 4 }}>מחוז</label>
+                        <select value={editPForm.district || ''} onChange={e => setEditPForm(f => ({ ...f, district: e.target.value }))} style={{ width: '100%', padding: '9px 12px', borderRadius: 10, border: '1.5px solid #a0d8e8', fontSize: 14, outline: 'none', background: 'white', fontFamily: 'inherit' }}>
+                          <option value="">בחרו</option>
+                          {DISTRICTS.map(d => <option key={d}>{d}</option>)}
+                        </select>
+                      </div>
+                    </div>
+                    <div style={{ marginBottom: 12 }}>
+                      <label style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#0F4C75', marginBottom: 4 }}>אתר</label>
+                      <input value={editPForm.website || ''} onChange={e => setEditPForm(f => ({ ...f, website: e.target.value }))} style={{ width: '100%', padding: '9px 12px', borderRadius: 10, border: '1.5px solid #a0d8e8', fontSize: 14, outline: 'none', boxSizing: 'border-box', fontFamily: 'inherit' }} />
+                    </div>
+                    <div style={{ marginBottom: 12 }}>
+                      <label style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#0F4C75', marginBottom: 4 }}>קישור לתמונת פרופיל</label>
+                      <input value={editPForm.photo_url || ''} onChange={e => setEditPForm(f => ({ ...f, photo_url: e.target.value }))} style={{ width: '100%', padding: '9px 12px', borderRadius: 10, border: '1.5px solid #a0d8e8', fontSize: 14, outline: 'none', boxSizing: 'border-box', fontFamily: 'inherit' }} />
+                    </div>
+                    <div style={{ display: 'flex', gap: 16, marginBottom: 12 }}>
+                      {[['is_online','🌐 אונליין'],['is_defense_ministry','🎗️ ספק משרד הביטחון']].map(([field, label]) => (
+                        <label key={field} style={{ display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer', fontSize: 13, fontWeight: 700, color: '#555' }}>
+                          <input type="checkbox" checked={!!editPForm[field]} onChange={e => setEditPForm(f => ({ ...f, [field]: e.target.checked }))} style={{ width: 16, height: 16 }} />{label}
+                        </label>
+                      ))}
+                    </div>
+                    <div style={{ marginBottom: 12 }}>
+                      <label style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#0F4C75', marginBottom: 4 }}>קצת עליי</label>
+                      <textarea value={editPForm.bio || ''} onChange={e => setEditPForm(f => ({ ...f, bio: e.target.value }))} rows={3} style={{ width: '100%', padding: '9px 12px', borderRadius: 10, border: '1.5px solid #a0d8e8', fontSize: 14, outline: 'none', resize: 'vertical', fontFamily: 'inherit', boxSizing: 'border-box' }} />
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    {[
+                      ['treatment_types', 'סוגי טיפול', PRACT_TREATMENT_TYPES, '#0F4C75'],
+                      ['specializations', 'תחומי התמחות', PRACT_SPECIALIZATIONS, '#6d28d9'],
+                      ['health_funds', 'קופות חולים', HEALTH_FUNDS, '#059669'],
+                      ['languages', 'שפות טיפול', PRACT_LANGUAGES, '#7C3AED'],
+                    ].map(([field, label, options, color]) => (
+                      <div key={field} style={{ marginBottom: 14 }}>
+                        <label style={{ display: 'block', fontSize: 12, fontWeight: 700, color, marginBottom: 6 }}>{label}</label>
+                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+                          {options.map(t => { const s = (editPForm[field]||[]).includes(t); return <button key={t} onClick={() => togglePEditArray(field, t)} style={{ padding: '4px 11px', borderRadius: 999, fontSize: 12, fontWeight: 700, cursor: 'pointer', border: `1.5px solid ${s?color:'#ddd'}`, background: s?color:'white', color: s?'white':color }}>{t}</button> })}
+                        </div>
+                      </div>
+                    ))}
+                  </>
+                )}
+
+                <div style={{ display: 'flex', gap: 10, marginTop: 16 }}>
+                  <button onClick={savePractitionerEdit} disabled={savingPractitioner} style={{ flex: 1, background: savingPractitioner ? '#ccc' : '#0F4C75', color: 'white', border: 'none', borderRadius: 20, padding: '12px 0', fontWeight: 700, fontSize: 14, cursor: savingPractitioner ? 'not-allowed' : 'pointer' }}>{savingPractitioner ? 'שומר...' : '💾 שמור שינויים'}</button>
+                  <button onClick={() => setEditingPractitioner(null)} style={{ flex: 1, background: '#f0f9ff', color: '#0F4C75', border: '1.5px solid #a0d8e8', borderRadius: 20, padding: '12px 0', fontWeight: 700, fontSize: 14, cursor: 'pointer' }}>ביטול</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ══ מודל דחייה עם מייל ══ */}
+        {rejectEmailModal && (
+          <div onClick={() => setRejectEmailModal(null)} style={{ position: 'fixed', inset: 0, background: 'rgba(26,58,92,0.6)', zIndex: 200, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
+            <div onClick={e => e.stopPropagation()} style={{ background: 'white', borderRadius: 20, maxWidth: 480, width: '100%', boxShadow: '0 24px 64px rgba(0,0,0,0.25)' }}>
+              <div style={{ height: 7, background: '#C62828', borderRadius: '20px 20px 0 0' }} />
+              <div style={{ padding: '24px 20px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
+                  <h2 style={{ margin: 0, fontSize: 17, fontWeight: 800, color: '#1A3A5C' }}>✉️ מייל דחייה</h2>
+                  <button onClick={() => setRejectEmailModal(null)} style={{ background: 'none', border: 'none', fontSize: 22, cursor: 'pointer', color: '#aaa' }}>✕</button>
+                </div>
+                <div style={{ fontSize: 13, color: '#666', marginBottom: 14 }}>שליחה אל <strong>{rejectEmailModal.contactEmail || rejectEmailModal.email}</strong> בנוגע ל<strong>{rejectEmailModal.name}</strong></div>
+                <textarea value={rejectReason} onChange={e => setRejectReason(e.target.value)} rows={4} placeholder="סיבת הדחייה (אופציונלי)..." style={{ width: '100%', padding: '10px 14px', borderRadius: 12, border: '1.5px solid #FFCDD2', fontSize: 14, resize: 'vertical', fontFamily: 'inherit', outline: 'none', boxSizing: 'border-box', marginBottom: 14 }} />
+                <div style={{ display: 'flex', gap: 10 }}>
+                  <button onClick={sendRejectEmail} disabled={sendingRejectEmail} style={{ flex: 1, background: '#C62828', color: 'white', border: 'none', borderRadius: 20, padding: '11px 0', fontWeight: 700, fontSize: 14, cursor: sendingRejectEmail ? 'not-allowed' : 'pointer' }}>{sendingRejectEmail ? 'שולח...' : '✉️ שלח'}</button>
+                  <button onClick={() => setRejectEmailModal(null)} style={{ flex: 1, background: '#EEF2FF', color: '#1A3A5C', border: '1.5px solid #C5D0F0', borderRadius: 20, padding: '11px 0', fontWeight: 700, fontSize: 14, cursor: 'pointer' }}>ביטול</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ══ ייצוא שיקום ══ */}
+        {showExportRehab && (
+          <div onClick={() => setShowExportRehab(false)} style={{ position: 'fixed', inset: 0, background: 'rgba(26,58,92,0.6)', zIndex: 200, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
+            <div onClick={e => e.stopPropagation()} style={{ background: 'white', borderRadius: 20, maxWidth: 440, width: '100%', boxShadow: '0 24px 64px rgba(0,0,0,0.25)' }}>
+              <div style={{ height: 7, background: '#4C0080', borderRadius: '20px 20px 0 0' }} />
+              <div style={{ padding: '24px 20px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 }}>
+                  <h2 style={{ margin: 0, fontSize: 17, fontWeight: 800, color: '#4C0080' }}>📥 ייצוא שיקום</h2>
+                  <button onClick={() => setShowExportRehab(false)} style={{ background: 'none', border: 'none', fontSize: 22, cursor: 'pointer', color: '#aaa' }}>✕</button>
+                </div>
+                {[['status','סטטוס',[['','הכל'],['approved','פעילים'],['pending','ממתינים'],['rejected','נדחו']]],['district','מחוז',[['','כל המחוזות'],...DISTRICTS.map(d=>[d,d])]],['category','קטגוריה',[['','כל הקטגוריות'],...CATEGORY_NAMES.map(c=>[c,c])]]].map(([key,label,opts]) => (
+                  <div key={key} style={{ marginBottom: 12 }}>
+                    <label style={lbl}>{label}</label>
+                    <select value={exportFilters[key]} onChange={e => setExportFilters(f => ({ ...f, [key]: e.target.value, ...(key==='category'?{subcategory:''}:{}) }))} style={inp}>{opts.map(([val,txt]) => <option key={val} value={val}>{txt}</option>)}</select>
+                  </div>
+                ))}
+                {exportSubcategories.length > 0 && (
+                  <div style={{ marginBottom: 12 }}>
+                    <label style={lbl}>תת קטגוריה</label>
+                    <select value={exportFilters.subcategory} onChange={e => setExportFilters(f => ({ ...f, subcategory: e.target.value }))} style={inp}><option value="">הכל</option>{exportSubcategories.map(s => <option key={s}>{s}</option>)}</select>
+                  </div>
+                )}
+                <div style={{ display: 'flex', gap: 10 }}>
+                  <button onClick={() => exportToExcel('rehab')} disabled={exporting} style={{ flex: 1, background: '#4C0080', color: 'white', border: 'none', borderRadius: 20, padding: '11px 0', fontWeight: 700, fontSize: 14, cursor: exporting ? 'not-allowed' : 'pointer' }}>{exporting ? 'מייצא...' : '📥 הורד'}</button>
+                  <button onClick={() => setShowExportRehab(false)} style={{ flex: 1, background: '#EEF2FF', color: '#1A3A5C', border: '1.5px solid #C5D0F0', borderRadius: 20, padding: '11px 0', fontWeight: 700, fontSize: 14, cursor: 'pointer' }}>ביטול</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ══ ייצוא טיפול ══ */}
+        {showExportTreatment && (
+          <div onClick={() => setShowExportTreatment(false)} style={{ position: 'fixed', inset: 0, background: 'rgba(26,58,92,0.6)', zIndex: 200, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
+            <div onClick={e => e.stopPropagation()} style={{ background: 'white', borderRadius: 20, maxWidth: 440, width: '100%', boxShadow: '0 24px 64px rgba(0,0,0,0.25)' }}>
+              <div style={{ height: 7, background: '#0891B2', borderRadius: '20px 20px 0 0' }} />
+              <div style={{ padding: '24px 20px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 }}>
+                  <h2 style={{ margin: 0, fontSize: 17, fontWeight: 800, color: '#0891B2' }}>📥 ייצוא טיפול</h2>
+                  <button onClick={() => setShowExportTreatment(false)} style={{ background: 'none', border: 'none', fontSize: 22, cursor: 'pointer', color: '#aaa' }}>✕</button>
+                </div>
+                {[['status','סטטוס',[['','הכל'],['approved','פעילים'],['pending','ממתינים'],['rejected','נדחו']]],['district','מחוז',[['','כל המחוזות'],...DISTRICTS.map(d=>[d,d])]],['category','קטגוריה',[['','כל הקטגוריות'],...TREATMENT_CATEGORIES.map(c=>[c,c])]]].map(([key,label,opts]) => (
+                  <div key={key} style={{ marginBottom: 12 }}>
+                    <label style={lbl}>{label}</label>
+                    <select value={exportTreatmentFilters[key]} onChange={e => setExportTreatmentFilters(f => ({ ...f, [key]: e.target.value }))} style={inp}>{opts.map(([val,txt]) => <option key={val} value={val}>{txt}</option>)}</select>
+                  </div>
+                ))}
+                <div style={{ display: 'flex', gap: 10 }}>
+                  <button onClick={() => exportToExcel('treatment')} disabled={exporting} style={{ flex: 1, background: '#0891B2', color: 'white', border: 'none', borderRadius: 20, padding: '11px 0', fontWeight: 700, fontSize: 14, cursor: exporting ? 'not-allowed' : 'pointer' }}>{exporting ? 'מייצא...' : '📥 הורד'}</button>
+                  <button onClick={() => setShowExportTreatment(false)} style={{ flex: 1, background: '#EEF2FF', color: '#1A3A5C', border: '1.5px solid #C5D0F0', borderRadius: 20, padding: '11px 0', fontWeight: 700, fontSize: 14, cursor: 'pointer' }}>ביטול</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ══ ייצוא מטפלים ══ */}
+        {showExportPract && (
+          <div onClick={() => setShowExportPract(false)} style={{ position: 'fixed', inset: 0, background: 'rgba(26,58,92,0.6)', zIndex: 200, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
+            <div onClick={e => e.stopPropagation()} style={{ background: 'white', borderRadius: 20, maxWidth: 400, width: '100%', boxShadow: '0 24px 64px rgba(0,0,0,0.25)' }}>
+              <div style={{ height: 7, background: '#0F4C75', borderRadius: '20px 20px 0 0' }} />
+              <div style={{ padding: '24px 20px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 }}>
+                  <h2 style={{ margin: 0, fontSize: 17, fontWeight: 800, color: '#0F4C75' }}>📥 ייצוא מטפלים פרטיים</h2>
+                  <button onClick={() => setShowExportPract(false)} style={{ background: 'none', border: 'none', fontSize: 22, cursor: 'pointer', color: '#aaa' }}>✕</button>
+                </div>
+                <div style={{ background: '#e0f2fe', borderRadius: 10, padding: '10px 14px', marginBottom: 16, fontSize: 13, color: '#0F4C75' }}>
+                  ייצוא {approvedPractitioners.length} מטפלים פעילים עם כל הפרטים
+                </div>
+                <div style={{ display: 'flex', gap: 10 }}>
+                  <button onClick={() => exportToExcel('practitioners')} disabled={exporting} style={{ flex: 1, background: '#0F4C75', color: 'white', border: 'none', borderRadius: 20, padding: '11px 0', fontWeight: 700, fontSize: 14, cursor: exporting ? 'not-allowed' : 'pointer' }}>{exporting ? 'מייצא...' : '📥 הורד אקסל'}</button>
+                  <button onClick={() => setShowExportPract(false)} style={{ flex: 1, background: '#EEF2FF', color: '#1A3A5C', border: '1.5px solid #C5D0F0', borderRadius: 20, padding: '11px 0', fontWeight: 700, fontSize: 14, cursor: 'pointer' }}>ביטול</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {locationService && <LocationPicker service={locationService} onSave={saveLocation} onClose={() => { setLocationService(null); setPendingApproval(null) }} pendingApproval={!!locationService._pendingApproval} />}
+
+        <footer style={{ background: '#1A3A5C', color: 'rgba(255,255,255,0.7)', textAlign: 'center', padding: '20px', fontSize: 13, marginTop: 48 }}>
           בריאות נפש בישראל © {new Date().getFullYear()}
         </footer>
       </div>
@@ -1077,32 +1039,32 @@ export default function Admin() {
   )
 }
 
+// ──────────────────────────────────────────────────────────────────────────────
 function DuplicatesTab({ duplicates, loading, onDismiss, onDelete }) {
   const active = duplicates.filter(p => !p.dismissed)
   if (loading) return <div style={{ textAlign: 'center', padding: 48, color: '#7B2D8B' }}>מחפש כפילויות...</div>
   if (active.length === 0) return <div style={{ textAlign: 'center', padding: 52, color: '#aaa' }}><div style={{ fontSize: 40, marginBottom: 10 }}>✅</div><div style={{ fontWeight: 600 }}>לא נמצאו כפילויות</div></div>
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-      <div style={{ fontSize: 13, color: '#7B2D8B', fontWeight: 700, background: '#F3E5F5', borderRadius: 10, padding: '8px 14px' }}>נמצאו {active.length} זוגות חשודים - בדקו ומחקו כפילויות לפי הצורך</div>
+    <div>
+      <div style={{ fontSize: 13, color: '#7B2D8B', fontWeight: 700, background: '#F3E5F5', borderRadius: 10, padding: '8px 14px', marginBottom: 14 }}>נמצאו {active.length} זוגות חשודים</div>
       {duplicates.map((pair, i) => {
         if (pair.dismissed) return null
-        const typeLabel = pair.a._type === 'rehab' ? '♿ שיקום' : '🏥 טיפול'
-        const typeColor = pair.a._type === 'rehab' ? '#8B00D4' : '#0891B2'
+        const color = pair.a._type === 'rehab' ? '#8B00D4' : '#0891B2'
         return (
-          <div key={i} style={{ background: 'white', borderRadius: 16, padding: '18px', boxShadow: '0 4px 16px rgba(0,0,0,0.07)', borderRight: '5px solid #7B2D8B' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
-              <span style={{ background: typeColor, color: 'white', borderRadius: 999, padding: '2px 10px', fontSize: 11, fontWeight: 700 }}>{typeLabel}</span>
-              <button onClick={() => onDismiss(i)} style={{ background: 'none', border: '1.5px solid #ddd', color: '#aaa', borderRadius: 20, padding: '4px 12px', fontSize: 12, cursor: 'pointer', fontWeight: 600 }}>התעלם</button>
+          <div key={i} style={{ background: 'white', borderRadius: 14, padding: '16px', marginBottom: 12, boxShadow: '0 2px 10px rgba(0,0,0,0.07)', borderRight: '5px solid #7B2D8B' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 12 }}>
+              <span style={{ background: color + '22', color, borderRadius: 999, padding: '2px 10px', fontSize: 11, fontWeight: 700 }}>{pair.a._type === 'rehab' ? '♿ שיקום' : '🏥 טיפול'}</span>
+              <button onClick={() => onDismiss(i)} style={{ background: 'none', border: '1.5px solid #ddd', color: '#aaa', borderRadius: 20, padding: '4px 12px', fontSize: 12, cursor: 'pointer' }}>התעלם</button>
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr auto 1fr', gap: 12, alignItems: 'start' }}>
               {[pair.a, pair.b].map((s, si) => (
-                <div key={si} style={{ background: '#F8F9FF', borderRadius: 12, padding: '12px 14px', border: '1.5px solid #E0E4F0' }}>
-                  <div style={{ fontWeight: 700, fontSize: 14, color: '#1A3A5C', marginBottom: 4 }}>{s.name}</div>
-                  <div style={{ fontSize: 12, color: '#888', marginBottom: 6, lineHeight: 1.6 }}>📍 {s.city}{s.district ? `, ${s.district}` : ''}<br />🏷️ {s.category}<br />{s.phone && <span>📞 {s.phone}</span>}</div>
-                  <button onClick={() => onDelete(s.id, s._type)} style={{ background: '#FFF0F0', border: '1.5px solid #FFCDD2', color: '#C62828', borderRadius: 20, padding: '5px 12px', fontSize: 12, cursor: 'pointer', fontWeight: 600 }}>🗑️ מחק זה</button>
+                <div key={si} style={{ background: '#f9f9f9', borderRadius: 10, padding: '10px 12px', border: '1.5px solid #eee' }}>
+                  <div style={{ fontWeight: 700, fontSize: 13, color: '#1A3A5C', marginBottom: 4 }}>{s.name}</div>
+                  <div style={{ fontSize: 11, color: '#888', marginBottom: 8 }}>📍 {s.city}{s.district ? `, ${s.district}` : ''}<br />🏷️ {s.category}</div>
+                  <button onClick={() => onDelete(s.id, s._type)} style={{ background: '#FFF0F0', border: '1.5px solid #FFCDD2', color: '#C62828', borderRadius: 20, padding: '4px 10px', fontSize: 11, cursor: 'pointer', fontWeight: 700 }}>🗑️ מחק</button>
                 </div>
               ))}
-              <div style={{ textAlign: 'center', fontSize: 20, color: '#7B2D8B', paddingTop: 20 }}>🔁</div>
+              <div style={{ textAlign: 'center', fontSize: 20, paddingTop: 16 }}>🔁</div>
             </div>
           </div>
         )
@@ -1112,33 +1074,28 @@ function DuplicatesTab({ duplicates, loading, onDismiss, onDelete }) {
 }
 
 function HistoryTab({ history, loading }) {
-  const FIELD_NAMES = {
-    name: 'שם', district: 'מחוז', districts: 'מחוזות נוספים', city: 'עיר', category: 'קטגוריה',
-    subcategory: 'תת-קטגוריה', description: 'תיאור', phone: 'טלפון', email: 'מייל',
-    website: 'אתר', address: 'כתובת', is_national: 'פריסה ארצית', age_groups: 'קבוצות גיל',
-    diagnoses: 'אבחנות', populations: 'אוכלוסייה', categories: 'קטגוריות נוספות'
-  }
-  if (loading) return <div style={{ textAlign: 'center', padding: 48, color: '#5E35B1' }}>טוען היסטוריה...</div>
-  if (!history.length) return <div style={{ textAlign: 'center', padding: 52, color: '#aaa' }}><div style={{ fontSize: 40, marginBottom: 10 }}>📝</div><div style={{ fontWeight: 600 }}>אין היסטוריית שינויים עדיין</div></div>
+  const FIELD_NAMES = { name:'שם', district:'מחוז', districts:'מחוזות נוספים', city:'עיר', category:'קטגוריה', subcategory:'תת-קטגוריה', description:'תיאור', phone:'טלפון', email:'מייל', website:'אתר', address:'כתובת', is_national:'פריסה ארצית', age_groups:'קבוצות גיל', diagnoses:'אבחנות', populations:'אוכלוסייה', categories:'קטגוריות נוספות' }
+  if (loading) return <div style={{ textAlign: 'center', padding: 48, color: '#5E35B1' }}>טוען...</div>
+  if (!history.length) return <div style={{ textAlign: 'center', padding: 52, color: '#aaa' }}><div style={{ fontSize: 40, marginBottom: 10 }}>📝</div><div>אין היסטוריית שינויים</div></div>
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
       {history.map((entry, i) => {
         const changes = entry.changes || {}
         const keys = Object.keys(changes)
         const isRehab = entry.table_name === 'services'
         const color = isRehab ? '#8B00D4' : '#0891B2'
         return (
-          <div key={i} style={{ background: 'white', borderRadius: 14, padding: '16px', boxShadow: '0 2px 8px rgba(0,0,0,0.06)', borderRight: `4px solid ${color}` }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 10, flexWrap: 'wrap', gap: 6 }}>
+          <div key={i} style={{ background: 'white', borderRadius: 12, padding: '14px 16px', boxShadow: '0 2px 8px rgba(0,0,0,0.06)', borderRight: `4px solid ${color}` }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8, flexWrap: 'wrap', gap: 6 }}>
               <div>
                 <span style={{ fontWeight: 700, fontSize: 14, color: '#1A3A5C' }}>{entry.service_name}</span>
                 <span style={{ marginRight: 8, fontSize: 11, background: `${color}22`, color, padding: '2px 8px', borderRadius: 20, fontWeight: 600 }}>{isRehab ? 'שיקום' : 'טיפול'}</span>
               </div>
               <span style={{ fontSize: 11, color: '#aaa' }}>{new Date(entry.changed_at).toLocaleString('he-IL')}</span>
             </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
               {keys.map(key => (
-                <div key={key} style={{ fontSize: 12, background: '#f9f9f9', borderRadius: 8, padding: '8px 10px' }}>
+                <div key={key} style={{ fontSize: 12, background: '#f9f9f9', borderRadius: 8, padding: '6px 10px' }}>
                   <span style={{ fontWeight: 700, color: '#555' }}>{FIELD_NAMES[key] || key}: </span>
                   <span style={{ color: '#C62828', textDecoration: 'line-through', marginLeft: 6 }}>{Array.isArray(changes[key].before) ? (changes[key].before.join(', ') || '-') : String(changes[key].before ?? '-')}</span>
                   <span style={{ margin: '0 6px', color: '#aaa' }}>→</span>
@@ -1156,8 +1113,8 @@ function HistoryTab({ history, loading }) {
 function StatsTab({ stats }) {
   const [activeTab, setActiveTab] = useState('rehab')
   if (!stats) return <div style={{ textAlign: 'center', padding: 48, color: '#8B00D4' }}>טוען סטטיסטיקות...</div>
-  const COLORS = ['#8B00D4', '#4C0080', '#6B21A8', '#0891B2', '#164E63', '#5E35B1', '#CE66F0']
-  const districts = ['צפון', 'חיפה', 'מרכז', 'תל אביב', 'ירושלים', 'דרום', 'יהודה ושומרון']
+  const COLORS = ['#8B00D4','#4C0080','#6B21A8','#0891B2','#164E63','#5E35B1','#CE66F0']
+  const districts = ['צפון','חיפה','מרכז','תל אביב','ירושלים','דרום','יהודה ושומרון']
   const isRehab = activeTab === 'rehab'
   const byCategory = isRehab ? stats.byCategory : stats.byCategoryTreatment
   const byDistrict = isRehab ? stats.byDistrict : stats.byDistrictTreatment
@@ -1165,23 +1122,12 @@ function StatsTab({ stats }) {
   const cats = Object.keys(crossTable || {})
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
-      <div style={{ fontWeight: 800, fontSize: 16, color: '#1A3A5C' }}>♿ סטטיסטיקות שיקום</div>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: 12 }}>
-        {[['סה"כ שירותים', stats.total, '#1A3A5C', '📋'], ['פעילים', stats.approved, '#8B00D4', '✅'], ['ממתינים', stats.pending, '#6B21A8', '⏳'], ['נדחו', stats.rejected, '#C62828', '❌']].map(([label, val, color, icon]) => (
-          <div key={label} style={{ background: 'white', borderRadius: 16, padding: '18px 16px', textAlign: 'center', boxShadow: '0 4px 16px rgba(0,0,0,0.07)', borderTop: `4px solid ${color}` }}>
-            <div style={{ fontSize: 28, marginBottom: 6 }}>{icon}</div>
-            <div style={{ fontSize: 32, fontWeight: 800, color }}>{val}</div>
-            <div style={{ fontSize: 12, color: '#888', marginTop: 4 }}>{label}</div>
-          </div>
-        ))}
-      </div>
-      <div style={{ fontWeight: 800, fontSize: 16, color: '#0891B2' }}>🏥 סטטיסטיקות טיפול</div>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: 12 }}>
-        {[['סה"כ שירותים', stats.totalTreatment, '#1A3A5C', '📋'], ['פעילים', stats.approvedTreatment, '#0891B2', '✅'], ['ממתינים', stats.pendingTreatment, '#164E63', '⏳'], ['נדחו', stats.rejectedTreatment, '#C62828', '❌']].map(([label, val, color, icon]) => (
-          <div key={label} style={{ background: 'white', borderRadius: 16, padding: '18px 16px', textAlign: 'center', boxShadow: '0 4px 16px rgba(0,0,0,0.07)', borderTop: `4px solid ${color}` }}>
-            <div style={{ fontSize: 28, marginBottom: 6 }}>{icon}</div>
-            <div style={{ fontSize: 32, fontWeight: 800, color }}>{val}</div>
-            <div style={{ fontSize: 12, color: '#888', marginTop: 4 }}>{label}</div>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))', gap: 12 }}>
+        {[['📋','סה"כ שיקום', stats.total,'#1A3A5C'],['✅','שיקום פעיל', stats.approved,'#8B00D4'],['📋','סה"כ טיפול', stats.totalTreatment,'#164E63'],['✅','טיפול פעיל', stats.approvedTreatment,'#0891B2']].map(([icon,label,val,color]) => (
+          <div key={label} style={{ background: 'white', borderRadius: 14, padding: '16px', textAlign: 'center', boxShadow: '0 2px 10px rgba(0,0,0,0.07)', borderTop: `4px solid ${color}` }}>
+            <div style={{ fontSize: 24, marginBottom: 4 }}>{icon}</div>
+            <div style={{ fontSize: 28, fontWeight: 800, color }}>{val}</div>
+            <div style={{ fontSize: 11, color: '#888', marginTop: 4 }}>{label}</div>
           </div>
         ))}
       </div>
@@ -1189,66 +1135,36 @@ function StatsTab({ stats }) {
         <button onClick={() => setActiveTab('rehab')} style={{ padding: '8px 20px', borderRadius: 999, fontWeight: 700, fontSize: 13, cursor: 'pointer', background: isRehab ? '#1A3A5C' : 'white', color: isRehab ? 'white' : '#1A3A5C', border: '2px solid #1A3A5C', fontFamily: "'Nunito', sans-serif" }}>♿ שיקום</button>
         <button onClick={() => setActiveTab('treatment')} style={{ padding: '8px 20px', borderRadius: 999, fontWeight: 700, fontSize: 13, cursor: 'pointer', background: !isRehab ? '#0891B2' : 'white', color: !isRehab ? 'white' : '#0891B2', border: '2px solid #0891B2', fontFamily: "'Nunito', sans-serif" }}>🏥 טיפול</button>
       </div>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(340px, 1fr))', gap: 20 }}>
-        <div style={{ background: 'white', borderRadius: 16, padding: '20px', boxShadow: '0 4px 16px rgba(0,0,0,0.07)' }}>
-          <h3 style={{ margin: '0 0 16px', fontSize: 15, fontWeight: 800, color: '#1A3A5C' }}>🥧 לפי קטגוריה</h3>
-          <ResponsiveContainer width="100%" height={240}>
-            <PieChart>
-              <Pie data={byCategory} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80} label={({ name, value }) => `${name} (${value})`} labelLine={false}>
-                {(byCategory || []).map((entry, i) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}
-              </Pie>
-              <Tooltip />
-            </PieChart>
-          </ResponsiveContainer>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: 16 }}>
+        <div style={{ background: 'white', borderRadius: 14, padding: '18px', boxShadow: '0 2px 10px rgba(0,0,0,0.07)' }}>
+          <h3 style={{ margin: '0 0 14px', fontSize: 14, fontWeight: 800, color: '#1A3A5C' }}>🥧 לפי קטגוריה</h3>
+          <ResponsiveContainer width="100%" height={220}><PieChart><Pie data={byCategory} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={75} label={({ name, value }) => `${name} (${value})`} labelLine={false}>{(byCategory||[]).map((entry,i) => <Cell key={i} fill={COLORS[i%COLORS.length]} />)}</Pie><Tooltip /></PieChart></ResponsiveContainer>
         </div>
-        <div style={{ background: 'white', borderRadius: 16, padding: '20px', boxShadow: '0 4px 16px rgba(0,0,0,0.07)' }}>
-          <h3 style={{ margin: '0 0 16px', fontSize: 15, fontWeight: 800, color: '#1A3A5C' }}>📊 לפי מחוז</h3>
-          <ResponsiveContainer width="100%" height={240}>
-            <BarChart data={byDistrict} margin={{ top: 5, right: 10, left: -20, bottom: 5 }}>
-              <XAxis dataKey="name" tick={{ fontSize: 11 }} />
-              <YAxis tick={{ fontSize: 11 }} allowDecimals={false} />
-              <Tooltip />
-              <Bar dataKey="value" name="שירותים" radius={[6, 6, 0, 0]}>
-                {(byDistrict || []).map((entry, i) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}
-              </Bar>
-            </BarChart>
-          </ResponsiveContainer>
+        <div style={{ background: 'white', borderRadius: 14, padding: '18px', boxShadow: '0 2px 10px rgba(0,0,0,0.07)' }}>
+          <h3 style={{ margin: '0 0 14px', fontSize: 14, fontWeight: 800, color: '#1A3A5C' }}>📊 לפי מחוז</h3>
+          <ResponsiveContainer width="100%" height={220}><BarChart data={byDistrict} margin={{ top:5, right:10, left:-20, bottom:5 }}><XAxis dataKey="name" tick={{ fontSize:10 }} /><YAxis tick={{ fontSize:10 }} allowDecimals={false} /><Tooltip /><Bar dataKey="value" radius={[4,4,0,0]}>{(byDistrict||[]).map((entry,i) => <Cell key={i} fill={COLORS[i%COLORS.length]} />)}</Bar></BarChart></ResponsiveContainer>
         </div>
       </div>
-      <div style={{ background: 'white', borderRadius: 16, padding: '20px', boxShadow: '0 4px 16px rgba(0,0,0,0.07)', overflowX: 'auto' }}>
-        <h3 style={{ margin: '0 0 16px', fontSize: 15, fontWeight: 800, color: '#1A3A5C' }}>📋 פירוט לפי קטגוריה ומחוז</h3>
-        <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
-          <thead>
-            <tr style={{ background: '#1A3A5C', color: 'white' }}>
-              <th style={{ padding: '10px 14px', textAlign: 'right' }}>קטגוריה</th>
-              {districts.map(d => <th key={d} style={{ padding: '10px', textAlign: 'center', whiteSpace: 'nowrap' }}>{d}</th>)}
-              <th style={{ padding: '10px 14px', textAlign: 'center', background: '#4C0080' }}>סה"כ</th>
-            </tr>
-          </thead>
-          <tbody>
-            {cats.map((cat, i) => {
-              const color = getCategoryColor(cat)
-              const total = districts.reduce((sum, d) => sum + ((crossTable[cat] || {})[d] || 0), 0)
-              return (
-                <tr key={cat} style={{ background: i % 2 === 0 ? '#FFF8F3' : 'white' }}>
-                  <td style={{ padding: '10px 14px', fontWeight: 700, color, borderRight: `3px solid ${color}` }}>{cat}</td>
-                  {districts.map(d => (
-                    <td key={d} style={{ padding: '10px', textAlign: 'center', color: (crossTable[cat] || {})[d] ? '#1A3A5C' : '#ddd', fontWeight: (crossTable[cat] || {})[d] ? 700 : 400 }}>
-                      {(crossTable[cat] || {})[d] || '–'}
-                    </td>
-                  ))}
-                  <td style={{ padding: '10px 14px', textAlign: 'center', fontWeight: 800, color: '#4C0080' }}>{total}</td>
-                </tr>
-              )
-            })}
-          </tbody>
+      <div style={{ background: 'white', borderRadius: 14, padding: '18px', boxShadow: '0 2px 10px rgba(0,0,0,0.07)', overflowX: 'auto' }}>
+        <h3 style={{ margin: '0 0 14px', fontSize: 14, fontWeight: 800, color: '#1A3A5C' }}>📋 קטגוריה × מחוז</h3>
+        <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 12 }}>
+          <thead><tr style={{ background: '#1A3A5C', color: 'white' }}><th style={{ padding: '8px 12px', textAlign: 'right' }}>קטגוריה</th>{districts.map(d => <th key={d} style={{ padding: '8px', textAlign: 'center', whiteSpace: 'nowrap' }}>{d}</th>)}<th style={{ padding: '8px 12px', textAlign: 'center', background: '#4C0080' }}>סה"כ</th></tr></thead>
+          <tbody>{cats.map((cat, i) => {
+            const color = getCategoryColor(cat)
+            const total = districts.reduce((sum, d) => sum + ((crossTable[cat]||{})[d]||0), 0)
+            return (<tr key={cat} style={{ background: i%2===0 ? '#FFF8F3' : 'white' }}>
+              <td style={{ padding: '8px 12px', fontWeight: 700, color, borderRight: `3px solid ${color}` }}>{cat}</td>
+              {districts.map(d => <td key={d} style={{ padding: '8px', textAlign: 'center', color: (crossTable[cat]||{})[d] ? '#1A3A5C' : '#ddd', fontWeight: (crossTable[cat]||{})[d] ? 700 : 400 }}>{(crossTable[cat]||{})[d] || '–'}</td>)}
+              <td style={{ padding: '8px 12px', textAlign: 'center', fontWeight: 800, color: '#4C0080' }}>{total}</td>
+            </tr>)
+          })}</tbody>
         </table>
       </div>
     </div>
   )
 }
 
-function LocationPicker({ service, onSave, onClose }) {
+function LocationPicker({ service, onSave, onClose, pendingApproval }) {
   const mapRef = useRef(null)
   const markerRef = useRef(null)
   const [coords, setCoords] = useState(service.lat ? [service.lat, service.lng] : [31.5, 34.8])
@@ -1269,7 +1185,7 @@ function LocationPicker({ service, onSave, onClose }) {
     map.on('click', e => {
       const { lat, lng } = e.latlng
       setCoords([lat, lng])
-      if (markerRef.current) { markerRef.current.setLatLng([lat, lng]) }
+      if (markerRef.current) markerRef.current.setLatLng([lat, lng])
       else {
         markerRef.current = L.marker([lat, lng], { draggable: true }).addTo(map)
         markerRef.current.on('dragend', ev => { const pos = ev.target.getLatLng(); setCoords([pos.lat, pos.lng]) })
@@ -1285,43 +1201,44 @@ function LocationPicker({ service, onSave, onClose }) {
     try {
       const res = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(searchQuery)}&format=json&limit=1&countrycodes=il`)
       const data = await res.json()
-      if (data.length === 0) { setSearchError('הכתובת לא נמצאה, נסו לחפש בצורה שונה'); return }
+      if (!data.length) { setSearchError('הכתובת לא נמצאה'); return }
       const { lat, lon } = data[0]
       const newCoords = [parseFloat(lat), parseFloat(lon)]
       setCoords(newCoords)
       const L = require('leaflet')
       mapRef.current.setView(newCoords, 16)
-      if (markerRef.current) { markerRef.current.setLatLng(newCoords) }
+      if (markerRef.current) markerRef.current.setLatLng(newCoords)
       else {
         markerRef.current = L.marker(newCoords, { draggable: true }).addTo(mapRef.current)
         markerRef.current.on('dragend', e => { const pos = e.target.getLatLng(); setCoords([pos.lat, pos.lng]) })
       }
-    } catch (e) { setSearchError('שגיאה בחיפוש, נסו שוב') }
+    } catch { setSearchError('שגיאה בחיפוש') }
     finally { setSearching(false) }
   }
 
   return (
     <div onClick={onClose} style={{ position: 'fixed', inset: 0, background: 'rgba(26,58,92,0.6)', zIndex: 300, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
       <div onClick={e => e.stopPropagation()} style={{ background: 'white', borderRadius: 20, maxWidth: 600, width: '100%', boxShadow: '0 24px 64px rgba(0,0,0,0.25)' }}>
-        <div style={{ height: 7, background: '#1A3A5C', borderRadius: '20px 20px 0 0' }} />
+        <div style={{ height: 7, background: pendingApproval ? '#22c55e' : '#1A3A5C', borderRadius: '20px 20px 0 0' }} />
         <div style={{ padding: '16px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
             <div>
-              <h3 style={{ margin: 0, color: '#1A3A5C', fontSize: 16, fontWeight: 800 }}>📍 עדכון מיקום</h3>
-              <div style={{ fontSize: 12, color: '#888', marginTop: 4 }}>{service.name}</div>
+              <h3 style={{ margin: 0, color: '#1A3A5C', fontSize: 16, fontWeight: 800 }}>📍 {pendingApproval ? 'אשר + הוסף מיקום' : 'עדכון מיקום'}</h3>
+              <div style={{ fontSize: 12, color: '#888', marginTop: 2 }}>{service.name}</div>
+              {pendingApproval && <div style={{ fontSize: 11, color: '#22c55e', marginTop: 2, fontWeight: 700 }}>השירות יאושר לאחר שמירת המיקום</div>}
             </div>
             <button onClick={onClose} style={{ background: 'none', border: 'none', fontSize: 22, cursor: 'pointer', color: '#aaa' }}>✕</button>
           </div>
           <div style={{ display: 'flex', gap: 8, marginBottom: 8 }}>
-            <input type="text" value={searchQuery} onChange={e => setSearchQuery(e.target.value)} onKeyDown={e => e.key === 'Enter' && searchAddress()} placeholder="הכניסו כתובת מלאה, למשל: רחוב הרצל 5, רמת ישי" style={{ flex: 1, padding: '10px 14px', borderRadius: 20, border: '1.5px solid #FFD4B0', fontSize: 14, outline: 'none', fontFamily: 'inherit' }} />
-            <button onClick={searchAddress} disabled={searching} style={{ background: '#1A3A5C', color: 'white', border: 'none', borderRadius: 20, padding: '10px 18px', fontWeight: 700, fontSize: 13, cursor: searching ? 'not-allowed' : 'pointer', whiteSpace: 'nowrap' }}>{searching ? 'מחפש...' : '🔍 חפש'}</button>
+            <input type="text" value={searchQuery} onChange={e => setSearchQuery(e.target.value)} onKeyDown={e => e.key === 'Enter' && searchAddress()} placeholder="חיפוש כתובת..." style={{ flex: 1, padding: '10px 14px', borderRadius: 20, border: '1.5px solid #ddd', fontSize: 14, outline: 'none', fontFamily: 'inherit' }} />
+            <button onClick={searchAddress} disabled={searching} style={{ background: '#1A3A5C', color: 'white', border: 'none', borderRadius: 20, padding: '10px 16px', fontWeight: 700, fontSize: 13, cursor: searching ? 'not-allowed' : 'pointer' }}>{searching ? '...' : '🔍 חפש'}</button>
           </div>
-          {searchError && <div style={{ fontSize: 12, color: '#C62828', marginBottom: 8, padding: '6px 12px', background: '#FFF0F0', borderRadius: 10 }}>⚠️ {searchError}</div>}
-          <div style={{ fontSize: 11, color: '#aaa', marginBottom: 8 }}>או לחצו ישירות על המפה לסימון מדויק</div>
-          <div id="location-map" style={{ height: 300, borderRadius: 12, overflow: 'hidden', marginBottom: 12 }} />
+          {searchError && <div style={{ fontSize: 12, color: '#C62828', marginBottom: 8, padding: '5px 10px', background: '#FFF0F0', borderRadius: 8 }}>⚠️ {searchError}</div>}
+          <div style={{ fontSize: 11, color: '#aaa', marginBottom: 8 }}>או לחצו ישירות על המפה</div>
+          <div id="location-map" style={{ height: 280, borderRadius: 12, overflow: 'hidden', marginBottom: 10 }} />
           {coords && <div style={{ fontSize: 11, color: '#888', marginBottom: 10, textAlign: 'center' }}>{coords[0].toFixed(5)}, {coords[1].toFixed(5)}</div>}
           <div style={{ display: 'flex', gap: 10 }}>
-            <button onClick={() => onSave(coords[0], coords[1])} style={{ flex: 1, background: '#1A3A5C', color: 'white', border: 'none', borderRadius: 20, padding: '12px 0', fontWeight: 700, fontSize: 14, cursor: 'pointer' }}>💾 שמור מיקום</button>
+            <button onClick={() => onSave(coords[0], coords[1])} style={{ flex: 1, background: pendingApproval ? '#22c55e' : '#1A3A5C', color: 'white', border: 'none', borderRadius: 20, padding: '12px 0', fontWeight: 700, fontSize: 14, cursor: 'pointer' }}>{pendingApproval ? '✓ אשר ושמור מיקום' : '💾 שמור מיקום'}</button>
             <button onClick={onClose} style={{ flex: 1, background: '#EEF2FF', color: '#1A3A5C', border: '1.5px solid #C5D0F0', borderRadius: 20, padding: '12px 0', fontWeight: 700, fontSize: 14, cursor: 'pointer' }}>ביטול</button>
           </div>
         </div>
