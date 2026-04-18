@@ -11,11 +11,13 @@ export default async function handler(req, res) {
   const [
     { count: rehabCount },
     { count: treatmentCount },
+    { count: practitionerCount },
     { data: recentRehab },
     { data: recentTreatment },
   ] = await Promise.all([
     supabase.from('services').select('*', { count: 'exact', head: true }).eq('status', 'approved'),
     supabase.from('treatment_services').select('*', { count: 'exact', head: true }).eq('status', 'approved'),
+    supabase.from('practitioners').select('*', { count: 'exact', head: true }).eq('status', 'approved'),
     supabase.from('services').select('id, name, city, district, category, subcategory, created_at, is_national')
       .eq('status', 'approved').order('created_at', { ascending: false }).limit(4),
     supabase.from('treatment_services').select('id, name, city, district, category, created_at, is_national')
@@ -30,7 +32,8 @@ export default async function handler(req, res) {
   res.status(200).json({
     rehabCount: rehabCount || 0,
     treatmentCount: treatmentCount || 0,
-    total: (rehabCount || 0) + (treatmentCount || 0),
+    practitionerCount: practitionerCount || 0,
+    total: (rehabCount || 0) + (treatmentCount || 0) + (practitionerCount || 0),
     recent,
   })
 }
