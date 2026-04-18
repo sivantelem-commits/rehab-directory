@@ -320,7 +320,7 @@ export default function MapPage() {
   const { CATEGORIES: CATS } = require('../lib/categories')
   const { PRACTITIONER_TREATMENT_TYPES } = require('../lib/practitioner-constants')
 
-  const DRAWER_HEIGHT = isMobile ? '42vh' : '240px'
+  const DRAWER_HEIGHT = isMobile ? '50vh' : '240px'
 
   const chipStyle = (active, color) => ({
     padding: '4px 12px', borderRadius: '999px',
@@ -670,22 +670,22 @@ export default function MapPage() {
                               background: isSelected ? tab.lightBg : 'white',
                               border: `1px solid ${isSelected ? tab.color : '#eaeaea'}`,
                               borderTop: `3px solid ${isSelected ? tab.color : color + '66'}`,
-                              borderRadius: 10,
-                              padding: '8px 10px',
+                              borderRadius: 8,
+                              padding: '6px 8px',
                               cursor: 'pointer',
                               minWidth: 0,
                               overflow: 'hidden',
                             }}>
-                            <div style={{ fontWeight:700, fontSize:12, color:'#1A3A5C', marginBottom:4, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>
+                            <div style={{ fontWeight:700, fontSize:11, color:'#1A3A5C', marginBottom:3, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>
                               {item.name}{item.is_national ? ' 🌍' : ''}
                             </div>
-                            <div style={{ display:'flex', flexDirection:'column', gap:3, minWidth:0 }}>
+                            <div style={{ display:'flex', flexDirection:'column', gap:2, minWidth:0 }}>
                               {(item.category || item.profession) && (
-                                <span style={{ background: tab.badgeBg, color: tab.textColor, borderRadius:999, padding:'2px 7px', fontSize:10, fontWeight:700, alignSelf:'flex-start', maxWidth:'100%', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>
+                                <span style={{ background: tab.badgeBg, color: tab.textColor, borderRadius:999, padding:'1px 6px', fontSize:10, fontWeight:700, alignSelf:'flex-start', maxWidth:'100%', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>
                                   {item.category || item.profession}
                                 </span>
                               )}
-                              {item.city && <span style={{ fontSize:11, color:'#999', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>📍 {item.city}</span>}
+                              {item.city && <span style={{ fontSize:10, color:'#999', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>📍 {item.city}</span>}
                             </div>
                           </div>
                         )
