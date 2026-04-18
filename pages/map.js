@@ -320,7 +320,7 @@ export default function MapPage() {
   const { CATEGORIES: CATS } = require('../lib/categories')
   const { PRACTITIONER_TREATMENT_TYPES } = require('../lib/practitioner-constants')
 
-  const DRAWER_HEIGHT = isMobile ? '50vh' : '240px'
+  const DRAWER_HEIGHT = isMobile ? 'auto' : '240px'
 
   const chipStyle = (active, color) => ({
     padding: '4px 12px', borderRadius: '999px',
@@ -468,8 +468,8 @@ export default function MapPage() {
         {/* ── Main content ── */}
         <div id="main-content" style={{ flex:1, display:'flex', flexDirection:'column', overflow:'hidden', minHeight:0 }}>
 
-          {/* Map */}
-          <div style={{ flex:1, position:'relative', minHeight:0 }}>
+          {/* Map — גובה קבוע במובייל, flex:1 בדסקטופ */}
+          <div style={{ flexShrink:0, height: isMobile ? '40vh' : 'auto', flex: isMobile ? 'none' : 1, position:'relative', minHeight:0 }}>
             <div id="main-map" style={{ position:'absolute', inset:0 }} />
 
             {mapLoading && (
@@ -483,7 +483,6 @@ export default function MapPage() {
               </div>
             )}
 
-            {/* Legend */}
             {!isMobile && (
               <div style={{ position:'absolute', bottom:12, left:12, background:'rgba(255,255,255,0.95)', borderRadius:10, padding:'7px 11px', boxShadow:'0 2px 10px rgba(0,0,0,0.12)', zIndex:400, fontSize:11, fontFamily:"'Nunito',sans-serif", lineHeight:1.9, direction:'rtl' }}>
                 <div style={{ display:'flex', alignItems:'center', gap:5 }}><span style={{ width:9, height:9, borderRadius:'50%', background:'#8B00D4', display:'inline-block' }}/>שיקום</div>
@@ -492,12 +491,9 @@ export default function MapPage() {
               </div>
             )}
 
-            {/* Selected popup */}
-            {selected && (
+            {selected && !isMobile && (
               <div style={{
-                position:'absolute', bottom:12, right:12,
-                left: isMobile ? 12 : 'auto',
-                width: isMobile ? 'auto' : 290,
+                position:'absolute', bottom:12, right:12, width:290,
                 background:'white', borderRadius:14, padding:'12px 14px',
                 boxShadow:'0 4px 24px rgba(0,0,0,0.2)',
                 borderTop:`4px solid ${selected.type==='rehab' ? (REHAB_COLORS[selected.category]||'#8B00D4') : selected.type==='practitioner' ? PRACT_COLOR : (TREATMENT_COLORS[selected.category]||'#0891B2')}`,
@@ -507,10 +503,9 @@ export default function MapPage() {
                   <div style={{ flex:1, minWidth:0, paddingLeft:8 }}>
                     <div style={{ fontWeight:700, fontSize:13, color:'#1A3A5C', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{selected.name} {selected.is_national && '🌍'}</div>
                     {selected.type === 'practitioner' ? (
-                      <div style={{ fontSize:11, color:'#666', marginTop:2, display:'flex', gap:5, flexWrap:'wrap', alignItems:'center' }}>
+                      <div style={{ fontSize:11, color:'#666', marginTop:2, display:'flex', gap:5, flexWrap:'wrap' }}>
                         {selected.profession && <span style={{ background:PRACT_COLOR, color:'white', borderRadius:20, padding:'1px 8px', fontWeight:700 }}>{selected.profession}</span>}
                         {selected.city && <span>📍 {selected.city}</span>}
-                        {selected.is_online && <span style={{ color:'#0891B2', fontWeight:700 }}>🌐</span>}
                       </div>
                     ) : (
                       <div style={{ fontSize:11, color:'#888', marginTop:1 }}>📍 {selected.city}{selected.district ? `, ${selected.district}`:''}</div>
@@ -536,7 +531,6 @@ export default function MapPage() {
                 )}
               </div>
             )}
-
           </div>
           {/* סוף map div */}
 
@@ -544,18 +538,21 @@ export default function MapPage() {
           <div style={{
             background: 'white',
             borderTop: '1px solid #e8e8e8',
-            borderRadius: isMobile ? '14px 14px 0 0' : 0,
-            boxShadow: '0 -3px 16px rgba(0,0,0,0.08)',
-            flexShrink: 0,
+            borderRadius: isMobile ? '12px 12px 0 0' : 0,
+            boxShadow: '0 -2px 12px rgba(0,0,0,0.07)',
+            flexShrink: isMobile ? 0 : 0,
+            flex: isMobile ? 1 : 'none',
             display: 'flex',
             flexDirection: 'column',
-            height: drawerOpen ? DRAWER_HEIGHT : (isMobile ? '48px' : '44px'),
-            transition: 'height 0.25s cubic-bezier(0.32,0.72,0,1)',
+            height: isMobile ? 'auto' : (drawerOpen ? DRAWER_HEIGHT : '44px'),
+            minHeight: isMobile ? 0 : 'auto',
+            transition: isMobile ? 'none' : 'height 0.25s cubic-bezier(0.32,0.72,0,1)',
             overflow: 'hidden',
             zIndex: 300,
           }}>
 
-            {/* Drag handle */}
+            {/* Drag handle — דסקטופ בלבד */}
+            {!isMobile && (
             <div onClick={() => setDrawerOpen(v => !v)}
               style={{ display:'flex', justifyContent:'center', alignItems:'center', padding:'6px 0 4px', cursor:'pointer', flexShrink:0 }}>
               <div style={{ width:36, height:4, background:'#ddd', borderRadius:999 }} />
@@ -565,6 +562,7 @@ export default function MapPage() {
                 </span>
               )}
             </div>
+            )}
 
             {/* Tab headers */}
             <div style={{ display:'flex', borderBottom:'1px solid #f0f0f0', flexShrink:0 }}>
@@ -648,12 +646,12 @@ export default function MapPage() {
 
                   {/* Result cards */}
                   {isMobile ? (
-                    <div style={{ flex:1, overflowY:'auto', overflowX:'hidden', padding:'6px 12px 12px', display:'grid', gridTemplateColumns:'1fr 1fr', gap:7 }}>
+                    <div style={{ flex:1, overflowY:'auto', overflowX:'hidden', padding:'6px 12px 16px' }}>
                       {items.length === 0 ? (
-                        <div style={{ gridColumn:'1/-1', fontSize:13, color:'#ccc', padding:'12px 0', textAlign:'center' }}>
+                        <div style={{ fontSize:13, color:'#ccc', padding:'16px 0', textAlign:'center' }}>
                           אין תוצאות לפילטר הנוכחי
                         </div>
-                      ) : items.slice(0, 40).map(item => {
+                      ) : items.slice(0, 60).map(item => {
                         const isSelected = selected?.id === item.id && selected?.type === tab.key
                         const color = tab.key === 'rehab' ? (REHAB_COLORS[item.category] || tab.color)
                           : tab.key === 'treatment' ? (TREATMENT_COLORS[item.category] || tab.color)
@@ -667,26 +665,30 @@ export default function MapPage() {
                               if (coords && mapRef.current) mapRef.current.flyTo(coords, 14, { duration:0.6 })
                             }}
                             style={{
+                              display: 'flex', alignItems: 'center', gap: 10,
+                              padding: '9px 10px',
+                              marginBottom: 6,
                               background: isSelected ? tab.lightBg : 'white',
                               border: `1px solid ${isSelected ? tab.color : '#eaeaea'}`,
-                              borderTop: `3px solid ${isSelected ? tab.color : color + '66'}`,
-                              borderRadius: 8,
-                              padding: '6px 8px',
+                              borderRight: `4px solid ${isSelected ? tab.color : color}`,
+                              borderRadius: 10,
                               cursor: 'pointer',
-                              minWidth: 0,
-                              overflow: 'hidden',
                             }}>
-                            <div style={{ fontWeight:700, fontSize:11, color:'#1A3A5C', marginBottom:3, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>
-                              {item.name}{item.is_national ? ' 🌍' : ''}
+                            <div style={{ flex:1, minWidth:0 }}>
+                              <div style={{ fontWeight:700, fontSize:13, color:'#1A3A5C', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>
+                                {item.name}{item.is_national ? ' 🌍' : ''}
+                              </div>
+                              <div style={{ display:'flex', gap:6, alignItems:'center', marginTop:2 }}>
+                                {(item.category || item.profession) && (
+                                  <span style={{ background: tab.badgeBg, color: tab.textColor, borderRadius:999, padding:'1px 7px', fontSize:11, fontWeight:700 }}>
+                                    {item.category || item.profession}
+                                  </span>
+                                )}
+                                {item.city && <span style={{ fontSize:11, color:'#aaa' }}>📍 {item.city}</span>}
+                                {item.is_online && <span style={{ fontSize:11, color:'#0891B2' }}>🌐</span>}
+                              </div>
                             </div>
-                            <div style={{ display:'flex', flexDirection:'column', gap:2, minWidth:0 }}>
-                              {(item.category || item.profession) && (
-                                <span style={{ background: tab.badgeBg, color: tab.textColor, borderRadius:999, padding:'1px 6px', fontSize:10, fontWeight:700, alignSelf:'flex-start', maxWidth:'100%', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>
-                                  {item.category || item.profession}
-                                </span>
-                              )}
-                              {item.city && <span style={{ fontSize:10, color:'#999', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>📍 {item.city}</span>}
-                            </div>
+                            <span style={{ color:'#ccc', fontSize:16, flexShrink:0 }}>›</span>
                           </div>
                         )
                       })}
