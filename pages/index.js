@@ -178,7 +178,7 @@ export default function Home() {
           {/* אינדיקטור חיות + הערת מאגר */}
           <div style={{ marginTop: 28, width: '100%', padding: '14px 18px', boxSizing: 'border-box', background: 'rgba(255,255,255,0.6)', borderRadius: 14, border: '1px solid #e9d5ff' }}>
             {stats ? (
-              <div style={{ display: 'flex', justifyContent: 'center', gap: 28, marginBottom: 10 }}>
+              <div style={{ display: 'flex', justifyContent: 'center', gap: 20, marginBottom: 10, flexWrap: 'wrap' }}>
                 <div style={{ textAlign: 'center' }}>
                   <div style={{ fontSize: 22, fontWeight: 800, color: '#4C0080', lineHeight: 1 }}>{stats.rehabCount}</div>
                   <div style={{ fontSize: 11, color: '#9b88bb', fontWeight: 600, marginTop: 2 }}>שירותי שיקום</div>
@@ -187,6 +187,11 @@ export default function Home() {
                 <div style={{ textAlign: 'center' }}>
                   <div style={{ fontSize: 22, fontWeight: 800, color: '#0891B2', lineHeight: 1 }}>{stats.treatmentCount}</div>
                   <div style={{ fontSize: 11, color: '#9b88bb', fontWeight: 600, marginTop: 2 }}>שירותי טיפול</div>
+                </div>
+                <div style={{ width: 1, background: '#e9d5ff' }} />
+                <div style={{ textAlign: 'center' }}>
+                  <div style={{ fontSize: 22, fontWeight: 800, color: '#0F4C75', lineHeight: 1 }}>{stats.practitionerCount}</div>
+                  <div style={{ fontSize: 11, color: '#9b88bb', fontWeight: 600, marginTop: 2 }}>מטפלים פרטיים</div>
                 </div>
                 <div style={{ width: 1, background: '#e9d5ff' }} />
                 <div style={{ textAlign: 'center' }}>
