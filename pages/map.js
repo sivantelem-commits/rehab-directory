@@ -320,7 +320,7 @@ export default function MapPage() {
   const { CATEGORIES: CATS } = require('../lib/categories')
   const { PRACTITIONER_TREATMENT_TYPES } = require('../lib/practitioner-constants')
 
-  const DRAWER_HEIGHT = isMobile ? '46vh' : '240px'
+  const DRAWER_HEIGHT = isMobile ? '42vh' : '240px'
 
   const chipStyle = (active, color) => ({
     padding: '4px 12px', borderRadius: '999px',
@@ -466,10 +466,11 @@ export default function MapPage() {
         )}
 
         {/* ── Main content ── */}
-        <div id="main-content" style={{ flex:1, position:'relative', overflow:'hidden' }}>
+        <div id="main-content" style={{ flex:1, display:'flex', flexDirection:'column', overflow:'hidden', minHeight:0 }}>
 
-          {/* Map — תמיד full height */}
-          <div id="main-map" style={{ position:'absolute', inset:0 }} />
+          {/* Map */}
+          <div style={{ flex:1, position:'relative', minHeight:0 }}>
+            <div id="main-map" style={{ position:'absolute', inset:0 }} />
 
             {mapLoading && (
               <div style={{ position:'absolute', inset:0, background:'#e8e8e8', zIndex:500, display:'flex', alignItems:'center', justifyContent:'center' }}>
@@ -494,9 +495,7 @@ export default function MapPage() {
             {/* Selected popup */}
             {selected && (
               <div style={{
-                position:'absolute',
-                bottom: isMobile ? (drawerOpen ? `calc(${DRAWER_HEIGHT} + 8px)` : '56px') : 12,
-                right:12,
+                position:'absolute', bottom:12, right:12,
                 left: isMobile ? 12 : 'auto',
                 width: isMobile ? 'auto' : 290,
                 background:'white', borderRadius:14, padding:'12px 14px',
@@ -540,18 +539,14 @@ export default function MapPage() {
 
           {/* ══════════════ DRAWER ══════════════ */}
           <div style={{
-            position: isMobile ? 'absolute' : 'relative',
-            bottom: isMobile ? 0 : 'auto',
-            left: isMobile ? 0 : 'auto',
-            right: isMobile ? 0 : 'auto',
             background: 'white',
             borderTop: '1px solid #e8e8e8',
-            borderRadius: isMobile ? '16px 16px 0 0' : 0,
-            boxShadow: isMobile ? '0 -4px 20px rgba(0,0,0,0.15)' : '0 -3px 16px rgba(0,0,0,0.07)',
+            borderRadius: isMobile ? '14px 14px 0 0' : 0,
+            boxShadow: '0 -3px 16px rgba(0,0,0,0.08)',
             flexShrink: 0,
             display: 'flex',
             flexDirection: 'column',
-            height: drawerOpen ? DRAWER_HEIGHT : (isMobile ? '50px' : '44px'),
+            height: drawerOpen ? DRAWER_HEIGHT : (isMobile ? '48px' : '44px'),
             transition: 'height 0.25s cubic-bezier(0.32,0.72,0,1)',
             overflow: 'hidden',
             zIndex: 300,
@@ -747,6 +742,8 @@ export default function MapPage() {
                 </div>
               )
             })}
+          </div>
+
           </div>
 
         </div>
