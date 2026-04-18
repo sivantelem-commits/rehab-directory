@@ -466,11 +466,10 @@ export default function MapPage() {
         )}
 
         {/* ── Main content ── */}
-        <div id="main-content" style={{ flex:1, display:'flex', flexDirection:'column', overflow:'hidden' }}>
+        <div id="main-content" style={{ flex:1, position:'relative', overflow:'hidden' }}>
 
-          {/* Map */}
-          <div style={{ flex:1, position:'relative', minHeight:0 }}>
-            <div id="main-map" style={{ width:'100%', height:'100%' }} />
+          {/* Map — תמיד full height */}
+          <div id="main-map" style={{ position:'absolute', inset:0 }} />
 
             {mapLoading && (
               <div style={{ position:'absolute', inset:0, background:'#e8e8e8', zIndex:500, display:'flex', alignItems:'center', justifyContent:'center' }}>
@@ -484,79 +483,75 @@ export default function MapPage() {
             )}
 
             {/* Legend */}
-            <div style={{ position:'absolute', bottom:12, left:12, background:'rgba(255,255,255,0.95)', borderRadius:10, padding:'7px 11px', boxShadow:'0 2px 10px rgba(0,0,0,0.12)', zIndex:400, fontSize:11, fontFamily:"'Nunito',sans-serif", lineHeight:1.9, direction:'rtl' }}>
-              <div style={{ display:'flex', alignItems:'center', gap:5 }}><span style={{ width:9, height:9, borderRadius:'50%', background:'#8B00D4', display:'inline-block' }}/>שיקום</div>
-              <div style={{ display:'flex', alignItems:'center', gap:5 }}><span style={{ width:9, height:9, clipPath:'polygon(50% 0%,100% 50%,50% 100%,0% 50%)', background:'#0891B2', display:'inline-block' }}/>טיפול</div>
-              <div style={{ display:'flex', alignItems:'center', gap:5 }}><span style={{ width:9, height:9, borderRadius:'50% 50% 50% 0', transform:'rotate(-45deg)', background:PRACT_COLOR, display:'inline-block' }}/>מטפל/ת</div>
-            </div>
+            {!isMobile && (
+              <div style={{ position:'absolute', bottom:12, left:12, background:'rgba(255,255,255,0.95)', borderRadius:10, padding:'7px 11px', boxShadow:'0 2px 10px rgba(0,0,0,0.12)', zIndex:400, fontSize:11, fontFamily:"'Nunito',sans-serif", lineHeight:1.9, direction:'rtl' }}>
+                <div style={{ display:'flex', alignItems:'center', gap:5 }}><span style={{ width:9, height:9, borderRadius:'50%', background:'#8B00D4', display:'inline-block' }}/>שיקום</div>
+                <div style={{ display:'flex', alignItems:'center', gap:5 }}><span style={{ width:9, height:9, clipPath:'polygon(50% 0%,100% 50%,50% 100%,0% 50%)', background:'#0891B2', display:'inline-block' }}/>טיפול</div>
+                <div style={{ display:'flex', alignItems:'center', gap:5 }}><span style={{ width:9, height:9, borderRadius:'50% 50% 50% 0', transform:'rotate(-45deg)', background:PRACT_COLOR, display:'inline-block' }}/>מטפל/ת</div>
+              </div>
+            )}
 
             {/* Selected popup */}
             {selected && (
               <div style={{
-                position:'absolute', bottom:12, right:12,
-                width: isMobile ? 'calc(100% - 24px)' : 290,
-                background:'white', borderRadius:14, padding:'14px 16px',
-                boxShadow:'0 4px 24px rgba(0,0,0,0.18)',
+                position:'absolute',
+                bottom: isMobile ? (drawerOpen ? `calc(${DRAWER_HEIGHT} + 8px)` : '56px') : 12,
+                right:12,
+                left: isMobile ? 12 : 'auto',
+                width: isMobile ? 'auto' : 290,
+                background:'white', borderRadius:14, padding:'12px 14px',
+                boxShadow:'0 4px 24px rgba(0,0,0,0.2)',
                 borderTop:`4px solid ${selected.type==='rehab' ? (REHAB_COLORS[selected.category]||'#8B00D4') : selected.type==='practitioner' ? PRACT_COLOR : (TREATMENT_COLORS[selected.category]||'#0891B2')}`,
                 zIndex:1000,
               }}>
-                <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start', marginBottom:8 }}>
-                  <div>
-                    <div style={{ fontWeight:700, fontSize:14, color:'#1A3A5C' }}>{selected.name} {selected.is_national && '🌍'}</div>
+                <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start', marginBottom:6 }}>
+                  <div style={{ flex:1, minWidth:0, paddingLeft:8 }}>
+                    <div style={{ fontWeight:700, fontSize:13, color:'#1A3A5C', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{selected.name} {selected.is_national && '🌍'}</div>
                     {selected.type === 'practitioner' ? (
-                      <div style={{ fontSize:11, color:'#666', marginTop:3, display:'flex', gap:5, flexWrap:'wrap', alignItems:'center' }}>
+                      <div style={{ fontSize:11, color:'#666', marginTop:2, display:'flex', gap:5, flexWrap:'wrap', alignItems:'center' }}>
                         {selected.profession && <span style={{ background:PRACT_COLOR, color:'white', borderRadius:20, padding:'1px 8px', fontWeight:700 }}>{selected.profession}</span>}
                         {selected.city && <span>📍 {selected.city}</span>}
-                        {selected.is_online && <span style={{ color:'#0891B2', fontWeight:700 }}>🌐 אונליין</span>}
-                        {selected.price_range && <span>₪{selected.price_range}/שעה</span>}
+                        {selected.is_online && <span style={{ color:'#0891B2', fontWeight:700 }}>🌐</span>}
                       </div>
                     ) : (
-                      <div style={{ fontSize:11, color:'#888', marginTop:2 }}>📍 {selected.city}{selected.district ? `, ${selected.district}`:''}</div>
+                      <div style={{ fontSize:11, color:'#888', marginTop:1 }}>📍 {selected.city}{selected.district ? `, ${selected.district}`:''}</div>
                     )}
                   </div>
-                  <div style={{ display:'flex', alignItems:'center', gap:8 }}>
+                  <div style={{ display:'flex', alignItems:'center', gap:6, flexShrink:0 }}>
                     <BasketButton service={selected} />
                     <button onClick={() => setSelected(null)} style={{ background:'none', border:'none', fontSize:18, cursor:'pointer', color:'#aaa', padding:0 }}>✕</button>
                   </div>
                 </div>
-                <div style={{ display:'flex', gap:4, flexWrap:'wrap', marginBottom:10 }}>
-                  {[...new Set([selected.category, ...(selected.categories||[])])].filter(Boolean).map((cat, i) => {
-                    const colorMap = selected.type==='rehab' ? REHAB_COLORS : TREATMENT_COLORS
-                    const color = colorMap[cat] || '#888'
-                    return <span key={i} style={{ background:color+'22', color, borderRadius:'999px', padding:'2px 9px', fontSize:11, fontWeight:700 }}>{cat}</span>
-                  })}
-                </div>
-                {selected.description && (
-                  <div style={{ fontSize:12, color:'#445', lineHeight:1.5, marginBottom:10, display:'-webkit-box', WebkitLineClamp:2, WebkitBoxOrient:'vertical', overflow:'hidden' }}>
-                    {selected.description}
-                  </div>
-                )}
                 {selected.type === 'practitioner' ? (
                   <div style={{ display:'flex', gap:8 }}>
-                    <a href={`/practitioner/${selected.id}`} style={{ flex:1, display:'block', textAlign:'center', background:PRACT_COLOR, color:'white', borderRadius:'999px', padding:'8px 0', fontWeight:700, fontSize:13, textDecoration:'none' }}>לפרטים ←</a>
+                    <a href={`/practitioner/${selected.id}`} style={{ flex:1, display:'block', textAlign:'center', background:PRACT_COLOR, color:'white', borderRadius:'999px', padding:'7px 0', fontWeight:700, fontSize:12, textDecoration:'none' }}>לפרטים ←</a>
                     {selected.whatsapp_available && selected.phone && (
-                      <a href={`https://wa.me/972${(selected.phone||'').replace(/^0/,'').replace(/[-\s]/g,'')}`} target="_blank" rel="noopener noreferrer" style={{ padding:'8px 14px', background:'#25D366', color:'white', borderRadius:'999px', fontWeight:700, fontSize:13, textDecoration:'none' }}>💬</a>
+                      <a href={`https://wa.me/972${(selected.phone||'').replace(/^0/,'').replace(/[-\s]/g,'')}`} target="_blank" rel="noopener noreferrer" style={{ padding:'7px 12px', background:'#25D366', color:'white', borderRadius:'999px', fontWeight:700, fontSize:12, textDecoration:'none' }}>💬</a>
                     )}
                   </div>
                 ) : (
                   <a href={`/${selected.type==='rehab' ? 'service':'treatment'}/${selected.id}`}
-                    style={{ display:'block', textAlign:'center', background: selected.type==='rehab' ? '#8B00D4':'#0891B2', color:'white', borderRadius:'999px', padding:'8px 0', fontWeight:700, fontSize:13, textDecoration:'none' }}>
+                    style={{ display:'block', textAlign:'center', background: selected.type==='rehab' ? '#8B00D4':'#0891B2', color:'white', borderRadius:'999px', padding:'7px 0', fontWeight:700, fontSize:12, textDecoration:'none' }}>
                     לפרטים ←
                   </a>
                 )}
               </div>
             )}
-          </div>
 
           {/* ══════════════ DRAWER ══════════════ */}
           <div style={{
+            position: isMobile ? 'absolute' : 'relative',
+            bottom: isMobile ? 0 : 'auto',
+            left: isMobile ? 0 : 'auto',
+            right: isMobile ? 0 : 'auto',
             background: 'white',
             borderTop: '1px solid #e8e8e8',
-            boxShadow: '0 -3px 16px rgba(0,0,0,0.07)',
+            borderRadius: isMobile ? '16px 16px 0 0' : 0,
+            boxShadow: isMobile ? '0 -4px 20px rgba(0,0,0,0.15)' : '0 -3px 16px rgba(0,0,0,0.07)',
             flexShrink: 0,
             display: 'flex',
             flexDirection: 'column',
-            height: drawerOpen ? DRAWER_HEIGHT : '44px',
+            height: drawerOpen ? DRAWER_HEIGHT : (isMobile ? '50px' : '44px'),
             transition: 'height 0.25s cubic-bezier(0.32,0.72,0,1)',
             overflow: 'hidden',
             zIndex: 300,
@@ -753,13 +748,16 @@ export default function MapPage() {
               )
             })}
           </div>
+
         </div>
 
-        <footer style={{ background:'#1A3A5C', color:'rgba(255,255,255,0.7)', textAlign:'center', padding:'10px', fontSize:12, flexShrink:0 }}>
-          <a href="/accessibility" style={{ color:'rgba(255,255,255,0.7)', textDecoration:'none', margin:'0 8px' }}>הצהרת נגישות</a>
-          <span style={{ opacity:0.4 }}>·</span>
-          <a href="/legal" style={{ color:'rgba(255,255,255,0.7)', textDecoration:'none', margin:'0 8px' }}>תנאי שימוש</a>
-        </footer>
+        {!isMobile && (
+          <footer style={{ background:'#1A3A5C', color:'rgba(255,255,255,0.7)', textAlign:'center', padding:'10px', fontSize:12, flexShrink:0 }}>
+            <a href="/accessibility" style={{ color:'rgba(255,255,255,0.7)', textDecoration:'none', margin:'0 8px' }}>הצהרת נגישות</a>
+            <span style={{ opacity:0.4 }}>·</span>
+            <a href="/legal" style={{ color:'rgba(255,255,255,0.7)', textDecoration:'none', margin:'0 8px' }}>תנאי שימוש</a>
+          </footer>
+        )}
       </div>
       <BasketPanel />
     </>
