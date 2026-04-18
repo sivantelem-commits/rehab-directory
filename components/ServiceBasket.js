@@ -166,26 +166,18 @@ export function BasketPanel() {
     }
   }
 
-  if (count === 0 && !open) return (
-    <div style={{
-      position: 'fixed', bottom: 24, left: 24, zIndex: 9000,
-      background: 'white', border: '2px dashed #ddd', borderRadius: '999px',
-      padding: '10px 18px', fontSize: 13, color: '#bbb', fontWeight: 600,
-      fontFamily: "'Nunito', sans-serif", boxShadow: '0 4px 16px rgba(0,0,0,0.08)',
-      display: 'flex', alignItems: 'center', gap: 8,
-    }}>
-      📋 רשימת שירותים ריקה
-    </div>
-  )
+  if (count === 0 && !open) return null
 
   return (
     <>
       {/* כפתור צף */}
       <button onClick={() => setOpen(v => !v)} style={{
-        position: 'fixed', bottom: 24, left: 24, zIndex: 9001,
+        position: 'fixed',
+        bottom: typeof window !== 'undefined' && window.innerWidth < 768 ? 'calc(50vh + 16px)' : 24,
+        left: 24, zIndex: 9001,
         background: count > 0 ? 'linear-gradient(135deg, #4C0080, #8B00D4)' : '#888',
         color: 'white', border: 'none', borderRadius: '999px',
-        padding: '12px 20px', fontSize: 14, fontWeight: 800, cursor: 'pointer',
+        padding: '10px 18px', fontSize: 13, fontWeight: 800, cursor: 'pointer',
         fontFamily: "'Nunito', sans-serif",
         boxShadow: count > 0 ? '0 4px 0 #2E0060, 0 8px 24px rgba(76,0,128,0.35)' : '0 4px 12px rgba(0,0,0,0.2)',
         display: 'flex', alignItems: 'center', gap: 8,
