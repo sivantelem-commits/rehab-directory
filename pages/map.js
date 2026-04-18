@@ -320,7 +320,7 @@ export default function MapPage() {
   const { CATEGORIES: CATS } = require('../lib/categories')
   const { PRACTITIONER_TREATMENT_TYPES } = require('../lib/practitioner-constants')
 
-  const DRAWER_HEIGHT = isMobile ? '55vh' : '240px'
+  const DRAWER_HEIGHT = isMobile ? '46vh' : '240px'
 
   const chipStyle = (active, color) => ({
     padding: '4px 12px', borderRadius: '999px',
@@ -369,42 +369,57 @@ export default function MapPage() {
         </a>
 
         {/* ── Header ── */}
-        <header style={{ background:'#1A3A5C', color:'white', padding: isMobile ? '8px 14px' : '10px 20px', display:'flex', alignItems:'center', justifyContent:'space-between', boxShadow:'0 2px 12px rgba(0,0,0,0.15)', flexWrap:'wrap', gap:8, flexShrink:0 }}>
-          <div style={{ display:'flex', alignItems:'center', gap:10 }}>
-            <img src="/logo.png" alt="בריאות נפש בישראל" style={{ width: isMobile ? 32 : 44, height: isMobile ? 32 : 44, objectFit:'contain', filter:'brightness(0) invert(1)' }} />
-            <div>
-              <div style={{ fontWeight:800, fontSize: isMobile ? 15 : 18 }}>בריאות נפש בישראל</div>
-              {!isMobile && <div style={{ fontSize:11, opacity:0.75 }}>מפת שירותים</div>}
+        {isMobile ? (
+          // מובייל: שורה אחת צפופה
+          <header style={{ background:'#1A3A5C', color:'white', padding:'7px 12px', display:'flex', alignItems:'center', justifyContent:'space-between', flexShrink:0 }}>
+            <div style={{ display:'flex', alignItems:'center', gap:8 }}>
+              <img src="/logo.png" alt="" style={{ width:28, height:28, objectFit:'contain', filter:'brightness(0) invert(1)' }} />
+              <span style={{ fontWeight:800, fontSize:14 }}>בריאות נפש בישראל</span>
             </div>
-          </div>
-          {isMobile ? (
-            <div style={{ display:'flex', gap:8 }}>
-              <a href="/calculator" style={{ background:'rgba(255,255,200,0.18)', border:'1.5px solid rgba(255,255,150,0.5)', color:'white', borderRadius:'999px', padding:'6px 12px', fontWeight:700, fontSize:12, textDecoration:'none', display:'flex', alignItems:'center', gap:4 }}>🧭 מסלול</a>
-              <a href="https://links.payboxapp.com/g9hdYBPr71b" target="_blank" rel="noopener noreferrer" style={{ background:'rgba(255,255,255,0.15)', border:'1.5px solid rgba(255,255,255,0.35)', color:'white', borderRadius:'999px', padding:'6px 12px', fontWeight:700, fontSize:12, textDecoration:'none' }}>💙 תמכו</a>
+            <a href="/calculator" style={{ background:'rgba(255,255,200,0.2)', border:'1px solid rgba(255,255,150,0.4)', color:'white', borderRadius:'999px', padding:'5px 10px', fontWeight:700, fontSize:11, textDecoration:'none' }}>🧭 מסלול</a>
+          </header>
+        ) : (
+          <header style={{ background:'#1A3A5C', color:'white', padding:'10px 20px', display:'flex', alignItems:'center', justifyContent:'space-between', boxShadow:'0 2px 12px rgba(0,0,0,0.15)', flexWrap:'wrap', gap:8, flexShrink:0 }}>
+            <div style={{ display:'flex', alignItems:'center', gap:14 }}>
+              <img src="/logo.png" alt="בריאות נפש בישראל" style={{ width:44, height:44, objectFit:'contain', filter:'brightness(0) invert(1)' }} />
+              <div>
+                <div style={{ fontWeight:800, fontSize:18 }}>בריאות נפש בישראל</div>
+                <div style={{ fontSize:11, opacity:0.75 }}>מפת שירותים</div>
+              </div>
             </div>
-          ) : (
-            <>
-              <a href="/calculator" style={{ background:'rgba(255,255,200,0.18)', border:'1.5px solid rgba(255,255,150,0.5)', color:'white', borderRadius:'999px', padding:'8px 18px', fontWeight:800, fontSize:13, textDecoration:'none', display:'flex', alignItems:'center', gap:6, whiteSpace:'nowrap' }}>🧭 מחשבון מסלול</a>
-              <a href="https://links.payboxapp.com/g9hdYBPr71b" target="_blank" rel="noopener noreferrer" style={{ background:'rgba(255,255,255,0.15)', border:'1.5px solid rgba(255,255,255,0.35)', color:'white', borderRadius:'999px', padding:'8px 18px', fontWeight:700, fontSize:13, textDecoration:'none', display:'flex', alignItems:'center', gap:6 }}>💙 תמכו</a>
-              <nav aria-label="ניווט ראשי" style={{ display:'flex', gap:6, flexWrap:'wrap' }}>
-                {NAV.map(([href, label]) => (
-                  <a key={href} href={href} style={{ color:'white', background: href==='/map' ? 'rgba(255,255,255,0.25)':'rgba(255,255,255,0.12)', borderRadius:'999px', padding:'6px 14px', fontWeight:600, fontSize:12, border: href==='/map' ? '1.5px solid rgba(255,255,255,0.6)':'1.5px solid rgba(255,255,255,0.25)', textDecoration:'none' }}>{label}</a>
-                ))}
-              </nav>
-            </>
-          )}
-        </header>
+            <a href="/calculator" style={{ background:'rgba(255,255,200,0.18)', border:'1.5px solid rgba(255,255,150,0.5)', color:'white', borderRadius:'999px', padding:'8px 18px', fontWeight:800, fontSize:13, textDecoration:'none', display:'flex', alignItems:'center', gap:6, whiteSpace:'nowrap' }}>🧭 מחשבון מסלול</a>
+            <a href="https://links.payboxapp.com/g9hdYBPr71b" target="_blank" rel="noopener noreferrer" style={{ background:'rgba(255,255,255,0.15)', border:'1.5px solid rgba(255,255,255,0.35)', color:'white', borderRadius:'999px', padding:'8px 18px', fontWeight:700, fontSize:13, textDecoration:'none', display:'flex', alignItems:'center', gap:6 }}>💙 תמכו</a>
+            <nav aria-label="ניווט ראשי" style={{ display:'flex', gap:6, flexWrap:'wrap' }}>
+              {NAV.map(([href, label]) => (
+                <a key={href} href={href} style={{ color:'white', background: href==='/map' ? 'rgba(255,255,255,0.25)':'rgba(255,255,255,0.12)', borderRadius:'999px', padding:'6px 14px', fontWeight:600, fontSize:12, border: href==='/map' ? '1.5px solid rgba(255,255,255,0.6)':'1.5px solid rgba(255,255,255,0.25)', textDecoration:'none' }}>{label}</a>
+              ))}
+            </nav>
+          </header>
+        )}
 
         {/* ── Filter bar ── */}
-        <div style={{ background:'white', borderBottom:'1px solid #e0e0e0', padding: isMobile ? '7px 12px' : '8px 14px', display:'flex', gap:8, alignItems:'center', flexWrap: isMobile ? 'nowrap' : 'wrap', flexShrink:0 }}>
-          <div style={{ position:'relative', flex:1 }}>
-            <span style={{ position:'absolute', right:10, top:'50%', transform:'translateY(-50%)', fontSize:13, color:'#aaa', pointerEvents:'none' }}>🔍</span>
-            <input type="text" placeholder="חיפוש..." value={searchText} onChange={e => setSearchText(e.target.value)}
-              style={{ padding:'7px 30px 7px 10px', borderRadius:'999px', border:`1.5px solid ${searchText ? '#8B00D4':'#ddd'}`, fontSize:13, fontFamily:"'Nunito', sans-serif", outline:'none', width:'100%', direction:'rtl', background: searchText ? '#fdf8ff':'white', boxSizing:'border-box' }} />
-            {searchText && <button onClick={() => setSearchText('')} style={{ position:'absolute', left:8, top:'50%', transform:'translateY(-50%)', background:'none', border:'none', cursor:'pointer', fontSize:13, color:'#aaa', padding:0 }}>✕</button>}
+        {isMobile ? (
+          // מובייל: שורה אחת — חיפוש + אזור
+          <div style={{ background:'white', borderBottom:'1px solid #e8e8e8', padding:'6px 12px', display:'flex', gap:8, alignItems:'center', flexShrink:0 }}>
+            <div style={{ position:'relative', flex:1 }}>
+              <span style={{ position:'absolute', right:9, top:'50%', transform:'translateY(-50%)', fontSize:12, color:'#bbb', pointerEvents:'none' }}>🔍</span>
+              <input type="text" placeholder="חיפוש שירות או עיר..." value={searchText} onChange={e => setSearchText(e.target.value)}
+                style={{ padding:'8px 28px 8px 8px', borderRadius:'999px', border:`1.5px solid ${searchText ? '#8B00D4':'#e0e0e0'}`, fontSize:13, fontFamily:"'Nunito', sans-serif", outline:'none', width:'100%', direction:'rtl', background: searchText ? '#fdf8ff':'#f8f8f8', boxSizing:'border-box' }} />
+              {searchText && <button onClick={() => setSearchText('')} style={{ position:'absolute', left:8, top:'50%', transform:'translateY(-50%)', background:'none', border:'none', cursor:'pointer', fontSize:12, color:'#aaa', padding:0 }}>✕</button>}
+            </div>
+            <select value={district} onChange={e => setDistrict(e.target.value)}
+              style={{ padding:'7px 8px', borderRadius:'999px', border:'1.5px solid #e0e0e0', fontSize:12, background:'#f8f8f8', cursor:'pointer', outline:'none', flexShrink:0 }}>
+              {DISTRICTS.map(d => <option key={d}>{d}</option>)}
+            </select>
           </div>
-
-          {!isMobile && (
+        ) : (
+          <div style={{ background:'white', borderBottom:'1px solid #e0e0e0', padding:'8px 14px', display:'flex', gap:8, alignItems:'center', flexWrap:'wrap', flexShrink:0 }}>
+            <div style={{ position:'relative' }}>
+              <span style={{ position:'absolute', right:10, top:'50%', transform:'translateY(-50%)', fontSize:13, color:'#aaa', pointerEvents:'none' }}>🔍</span>
+              <input type="text" placeholder="חיפוש..." value={searchText} onChange={e => setSearchText(e.target.value)}
+                style={{ padding:'7px 30px 7px 10px', borderRadius:'999px', border:`1.5px solid ${searchText ? '#8B00D4':'#ddd'}`, fontSize:13, fontFamily:"'Nunito', sans-serif", outline:'none', width:200, direction:'rtl', background: searchText ? '#fdf8ff':'white' }} />
+              {searchText && <button onClick={() => setSearchText('')} style={{ position:'absolute', left:8, top:'50%', transform:'translateY(-50%)', background:'none', border:'none', cursor:'pointer', fontSize:13, color:'#aaa', padding:0 }}>✕</button>}
+            </div>
             <div style={{ position:'relative' }}>
               <span style={{ position:'absolute', right:10, top:'50%', transform:'translateY(-50%)', fontSize:13, color:'#aaa', pointerEvents:'none' }}>📍</span>
               <input type="text" placeholder="מעוף לעיר..." value={cityInput} onChange={e => setCityInput(e.target.value)}
@@ -428,34 +443,27 @@ export default function MapPage() {
                 </div>
               )}
             </div>
-          )}
-
-          <select value={district} onChange={e => setDistrict(e.target.value)}
-            style={{ padding:'7px 10px', borderRadius:'999px', border:'1.5px solid #ddd', fontSize:12, background:'white', cursor:'pointer', outline:'none' }}>
-            {DISTRICTS.map(d => <option key={d}>{d}</option>)}
-          </select>
-
-          {!isMobile && (
-            <>
-              <button onClick={() => setShowRehab(v => !v)} style={layerBtnStyle(showRehab, '#8B00D4', '#f7f0ff')}>
-                <span style={{ width:8, height:8, borderRadius:'50%', background: showRehab ? '#8B00D4':'#ccc', display:'inline-block' }}/>♿ שיקום
-              </button>
-              <button onClick={() => setShowTreatment(v => !v)} style={layerBtnStyle(showTreatment, '#0891B2', '#f0faff')}>
-                <span style={{ width:8, height:8, clipPath:'polygon(50% 0%,100% 50%,50% 100%,0% 50%)', background: showTreatment ? '#0891B2':'#ccc', display:'inline-block' }}/>🏥 טיפול
-              </button>
-              <button onClick={() => setShowPractitioners(v => !v)} style={layerBtnStyle(showPractitioners, PRACT_COLOR, '#e8f2f8')}>
-                <span style={{ width:8, height:8, borderRadius:'50% 50% 50% 0', transform:'rotate(-45deg)', background: showPractitioners ? PRACT_COLOR:'#ccc', display:'inline-block' }}/>🧠 מטפלים
-              </button>
-              <button onClick={() => setShowNationalOnly(v => !v)} style={layerBtnStyle(showNationalOnly, '#1A3A5C', '#EEF2FF')}>
-                🌍 ארצי בלבד
-              </button>
-            </>
-          )}
-
-          <div style={{ marginRight:'auto', fontSize:12, color:'#888', fontWeight:600 }}>
-            {counts.rehab + counts.treatment + counts.practitioner} שירותים
+            <select value={district} onChange={e => setDistrict(e.target.value)}
+              style={{ padding:'7px 10px', borderRadius:'999px', border:'1.5px solid #ddd', fontSize:12, background:'white', cursor:'pointer', outline:'none' }}>
+              {DISTRICTS.map(d => <option key={d}>{d}</option>)}
+            </select>
+            <button onClick={() => setShowRehab(v => !v)} style={layerBtnStyle(showRehab, '#8B00D4', '#f7f0ff')}>
+              <span style={{ width:8, height:8, borderRadius:'50%', background: showRehab ? '#8B00D4':'#ccc', display:'inline-block' }}/>♿ שיקום
+            </button>
+            <button onClick={() => setShowTreatment(v => !v)} style={layerBtnStyle(showTreatment, '#0891B2', '#f0faff')}>
+              <span style={{ width:8, height:8, clipPath:'polygon(50% 0%,100% 50%,50% 100%,0% 50%)', background: showTreatment ? '#0891B2':'#ccc', display:'inline-block' }}/>🏥 טיפול
+            </button>
+            <button onClick={() => setShowPractitioners(v => !v)} style={layerBtnStyle(showPractitioners, PRACT_COLOR, '#e8f2f8')}>
+              <span style={{ width:8, height:8, borderRadius:'50% 50% 50% 0', transform:'rotate(-45deg)', background: showPractitioners ? PRACT_COLOR:'#ccc', display:'inline-block' }}/>🧠 מטפלים
+            </button>
+            <button onClick={() => setShowNationalOnly(v => !v)} style={layerBtnStyle(showNationalOnly, '#1A3A5C', '#EEF2FF')}>
+              🌍 ארצי בלבד
+            </button>
+            <div style={{ marginRight:'auto', fontSize:12, color:'#888', fontWeight:600 }}>
+              {counts.rehab + counts.treatment + counts.practitioner} שירותים
+            </div>
           </div>
-        </div>
+        )}
 
         {/* ── Main content ── */}
         <div id="main-content" style={{ flex:1, display:'flex', flexDirection:'column', overflow:'hidden' }}>
@@ -647,7 +655,7 @@ export default function MapPage() {
 
                   {/* Result cards */}
                   {isMobile ? (
-                    <div style={{ flex:1, overflowY:'auto', overflowX:'hidden', padding:'7px 12px 12px', display:'grid', gridTemplateColumns:'1fr 1fr', gap:8 }}>
+                    <div style={{ flex:1, overflowY:'auto', overflowX:'hidden', padding:'6px 12px 12px', display:'grid', gridTemplateColumns:'1fr 1fr', gap:7 }}>
                       {items.length === 0 ? (
                         <div style={{ gridColumn:'1/-1', fontSize:13, color:'#ccc', padding:'12px 0', textAlign:'center' }}>
                           אין תוצאות לפילטר הנוכחי
@@ -670,19 +678,21 @@ export default function MapPage() {
                               border: `1px solid ${isSelected ? tab.color : '#eaeaea'}`,
                               borderTop: `3px solid ${isSelected ? tab.color : color + '66'}`,
                               borderRadius: 10,
-                              padding: '9px 10px',
+                              padding: '8px 10px',
                               cursor: 'pointer',
+                              minWidth: 0,
+                              overflow: 'hidden',
                             }}>
-                            <div style={{ fontWeight:700, fontSize:12, color:'#1A3A5C', marginBottom:3, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>
+                            <div style={{ fontWeight:700, fontSize:12, color:'#1A3A5C', marginBottom:4, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>
                               {item.name}{item.is_national ? ' 🌍' : ''}
                             </div>
-                            <div style={{ fontSize:11, color:'#888', display:'flex', flexDirection:'column', gap:2 }}>
+                            <div style={{ display:'flex', flexDirection:'column', gap:3, minWidth:0 }}>
                               {(item.category || item.profession) && (
-                                <span style={{ background: tab.badgeBg, color: tab.textColor, borderRadius:999, padding:'1px 6px', fontSize:10, fontWeight:700, alignSelf:'flex-start' }}>
+                                <span style={{ background: tab.badgeBg, color: tab.textColor, borderRadius:999, padding:'2px 7px', fontSize:10, fontWeight:700, alignSelf:'flex-start', maxWidth:'100%', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>
                                   {item.category || item.profession}
                                 </span>
                               )}
-                              {item.city && <span>📍 {item.city}</span>}
+                              {item.city && <span style={{ fontSize:11, color:'#999', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>📍 {item.city}</span>}
                             </div>
                           </div>
                         )
