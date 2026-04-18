@@ -320,7 +320,7 @@ export default function MapPage() {
   const { CATEGORIES: CATS } = require('../lib/categories')
   const { PRACTITIONER_TREATMENT_TYPES } = require('../lib/practitioner-constants')
 
-  const DRAWER_HEIGHT = isMobile ? '48vh' : '240px'
+  const DRAWER_HEIGHT = isMobile ? '55vh' : '240px'
 
   const chipStyle = (active, color) => ({
     padding: '4px 12px', borderRadius: '999px',
@@ -369,31 +369,38 @@ export default function MapPage() {
         </a>
 
         {/* ── Header ── */}
-        <header style={{ background:'#1A3A5C', color:'white', padding:'10px 20px', display:'flex', alignItems:'center', justifyContent:'space-between', boxShadow:'0 2px 12px rgba(0,0,0,0.15)', flexWrap:'wrap', gap:8, flexShrink:0 }}>
-          <div style={{ display:'flex', alignItems:'center', gap:14 }}>
-            <img src="/logo.png" alt="בריאות נפש בישראל" style={{ width:44, height:44, objectFit:'contain', filter:'brightness(0) invert(1)' }} />
+        <header style={{ background:'#1A3A5C', color:'white', padding: isMobile ? '8px 14px' : '10px 20px', display:'flex', alignItems:'center', justifyContent:'space-between', boxShadow:'0 2px 12px rgba(0,0,0,0.15)', flexWrap:'wrap', gap:8, flexShrink:0 }}>
+          <div style={{ display:'flex', alignItems:'center', gap:10 }}>
+            <img src="/logo.png" alt="בריאות נפש בישראל" style={{ width: isMobile ? 32 : 44, height: isMobile ? 32 : 44, objectFit:'contain', filter:'brightness(0) invert(1)' }} />
             <div>
-              <div style={{ fontWeight:800, fontSize:18 }}>בריאות נפש בישראל</div>
-              <div style={{ fontSize:11, opacity:0.75 }}>מפת שירותים</div>
+              <div style={{ fontWeight:800, fontSize: isMobile ? 15 : 18 }}>בריאות נפש בישראל</div>
+              {!isMobile && <div style={{ fontSize:11, opacity:0.75 }}>מפת שירותים</div>}
             </div>
           </div>
-          <a href="/calculator" style={{ background:'rgba(255,255,200,0.18)', border:'1.5px solid rgba(255,255,150,0.5)', color:'white', borderRadius:'999px', padding:'8px 18px', fontWeight:800, fontSize:13, textDecoration:'none', display:'flex', alignItems:'center', gap:6, whiteSpace:'nowrap' }}>🧭 מחשבון מסלול</a>
-          <a href="https://links.payboxapp.com/g9hdYBPr71b" target="_blank" rel="noopener noreferrer" style={{ background:'rgba(255,255,255,0.15)', border:'1.5px solid rgba(255,255,255,0.35)', color:'white', borderRadius:'999px', padding:'8px 18px', fontWeight:700, fontSize:13, textDecoration:'none', display:'flex', alignItems:'center', gap:6 }}>💙 תמכו</a>
-          {!isMobile && (
-            <nav aria-label="ניווט ראשי" style={{ display:'flex', gap:6, flexWrap:'wrap' }}>
-              {NAV.map(([href, label]) => (
-                <a key={href} href={href} style={{ color:'white', background: href==='/map' ? 'rgba(255,255,255,0.25)':'rgba(255,255,255,0.12)', borderRadius:'999px', padding:'6px 14px', fontWeight:600, fontSize:12, border: href==='/map' ? '1.5px solid rgba(255,255,255,0.6)':'1.5px solid rgba(255,255,255,0.25)', textDecoration:'none' }}>{label}</a>
-              ))}
-            </nav>
+          {isMobile ? (
+            <div style={{ display:'flex', gap:8 }}>
+              <a href="/calculator" style={{ background:'rgba(255,255,200,0.18)', border:'1.5px solid rgba(255,255,150,0.5)', color:'white', borderRadius:'999px', padding:'6px 12px', fontWeight:700, fontSize:12, textDecoration:'none', display:'flex', alignItems:'center', gap:4 }}>🧭 מסלול</a>
+              <a href="https://links.payboxapp.com/g9hdYBPr71b" target="_blank" rel="noopener noreferrer" style={{ background:'rgba(255,255,255,0.15)', border:'1.5px solid rgba(255,255,255,0.35)', color:'white', borderRadius:'999px', padding:'6px 12px', fontWeight:700, fontSize:12, textDecoration:'none' }}>💙 תמכו</a>
+            </div>
+          ) : (
+            <>
+              <a href="/calculator" style={{ background:'rgba(255,255,200,0.18)', border:'1.5px solid rgba(255,255,150,0.5)', color:'white', borderRadius:'999px', padding:'8px 18px', fontWeight:800, fontSize:13, textDecoration:'none', display:'flex', alignItems:'center', gap:6, whiteSpace:'nowrap' }}>🧭 מחשבון מסלול</a>
+              <a href="https://links.payboxapp.com/g9hdYBPr71b" target="_blank" rel="noopener noreferrer" style={{ background:'rgba(255,255,255,0.15)', border:'1.5px solid rgba(255,255,255,0.35)', color:'white', borderRadius:'999px', padding:'8px 18px', fontWeight:700, fontSize:13, textDecoration:'none', display:'flex', alignItems:'center', gap:6 }}>💙 תמכו</a>
+              <nav aria-label="ניווט ראשי" style={{ display:'flex', gap:6, flexWrap:'wrap' }}>
+                {NAV.map(([href, label]) => (
+                  <a key={href} href={href} style={{ color:'white', background: href==='/map' ? 'rgba(255,255,255,0.25)':'rgba(255,255,255,0.12)', borderRadius:'999px', padding:'6px 14px', fontWeight:600, fontSize:12, border: href==='/map' ? '1.5px solid rgba(255,255,255,0.6)':'1.5px solid rgba(255,255,255,0.25)', textDecoration:'none' }}>{label}</a>
+                ))}
+              </nav>
+            </>
           )}
         </header>
 
         {/* ── Filter bar ── */}
-        <div style={{ background:'white', borderBottom:'1px solid #e0e0e0', padding:'8px 14px', display:'flex', gap:8, alignItems:'center', flexWrap:'wrap', flexShrink:0 }}>
-          <div style={{ position:'relative', flex: isMobile ? 1 : 'unset' }}>
+        <div style={{ background:'white', borderBottom:'1px solid #e0e0e0', padding: isMobile ? '7px 12px' : '8px 14px', display:'flex', gap:8, alignItems:'center', flexWrap: isMobile ? 'nowrap' : 'wrap', flexShrink:0 }}>
+          <div style={{ position:'relative', flex:1 }}>
             <span style={{ position:'absolute', right:10, top:'50%', transform:'translateY(-50%)', fontSize:13, color:'#aaa', pointerEvents:'none' }}>🔍</span>
             <input type="text" placeholder="חיפוש..." value={searchText} onChange={e => setSearchText(e.target.value)}
-              style={{ padding:'7px 30px 7px 10px', borderRadius:'999px', border:`1.5px solid ${searchText ? '#8B00D4':'#ddd'}`, fontSize:13, fontFamily:"'Nunito', sans-serif", outline:'none', width: isMobile ? '100%' : 200, direction:'rtl', background: searchText ? '#fdf8ff':'white' }} />
+              style={{ padding:'7px 30px 7px 10px', borderRadius:'999px', border:`1.5px solid ${searchText ? '#8B00D4':'#ddd'}`, fontSize:13, fontFamily:"'Nunito', sans-serif", outline:'none', width:'100%', direction:'rtl', background: searchText ? '#fdf8ff':'white', boxSizing:'border-box' }} />
             {searchText && <button onClick={() => setSearchText('')} style={{ position:'absolute', left:8, top:'50%', transform:'translateY(-50%)', background:'none', border:'none', cursor:'pointer', fontSize:13, color:'#aaa', padding:0 }}>✕</button>}
           </div>
 
@@ -639,6 +646,49 @@ export default function MapPage() {
                   )}
 
                   {/* Result cards */}
+                  {isMobile ? (
+                    <div style={{ flex:1, overflowY:'auto', overflowX:'hidden', padding:'7px 12px 12px', display:'grid', gridTemplateColumns:'1fr 1fr', gap:8 }}>
+                      {items.length === 0 ? (
+                        <div style={{ gridColumn:'1/-1', fontSize:13, color:'#ccc', padding:'12px 0', textAlign:'center' }}>
+                          אין תוצאות לפילטר הנוכחי
+                        </div>
+                      ) : items.slice(0, 40).map(item => {
+                        const isSelected = selected?.id === item.id && selected?.type === tab.key
+                        const color = tab.key === 'rehab' ? (REHAB_COLORS[item.category] || tab.color)
+                          : tab.key === 'treatment' ? (TREATMENT_COLORS[item.category] || tab.color)
+                          : tab.color
+                        const coords = tab.key === 'practitioner' && item.city ? CITY_COORDS[item.city]
+                          : (item.lat ? [item.lat, item.lng] : null)
+                        return (
+                          <div key={item.id + tab.key}
+                            onClick={() => {
+                              setSelected({ ...item, type: tab.key })
+                              if (coords && mapRef.current) mapRef.current.flyTo(coords, 14, { duration:0.6 })
+                            }}
+                            style={{
+                              background: isSelected ? tab.lightBg : 'white',
+                              border: `1px solid ${isSelected ? tab.color : '#eaeaea'}`,
+                              borderTop: `3px solid ${isSelected ? tab.color : color + '66'}`,
+                              borderRadius: 10,
+                              padding: '9px 10px',
+                              cursor: 'pointer',
+                            }}>
+                            <div style={{ fontWeight:700, fontSize:12, color:'#1A3A5C', marginBottom:3, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>
+                              {item.name}{item.is_national ? ' 🌍' : ''}
+                            </div>
+                            <div style={{ fontSize:11, color:'#888', display:'flex', flexDirection:'column', gap:2 }}>
+                              {(item.category || item.profession) && (
+                                <span style={{ background: tab.badgeBg, color: tab.textColor, borderRadius:999, padding:'1px 6px', fontSize:10, fontWeight:700, alignSelf:'flex-start' }}>
+                                  {item.category || item.profession}
+                                </span>
+                              )}
+                              {item.city && <span>📍 {item.city}</span>}
+                            </div>
+                          </div>
+                        )
+                      })}
+                    </div>
+                  ) : (
                   <div style={{ flex:1, overflowX:'auto', overflowY:'hidden', padding:'7px 14px 10px', display:'flex', gap:8, alignItems:'flex-start', scrollbarWidth:'none', msOverflowStyle:'none' }}>
                     {items.length === 0 ? (
                       <div style={{ fontSize:13, color:'#ccc', padding:'8px 0', whiteSpace:'nowrap', alignSelf:'center' }}>
@@ -659,8 +709,7 @@ export default function MapPage() {
                             if (coords && mapRef.current) mapRef.current.flyTo(coords, 14, { duration:0.6 })
                           }}
                           style={{
-                            minWidth: isMobile ? 155 : 180,
-                            maxWidth: isMobile ? 165 : 195,
+                            minWidth: 180, maxWidth: 195,
                             flexShrink: 0,
                             background: isSelected ? tab.lightBg : 'white',
                             border: `1px solid ${isSelected ? tab.color : '#eaeaea'}`,
@@ -689,6 +738,7 @@ export default function MapPage() {
                       )
                     })}
                   </div>
+                  )}
                 </div>
               )
             })}
