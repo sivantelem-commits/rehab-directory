@@ -136,6 +136,7 @@ export default function MapPage() {
   const [activeTab, setActiveTab]                 = useState('rehab')
   const [drawerOpen, setDrawerOpen]               = useState(true)
   const [selected, setSelected]                   = useState(null)
+  const [navOpen, setNavOpen]                     = useState(false)
 
   const mapRef     = useRef(null)
   const markersRef = useRef([])
@@ -370,14 +371,30 @@ export default function MapPage() {
 
         {/* ── Header ── */}
         {isMobile ? (
-          // מובייל: שורה אחת צפופה
-          <header style={{ background:'#1A3A5C', color:'white', padding:'7px 12px', display:'flex', alignItems:'center', justifyContent:'space-between', flexShrink:0 }}>
-            <div style={{ display:'flex', alignItems:'center', gap:8 }}>
-              <img src="/logo.png" alt="" style={{ width:28, height:28, objectFit:'contain', filter:'brightness(0) invert(1)' }} />
-              <span style={{ fontWeight:800, fontSize:14 }}>בריאות נפש בישראל</span>
-            </div>
-            <a href="/calculator" style={{ background:'rgba(255,255,200,0.2)', border:'1px solid rgba(255,255,150,0.4)', color:'white', borderRadius:'999px', padding:'5px 10px', fontWeight:700, fontSize:11, textDecoration:'none' }}>🧭 מסלול</a>
-          </header>
+          <>
+            <header style={{ background:'#1A3A5C', color:'white', padding:'7px 12px', display:'flex', alignItems:'center', justifyContent:'space-between', flexShrink:0, position:'relative', zIndex:1000 }}>
+              <div style={{ display:'flex', alignItems:'center', gap:8 }}>
+                <img src="/logo.png" alt="" style={{ width:28, height:28, objectFit:'contain', filter:'brightness(0) invert(1)' }} />
+                <span style={{ fontWeight:800, fontSize:14 }}>בריאות נפש בישראל</span>
+              </div>
+              <div style={{ display:'flex', gap:8, alignItems:'center' }}>
+                <a href="/calculator" style={{ background:'rgba(255,255,200,0.2)', border:'1px solid rgba(255,255,150,0.4)', color:'white', borderRadius:'999px', padding:'5px 10px', fontWeight:700, fontSize:11, textDecoration:'none' }}>🧭 מסלול</a>
+                <button onClick={() => setNavOpen(v => !v)} style={{ background:'rgba(255,255,255,0.15)', border:'1px solid rgba(255,255,255,0.3)', color:'white', borderRadius:8, padding:'5px 10px', fontSize:16, cursor:'pointer', lineHeight:1 }}>
+                  {navOpen ? '✕' : '☰'}
+                </button>
+              </div>
+            </header>
+            {navOpen && (
+              <div style={{ background:'#1A3A5C', borderBottom:'1px solid rgba(255,255,255,0.15)', padding:'8px 12px', display:'flex', flexDirection:'column', gap:2, flexShrink:0, zIndex:999 }}>
+                {NAV.map(([href, label]) => (
+                  <a key={href} href={href} onClick={() => setNavOpen(false)}
+                    style={{ color: href==='/map' ? '#FFE066' : 'rgba(255,255,255,0.85)', padding:'10px 12px', borderRadius:8, fontWeight: href==='/map' ? 800 : 600, fontSize:14, textDecoration:'none', background: href==='/map' ? 'rgba(255,255,255,0.1)' : 'transparent', display:'block' }}>
+                    {label}
+                  </a>
+                ))}
+              </div>
+            )}
+          </>
         ) : (
           <header style={{ background:'#1A3A5C', color:'white', padding:'10px 20px', display:'flex', alignItems:'center', justifyContent:'space-between', boxShadow:'0 2px 12px rgba(0,0,0,0.15)', flexWrap:'wrap', gap:8, flexShrink:0 }}>
             <div style={{ display:'flex', alignItems:'center', gap:14 }}>
