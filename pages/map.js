@@ -537,6 +537,9 @@ export default function MapPage() {
               </div>
             )}
 
+          </div>
+          {/* סוף map div */}
+
           {/* ══════════════ DRAWER ══════════════ */}
           <div style={{
             background: 'white',
@@ -743,10 +746,10 @@ export default function MapPage() {
               )
             })}
           </div>
-
-          </div>
+          {/* סוף drawer */}
 
         </div>
+        {/* סוף main-content */}
 
         {!isMobile && (
           <footer style={{ background:'#1A3A5C', color:'rgba(255,255,255,0.7)', textAlign:'center', padding:'10px', fontSize:12, flexShrink:0 }}>
