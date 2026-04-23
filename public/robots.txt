@@ -1,6 +1,9 @@
 User-agent: *
 Allow: /
 Disallow: /admin
-Disallow: /api/
+Disallow: /api/admin
+Disallow: /api/submit
+Disallow: /api/submit-treatment
+Disallow: /api/submit-practitioner
 
-Sitemap: https://rehabdirectoryil.vercel.app/sitemap.xml
+Sitemap: https://rehabdirectoryil.vercel.app/api/sitemap
