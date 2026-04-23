@@ -733,26 +733,41 @@ export default function Admin() {
                 </div>
               )}
 
-              {/* ── ניווט סקשן ── */}
-              <div style={{ display: 'flex', gap: 8, marginBottom: 24, flexWrap: 'wrap' }}>
+              {/* ── ניווט ראשי — 4 טאבים ── */}
+              <div style={{ display: 'flex', gap: 8, marginBottom: 20, flexWrap: 'wrap' }}>
                 {[
-                  ['inbox', `📥 inbox (${allPending.length})`, '#1A3A5C'],
-                  ['rehab', '♿ שיקום', '#8B00D4'],
-                  ['treatment', '🏥 טיפול', '#0891B2'],
-                  ['practitioners', '🧠 מטפלים', '#0F4C75'],
-                  ['duplicates', '🔁 כפילויות', '#5E35B1'],
-                  ['stats', '📊 סטטיסטיקות', '#2A5298'],
-                  ['history', '📝 היסטוריה', '#5E35B1'],
+                  ['inbox',     `📥 ממתינים`,    '#1A3A5C'],
+                  ['content',   '📂 ניהול תוכן', '#8B00D4'],
+                  ['dashboard', '📊 סקירה כללית','#2A5298'],
+                  ['tools',     '🔧 כלים',        '#5E35B1'],
                 ].map(([id, label, color]) => (
-                  <button key={id} onClick={() => { setSection(id); if (id === 'duplicates') fetchDuplicates(adminKey); if (id === 'history') fetchHistory(adminKey) }}
-                    style={{ flex: 1, minWidth: 100, padding: '12px 8px', borderRadius: 14, fontWeight: 800, fontSize: 13, background: section === id ? color : 'white', color: section === id ? 'white' : color, border: `2px solid ${color}`, cursor: 'pointer', position: 'relative' }}>
+                  <button key={id}
+                    onClick={() => { setSection(id); if (id === 'tools') fetchDuplicates(adminKey); if (id === 'dashboard') fetchHistory(adminKey) }}
+                    style={{ flex: 1, minWidth: 120, padding: '12px 8px', borderRadius: 14, fontWeight: 800, fontSize: 14, background: section === id ? color : 'white', color: section === id ? 'white' : color, border: `2px solid ${color}`, cursor: 'pointer', position: 'relative', fontFamily: 'inherit' }}>
                     {label}
                     {id === 'inbox' && allPending.length > 0 && section !== 'inbox' && (
-                      <span style={{ position: 'absolute', top: -6, right: -6, background: '#ef4444', color: 'white', borderRadius: '50%', width: 18, height: 18, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, fontWeight: 800 }}>{allPending.length}</span>
+                      <span style={{ position: 'absolute', top: -6, right: -6, background: '#ef4444', color: 'white', borderRadius: '50%', width: 20, height: 20, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 800 }}>{allPending.length}</span>
                     )}
                   </button>
                 ))}
               </div>
+
+              {/* ── sub-tabs לניהול תוכן ── */}
+              {section === 'content' && (
+                <div style={{ display: 'flex', gap: 6, marginBottom: 20, borderBottom: '2px solid #f0f0f0', paddingBottom: 12 }}>
+                  {[
+                    ['rehab',        '♿ שיקום',          '#8B00D4', approved.length],
+                    ['treatment',    '🏥 טיפול',           '#0891B2', approvedTreatment.length],
+                    ['practitioners','🧠 מטפלים פרטיים',  '#0F4C75', approvedPractitioners.length],
+                  ].map(([id, label, color, count]) => (
+                    <button key={id} onClick={() => setSection(id)}
+                      style={{ padding: '8px 18px', borderRadius: 20, fontWeight: 700, fontSize: 13, background: section === id ? color : 'white', color: section === id ? 'white' : color, border: `1.5px solid ${color}`, cursor: 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', gap: 6 }}>
+                      {label}
+                      <span style={{ background: section === id ? 'rgba(255,255,255,0.25)' : color + '22', color: section === id ? 'white' : color, borderRadius: 999, padding: '1px 7px', fontSize: 11 }}>{count}</span>
+                    </button>
+                  ))}
+                </div>
+              )}
 
               {loading ? (
                 <div style={{ textAlign: 'center', padding: 48, color: '#8B00D4' }}>טוען...</div>
@@ -760,10 +775,10 @@ export default function Admin() {
                 : section === 'rehab' ? renderRehab()
                 : section === 'treatment' ? renderTreatment()
                 : section === 'practitioners' ? renderPractitioners()
-                : section === 'stats' ? <StatsTab stats={stats} />
-                : section === 'history' ? <HistoryTab history={history} loading={loadingHistory} />
-                : section === 'duplicates' ? (
-                  <DuplicatesTab duplicates={duplicates} loading={loadingDuplicates}
+                : section === 'dashboard' ? <DashboardTab stats={stats} history={history} loadingHistory={loadingHistory} noLocationCount={noLocationCount} onGoToNoLoc={(type) => { setSection(type === 'rehab' ? 'rehab' : 'treatment'); if (type === 'rehab') setRehabTab('no-location'); else setTreatmentTab('no-location') }} />
+                : section === 'tools' ? (
+                  <ToolsTab
+                    duplicates={duplicates} loadingDuplicates={loadingDuplicates}
                     onDismiss={(i) => setDuplicates(d => d.map((p, idx) => idx === i ? { ...p, dismissed: true } : p))}
                     onDelete={async (id, type) => {
                       if (!confirm('למחוק שירות זה לצמיתות?')) return
@@ -771,6 +786,9 @@ export default function Admin() {
                       else await fetch(`/api/admin/services?id=${id}`, { method: 'DELETE', headers: { adminkey: adminKey } })
                       fetchDuplicates(adminKey); fetchAll(adminKey)
                     }}
+                    onExportRehab={() => setShowExportRehab(true)}
+                    onExportTreatment={() => setShowExportTreatment(true)}
+                    onExportPract={() => setShowExportPract(true)}
                   />
                 ) : null}
             </>
@@ -1088,7 +1106,237 @@ export default function Admin() {
 }
 
 // ──────────────────────────────────────────────────────────────────────────────
-function DuplicatesTab({ duplicates, loading, onDismiss, onDelete }) {
+function DashboardTab({ stats, history, loadingHistory, noLocationCount, onGoToNoLoc }) {
+  const [showAllHistory, setShowAllHistory] = useState(false)
+  const [statsTab, setStatsTab] = useState('rehab')
+  if (!stats) return <div style={{ textAlign: 'center', padding: 48, color: '#8B00D4' }}>טוען...</div>
+
+  const COLORS = ['#8B00D4','#4C0080','#6B21A8','#0891B2','#164E63','#5E35B1','#CE66F0','#0F4C75','#22c55e']
+  const DISTRICTS = ['צפון','חיפה','מרכז','תל אביב','ירושלים','דרום','יהודה ושומרון']
+  const { getCategoryColor } = require('../lib/categories')
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+
+      {/* ── מדדי מפתח ── */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))', gap: 10 }}>
+        {[
+          ['סה"כ פעילים', stats.grandTotal, '#1A3A5C', '📋'],
+          ['ממתינים לאישור', stats.totalPending, '#6d28d9', '⏳'],
+          ['חדשים השבוע', stats.totalNewWeek, '#15803d', '📈'],
+          ['ללא מיקום', stats.totalNoLoc, '#E65100', '⚠️'],
+          ['שיקום פעיל', stats.rehabApproved, '#8B00D4', '♿'],
+          ['טיפול פעיל', stats.treatApproved, '#0891B2', '🏥'],
+          ['מטפלים פרטיים', stats.practApproved, '#0F4C75', '🧠'],
+        ].map(([label, val, color, icon]) => (
+          <div key={label} style={{ background: 'white', borderRadius: 14, padding: '14px 16px', textAlign: 'center', boxShadow: '0 2px 10px rgba(0,0,0,0.06)', borderTop: `4px solid ${color}`, cursor: label === 'ללא מיקום' && val > 0 ? 'pointer' : 'default' }}
+            onClick={() => label === 'ללא מיקום' && val > 0 && onGoToNoLoc('rehab')}>
+            <div style={{ fontSize: 22, marginBottom: 4 }}>{icon}</div>
+            <div style={{ fontSize: 28, fontWeight: 800, color }}>{val}</div>
+            <div style={{ fontSize: 11, color: '#888', marginTop: 3 }}>{label}</div>
+          </div>
+        ))}
+      </div>
+
+      {/* ── גרפים לפי סוג ── */}
+      <div style={{ background: 'white', borderRadius: 14, padding: '16px', boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}>
+        <div style={{ display: 'flex', gap: 8, marginBottom: 16 }}>
+          {[['rehab','♿ שיקום','#8B00D4'],['treatment','🏥 טיפול','#0891B2'],['practitioners','🧠 מטפלים','#0F4C75']].map(([id,label,color]) => (
+            <button key={id} onClick={() => setStatsTab(id)} style={{ padding: '6px 16px', borderRadius: 20, fontWeight: 700, fontSize: 12, cursor: 'pointer', background: statsTab === id ? color : 'white', color: statsTab === id ? 'white' : color, border: `1.5px solid ${color}`, fontFamily: 'inherit' }}>{label}</button>
+          ))}
+        </div>
+
+        {statsTab === 'rehab' && (
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+            <div>
+              <div style={{ fontSize: 13, fontWeight: 700, color: '#1A3A5C', marginBottom: 10 }}>לפי קטגוריה</div>
+              {(stats.rehabByCategory || []).map(({ name, value }) => (
+                <div key={name} style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
+                  <div style={{ width: 10, height: 10, borderRadius: '50%', background: getCategoryColor(name), flexShrink: 0 }} />
+                  <div style={{ flex: 1, fontSize: 12, color: '#555' }}>{name}</div>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: '#1A3A5C' }}>{value}</div>
+                  <div style={{ width: 80, height: 6, background: '#f0f0f0', borderRadius: 3, overflow: 'hidden' }}>
+                    <div style={{ height: '100%', width: `${Math.round(value / stats.rehabApproved * 100)}%`, background: getCategoryColor(name), borderRadius: 3 }} />
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div>
+              <div style={{ fontSize: 13, fontWeight: 700, color: '#1A3A5C', marginBottom: 10 }}>לפי מחוז</div>
+              {(stats.rehabByDistrict || []).sort((a,b) => b.value - a.value).map(({ name, value }) => (
+                <div key={name} style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
+                  <div style={{ flex: 1, fontSize: 12, color: '#555' }}>{name}</div>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: '#8B00D4' }}>{value}</div>
+                  <div style={{ width: 80, height: 6, background: '#f0f0f0', borderRadius: 3, overflow: 'hidden' }}>
+                    <div style={{ height: '100%', width: `${Math.round(value / stats.rehabApproved * 100)}%`, background: '#8B00D4', borderRadius: 3 }} />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {statsTab === 'treatment' && (
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+            <div>
+              <div style={{ fontSize: 13, fontWeight: 700, color: '#1A3A5C', marginBottom: 10 }}>לפי קטגוריה</div>
+              {(stats.treatByCategory || []).map(({ name, value }) => (
+                <div key={name} style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
+                  <div style={{ width: 10, height: 10, borderRadius: 2, background: '#0891B2', flexShrink: 0 }} />
+                  <div style={{ flex: 1, fontSize: 12, color: '#555' }}>{name}</div>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: '#1A3A5C' }}>{value}</div>
+                  <div style={{ width: 80, height: 6, background: '#f0f0f0', borderRadius: 3, overflow: 'hidden' }}>
+                    <div style={{ height: '100%', width: `${Math.round(value / stats.treatApproved * 100)}%`, background: '#0891B2', borderRadius: 3 }} />
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div>
+              <div style={{ fontSize: 13, fontWeight: 700, color: '#1A3A5C', marginBottom: 10 }}>לפי מחוז</div>
+              {(stats.treatByDistrict || []).sort((a,b) => b.value - a.value).map(({ name, value }) => (
+                <div key={name} style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
+                  <div style={{ flex: 1, fontSize: 12, color: '#555' }}>{name}</div>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: '#0891B2' }}>{value}</div>
+                  <div style={{ width: 80, height: 6, background: '#f0f0f0', borderRadius: 3, overflow: 'hidden' }}>
+                    <div style={{ height: '100%', width: `${Math.round(value / stats.treatApproved * 100)}%`, background: '#0891B2', borderRadius: 3 }} />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {statsTab === 'practitioners' && (
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 16 }}>
+            <div>
+              <div style={{ fontSize: 13, fontWeight: 700, color: '#1A3A5C', marginBottom: 10 }}>לפי מקצוע</div>
+              {(stats.practByProfession || []).map(({ name, value }) => (
+                <div key={name} style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 5 }}>
+                  <div style={{ flex: 1, fontSize: 11, color: '#555' }}>{name}</div>
+                  <div style={{ fontSize: 12, fontWeight: 700, color: '#0F4C75' }}>{value}</div>
+                </div>
+              ))}
+            </div>
+            <div>
+              <div style={{ fontSize: 13, fontWeight: 700, color: '#1A3A5C', marginBottom: 10 }}>לפי מחוז</div>
+              {(stats.practByDistrict || []).sort((a,b) => b.value - a.value).map(({ name, value }) => (
+                <div key={name} style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 5 }}>
+                  <div style={{ flex: 1, fontSize: 11, color: '#555' }}>{name}</div>
+                  <div style={{ fontSize: 12, fontWeight: 700, color: '#0F4C75' }}>{value}</div>
+                  <div style={{ width: 60, height: 5, background: '#f0f0f0', borderRadius: 3, overflow: 'hidden' }}>
+                    <div style={{ height: '100%', width: `${Math.round(value / stats.practApproved * 100)}%`, background: '#0F4C75', borderRadius: 3 }} />
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div>
+              <div style={{ fontSize: 13, fontWeight: 700, color: '#1A3A5C', marginBottom: 10 }}>top 10 התמחויות</div>
+              {(stats.practBySpecialization || []).map(({ name, value }) => (
+                <div key={name} style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 5 }}>
+                  <div style={{ flex: 1, fontSize: 11, color: '#555' }}>{name}</div>
+                  <div style={{ fontSize: 12, fontWeight: 700, color: '#6d28d9' }}>{value}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* ── טבלת חתך שיקום ── */}
+      {statsTab === 'rehab' && Object.keys(stats.rehabCross || {}).length > 0 && (
+        <div style={{ background: 'white', borderRadius: 14, padding: '16px', boxShadow: '0 2px 10px rgba(0,0,0,0.06)', overflowX: 'auto' }}>
+          <div style={{ fontSize: 13, fontWeight: 700, color: '#1A3A5C', marginBottom: 12 }}>קטגוריה × מחוז — שיקום</div>
+          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 12 }}>
+            <thead><tr style={{ background: '#1A3A5C', color: 'white' }}>
+              <th style={{ padding: '8px 12px', textAlign: 'right' }}>קטגוריה</th>
+              {DISTRICTS.map(d => <th key={d} style={{ padding: '8px', textAlign: 'center', whiteSpace: 'nowrap' }}>{d}</th>)}
+              <th style={{ padding: '8px 12px', textAlign: 'center', background: '#4C0080' }}>סה"כ</th>
+            </tr></thead>
+            <tbody>{Object.entries(stats.rehabCross).map(([cat, byDist], i) => {
+              const color = getCategoryColor(cat)
+              const total = DISTRICTS.reduce((s, d) => s + (byDist[d] || 0), 0)
+              return (<tr key={cat} style={{ background: i % 2 === 0 ? '#FFF8F3' : 'white' }}>
+                <td style={{ padding: '8px 12px', fontWeight: 700, color, borderRight: `3px solid ${color}` }}>{cat}</td>
+                {DISTRICTS.map(d => <td key={d} style={{ padding: '8px', textAlign: 'center', color: byDist[d] ? '#1A3A5C' : '#ddd', fontWeight: byDist[d] ? 700 : 400 }}>{byDist[d] || '–'}</td>)}
+                <td style={{ padding: '8px 12px', textAlign: 'center', fontWeight: 800, color: '#4C0080' }}>{total}</td>
+              </tr>)
+            })}</tbody>
+          </table>
+        </div>
+      )}
+
+      {/* ── היסטוריית שינויים אחרונים ── */}
+      <div style={{ background: 'white', borderRadius: 14, padding: '16px', boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+          <div style={{ fontSize: 13, fontWeight: 700, color: '#1A3A5C' }}>📝 שינויים אחרונים</div>
+          {history.length > 5 && (
+            <button onClick={() => setShowAllHistory(v => !v)} style={{ background: 'none', border: 'none', fontSize: 12, color: '#8B00D4', cursor: 'pointer', fontWeight: 700, fontFamily: 'inherit' }}>
+              {showAllHistory ? 'הצג פחות ▲' : `הצג הכל (${history.length}) ▼`}
+            </button>
+          )}
+        </div>
+        {loadingHistory ? <div style={{ textAlign: 'center', padding: 24, color: '#aaa' }}>טוען...</div> : !history.length ? (
+          <div style={{ textAlign: 'center', padding: 24, color: '#ccc', fontSize: 13 }}>אין היסטוריית שינויים עדיין</div>
+        ) : (showAllHistory ? history : history.slice(0, 5)).map((entry, i) => {
+          const changes = entry.changes || {}
+          const keys = Object.keys(changes)
+          const isRehab = entry.table_name === 'services'
+          const color = isRehab ? '#8B00D4' : '#0891B2'
+          return (
+            <div key={i} style={{ borderBottom: i < (showAllHistory ? history : history.slice(0,5)).length - 1 ? '1px solid #f5f5f5' : 'none', paddingBottom: 10, marginBottom: 10 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
+                <div>
+                  <span style={{ fontWeight: 700, fontSize: 13, color: '#1A3A5C' }}>{entry.service_name}</span>
+                  <span style={{ marginRight: 6, fontSize: 10, background: `${color}22`, color, padding: '1px 7px', borderRadius: 20, fontWeight: 600 }}>{isRehab ? 'שיקום' : 'טיפול'}</span>
+                </div>
+                <span style={{ fontSize: 11, color: '#bbb' }}>{new Date(entry.changed_at).toLocaleString('he-IL')}</span>
+              </div>
+              <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                {keys.map(key => (
+                  <span key={key} style={{ fontSize: 11, background: '#f5f5f5', borderRadius: 6, padding: '2px 8px', color: '#555' }}>
+                    {key}: <span style={{ color: '#C62828', textDecoration: 'line-through' }}>{String(changes[key].before ?? '–').substring(0,20)}</span>
+                    {' → '}
+                    <span style={{ color: '#2E7D32', fontWeight: 600 }}>{String(changes[key].after ?? '–').substring(0,20)}</span>
+                  </span>
+                ))}
+              </div>
+            </div>
+          )
+        })}
+      </div>
+    </div>
+  )
+}
+
+function ToolsTab({ duplicates, loadingDuplicates, onDismiss, onDelete, onExportRehab, onExportTreatment, onExportPract }) {
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+      {/* ── ייצוא ── */}
+      <div style={{ background: 'white', borderRadius: 14, padding: '16px', boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}>
+        <div style={{ fontSize: 13, fontWeight: 700, color: '#1A3A5C', marginBottom: 14 }}>📥 ייצוא Excel</div>
+        <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+          <button onClick={onExportRehab} style={{ flex: 1, minWidth: 160, padding: '14px', borderRadius: 12, border: '2px solid #8B00D4', background: '#f7f0ff', color: '#4C0080', fontWeight: 800, fontSize: 14, cursor: 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+            📥 שיקום
+          </button>
+          <button onClick={onExportTreatment} style={{ flex: 1, minWidth: 160, padding: '14px', borderRadius: 12, border: '2px solid #0891B2', background: '#f0faff', color: '#0A6080', fontWeight: 800, fontSize: 14, cursor: 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+            📥 טיפול
+          </button>
+          <button onClick={onExportPract} style={{ flex: 1, minWidth: 160, padding: '14px', borderRadius: 12, border: '2px solid #0F4C75', background: '#e8f2f8', color: '#0F4C75', fontWeight: 800, fontSize: 14, cursor: 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+            📥 מטפלים פרטיים
+          </button>
+        </div>
+      </div>
+
+      {/* ── כפילויות ── */}
+      <div>
+        <div style={{ fontSize: 13, fontWeight: 700, color: '#1A3A5C', marginBottom: 14 }}>🔁 זיהוי כפילויות</div>
+        <DuplicatesTab duplicates={duplicates} loading={loadingDuplicates} onDismiss={onDismiss} onDelete={onDelete} />
+      </div>
+    </div>
+  )
+}
+
+({ duplicates, loading, onDismiss, onDelete }) {
   const active = duplicates.filter(p => !p.dismissed)
   if (loading) return <div style={{ textAlign: 'center', padding: 48, color: '#7B2D8B' }}>מחפש כפילויות...</div>
   if (active.length === 0) return <div style={{ textAlign: 'center', padding: 52, color: '#aaa' }}><div style={{ fontSize: 40, marginBottom: 10 }}>✅</div><div style={{ fontWeight: 600 }}>לא נמצאו כפילויות</div></div>
