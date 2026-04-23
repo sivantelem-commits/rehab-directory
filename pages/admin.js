@@ -407,12 +407,35 @@ export default function Admin() {
               </div>
               <div style={{ fontSize: 11, color: '#bbb' }}>{new Date(s.created_at).toLocaleDateString('he-IL')}</div>
             </div>
-            {s.description && <div style={{ fontSize: 12, color: '#666', marginBottom: 10, lineHeight: 1.5, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{s.description}</div>}
-            {s.bio && <div style={{ fontSize: 12, color: '#666', marginBottom: 10, fontStyle: 'italic' }}>"{s.bio.substring(0, 100)}{s.bio.length > 100 ? '...' : ''}"</div>}
-            <div style={{ fontSize: 12, color, marginBottom: 10 }}>
-              {s.phone && <span style={{ marginLeft: 12 }}>📞 {s.phone}</span>}
+            {s.description && <div style={{ fontSize: 12, color: '#666', marginBottom: 8, lineHeight: 1.5, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{s.description}</div>}
+            {s.bio && <div style={{ fontSize: 12, color: '#666', marginBottom: 8, fontStyle: 'italic' }}>"{s.bio.substring(0, 100)}{s.bio.length > 100 ? '...' : ''}"</div>}
+
+            {/* מספר רישיון — בולט במיוחד למטפלים */}
+            {isPract && (
+              <div style={{ background: s.license_number ? '#f0f9ff' : '#fffbeb', border: `1.5px solid ${s.license_number ? '#7dd3fc' : '#fcd34d'}`, borderRadius: 8, padding: '6px 12px', marginBottom: 8, display: 'flex', alignItems: 'center', gap: 8 }}>
+                <span style={{ fontSize: 12, fontWeight: 700, color: s.license_number ? '#0369a1' : '#92400e' }}>📋 מספר רישיון:</span>
+                <span style={{ fontSize: 14, fontWeight: 800, color: s.license_number ? '#0F4C75' : '#b45309', letterSpacing: '0.05em' }}>
+                  {s.license_number || '⚠️ לא צוין'}
+                </span>
+              </div>
+            )}
+
+            <div style={{ fontSize: 12, color, marginBottom: 8, display: 'flex', gap: 12, flexWrap: 'wrap' }}>
+              {s.phone && <span>📞 {s.phone}</span>}
               {s.email && <span>✉️ {s.email}</span>}
+              {isPract && s.price_range && <span>💰 ₪{s.price_range}/שעה</span>}
+              {isPract && s.website && <a href={s.website} target="_blank" rel="noopener noreferrer" style={{ color: '#0891B2' }}>🌐 אתר</a>}
             </div>
+
+            {isPract && s.treatment_types?.length > 0 && (
+              <div style={{ fontSize: 11, color: '#0F4C75', marginBottom: 3 }}>💊 {s.treatment_types.join(', ')}</div>
+            )}
+            {isPract && s.specializations?.length > 0 && (
+              <div style={{ fontSize: 11, color: '#6d28d9', marginBottom: 3 }}>🎯 {s.specializations.join(', ')}</div>
+            )}
+            {isPract && s.languages?.length > 0 && (
+              <div style={{ fontSize: 11, color: '#555', marginBottom: 6 }}>🗣️ {s.languages.join(', ')}</div>
+            )}
             {/* כפתורי פעולה */}
             <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
               {/* אישור */}
@@ -578,22 +601,47 @@ export default function Admin() {
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
             {list.map(p => (
               <div key={p.id} style={{ background: 'white', borderRadius: 14, padding: '14px 16px', boxShadow: '0 2px 10px rgba(0,0,0,0.06)', borderRight: '4px solid #0F4C75' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6 }}>
-                  {p.photo_url && <img src={p.photo_url} alt="" style={{ width: 36, height: 36, borderRadius: '50%', objectFit: 'cover' }} />}
-                  <div>
-                    <div style={{ fontWeight: 700, fontSize: 14, color: '#1A3A5C' }}>{p.name}
-                      {p.is_verified && <span style={{ marginRight: 6, background: '#dbeafe', color: '#1d4ed8', borderRadius: 20, padding: '1px 7px', fontSize: 10, fontWeight: 700 }}>✓ מאומת</span>}
-                      {p.is_online && <span style={{ marginRight: 4, background: '#e0f2fe', color: '#0284c7', borderRadius: 20, padding: '1px 7px', fontSize: 10, fontWeight: 700 }}>🌐 אונליין</span>}
+
+                {/* שורה ראשונה: תמונה + שם + תגיות */}
+                <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10, marginBottom: 8 }}>
+                  {p.photo_url && <img src={p.photo_url} alt="" style={{ width: 44, height: 44, borderRadius: '50%', objectFit: 'cover', flexShrink: 0 }} />}
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 5, flexWrap: 'wrap', marginBottom: 3 }}>
+                      <span style={{ fontWeight: 700, fontSize: 15, color: '#1A3A5C' }}>{p.name}</span>
+                      {p.is_verified && <span style={{ background: '#dbeafe', color: '#1d4ed8', borderRadius: 20, padding: '1px 7px', fontSize: 10, fontWeight: 700 }}>✓ מאומת</span>}
+                      {p.is_defense_ministry && <span style={{ background: '#ede9fe', color: '#6d28d9', borderRadius: 20, padding: '1px 7px', fontSize: 10, fontWeight: 700 }}>🎗️ מה"ב</span>}
+                      {p.is_online && <span style={{ background: '#e0f2fe', color: '#0284c7', borderRadius: 20, padding: '1px 7px', fontSize: 10, fontWeight: 700 }}>🌐 אונליין</span>}
+                      {p.whatsapp_available && <span style={{ background: '#dcfce7', color: '#15803d', borderRadius: 20, padding: '1px 7px', fontSize: 10, fontWeight: 700 }}>💬 WhatsApp</span>}
                     </div>
-                    <div style={{ fontSize: 12, color: '#888' }}>
-                      {p.profession && <span>{p.profession}</span>}
-                      {p.city && <span style={{ marginRight: 8 }}>📍 {p.city}</span>}
-                      {p.email && <span style={{ marginRight: 8 }}>✉️ {p.email}</span>}
+                    <div style={{ fontSize: 12, color: '#666', display: 'flex', gap: 12, flexWrap: 'wrap' }}>
+                      {p.profession && <span>🏷️ {p.profession}</span>}
+                      {p.city && <span>📍 {p.city}{p.district ? `, ${p.district}` : ''}</span>}
+                      {p.phone && <span>📞 {p.phone}</span>}
+                      {p.email && <span>✉️ {p.email}</span>}
                     </div>
                   </div>
+                  <div style={{ fontSize: 11, color: '#bbb', flexShrink: 0 }}>{new Date(p.created_at).toLocaleDateString('he-IL')}</div>
                 </div>
+
+                {/* מספר רישיון — בולט לצורך אימות */}
+                <div style={{ background: p.license_number ? '#f0f9ff' : '#fffbeb', border: `1.5px solid ${p.license_number ? '#7dd3fc' : '#fcd34d'}`, borderRadius: 8, padding: '6px 12px', marginBottom: 8, display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <span style={{ fontSize: 12, fontWeight: 700, color: p.license_number ? '#0369a1' : '#92400e' }}>📋 מספר רישיון:</span>
+                  <span style={{ fontSize: 14, fontWeight: 800, color: p.license_number ? '#0F4C75' : '#b45309', letterSpacing: '0.05em' }}>
+                    {p.license_number || '⚠️ לא צוין'}
+                  </span>
+                </div>
+
+                {/* פרטים נוספים */}
+                <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap', fontSize: 12, color: '#666', marginBottom: 6 }}>
+                  {p.price_range && <span>💰 ₪{p.price_range}/שעה</span>}
+                  {p.has_health_fund_agreement && p.health_funds?.length > 0 && <span>🏥 {p.health_funds.join(', ')}</span>}
+                  {p.languages?.length > 0 && <span>🗣️ {p.languages.join(', ')}</span>}
+                  {p.website && <a href={p.website} target="_blank" rel="noopener noreferrer" style={{ color: '#0891B2' }}>🌐 אתר</a>}
+                </div>
+
                 {p.treatment_types?.length > 0 && <div style={{ fontSize: 11, color: '#0F4C75', marginBottom: 3 }}>💊 {p.treatment_types.join(', ')}</div>}
-                {p.specializations?.length > 0 && <div style={{ fontSize: 11, color: '#6d28d9', marginBottom: 6 }}>🎯 {p.specializations.slice(0, 4).join(', ')}{p.specializations.length > 4 ? '...' : ''}</div>}
+                {p.specializations?.length > 0 && <div style={{ fontSize: 11, color: '#6d28d9', marginBottom: 5 }}>🎯 {p.specializations.join(', ')}</div>}
+                {p.bio && <div style={{ fontSize: 12, color: '#777', fontStyle: 'italic', marginBottom: 6, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>"{p.bio}"</div>}
                 {/* כפתורי פעולה אופקיים */}
                 <div style={{ display: 'flex', gap: 7, flexWrap: 'wrap', marginTop: 8, paddingTop: 8, borderTop: '1px solid #f0f0f0' }}>
                   {practitionersTab === 'pending' && (
