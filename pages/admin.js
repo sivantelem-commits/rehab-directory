@@ -1336,7 +1336,7 @@ function ToolsTab({ duplicates, loadingDuplicates, onDismiss, onDelete, onExport
   )
 }
 
-({ duplicates, loading, onDismiss, onDelete }) {
+function DuplicatesTab({ duplicates, loading, onDismiss, onDelete }) {
   const active = duplicates.filter(p => !p.dismissed)
   if (loading) return <div style={{ textAlign: 'center', padding: 48, color: '#7B2D8B' }}>מחפש כפילויות...</div>
   if (active.length === 0) return <div style={{ textAlign: 'center', padding: 52, color: '#aaa' }}><div style={{ fontSize: 40, marginBottom: 10 }}>✅</div><div style={{ fontWeight: 600 }}>לא נמצאו כפילויות</div></div>
