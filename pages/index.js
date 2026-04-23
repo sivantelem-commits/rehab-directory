@@ -220,6 +220,18 @@ export default function Home() {
 
         </main>
 
+        {/* שירותים לפי עיר */}
+        <div style={{ width: '100%', maxWidth: 460, marginTop: 28 }}>
+          <div style={{ fontSize: 12, fontWeight: 700, color: '#9b88bb', marginBottom: 10, textAlign: 'center' }}>שירותים לפי עיר</div>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, justifyContent: 'center' }}>
+            {[['תל-אביב','תל אביב'],['ירושלים','ירושלים'],['חיפה','חיפה'],['באר-שבע','באר שבע'],['ראשון-לציון','ראשון לציון'],['פתח-תקווה','פתח תקווה'],['נתניה','נתניה'],['רמת-גן','רמת גן'],['אשדוד','אשדוד'],['הרצליה','הרצליה'],['כפר-סבא','כפר סבא'],['חולון','חולון']].map(([slug, label]) => (
+              <a key={slug} href={`/city/${slug}`} style={{ fontSize: 12, fontWeight: 600, color: '#6b4fa0', textDecoration: 'none', background: 'rgba(255,255,255,0.7)', borderRadius: 999, padding: '4px 12px', border: '1px solid #e9d5ff' }}>
+                {label}
+              </a>
+            ))}
+          </div>
+        </div>
+
         {/* קישורים תחתונים */}
         <div style={{ display: 'flex', gap: 16, marginTop: 24, justifyContent: 'center', flexWrap: 'wrap' }}>
           {[
