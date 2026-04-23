@@ -17,17 +17,18 @@ const SUPPORTED_CITIES = [
 ]
 
 const STATIC_PAGES = [
-  { url: '/',             priority: '1.0', changefreq: 'weekly'  },
-  { url: '/rehab',        priority: '0.9', changefreq: 'daily'   },
-  { url: '/treatment',    priority: '0.9', changefreq: 'daily'   },
-  { url: '/map',          priority: '0.7', changefreq: 'weekly'  },
-  { url: '/calculator',   priority: '0.7', changefreq: 'monthly' },
-  { url: '/about',        priority: '0.5', changefreq: 'monthly' },
-  { url: '/guide',        priority: '0.6', changefreq: 'monthly' },
-  { url: '/register',     priority: '0.5', changefreq: 'monthly' },
-  { url: '/contact',      priority: '0.4', changefreq: 'monthly' },
-  { url: '/legal',        priority: '0.3', changefreq: 'yearly'  },
-  { url: '/accessibility',priority: '0.3', changefreq: 'yearly'  },
+  { url: '/',              priority: '1.0', changefreq: 'weekly'  },
+  { url: '/rehab',         priority: '0.9', changefreq: 'daily'   },
+  { url: '/treatment',     priority: '0.9', changefreq: 'daily'   },
+  { url: '/practitioners', priority: '0.9', changefreq: 'daily'   },
+  { url: '/map',           priority: '0.7', changefreq: 'weekly'  },
+  { url: '/calculator',    priority: '0.7', changefreq: 'monthly' },
+  { url: '/about',         priority: '0.5', changefreq: 'monthly' },
+  { url: '/guide',         priority: '0.6', changefreq: 'monthly' },
+  { url: '/register',      priority: '0.5', changefreq: 'monthly' },
+  { url: '/contact',       priority: '0.4', changefreq: 'monthly' },
+  { url: '/legal',         priority: '0.3', changefreq: 'yearly'  },
+  { url: '/accessibility', priority: '0.3', changefreq: 'yearly'  },
 ]
 
 function escapeXml(str) {
@@ -44,15 +45,11 @@ export default async function handler(req, res) {
   const [
     { data: rehabServices },
     { data: treatmentServices },
+    { data: practitioners },
   ] = await Promise.all([
-    supabase
-      .from('services')
-      .select('id, updated_at')
-      .eq('status', 'approved'),
-    supabase
-      .from('treatment_services')
-      .select('id, updated_at')
-      .eq('status', 'approved'),
+    supabase.from('services').select('id, updated_at').eq('status', 'approved'),
+    supabase.from('treatment_services').select('id, updated_at').eq('status', 'approved'),
+    supabase.from('practitioners').select('id, updated_at').eq('status', 'approved'),
   ])
 
   const today = new Date().toISOString().split('T')[0]
@@ -65,6 +62,15 @@ export default async function handler(req, res) {
     <lastmod>${today}</lastmod>
     <changefreq>${p.changefreq}</changefreq>
     <priority>${p.priority}</priority>
+  </url>`),
+
+    // עמודי ערים — מאוחד (שיקום + טיפול + מטפלים)
+    ...SUPPORTED_CITIES.map(city => `
+  <url>
+    <loc>${BASE_URL}/city/${encodeURIComponent(city)}</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
   </url>`),
 
     // עמודי ערים — שיקום
@@ -101,6 +107,15 @@ export default async function handler(req, res) {
     <lastmod>${s.updated_at ? s.updated_at.split('T')[0] : today}</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
+  </url>`),
+
+    // מטפלים פרטיים
+    ...(practitioners || []).map(p => `
+  <url>
+    <loc>${escapeXml(`${BASE_URL}/practitioner/${p.id}`)}</loc>
+    <lastmod>${p.updated_at ? p.updated_at.split('T')[0] : today}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
   </url>`),
   ]
 
