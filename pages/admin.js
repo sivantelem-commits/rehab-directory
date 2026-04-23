@@ -1309,6 +1309,9 @@ function DashboardTab({ stats, history, loadingHistory, noLocationCount, onGoToN
 }
 
 function ToolsTab({ duplicates, loadingDuplicates, onDismiss, onDelete, onExportRehab, onExportTreatment, onExportPract }) {
+  const [notifyLoading, setNotifyLoading] = useState(false)
+  const [notifyResult, setNotifyResult]   = useState(null)
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
       {/* ── ייצוא ── */}
@@ -1325,6 +1328,36 @@ function ToolsTab({ duplicates, loadingDuplicates, onDismiss, onDelete, onExport
             📥 מטפלים פרטיים
           </button>
         </div>
+      </div>
+
+      {/* ── התראות על שירותים ישנים ── */}
+      <div style={{ background: 'white', borderRadius: 14, padding: '16px', boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}>
+        <div style={{ fontSize: 13, fontWeight: 700, color: '#1A3A5C', marginBottom: 6 }}>📧 שירותים לא מעודכנים</div>
+        <div style={{ fontSize: 12, color: '#888', marginBottom: 14 }}>שליחת מייל לשירותים שלא עודכנו מעל 6 חודשים — לאישור שהשירות עדיין פעיל</div>
+        <button
+          onClick={async () => {
+            if (!confirm('לשלוח מיילים לכל השירותים הישנים?')) return
+            setNotifyLoading(true); setNotifyResult(null)
+            try {
+              const adminKey = localStorage.getItem('adminKey') || prompt('סיסמת אדמין:')
+              const res = await fetch('/api/admin/notify-stale', { method: 'POST', headers: { 'Content-Type': 'application/json', adminkey: adminKey } })
+              const data = await res.json()
+              setNotifyResult(data)
+            } catch { setNotifyResult({ error: 'שגיאה בשליחה' }) }
+            finally { setNotifyLoading(false) }
+          }}
+          disabled={notifyLoading}
+          style={{ padding: '10px 20px', borderRadius: 12, border: '2px solid #E65100', background: notifyLoading ? '#f5f5f5' : '#fff8f5', color: '#E65100', fontWeight: 700, fontSize: 13, cursor: notifyLoading ? 'not-allowed' : 'pointer', fontFamily: 'inherit' }}>
+          {notifyLoading ? '⏳ שולח...' : '📧 שלח התראות'}
+        </button>
+        {notifyResult && !notifyResult.error && (
+          <div style={{ marginTop: 10, padding: '10px 14px', background: '#f0fdf4', borderRadius: 10, fontSize: 12, color: '#15803d', border: '1px solid #bbf7d0' }}>
+            ✓ נשלחו {notifyResult.sent} מיילים מתוך {notifyResult.eligible} שירותים מתאימים (סה"כ {notifyResult.totalStale} ישנים)
+          </div>
+        )}
+        {notifyResult?.error && (
+          <div style={{ marginTop: 10, padding: '10px 14px', background: '#fef2f2', borderRadius: 10, fontSize: 12, color: '#dc2626' }}>✗ {notifyResult.error}</div>
+        )}
       </div>
 
       {/* ── כפילויות ── */}
