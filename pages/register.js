@@ -66,6 +66,7 @@ export default function Register() {
   const [pSuccess, setPSuccess]   = useState(false)
   const [pError, setPError]       = useState('')
   const [pTruth, setPTruth]       = useState(false)
+  const [licenseStatus, setLicenseStatus] = useState(null) // null | 'checking' | {valid, message, manual}
 
   useEffect(() => { setMounted(true) }, [])
 
@@ -516,8 +517,29 @@ export default function Register() {
                     {/* רישיון */}
                     <div style={{ marginBottom: 16 }}>
                       <label style={pLbl}>מספר רישיון / תעודה *</label>
-                      <input type="text" placeholder="מספר רישיון ממשרד הבריאות או גוף מוסמך" value={pForm.license_number}
-                        onChange={e => setPForm(f => ({ ...f, license_number: e.target.value }))} style={pInp} />
+                      <div style={{ display: 'flex', gap: 8 }}>
+                        <input type="text" placeholder="מספר רישיון ממשרד הבריאות" value={pForm.license_number}
+                          onChange={e => { setPForm(f => ({ ...f, license_number: e.target.value })); setLicenseStatus(null) }}
+                          style={{ ...pInp, flex: 1 }} />
+                        <button type="button"
+                          onClick={async () => {
+                            if (!pForm.license_number.trim()) return
+                            setLicenseStatus('checking')
+                            try {
+                              const res = await fetch('/api/verify-license', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ license_number: pForm.license_number, profession: pForm.profession }) })
+                              const data = await res.json()
+                              setLicenseStatus(data)
+                            } catch { setLicenseStatus({ valid: null, message: 'שגיאה בבדיקה', manual: true }) }
+                          }}
+                          style={{ padding: '9px 14px', borderRadius: 10, border: '1.5px solid #0F4C75', background: '#0F4C75', color: 'white', fontWeight: 700, fontSize: 13, cursor: 'pointer', fontFamily: 'inherit', whiteSpace: 'nowrap' }}>
+                          {licenseStatus === 'checking' ? '⏳ בודק...' : '🔍 אמת'}
+                        </button>
+                      </div>
+                      {licenseStatus && licenseStatus !== 'checking' && (
+                        <div style={{ marginTop: 6, padding: '6px 12px', borderRadius: 8, fontSize: 12, fontWeight: 600, background: licenseStatus.valid === true ? '#f0fdf4' : licenseStatus.valid === false ? '#fef2f2' : '#fffbeb', color: licenseStatus.valid === true ? '#15803d' : licenseStatus.valid === false ? '#dc2626' : '#92400e', border: `1px solid ${licenseStatus.valid === true ? '#bbf7d0' : licenseStatus.valid === false ? '#fecaca' : '#fcd34d'}` }}>
+                          {licenseStatus.valid === true ? '✓ ' : licenseStatus.valid === false ? '✗ ' : '⚠️ '}{licenseStatus.message}
+                        </div>
+                      )}
                     </div>
 
                     {/* מקצוע ראשי */}
