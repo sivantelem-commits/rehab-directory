@@ -42,6 +42,9 @@ function escapeXml(str) {
 export default async function handler(req, res) {
   if (req.method !== 'GET') return res.status(405).end()
 
+  // Cache ל-12 שעות ב-Vercel Edge + CDN — מונע פגיעה במכסת Supabase
+  res.setHeader('Cache-Control', 's-maxage=43200, stale-while-revalidate=86400')
+
   const [
     { data: rehabServices },
     { data: treatmentServices },
@@ -125,6 +128,5 @@ ${urls.join('')}
 </urlset>`
 
   res.setHeader('Content-Type', 'application/xml')
-  res.setHeader('Cache-Control', 's-maxage=3600, stale-while-revalidate')
   res.status(200).send(xml)
 }
