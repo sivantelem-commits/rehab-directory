@@ -251,6 +251,7 @@ export function BasketPanel() {
                       </div>
                     </div>
                     <button
+                      aria-label="הסר מהרשימה"
                       onClick={() => {
                         const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]')
                         const next = saved.filter(x => `${x.type || 'rehab'}_${x.id}` !== key)
