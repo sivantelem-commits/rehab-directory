@@ -1,6 +1,9 @@
-// pages/practitioner/[id].js
 import Head from 'next/head'
+import { createClient } from '@supabase/supabase-js'
 import { PRACTITIONER_COLOR as COLOR, PRACTITIONER_DARK as DARK } from '../../lib/practitioner-constants'
+import { SiteHeader, SiteFooter, CallToAction, NAV } from '../../components/Layout'
+
+const BASE_URL = 'https://rehabdirectoryil.vercel.app'
 
 const normalizePhotoUrl = (url) => {
   if (!url) return null
@@ -11,64 +14,156 @@ const normalizePhotoUrl = (url) => {
   return url
 }
 
+export async function getStaticPaths() {
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL,
+    process.env.SUPABASE_SERVICE_ROLE_KEY
+  )
+  const { data } = await supabase.from('practitioners').select('id').eq('status', 'approved')
+  return {
+    paths: (data || []).map(p => ({ params: { id: String(p.id) } })),
+    fallback: 'blocking',
+  }
+}
+
+export async function getStaticProps({ params }) {
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL,
+    process.env.SUPABASE_SERVICE_ROLE_KEY
+  )
+  const { data, error } = await supabase
+    .from('practitioners')
+    .select('*')
+    .eq('id', params.id)
+    .eq('status', 'approved')
+    .single()
+
+  if (error || !data) return { notFound: true }
+  return { props: { practitioner: data }, revalidate: 600 }
+}
+
 export default function PractitionerPage({ practitioner: raw }) {
   const p = raw ? { ...raw, photo_url: normalizePhotoUrl(raw.photo_url) } : null
   if (!p) return (
-    <div dir="rtl" style={{ textAlign: 'center', padding: '80px 24px', fontFamily: 'Arial' }}>
-      <div style={{ fontSize: 40, marginBottom: 16 }}>🔍</div>
+    <div dir="rtl" style={{ textAlign: 'center', padding: '80px 24px', fontFamily: "'Nunito', sans-serif" }}>
+      <div style={{ fontSize: 48, marginBottom: 16 }}>🔍</div>
       <h2 style={{ color: '#555' }}>המטפל/ת לא נמצא/ה</h2>
-      <a href="/treatment?tab=practitioners" style={{ color: COLOR }}>← חזרה למטפלים</a>
+      <a href="/practitioners" style={{ color: COLOR }}>← חזרה למטפלים</a>
     </div>
   )
+
+  const pageUrl  = `${BASE_URL}/practitioner/${p.id}`
+  const pageDesc = p.bio
+    ? p.bio.slice(0, 155)
+    : `${p.name} – ${p.profession || 'מטפל/ת מוסמך/ת'} ב${p.city || 'ישראל'}. ${p.treatment_types?.slice(0, 2).join(', ') || ''}`
+
+  const schema = {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': ['Person', 'MedicalBusiness'],
+        name: p.name,
+        description: p.bio || pageDesc,
+        url: pageUrl,
+        telephone: p.phone || undefined,
+        email: p.email || undefined,
+        address: p.city ? { '@type': 'PostalAddress', addressLocality: p.city, addressCountry: 'IL' } : undefined,
+        jobTitle: p.profession || undefined,
+        knowsAbout: p.specializations || undefined,
+        availableService: p.treatment_types?.map(t => ({ '@type': 'MedicalTherapy', name: t })),
+        image: p.photo_url || undefined,
+      },
+      {
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          { '@type': 'ListItem', position: 1, name: 'ראשי', item: BASE_URL },
+          { '@type': 'ListItem', position: 2, name: 'מטפלים פרטיים', item: `${BASE_URL}/practitioners` },
+          { '@type': 'ListItem', position: 3, name: p.name, item: pageUrl },
+        ],
+      },
+    ],
+  }
 
   return (
     <>
       <Head>
-        <title>{p.name} | מטפלים פרטיים</title>
-        <meta name="description" content={p.bio || `${p.name} – ${p.profession || 'מטפל/ת מוסמך/ת'}`} />
+        <title>{p.name} – {p.profession || 'מטפל/ת'} ב{p.city || 'ישראל'} | בריאות נפש בישראל</title>
+        <meta name="description" content={pageDesc} />
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href={pageUrl} />
+        <meta property="og:type" content="profile" />
+        <meta property="og:title" content={`${p.name} | מטפלים פרטיים`} />
+        <meta property="og:description" content={pageDesc} />
+        <meta property="og:url" content={pageUrl} />
+        {p.photo_url && <meta property="og:image" content={p.photo_url} />}
+        <meta property="og:locale" content="he_IL" />
+        <meta property="og:site_name" content="בריאות נפש בישראל" />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
       </Head>
-      <div dir="rtl" style={{ minHeight: '100vh', background: '#f0f7ff', fontFamily: "'Nunito','Arial',sans-serif" }}>
 
-        <div style={{ background: `linear-gradient(135deg,${DARK},${COLOR})`, padding: '16px 24px' }}>
-          <a href="/treatment?tab=practitioners" style={{ color: 'rgba(255,255,255,.8)', textDecoration: 'none', fontSize: 14, fontWeight: 700 }}>← חזרה למטפלים</a>
+      <div dir="rtl" style={{ minHeight: '100vh', background: '#f0f7ff', fontFamily: "'Nunito','Arial',sans-serif", position: 'relative' }}>
+
+        <SiteHeader currentPath="/practitioners" subtitle="מטפלים פרטיים" headerBg={DARK} />
+
+        {/* Breadcrumb */}
+        <div style={{ background: `linear-gradient(160deg, ${DARK}, ${COLOR})`, padding: '10px 20px', display: 'flex', alignItems: 'center', gap: 8 }}>
+          <a href="/practitioners" aria-label="חזרה לרשימת המטפלים"
+            style={{ background: 'rgba(255,255,255,0.15)', border: '1.5px solid rgba(255,255,255,0.3)', color: 'white', borderRadius: '999px', padding: '6px 14px', cursor: 'pointer', fontSize: 13, fontWeight: 600, textDecoration: 'none' }}>
+            ← חזרה למטפלים
+          </a>
+          <span style={{ color: 'rgba(255,255,255,0.5)', fontSize: 14 }}>←</span>
+          <span style={{ color: 'rgba(255,255,255,0.9)', fontSize: 13, fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{p.name}</span>
         </div>
 
-        <main style={{ maxWidth: 700, margin: '32px auto', padding: '0 16px' }}>
+        <main id="main-content" style={{ maxWidth: 720, margin: '0 auto', padding: '24px 16px' }}>
+
           <div style={{ background: 'white', borderRadius: 20, overflow: 'hidden', boxShadow: '0 4px 24px rgba(0,0,0,.08)', border: `1.5px solid ${p.is_verified ? '#bfdbfe' : '#e0eef8'}` }}>
 
-            {/* כותרת */}
-            <div style={{ background: `linear-gradient(135deg,${DARK},${COLOR})`, padding: '32px', color: 'white', display: 'flex', gap: 20, alignItems: 'center' }}>
-              <div style={{ width: 80, height: 80, borderRadius: '50%', flexShrink: 0, background: p.photo_url ? 'transparent' : 'rgba(255,255,255,.2)', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '3px solid rgba(255,255,255,.4)' }}>
+            {/* Header */}
+            <div style={{ background: `linear-gradient(135deg,${DARK},${COLOR})`, padding: 'clamp(20px,4vw,32px)', color: 'white', display: 'flex', gap: 'clamp(12px,3vw,20px)', alignItems: 'center', flexWrap: 'wrap' }}>
+              <div style={{ width: 'clamp(64px,15vw,80px)', height: 'clamp(64px,15vw,80px)', borderRadius: '50%', flexShrink: 0, background: p.photo_url ? 'transparent' : 'rgba(255,255,255,.2)', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '3px solid rgba(255,255,255,.4)' }}>
                 {p.photo_url
-                  ? <img src={p.photo_url} alt={p.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                  : <span style={{ fontSize: 36 }}>👤</span>}
+                  ? <img src={p.photo_url} alt={`תמונת פרופיל של ${p.name}`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  : <span style={{ fontSize: 'clamp(28px,8vw,36px)' }}>👤</span>}
               </div>
-              <div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
-                  <h1 style={{ margin: 0, fontSize: 24, fontWeight: 900 }}>{p.name}</h1>
-                  {p.is_verified && <span style={{ background: 'rgba(255,255,255,.25)', borderRadius: 20, padding: '3px 12px', fontSize: 12, fontWeight: 700 }}>✓ מאומת</span>}
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap', marginBottom: 4 }}>
+                  <h1 style={{ margin: 0, fontSize: 'clamp(20px,5vw,24px)', fontWeight: 900, lineHeight: 1.2 }}>{p.name}</h1>
+                  {p.is_verified && <span style={{ background: 'rgba(255,255,255,.25)', borderRadius: 20, padding: '3px 12px', fontSize: 12, fontWeight: 700, whiteSpace: 'nowrap' }}>✓ מאומת</span>}
                 </div>
-                {p.profession && <div style={{ opacity: .9, marginTop: 4, fontSize: 15 }}>{p.profession}</div>}
-                <div style={{ opacity: .75, fontSize: 13, marginTop: 4 }}>
-                  {p.city}
-                  {p.is_online && <span style={{ marginRight: 10 }}>· 🌐 אונליין</span>}
+                {p.profession && <div style={{ opacity: .9, fontSize: 'clamp(13px,3.5vw,15px)', marginBottom: 3 }}>{p.profession}</div>}
+                <div style={{ opacity: .75, fontSize: 13, display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+                  {p.city && <span>📍 {p.city}</span>}
+                  {p.is_online && <span>🌐 אונליין</span>}
+                  {p.price_range && <span>💰 ₪{p.price_range}/שעה</span>}
                 </div>
               </div>
             </div>
 
-            <div style={{ padding: '28px 32px' }}>
+            <div style={{ padding: 'clamp(20px,4vw,28px) clamp(16px,5vw,32px)' }}>
+
+              {/* ── CTA ── */}
+              <div style={{ marginBottom: 24 }}>
+                <CallToAction
+                  phone={p.phone}
+                  whatsapp={p.whatsapp_available}
+                  email={p.email}
+                  website={p.website}
+                  color={COLOR}
+                  name={p.name}
+                />
+              </div>
 
               {/* תגיות */}
-              <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginBottom: 24 }}>
-                {p.is_defense_ministry && <span style={{ background: '#ede9fe', color: '#6d28d9', borderRadius: 20, padding: '6px 16px', fontSize: 13, fontWeight: 700 }}>🎗️ ספק מאושר משרד הביטחון</span>}
-                {p.price_range         && <span style={{ background: '#fef3c7', color: '#92400e', borderRadius: 20, padding: '6px 16px', fontSize: 13, fontWeight: 700 }}>💰 ₪{p.price_range} לשעה</span>}
-                {p.languages?.length > 0 && <span style={{ background: '#f0fdf4', color: '#166534', borderRadius: 20, padding: '6px 16px', fontSize: 13, fontWeight: 700 }}>🗣️ {p.languages.join(', ')}</span>}
+              <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 20 }}>
+                {p.is_defense_ministry && <span style={{ background: '#ede9fe', color: '#6d28d9', borderRadius: 20, padding: '5px 14px', fontSize: 13, fontWeight: 700 }}>🎗️ ספק משה״ב</span>}
+                {p.languages?.length > 0 && <span style={{ background: '#f0fdf4', color: '#166534', borderRadius: 20, padding: '5px 14px', fontSize: 13, fontWeight: 700 }}>🗣️ {p.languages.join(', ')}</span>}
               </div>
 
               {/* ביו */}
               {p.bio && (
                 <div style={{ marginBottom: 24 }}>
-                  <h3 style={h3}>קצת עליי</h3>
+                  <h2 style={h2}>קצת עליי</h2>
                   <p style={{ color: '#334', lineHeight: 1.7, fontSize: 14, margin: 0 }}>{p.bio}</p>
                 </div>
               )}
@@ -76,7 +171,7 @@ export default function PractitionerPage({ practitioner: raw }) {
               {/* סוגי טיפול */}
               {p.treatment_types?.length > 0 && (
                 <div style={{ marginBottom: 20 }}>
-                  <h3 style={h3}>סוגי טיפול</h3>
+                  <h2 style={h2}>סוגי טיפול</h2>
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
                     {p.treatment_types.map(t => (
                       <span key={t} style={{ background: '#e0f0ff', color: COLOR, borderRadius: 20, padding: '5px 14px', fontSize: 13, fontWeight: 600 }}>{t}</span>
@@ -88,7 +183,7 @@ export default function PractitionerPage({ practitioner: raw }) {
               {/* התמחויות */}
               {p.specializations?.length > 0 && (
                 <div style={{ marginBottom: 20 }}>
-                  <h3 style={h3}>תחומי התמחות</h3>
+                  <h2 style={h2}>תחומי התמחות</h2>
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
                     {p.specializations.map(s => (
                       <span key={s} style={{ background: '#f5f3ff', color: '#6d28d9', borderRadius: 20, padding: '5px 14px', fontSize: 13, fontWeight: 600 }}>{s}</span>
@@ -100,7 +195,7 @@ export default function PractitionerPage({ practitioner: raw }) {
               {/* קופות חולים */}
               {p.health_funds?.length > 0 && (
                 <div style={{ marginBottom: 20 }}>
-                  <h3 style={h3}>קופות חולים</h3>
+                  <h2 style={h2}>קופות חולים</h2>
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
                     {p.health_funds.map(hf => (
                       <span key={hf} style={{ background: '#f0fdf4', color: '#059669', borderRadius: 20, padding: '5px 14px', fontSize: 13, fontWeight: 600 }}>🏥 {hf}</span>
@@ -109,67 +204,32 @@ export default function PractitionerPage({ practitioner: raw }) {
                 </div>
               )}
 
-              {/* רישיון */}
-              <div style={{ background: '#f8fafc', borderRadius: 12, padding: '14px 18px', marginBottom: 24, fontSize: 13, color: '#555' }}>
-                📜 מספר רישיון/תעודה: <strong style={{ color: '#333' }}>{p.license_number}</strong>
+              {/* מספר רישיון */}
+              {p.license_number && (
+                <div style={{ background: '#f8fafc', borderRadius: 12, padding: '12px 16px', marginBottom: 24, fontSize: 13, color: '#555', border: '1px solid #e2e8f0' }}>
+                  📜 מספר רישיון: <strong style={{ color: '#1A3A5C', fontSize: 15 }}>{p.license_number}</strong>
+                </div>
+              )}
+
+              {/* הערה */}
+              <div style={{ background: '#FFF8F0', border: '1.5px solid #FFD0A0', borderRadius: 12, padding: '12px 16px', fontSize: 13, color: '#7A4500', lineHeight: 1.7 }}>
+                <strong>שימו לב:</strong> המידע מסופק על ידי המטפל/ת ואינו מהווה המלצה רפואית. במצב חירום — פנו ל-<strong>1201</strong> או <strong>101</strong>.
               </div>
 
-              {/* קשר */}
-              <div style={{ borderTop: '1.5px solid #e0eef8', paddingTop: 24 }}>
-                <h3 style={h3}>יצירת קשר</h3>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                  {p.phone && (
-                    <a href={`tel:${p.phone}`} style={{ display: 'flex', alignItems: 'center', gap: 10, color: '#333', textDecoration: 'none', fontSize: 14 }}>
-                      <span style={iconCircle}>📞</span>{p.phone}
-                    </a>
-                  )}
-                  {p.whatsapp_available && p.phone && (
-                    <a href={`https://wa.me/972${p.phone.replace(/^0/, '').replace(/[-\s]/g, '')}`} target="_blank" rel="noopener noreferrer"
-                      style={{ display: 'inline-flex', alignItems: 'center', gap: 10, background: '#25D366', color: 'white', textDecoration: 'none', fontSize: 14, fontWeight: 700, padding: '10px 20px', borderRadius: 999, boxShadow: '0 3px 0 #1da851', transition: 'all .15s', alignSelf: 'flex-start' }}
-                      onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 5px 0 #1da851' }}
-                      onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 3px 0 #1da851' }}
-                    >
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-                      שלחו הודעה בוואטסאפ
-                    </a>
-                  )}
-                  {p.website && (
-                    <a href={p.website} target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center', gap: 10, color: COLOR, textDecoration: 'none', fontSize: 14, fontWeight: 600 }}>
-                      <span style={iconCircle}>🌐</span>לאתר האישי
-                    </a>
-                  )}
-                </div>
+              <div style={{ marginTop: 16, textAlign: 'center' }}>
+                <a href={`/contact?type=fix&serviceName=${encodeURIComponent(p.name)}`}
+                  style={{ background: 'none', border: 'none', color: '#aaa', fontSize: 12, cursor: 'pointer', fontFamily: "'Nunito', sans-serif", textDecoration: 'underline' }}>
+                  ⚠️ דווח על שגיאה או מידע לא עדכני
+                </a>
               </div>
             </div>
           </div>
         </main>
 
-        <footer style={{ background: `linear-gradient(135deg,${DARK},${COLOR})`, color: 'rgba(255,255,255,.75)', textAlign: 'center', padding: '24px', fontSize: 13, marginTop: 48 }}>
-          בריאות נפש בישראל © 2026
-        </footer>
+        <SiteFooter color={DARK} />
       </div>
     </>
   )
 }
 
-const h3       = { color: '#0F4C75', fontSize: 15, fontWeight: 800, marginBottom: 10, marginTop: 0 }
-const iconCircle = { background: '#e0f0ff', borderRadius: '50%', width: 36, height: 36, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }
-
-export async function getServerSideProps({ params }) {
-  try {
-    const { createClient } = require('@supabase/supabase-js')
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL,
-      process.env.SUPABASE_SERVICE_ROLE_KEY
-    )
-    const { data } = await supabase
-      .from('practitioners')
-      .select('*')
-      .eq('id', params.id)
-      .eq('status', 'approved')
-      .single()
-    return { props: { practitioner: data || null } }
-  } catch {
-    return { props: { practitioner: null } }
-  }
-}
+const h2 = { color: '#0F4C75', fontSize: 15, fontWeight: 800, marginBottom: 10, marginTop: 0 }
