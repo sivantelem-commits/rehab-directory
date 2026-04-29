@@ -114,7 +114,6 @@ export default function ServicePage({ initialService }) {
             }
           ]
         }) }} />
-        <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
       </Head>
 
       <div dir="rtl" style={{ fontFamily: "'Nunito', sans-serif", minHeight: '100vh', background: '#f7f0ff' }}>
@@ -176,23 +175,28 @@ export default function ServicePage({ initialService }) {
                 </div>
               )}
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 20 }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 20 }}>
                 {service.phone && (
-                  <a href={`tel:${service.phone}`} style={{ display: 'flex', alignItems: 'center', gap: 8, background: '#F0FFF4', border: '1.5px solid #A5D6A7', borderRadius: 14, padding: '12px 14px', textDecoration: 'none', color: '#2E7D32' }}>
-                    <span style={{ fontSize: 20 }}>📞</span>
-                    <div><div style={{ fontSize: 10, opacity: 0.7 }}>טלפון</div><div style={{ fontWeight: 700, fontSize: 13 }}>{service.phone}</div></div>
+                  <a href={`tel:${service.phone}`}
+                    aria-label={`התקשרו ל${service.name}: ${service.phone}`}
+                    style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, background: '#22c55e', color: 'white', textDecoration: 'none', fontWeight: 800, fontSize: 16, padding: '14px 24px', borderRadius: '999px', boxShadow: '0 4px 0 #16a34a', transition: 'all 0.15s' }}
+                    onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 6px 0 #16a34a' }}
+                    onMouseLeave={e => { e.currentTarget.style.transform = ''; e.currentTarget.style.boxShadow = '0 4px 0 #16a34a' }}>
+                    📞 התקשרו עכשיו — {service.phone}
                   </a>
                 )}
                 {service.email && (
-                  <a href={`mailto:${service.email}`} style={{ display: 'flex', alignItems: 'center', gap: 8, background: '#f7f0ff', border: '1.5px solid #d4b0f0', borderRadius: 14, padding: '12px 14px', textDecoration: 'none', color: '#4C0080' }}>
-                    <span style={{ fontSize: 20 }}>✉️</span>
-                    <div><div style={{ fontSize: 10, opacity: 0.7 }}>מייל</div><div style={{ fontWeight: 700, fontSize: 12, wordBreak: 'break-all' }}>{service.email}</div></div>
+                  <a href={`mailto:${service.email}`}
+                    aria-label={`שלחו מייל ל${service.name}`}
+                    style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, background: 'white', color: color, textDecoration: 'none', fontWeight: 600, fontSize: 14, padding: '11px 20px', borderRadius: '999px', border: `1.5px solid ${color}` }}>
+                    ✉️ {service.email}
                   </a>
                 )}
                 {service.website && (
-                  <a href={service.website} target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center', gap: 8, background: '#f7f0ff', border: '1.5px solid #d4b0f0', borderRadius: 14, padding: '12px 14px', textDecoration: 'none', color: '#4C0080', gridColumn: 'span 2' }}>
-                    <span style={{ fontSize: 20 }}>🌐</span>
-                    <div><div style={{ fontSize: 10, opacity: 0.7 }}>אתר אינטרנט</div><div style={{ fontWeight: 700, fontSize: 12, wordBreak: 'break-all' }}>{service.website}</div></div>
+                  <a href={service.website} target="_blank" rel="noopener noreferrer"
+                    aria-label={`אתר האינטרנט של ${service.name} (נפתח בחלון חדש)`}
+                    style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, background: '#f7f0ff', color, textDecoration: 'none', fontWeight: 600, fontSize: 14, padding: '11px 20px', borderRadius: '999px', border: `1.5px solid ${color}33` }}>
+                    🌐 לאתר האינטרנט
                   </a>
                 )}
               </div>
