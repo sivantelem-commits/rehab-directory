@@ -6,17 +6,12 @@ import {
   PRACTITIONER_CERTIFICATIONS,
   PRACTITIONER_SPECIALIZATIONS,
   HEALTH_FUNDS,
-  DISTRICTS,
   PRACTITIONER_COLOR as COLOR,
   PRACTITIONER_DARK  as DARK,
 } from '../lib/practitioner-constants'
+import { SiteHeader, SiteFooter } from '../components/Layout'
 
-const NAV = [
-  ['/', 'ראשי'], ['/rehab', 'שיקום'], ['/treatment', 'טיפול'],
-  ['/practitioners', 'מטפלים פרטיים'], ['/map', 'מפה'],
-  ['/register', 'הוספת שירות'], ['/about', 'אודות'],
-  ['/contact', 'צור קשר'], ['/admin', 'ניהול'],
-]
+const BASE_URL = 'https://rehabdirectoryil.vercel.app'
 
 const chip = (selected, color = COLOR) => ({
   padding: '6px 14px', borderRadius: 999, fontSize: 12, fontWeight: 700,
@@ -70,16 +65,20 @@ export default function Practitioners() {
   return (
     <>
       <Head>
-        <title>מטפלים פרטיים | מאגר בריאות הנפש</title>
-        <meta name="description" content="מאגר מטפלים פרטיים מוסמכים – פסיכולוגים, פסיכיאטרים, מטפלים רגשיים ועוד" />
+        <title>מטפלים פרטיים | בריאות נפש בישראל</title>
+        <meta name="description" content="מאגר מטפלים פרטיים מוסמכים – פסיכולוגים, פסיכיאטרים, מטפלים רגשיים ועוד. סינון לפי קופת חולים, סוג טיפול והתמחות." />
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href={`${BASE_URL}/practitioners`} />
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content="מטפלים פרטיים | בריאות נפש בישראל" />
+        <meta property="og:description" content="מאגר מטפלים פרטיים מוסמכים – פסיכולוגים, פסיכיאטרים, מטפלים רגשיים ועוד." />
+        <meta property="og:url" content={`${BASE_URL}/practitioners`} />
+        <meta property="og:locale" content="he_IL" />
+        <meta property="og:site_name" content="בריאות נפש בישראל" />
       </Head>
-      <div dir="rtl" style={{ minHeight: '100vh', background: '#f0f7ff', fontFamily: "'Nunito','Arial',sans-serif" }}>
+      <div dir="rtl" style={{ minHeight: '100vh', background: '#f0f7ff', fontFamily: "'Nunito','Arial',sans-serif", position: 'relative' }}>
 
-        <nav style={{ background: `linear-gradient(135deg,${DARK},${COLOR})`, padding: '0 24px', display: 'flex', alignItems: 'center', gap: 4, overflowX: 'auto', boxShadow: '0 2px 12px rgba(0,0,0,.15)', position: 'sticky', top: 0, zIndex: 100 }}>
-          {NAV.map(([href, label]) => (
-            <a key={href} href={href} style={{ color: 'rgba(255,255,255,.85)', textDecoration: 'none', padding: '16px 14px', fontSize: 13.5, fontWeight: 700, whiteSpace: 'nowrap', borderBottom: href === '/practitioners' ? '3px solid white' : '3px solid transparent' }}>{label}</a>
-          ))}
-        </nav>
+        <SiteHeader currentPath="/practitioners" subtitle="מטפלים פרטיים" headerBg={DARK} />
 
         <div style={{ background: `linear-gradient(135deg,${DARK},${COLOR})`, padding: '40px 24px 56px', textAlign: 'center', color: 'white' }}>
           <div style={{ fontSize: 44, marginBottom: 12 }}>🧠</div>
@@ -195,16 +194,7 @@ export default function Practitioners() {
           )}
         </main>
 
-        <footer style={{ background: `linear-gradient(135deg,${DARK},${COLOR})`, color: 'rgba(255,255,255,.75)', textAlign: 'center', padding: '24px', fontSize: 13, marginTop: 48, fontWeight: 500 }}>
-          <div style={{ marginBottom: 8 }}>
-            <a href="/contact" style={{ color: 'rgba(255,255,255,.7)', textDecoration: 'none' }}>צור קשר</a>
-            <span style={{ margin: '0 8px', opacity: .4 }}>·</span>
-            <a href="/legal" style={{ color: 'rgba(255,255,255,.7)', textDecoration: 'none' }}>תנאי שימוש</a>
-            <span style={{ margin: '0 8px', opacity: .4 }}>·</span>
-            <a href="/register" style={{ color: 'rgba(255,255,255,.7)', textDecoration: 'none' }}>הוספת מטפל/ת</a>
-          </div>
-          בריאות נפש בישראל © 2026
-        </footer>
+        <SiteFooter color={DARK} />
       </div>
     </>
   )
