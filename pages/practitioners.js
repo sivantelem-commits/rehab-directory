@@ -10,6 +10,7 @@ import {
   PRACTITIONER_DARK  as DARK,
 } from '../lib/practitioner-constants'
 import { SiteHeader, SiteFooter } from '../components/Layout'
+import { BasketPanel, BasketButton } from '../components/ServiceBasket'
 
 const BASE_URL = 'https://rehabdirectoryil.vercel.app'
 
@@ -165,7 +166,10 @@ export default function Practitioners() {
                           {p.is_verified         && <span style={{ background: '#dbeafe', color: '#1d4ed8', borderRadius: 20, padding: '2px 10px', fontSize: 11, fontWeight: 700 }}>✓ מאומת</span>}
                           {p.is_defense_ministry && <span style={{ background: '#ede9fe', color: '#6d28d9', borderRadius: 20, padding: '2px 8px', fontSize: 11, fontWeight: 700 }}>🎗️ מה"ב</span>}
                         </div>
-                        {p.profession && <span style={{ background: COLOR, color: 'white', borderRadius: 20, padding: '3px 12px', fontSize: 12, fontWeight: 700 }}>{p.profession}</span>}
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                          {p.profession && <span style={{ background: COLOR, color: 'white', borderRadius: 20, padding: '3px 12px', fontSize: 12, fontWeight: 700 }}>{p.profession}</span>}
+                          <BasketButton service={{ ...p, type: 'practitioner' }} />
+                        </div>
                       </div>
                       <div style={{ fontSize: 13, color: '#666', marginBottom: 8, display: 'flex', gap: 12, flexWrap: 'wrap' }}>
                         {p.city        && <span>📍 {p.city}</span>}
@@ -196,6 +200,7 @@ export default function Practitioners() {
 
         <SiteFooter color={DARK} />
       </div>
+      <BasketPanel />
     </>
   )
 }
