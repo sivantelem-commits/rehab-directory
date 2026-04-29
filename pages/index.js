@@ -62,7 +62,6 @@ export default function Home() {
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
-        <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
       </Head>
 
       <div dir="rtl" style={{
@@ -102,78 +101,69 @@ export default function Home() {
           {/* כותרת */}
           <div style={{ textAlign: 'center', marginBottom: 28, marginTop: 16 }}>
             <img src="/logo.png" alt="בריאות נפש בישראל" style={{ width: 'min(160px, 40vw)', height: 'min(160px, 40vw)', objectFit: 'contain', marginBottom: 8, mixBlendMode: 'multiply' }} />
-            <h1 style={{ fontSize: 'clamp(22px, 6vw, 32px)', fontWeight: 800, color: '#3d2a6e', margin: '0 0 10px', letterSpacing: '-0.3px' }}>
+            <h1 style={{ fontSize: 'clamp(22px, 6vw, 32px)', fontWeight: 800, color: '#3d2a6e', margin: '0 0 8px', letterSpacing: '-0.3px' }}>
               בריאות נפש בישראל
             </h1>
-            <p style={{ fontSize: 15, color: '#9b88bb', margin: '0 0 12px', fontWeight: 500 }}>
-              בחרו את סוג השירות שאתם מחפשים
+            <p style={{ fontSize: 15, color: '#6b5b8a', margin: '0 0 0', fontWeight: 600 }}>
+              מצאו שירות מתאים לפי הצורך שלכם
             </p>
-            <a
-              href="https://links.payboxapp.com/g9hdYBPr71b"
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{
-                display: 'inline-flex', alignItems: 'center', gap: 6,
-                padding: '7px 18px', borderRadius: '999px',
-                border: '1.5px solid #e0d0f0',
-                background: 'white', color: '#9b88bb',
-                fontSize: 12, fontWeight: 600, textDecoration: 'none',
-                fontFamily: "'Nunito', sans-serif",
-                transition: 'all 0.15s',
-              }}
-              onMouseEnter={e => { e.currentTarget.style.borderColor = '#a855f7'; e.currentTarget.style.color = '#7c3aed' }}
-              onMouseLeave={e => { e.currentTarget.style.borderColor = '#e0d0f0'; e.currentTarget.style.color = '#9b88bb' }}
-            >
-              💙 האתר חינמי — אפשר לתמוך
-            </a>
           </div>
 
-          {/* שני כפתורים ראשיים */}
-          <div style={{ display: 'flex', gap: 16, flexDirection: 'column', alignItems: 'center', width: '100%' }}>
+          {/* שלושה כפתורים ראשיים */}
+          <div style={{ display: 'flex', gap: 14, flexDirection: 'column', alignItems: 'center', width: '100%' }}>
 
-            {/* שיקום */}
-            <button onClick={() => router.push('/rehab')} style={{ width: '100%', height: 88, borderRadius: '999px', background: 'linear-gradient(160deg, #8B00D4, #4C0080)', border: 'none', color: 'white', cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 4, fontFamily: "'Nunito', sans-serif", boxShadow: '0 6px 0 #2E0060, 0 10px 24px rgba(76,0,128,0.3)', transition: 'transform 0.22s cubic-bezier(.34,1.56,.64,1), box-shadow 0.2s ease' }}
-              onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-5px)'; e.currentTarget.style.boxShadow = '0 10px 0 #2E0060, 0 18px 36px rgba(76,0,128,0.4)' }}
-              onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 6px 0 #2E0060, 0 10px 24px rgba(76,0,128,0.3)' }}
-              onMouseDown={e => e.currentTarget.style.transform = 'translateY(2px)'}
-              onMouseUp={e => e.currentTarget.style.transform = 'translateY(-5px)'}
-            >
-              <span style={{ fontSize: 18, fontWeight: 800 }}>שיקום</span>
-              <span style={{ fontSize: 11, fontWeight: 500, opacity: 0.8 }}>סל שיקום בקהילה</span>
+            {/* מחשבון — הכי בולט */}
+            <button aria-label="פתח מחשבון איתור שירות" onClick={() => router.push('/calculator')}
+              style={{ width: '100%', padding: '18px 24px', borderRadius: '999px', boxSizing: 'border-box', background: 'linear-gradient(160deg, #4C0080, #8B00D4)', border: 'none', color: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, fontFamily: "'Nunito', sans-serif", boxShadow: '0 6px 0 #2E0060, 0 10px 24px rgba(76,0,128,0.3)', transition: 'transform 0.22s cubic-bezier(.34,1.56,.64,1), box-shadow 0.2s ease' }}
+              onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-4px)'; e.currentTarget.style.boxShadow = '0 10px 0 #2E0060, 0 18px 36px rgba(76,0,128,0.4)' }}
+              onMouseLeave={e => { e.currentTarget.style.transform = ''; e.currentTarget.style.boxShadow = '0 6px 0 #2E0060, 0 10px 24px rgba(76,0,128,0.3)' }}>
+              <span style={{ fontSize: 22 }}>🧭</span>
+              <div style={{ textAlign: 'right' }}>
+                <div style={{ fontSize: 17, fontWeight: 800 }}>לא יודעים מאיפה להתחיל?</div>
+                <div style={{ fontSize: 12, opacity: 0.85, marginTop: 2 }}>מחשבון מותאם אישית ← כמה שאלות קצרות</div>
+              </div>
             </button>
 
-            {/* טיפול */}
-            <button onClick={() => router.push('/treatment')} style={{ width: '100%', height: 88, borderRadius: '999px', background: 'linear-gradient(160deg, #0891B2, #164E63)', border: 'none', color: 'white', cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 4, fontFamily: "'Nunito', sans-serif", boxShadow: '0 6px 0 #0A3040, 0 10px 24px rgba(22,78,99,0.3)', transition: 'transform 0.22s cubic-bezier(.34,1.56,.64,1), box-shadow 0.2s ease' }}
-              onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-5px)'; e.currentTarget.style.boxShadow = '0 10px 0 #0A3040, 0 18px 36px rgba(22,78,99,0.4)' }}
-              onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 6px 0 #0A3040, 0 10px 24px rgba(22,78,99,0.3)' }}
-              onMouseDown={e => e.currentTarget.style.transform = 'translateY(2px)'}
-              onMouseUp={e => e.currentTarget.style.transform = 'translateY(-5px)'}
-            >
-              <span style={{ fontSize: 18, fontWeight: 800 }}>טיפול</span>
-              <span style={{ fontSize: 11, fontWeight: 500, opacity: 0.8 }}>מרכזי טיפול, מרפאות ומטפלים פרטיים</span>
-            </button>
-
-          </div>
-
-          {/* מפריד */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12, margin: '36px 0 28px', width: '100%', boxSizing: 'border-box' }}>
-            <div style={{ flex: 1, height: 1, background: '#ddd6f3' }} />
-            <span style={{ fontSize: 13, color: '#9b88bb', fontWeight: 600, whiteSpace: 'nowrap' }}>לא יודעים מאיפה להתחיל?</span>
-            <div style={{ flex: 1, height: 1, background: '#ddd6f3' }} />
-          </div>
-
-          {/* כפתור מחשבון */}
-          <button aria-label="פתח מחשבון איתור שירות" onClick={() => router.push('/calculator')} style={{ width: '100%', padding: '18px 24px', borderRadius: '999px', boxSizing: 'border-box', background: 'white', border: '2px solid #e9d5ff', color: '#4C0080', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, fontFamily: "'Nunito', sans-serif", boxShadow: '0 4px 16px rgba(76,0,128,0.08)', transition: 'all 0.2s ease' }}
-            onMouseEnter={e => { e.currentTarget.style.background = '#faf5ff'; e.currentTarget.style.borderColor = '#a855f7'; e.currentTarget.style.boxShadow = '0 6px 20px rgba(76,0,128,0.15)'; e.currentTarget.style.transform = 'translateY(-2px)' }}
-            onMouseLeave={e => { e.currentTarget.style.background = 'white'; e.currentTarget.style.borderColor = '#e9d5ff'; e.currentTarget.style.boxShadow = '0 4px 16px rgba(76,0,128,0.08)'; e.currentTarget.style.transform = 'translateY(0)' }}
-          >
-            <span style={{ fontSize: 22 }}>🧭</span>
-            <div style={{ textAlign: 'right' }}>
-              <div style={{ fontSize: 16, fontWeight: 800 }}>מחשבון איתור שירות</div>
-              <div style={{ fontSize: 12, fontWeight: 500, color: '#9b88bb', marginTop: 2 }}>כמה שאלות קצרות – וקבל המלצה מותאמת אישית</div>
+            {/* מפריד */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10, width: '100%' }}>
+              <div style={{ flex: 1, height: 1, background: '#ddd6f3' }} />
+              <span style={{ fontSize: 12, color: '#9b88bb', fontWeight: 600, whiteSpace: 'nowrap' }}>או בחרו ישירות</span>
+              <div style={{ flex: 1, height: 1, background: '#ddd6f3' }} />
             </div>
-            <span style={{ marginRight: 'auto', fontSize: 18, color: '#a855f7' }}>←</span>
-          </button>
+
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, width: '100%' }}>
+              {/* שיקום */}
+              <button onClick={() => router.push('/rehab')}
+                aria-label="שיקום — סל שיקום בקהילה"
+                style={{ height: 80, borderRadius: 20, background: 'linear-gradient(160deg, #8B00D4, #4C0080)', border: 'none', color: 'white', cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 4, fontFamily: "'Nunito', sans-serif", boxShadow: '0 4px 0 #2E0060', transition: 'transform 0.2s, box-shadow 0.2s' }}
+                onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 7px 0 #2E0060' }}
+                onMouseLeave={e => { e.currentTarget.style.transform = ''; e.currentTarget.style.boxShadow = '0 4px 0 #2E0060' }}>
+                <span style={{ fontSize: 16, fontWeight: 800 }}>♿ שיקום</span>
+                <span style={{ fontSize: 10, opacity: 0.8 }}>סל שיקום בקהילה</span>
+              </button>
+
+              {/* טיפול */}
+              <button onClick={() => router.push('/treatment')}
+                aria-label="טיפול — מרכזי טיפול ומרפאות"
+                style={{ height: 80, borderRadius: 20, background: 'linear-gradient(160deg, #0891B2, #164E63)', border: 'none', color: 'white', cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 4, fontFamily: "'Nunito', sans-serif", boxShadow: '0 4px 0 #0A3040', transition: 'transform 0.2s, box-shadow 0.2s' }}
+                onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 7px 0 #0A3040' }}
+                onMouseLeave={e => { e.currentTarget.style.transform = ''; e.currentTarget.style.boxShadow = '0 4px 0 #0A3040' }}>
+                <span style={{ fontSize: 16, fontWeight: 800 }}>🏥 טיפול</span>
+                <span style={{ fontSize: 10, opacity: 0.8 }}>מרכזים ומרפאות</span>
+              </button>
+            </div>
+
+            {/* מטפלים פרטיים — כפתור נפרד */}
+            <button onClick={() => router.push('/practitioners')}
+              aria-label="מטפלים פרטיים — פסיכולוגים, פסיכיאטרים ומטפלים"
+              style={{ width: '100%', height: 72, borderRadius: 20, background: 'linear-gradient(160deg, #0F4C75, #082840)', border: 'none', color: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, fontFamily: "'Nunito', sans-serif", boxShadow: '0 4px 0 #041820', transition: 'transform 0.2s, box-shadow 0.2s' }}
+              onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 7px 0 #041820' }}
+              onMouseLeave={e => { e.currentTarget.style.transform = ''; e.currentTarget.style.boxShadow = '0 4px 0 #041820' }}>
+              <span style={{ fontSize: 16, fontWeight: 800 }}>🧠 מטפלים פרטיים</span>
+              <span style={{ fontSize: 11, opacity: 0.8 }}>פסיכולוגים, פסיכיאטרים ומטפלים</span>
+            </button>
+
+          </div>
 
           {/* אינדיקטור חיות + הערת מאגר */}
           <div style={{ marginTop: 28, width: '100%', padding: '14px 18px', boxSizing: 'border-box', background: 'rgba(255,255,255,0.6)', borderRadius: 14, border: '1px solid #e9d5ff' }}>
@@ -233,15 +223,21 @@ export default function Home() {
         </div>
 
         {/* קישורים תחתונים */}
-        <div style={{ display: 'flex', gap: 16, marginTop: 24, justifyContent: 'center', flexWrap: 'wrap' }}>
+        <div style={{ display: 'flex', gap: 16, marginTop: 20, justifyContent: 'center', flexWrap: 'wrap' }}>
           {[
             ['/about', 'אודות'],
             ['/contact', 'צור קשר'],
             ['/legal', 'תנאי שימוש'],
             ['/accessibility', 'הצהרת נגישות'],
           ].map(([href, label]) => (
-            <a key={href} href={href} style={{ fontSize: 13, fontWeight: 600, color: '#9b88bb', textDecoration: 'none', padding: '4px 0' }}>{label}</a>
+            <a key={href} href={href} style={{ fontSize: 13, fontWeight: 600, color: '#6b5b8a', textDecoration: 'none', padding: '4px 0' }}>{label}</a>
           ))}
+        </div>
+        <div style={{ textAlign: 'center', marginTop: 16 }}>
+          <a href="https://links.payboxapp.com/g9hdYBPr71b" target="_blank" rel="noopener noreferrer"
+            style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '7px 18px', borderRadius: '999px', border: '1.5px solid #c4a8e0', background: 'white', color: '#6b2fa0', fontSize: 12, fontWeight: 700, textDecoration: 'none' }}>
+            💙 האתר חינמי — אפשר לתמוך
+          </a>
         </div>
 
       </div>
