@@ -76,8 +76,21 @@ export default function Rehab() {
     if (router.isReady) {
       if (router.query.district) setDistrict(router.query.district)
       if (router.query.category) setCategory(router.query.category)
+      if (router.query.subcategory) setSubcategory(router.query.subcategory)
+      if (router.query.q) setSearch(router.query.q)
     }
   }, [router.isReady, router.query])
+
+  // סינכרון URL עם פילטרים — מאפשר שיתוף קישור
+  useEffect(() => {
+    if (!mounted) return
+    const q = {}
+    if (district !== 'הכל') q.district = district
+    if (category !== 'הכל') q.category = category
+    if (subcategory !== 'הכל') q.subcategory = subcategory
+    if (debouncedSearch) q.q = debouncedSearch
+    router.replace({ pathname: '/rehab', query: q }, undefined, { shallow: true })
+  }, [district, category, subcategory, debouncedSearch, mounted])
 
   useEffect(() => {
     const handleScroll = () => setShowTop(window.scrollY > 200)
@@ -162,7 +175,6 @@ export default function Rehab() {
           audience: { '@type': 'Patient' },
           isPartOf: { '@type': 'WebSite', name: 'בריאות נפש בישראל', url: 'https://rehabdirectoryil.vercel.app' },
         })}} />
-        <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
       </Head>
 
       <div dir="rtl" style={{ fontFamily: "'Nunito', sans-serif", minHeight: '100vh', background: '#f7f0ff' }}>
@@ -393,13 +405,14 @@ export default function Rehab() {
               {Array.from({ length: 9 }).map((_, i) => <SkeletonCard key={i} />)}
             </div>
           ) : services.length === 0 ? (
-            <div style={{ textAlign: 'center', padding: 64, color: '#aaa' }}>
-              <div style={{ fontSize: 48, marginBottom: 12 }}>🔍</div>
-              <div style={{ fontWeight: 700, fontSize: 18, marginBottom: 8, color: '#555' }}>לא נמצאו שירותים</div>
-              <button onClick={clearAll} style={{
+            <div style={{ textAlign: 'center', padding: '64px 24px', color: '#aaa' }}>
+              <div style={{ fontSize: 52, marginBottom: 14 }}>🔍</div>
+              <div style={{ fontWeight: 800, fontSize: 20, marginBottom: 8, color: '#555' }}>לא נמצאו שירותים</div>
+              <div style={{ fontSize: 14, color: '#aaa', marginBottom: 24 }}>נסו לשנות את הפילטרים או לחפש מחדש</div>
+              <button onClick={clearAll} aria-label="נקה את כל הפילטרים" style={{
                 background: 'linear-gradient(160deg, #8B00D4, #4C0080)', color: 'white', border: 'none',
-                borderRadius: '999px', padding: '11px 28px', fontWeight: 700, fontSize: 14, cursor: 'pointer',
-                fontFamily: "'Nunito', sans-serif", boxShadow: '0 4px 0 #2E0060, 0 8px 20px rgba(76,0,128,0.3)',
+                borderRadius: '999px', padding: '12px 28px', fontWeight: 700, fontSize: 14, cursor: 'pointer',
+                fontFamily: "'Nunito', sans-serif",
               }}>נקה פילטרים</button>
             </div>
           ) : (
