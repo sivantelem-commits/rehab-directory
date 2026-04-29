@@ -36,8 +36,12 @@ export default function Home() {
         .then(r => r.ok ? r.json() : null)
         .then(data => { if (data) setVisitors(data.total) })
         .catch(() => {})
-    ping()
-    const interval = setInterval(ping, 30000)
+
+    ping() // פינג אחד בטעינה
+    // עדכון כל 5 דקות בלבד (ולא כשהדף מוסתר)
+    const interval = setInterval(() => {
+      if (!document.hidden) ping()
+    }, 300000)
     return () => clearInterval(interval)
   }, [])
 
