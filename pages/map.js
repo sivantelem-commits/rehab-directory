@@ -2,7 +2,6 @@ import { useEffect, useState, useRef } from 'react'
 import Head from 'next/head'
 import { BasketPanel, BasketButton } from '../components/ServiceBasket'
 
-// ─── צבעים ───────────────────────────────────────────────
 const REHAB_COLORS = {
   'דיור': '#2E0060', 'תעסוקה': '#6A0099', 'השכלה': '#9B00CC',
   'חברה ופנאי': '#5E35B1', 'ליווי ותמיכה': '#CE66F0',
@@ -47,7 +46,6 @@ const TABS = [
   { key: 'practitioner', label: 'מטפלים פרטיים',  icon: '🧠', color: PRACT_COLOR, lightBg: '#e8f2f8', textColor: PRACT_COLOR, badgeBg: '#d8eaf5' },
 ]
 
-// ─── SVG עוגה לסמני שיקום ────────────────────────────────
 function buildPieSVG(colors, size) {
   const r = size / 2
   const n = colors.length
@@ -106,6 +104,24 @@ function applySpiral(services) {
     })
   })
   return result
+}
+
+// ── קואורדינטות מטפל: lat/lng ישיר → fallback עיר ──
+function getPractCoords(p, placed) {
+  if (p.lat && p.lng) return [p.lat, p.lng]
+  if (!p.city || !CITY_COORDS[p.city]) return null
+  const base = CITY_COORDS[p.city]
+  placed[p.city] = (placed[p.city] || 0) + 1
+  const n = placed[p.city]
+  const angle = (n - 1) * 2.4
+  const r = n === 1 ? 0 : 0.004
+  return [base[0] + r * Math.cos(angle), base[1] + r * Math.sin(angle)]
+}
+
+function getPractCoordsStatic(item) {
+  if (item.lat && item.lng) return [item.lat, item.lng]
+  if (item.city && CITY_COORDS[item.city]) return CITY_COORDS[item.city]
+  return null
 }
 
 export default function MapPage() {
@@ -261,20 +277,17 @@ export default function MapPage() {
       markersRef.current.push(marker)
     })
 
+    // ── מטפלים: lat/lng ישיר → fallback עיר ──
     if (showPractitioners) {
       const placed = {}
       practitioners
-        .filter(p => p.city && CITY_COORDS[p.city])
+        .filter(p => p.lat || (p.city && CITY_COORDS[p.city]))
         .filter(p => matchesGlobal(p) && matchesPractFilter(p))
         .filter(p => !searchText || [p.name, p.city, p.profession].some(f => f?.toLowerCase().includes(searchText.toLowerCase())))
         .forEach(p => {
-          const base = CITY_COORDS[p.city]
-          placed[p.city] = (placed[p.city] || 0) + 1
-          const n = placed[p.city]
-          const angle = (n - 1) * 2.4
-          const r = n === 1 ? 0 : 0.004
-          const lat = base[0] + r * Math.cos(angle)
-          const lng = base[1] + r * Math.sin(angle)
+          const coords = getPractCoords(p, placed)
+          if (!coords) return
+          const [lat, lng] = coords
           const icon = L.divIcon({
             html: `<div style="width:14px;height:14px;border-radius:50% 50% 50% 0;background:${PRACT_COLOR};transform:rotate(-45deg);border:2px solid white;box-shadow:0 2px 6px rgba(0,0,0,0.35)"></div>`,
             className: '', iconSize: [14,14], iconAnchor: [7,14],
@@ -293,7 +306,6 @@ export default function MapPage() {
 
   if (!mounted) return null
 
-  // ─── ספירות ─────────────────────────────────────────────
   const filteredRehab = rehabServices.filter(s =>
     (rehabCategory === 'הכל' || s.category === rehabCategory || (s.categories || []).includes(rehabCategory)) &&
     (rehabSubcategory === 'הכל' || s.subcategory === rehabSubcategory) &&
@@ -309,8 +321,9 @@ export default function MapPage() {
     (!ageGroup || (s.age_groups || []).includes(ageGroup)) &&
     (!searchText || [s.name, s.description, s.city, s.category].some(f => f?.toLowerCase().includes(searchText.toLowerCase())))
   )
+  // תיקון: כולל מטפלים עם lat/lng ישיר גם אם העיר לא ברשימה
   const filteredPract = practitioners.filter(p =>
-    p.city && CITY_COORDS[p.city] &&
+    (p.lat || (p.city && CITY_COORDS[p.city])) &&
     (practTreatmentType === 'הכל' || (p.treatment_types || []).includes(practTreatmentType)) &&
     (!ageGroup || (p.age_groups || []).includes(ageGroup)) &&
     (!searchText || [p.name, p.city, p.profession].some(f => f?.toLowerCase().includes(searchText.toLowerCase())))
@@ -331,8 +344,7 @@ export default function MapPage() {
     fontSize: 12, fontWeight: 600,
     cursor: 'pointer', whiteSpace: 'nowrap',
     fontFamily: "'Nunito', sans-serif",
-    transition: 'all 0.12s',
-    flexShrink: 0,
+    transition: 'all 0.12s', flexShrink: 0,
   })
 
   const layerBtnStyle = (active, color, bg) => ({
@@ -359,7 +371,6 @@ export default function MapPage() {
         <meta property="og:url" content="https://rehabdirectoryil.vercel.app/map" />
         <meta property="og:locale" content="he_IL" />
         <meta property="og:site_name" content="בריאות נפש בישראל" />
-        <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
       </Head>
 
       <div dir="rtl" style={{ fontFamily: "'Nunito', sans-serif", height: '100vh', background: '#f5f5f5', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
@@ -369,7 +380,6 @@ export default function MapPage() {
           דלג לתוכן הראשי
         </a>
 
-        {/* ── Header ── */}
         {isMobile ? (
           <>
             <header style={{ background:'#1A3A5C', color:'white', padding:'7px 12px', display:'flex', alignItems:'center', justifyContent:'space-between', flexShrink:0, position:'relative', zIndex:1000 }}>
@@ -379,7 +389,7 @@ export default function MapPage() {
               </div>
               <div style={{ display:'flex', gap:8, alignItems:'center' }}>
                 <a href="/calculator" style={{ background:'rgba(255,255,200,0.2)', border:'1px solid rgba(255,255,150,0.4)', color:'white', borderRadius:'999px', padding:'5px 10px', fontWeight:700, fontSize:11, textDecoration:'none' }}>🧭 מסלול</a>
-                <button onClick={() => setNavOpen(v => !v)} style={{ background:'rgba(255,255,255,0.15)', border:'1px solid rgba(255,255,255,0.3)', color:'white', borderRadius:8, padding:'5px 10px', fontSize:16, cursor:'pointer', lineHeight:1 }}>
+                <button onClick={() => setNavOpen(v => !v)} aria-label={navOpen ? 'סגור תפריט' : 'פתח תפריט'} style={{ background:'rgba(255,255,255,0.15)', border:'1px solid rgba(255,255,255,0.3)', color:'white', borderRadius:8, padding:'5px 10px', fontSize:16, cursor:'pointer', lineHeight:1 }}>
                   {navOpen ? '✕' : '☰'}
                 </button>
               </div>
@@ -414,15 +424,13 @@ export default function MapPage() {
           </header>
         )}
 
-        {/* ── Filter bar ── */}
         {isMobile ? (
-          // מובייל: שורה אחת — חיפוש + אזור
           <div style={{ background:'white', borderBottom:'1px solid #e8e8e8', padding:'6px 12px', display:'flex', gap:8, alignItems:'center', flexShrink:0 }}>
             <div style={{ position:'relative', flex:1 }}>
               <span style={{ position:'absolute', right:9, top:'50%', transform:'translateY(-50%)', fontSize:12, color:'#bbb', pointerEvents:'none' }}>🔍</span>
               <input type="text" placeholder="חיפוש שירות או עיר..." value={searchText} onChange={e => setSearchText(e.target.value)}
                 style={{ padding:'8px 28px 8px 8px', borderRadius:'999px', border:`1.5px solid ${searchText ? '#8B00D4':'#e0e0e0'}`, fontSize:13, fontFamily:"'Nunito', sans-serif", outline:'none', width:'100%', direction:'rtl', background: searchText ? '#fdf8ff':'#f8f8f8', boxSizing:'border-box' }} />
-              {searchText && <button onClick={() => setSearchText('')} style={{ position:'absolute', left:8, top:'50%', transform:'translateY(-50%)', background:'none', border:'none', cursor:'pointer', fontSize:12, color:'#aaa', padding:0 }}>✕</button>}
+              {searchText && <button onClick={() => setSearchText('')} aria-label="נקה חיפוש" style={{ position:'absolute', left:8, top:'50%', transform:'translateY(-50%)', background:'none', border:'none', cursor:'pointer', fontSize:12, color:'#aaa', padding:0 }}>✕</button>}
             </div>
             <select value={district} onChange={e => setDistrict(e.target.value)}
               style={{ padding:'7px 8px', borderRadius:'999px', border:'1.5px solid #e0e0e0', fontSize:12, background:'#f8f8f8', cursor:'pointer', outline:'none', flexShrink:0 }}>
@@ -435,7 +443,7 @@ export default function MapPage() {
               <span style={{ position:'absolute', right:10, top:'50%', transform:'translateY(-50%)', fontSize:13, color:'#aaa', pointerEvents:'none' }}>🔍</span>
               <input type="text" placeholder="חיפוש..." value={searchText} onChange={e => setSearchText(e.target.value)}
                 style={{ padding:'7px 30px 7px 10px', borderRadius:'999px', border:`1.5px solid ${searchText ? '#8B00D4':'#ddd'}`, fontSize:13, fontFamily:"'Nunito', sans-serif", outline:'none', width:200, direction:'rtl', background: searchText ? '#fdf8ff':'white' }} />
-              {searchText && <button onClick={() => setSearchText('')} style={{ position:'absolute', left:8, top:'50%', transform:'translateY(-50%)', background:'none', border:'none', cursor:'pointer', fontSize:13, color:'#aaa', padding:0 }}>✕</button>}
+              {searchText && <button onClick={() => setSearchText('')} aria-label="נקה חיפוש" style={{ position:'absolute', left:8, top:'50%', transform:'translateY(-50%)', background:'none', border:'none', cursor:'pointer', fontSize:13, color:'#aaa', padding:0 }}>✕</button>}
             </div>
             <div style={{ position:'relative' }}>
               <span style={{ position:'absolute', right:10, top:'50%', transform:'translateY(-50%)', fontSize:13, color:'#aaa', pointerEvents:'none' }}>📍</span>
@@ -482,10 +490,8 @@ export default function MapPage() {
           </div>
         )}
 
-        {/* ── Main content ── */}
         <div id="main-content" style={{ flex:1, display:'flex', flexDirection:'column', overflow:'hidden', minHeight:0 }}>
 
-          {/* Map — גובה קבוע במובייל, flex:1 בדסקטופ */}
           <div style={{ flexShrink:0, height: isMobile ? '40vh' : 'auto', flex: isMobile ? 'none' : 1, position:'relative', minHeight:0 }}>
             <div id="main-map" style={{ position:'absolute', inset:0 }} />
 
@@ -530,7 +536,7 @@ export default function MapPage() {
                   </div>
                   <div style={{ display:'flex', alignItems:'center', gap:6, flexShrink:0 }}>
                     <BasketButton service={selected} />
-                    <button onClick={() => setSelected(null)} style={{ background:'none', border:'none', fontSize:18, cursor:'pointer', color:'#aaa', padding:0 }}>✕</button>
+                    <button onClick={() => setSelected(null)} aria-label="סגור" style={{ background:'none', border:'none', fontSize:18, cursor:'pointer', color:'#aaa', padding:0 }}>✕</button>
                   </div>
                 </div>
                 {selected.type === 'practitioner' ? (
@@ -549,39 +555,31 @@ export default function MapPage() {
               </div>
             )}
           </div>
-          {/* סוף map div */}
 
-          {/* ══════════════ DRAWER ══════════════ */}
           <div style={{
-            background: 'white',
-            borderTop: '1px solid #e8e8e8',
+            background: 'white', borderTop: '1px solid #e8e8e8',
             borderRadius: isMobile ? '12px 12px 0 0' : 0,
             boxShadow: '0 -2px 12px rgba(0,0,0,0.07)',
-            flexShrink: isMobile ? 0 : 0,
-            flex: isMobile ? 1 : 'none',
-            display: 'flex',
-            flexDirection: 'column',
+            flexShrink: 0, flex: isMobile ? 1 : 'none',
+            display: 'flex', flexDirection: 'column',
             height: isMobile ? 'auto' : (drawerOpen ? DRAWER_HEIGHT : '44px'),
             minHeight: isMobile ? 0 : 'auto',
             transition: isMobile ? 'none' : 'height 0.25s cubic-bezier(0.32,0.72,0,1)',
-            overflow: 'hidden',
-            zIndex: 300,
+            overflow: 'hidden', zIndex: 300,
           }}>
 
-            {/* Drag handle — דסקטופ בלבד */}
             {!isMobile && (
-            <div onClick={() => setDrawerOpen(v => !v)}
-              style={{ display:'flex', justifyContent:'center', alignItems:'center', padding:'6px 0 4px', cursor:'pointer', flexShrink:0 }}>
-              <div style={{ width:36, height:4, background:'#ddd', borderRadius:999 }} />
-              {!drawerOpen && (
-                <span style={{ marginRight:10, fontSize:12, color:'#888', fontWeight:600 }}>
-                  ▲ {counts.rehab + counts.treatment + counts.practitioner} תוצאות
-                </span>
-              )}
-            </div>
+              <div onClick={() => setDrawerOpen(v => !v)}
+                style={{ display:'flex', justifyContent:'center', alignItems:'center', padding:'6px 0 4px', cursor:'pointer', flexShrink:0 }}>
+                <div style={{ width:36, height:4, background:'#ddd', borderRadius:999 }} />
+                {!drawerOpen && (
+                  <span style={{ marginRight:10, fontSize:12, color:'#888', fontWeight:600 }}>
+                    ▲ {counts.rehab + counts.treatment + counts.practitioner} תוצאות
+                  </span>
+                )}
+              </div>
             )}
 
-            {/* Tab headers */}
             <div style={{ display:'flex', borderBottom:'1px solid #f0f0f0', flexShrink:0 }}>
               {TABS.map(tab => {
                 const isActive = activeTab === tab.key
@@ -592,26 +590,19 @@ export default function MapPage() {
                       flex:1, padding:'8px 4px',
                       display:'flex', alignItems:'center', justifyContent:'center', gap:5,
                       background: isActive ? tab.lightBg : 'white',
-                      border:'none',
-                      borderBottom:`2.5px solid ${isActive ? tab.color : 'transparent'}`,
+                      border:'none', borderBottom:`2.5px solid ${isActive ? tab.color : 'transparent'}`,
                       color: isActive ? tab.color : '#999',
                       fontWeight:700, fontSize: isMobile ? 11 : 13,
-                      cursor:'pointer', fontFamily:"'Nunito', sans-serif",
-                      transition:'all 0.15s',
+                      cursor:'pointer', fontFamily:"'Nunito', sans-serif", transition:'all 0.15s',
                     }}>
                     {tab.icon}
                     {isMobile ? tab.label.split(' ')[0] : tab.label}
-                    <span style={{
-                      background: isActive ? tab.badgeBg : '#f0f0f0',
-                      color: isActive ? tab.textColor : '#bbb',
-                      borderRadius:999, padding:'1px 6px', fontSize:10, fontWeight:700,
-                    }}>{counts[tab.key]}</span>
+                    <span style={{ background: isActive ? tab.badgeBg : '#f0f0f0', color: isActive ? tab.textColor : '#bbb', borderRadius:999, padding:'1px 6px', fontSize:10, fontWeight:700 }}>{counts[tab.key]}</span>
                   </button>
                 )
               })}
             </div>
 
-            {/* Tab bodies */}
             {TABS.map(tab => {
               if (activeTab !== tab.key) return null
 
@@ -639,68 +630,40 @@ export default function MapPage() {
 
               return (
                 <div key={tab.key} style={{ flex:1, display:'flex', flexDirection:'column', overflow:'hidden' }}>
-
-                  {/* Category chips */}
                   <div style={{ padding:'7px 14px 0', display:'flex', gap:6, overflowX:'auto', flexShrink:0, scrollbarWidth:'none', msOverflowStyle:'none' }}>
                     {chips.map(c => (
-                      <button key={c} onClick={() => onChipClick(c)} style={chipStyle(activeChip === c, tab.color)}>
-                        {c}
-                      </button>
+                      <button key={c} onClick={() => onChipClick(c)} style={chipStyle(activeChip === c, tab.color)}>{c}</button>
                     ))}
                   </div>
 
-                  {/* Sub-category chips (שיקום בלבד) */}
                   {rehabSubs.length > 0 && (
                     <div style={{ padding:'5px 14px 0', display:'flex', gap:5, overflowX:'auto', flexShrink:0, scrollbarWidth:'none' }}>
                       {['הכל', ...rehabSubs].map(s => (
                         <button key={s} onClick={() => setRehabSubcategory(s)}
-                          style={{ ...chipStyle(rehabSubcategory === s, '#4C0080'), fontSize:11, padding:'3px 9px' }}>
-                          {s}
-                        </button>
+                          style={{ ...chipStyle(rehabSubcategory === s, '#4C0080'), fontSize:11, padding:'3px 9px' }}>{s}</button>
                       ))}
                     </div>
                   )}
 
-                  {/* Result cards */}
                   {isMobile ? (
                     <div style={{ flex:1, overflowY:'auto', overflowX:'hidden', padding:'6px 12px 16px' }}>
                       {items.length === 0 ? (
-                        <div style={{ fontSize:13, color:'#ccc', padding:'16px 0', textAlign:'center' }}>
-                          אין תוצאות לפילטר הנוכחי
-                        </div>
+                        <div style={{ fontSize:13, color:'#ccc', padding:'16px 0', textAlign:'center' }}>אין תוצאות לפילטר הנוכחי</div>
                       ) : items.slice(0, 60).map(item => {
                         const isSelected = selected?.id === item.id && selected?.type === tab.key
                         const color = tab.key === 'rehab' ? (REHAB_COLORS[item.category] || tab.color)
-                          : tab.key === 'treatment' ? (TREATMENT_COLORS[item.category] || tab.color)
-                          : tab.color
-                        const coords = tab.key === 'practitioner' && item.city ? CITY_COORDS[item.city]
+                          : tab.key === 'treatment' ? (TREATMENT_COLORS[item.category] || tab.color) : tab.color
+                        const coords = tab.key === 'practitioner'
+                          ? getPractCoordsStatic(item)
                           : (item.lat ? [item.lat, item.lng] : null)
                         return (
                           <div key={item.id + tab.key}
-                            onClick={() => {
-                              setSelected({ ...item, type: tab.key })
-                              if (coords && mapRef.current) mapRef.current.flyTo(coords, 14, { duration:0.6 })
-                            }}
-                            style={{
-                              display: 'flex', alignItems: 'center', gap: 10,
-                              padding: '9px 10px',
-                              marginBottom: 6,
-                              background: isSelected ? tab.lightBg : 'white',
-                              border: `1px solid ${isSelected ? tab.color : '#eaeaea'}`,
-                              borderRight: `4px solid ${isSelected ? tab.color : color}`,
-                              borderRadius: 10,
-                              cursor: 'pointer',
-                            }}>
+                            onClick={() => { setSelected({ ...item, type: tab.key }); if (coords && mapRef.current) mapRef.current.flyTo(coords, 14, { duration:0.6 }) }}
+                            style={{ display:'flex', alignItems:'center', gap:10, padding:'9px 10px', marginBottom:6, background: isSelected ? tab.lightBg : 'white', border:`1px solid ${isSelected ? tab.color : '#eaeaea'}`, borderRight:`4px solid ${isSelected ? tab.color : color}`, borderRadius:10, cursor:'pointer' }}>
                             <div style={{ flex:1, minWidth:0 }}>
-                              <div style={{ fontWeight:700, fontSize:13, color:'#1A3A5C', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>
-                                {item.name}{item.is_national ? ' 🌍' : ''}
-                              </div>
+                              <div style={{ fontWeight:700, fontSize:13, color:'#1A3A5C', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{item.name}{item.is_national ? ' 🌍' : ''}</div>
                               <div style={{ display:'flex', gap:6, alignItems:'center', marginTop:2 }}>
-                                {(item.category || item.profession) && (
-                                  <span style={{ background: tab.badgeBg, color: tab.textColor, borderRadius:999, padding:'1px 7px', fontSize:11, fontWeight:700 }}>
-                                    {item.category || item.profession}
-                                  </span>
-                                )}
+                                {(item.category || item.profession) && <span style={{ background: tab.badgeBg, color: tab.textColor, borderRadius:999, padding:'1px 7px', fontSize:11, fontWeight:700 }}>{item.category || item.profession}</span>}
                                 {item.city && <span style={{ fontSize:11, color:'#aaa' }}>📍 {item.city}</span>}
                                 {item.is_online && <span style={{ fontSize:11, color:'#0891B2' }}>🌐</span>}
                               </div>
@@ -711,64 +674,40 @@ export default function MapPage() {
                       })}
                     </div>
                   ) : (
-                  <div style={{ flex:1, overflowX:'auto', overflowY:'hidden', padding:'7px 14px 10px', display:'flex', gap:8, alignItems:'flex-start', scrollbarWidth:'none', msOverflowStyle:'none' }}>
-                    {items.length === 0 ? (
-                      <div style={{ fontSize:13, color:'#ccc', padding:'8px 0', whiteSpace:'nowrap', alignSelf:'center' }}>
-                        אין תוצאות לפילטר הנוכחי
-                      </div>
-                    ) : items.slice(0, 40).map(item => {
-                      const isSelected = selected?.id === item.id && selected?.type === tab.key
-                      const color = tab.key === 'rehab' ? (REHAB_COLORS[item.category] || tab.color)
-                        : tab.key === 'treatment' ? (TREATMENT_COLORS[item.category] || tab.color)
-                        : tab.color
-                      const coords = tab.key === 'practitioner' && item.city ? CITY_COORDS[item.city]
-                        : (item.lat ? [item.lat, item.lng] : null)
-
-                      return (
-                        <div key={item.id + tab.key}
-                          onClick={() => {
-                            setSelected({ ...item, type: tab.key })
-                            if (coords && mapRef.current) mapRef.current.flyTo(coords, 14, { duration:0.6 })
-                          }}
-                          style={{
-                            minWidth: 180, maxWidth: 195,
-                            flexShrink: 0,
-                            background: isSelected ? tab.lightBg : 'white',
-                            border: `1px solid ${isSelected ? tab.color : '#eaeaea'}`,
-                            borderTop: `3px solid ${isSelected ? tab.color : color + '55'}`,
-                            borderRadius: 10,
-                            padding: '9px 11px',
-                            cursor: 'pointer',
-                            transition: 'all 0.12s',
-                          }}
-                          onMouseEnter={e => { if (!isSelected) { e.currentTarget.style.borderColor = tab.color + '88'; e.currentTarget.style.background = tab.lightBg + 'aa' } }}
-                          onMouseLeave={e => { if (!isSelected) { e.currentTarget.style.borderColor = '#eaeaea'; e.currentTarget.style.background = 'white' } }}
-                        >
-                          <div style={{ fontWeight:700, fontSize:12, color:'#1A3A5C', marginBottom:3, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>
-                            {item.name}{item.is_national ? ' 🌍' : ''}
+                    <div style={{ flex:1, overflowX:'auto', overflowY:'hidden', padding:'7px 14px 10px', display:'flex', gap:8, alignItems:'flex-start', scrollbarWidth:'none', msOverflowStyle:'none' }}>
+                      {items.length === 0 ? (
+                        <div style={{ fontSize:13, color:'#ccc', padding:'8px 0', whiteSpace:'nowrap', alignSelf:'center' }}>אין תוצאות לפילטר הנוכחי</div>
+                      ) : items.slice(0, 40).map(item => {
+                        const isSelected = selected?.id === item.id && selected?.type === tab.key
+                        const color = tab.key === 'rehab' ? (REHAB_COLORS[item.category] || tab.color)
+                          : tab.key === 'treatment' ? (TREATMENT_COLORS[item.category] || tab.color) : tab.color
+                        const coords = tab.key === 'practitioner'
+                          ? getPractCoordsStatic(item)
+                          : (item.lat ? [item.lat, item.lng] : null)
+                        return (
+                          <div key={item.id + tab.key}
+                            onClick={() => { setSelected({ ...item, type: tab.key }); if (coords && mapRef.current) mapRef.current.flyTo(coords, 14, { duration:0.6 }) }}
+                            style={{ minWidth:180, maxWidth:195, flexShrink:0, background: isSelected ? tab.lightBg : 'white', border:`1px solid ${isSelected ? tab.color : '#eaeaea'}`, borderTop:`3px solid ${isSelected ? tab.color : color + '55'}`, borderRadius:10, padding:'9px 11px', cursor:'pointer', transition:'all 0.12s' }}
+                            onMouseEnter={e => { if (!isSelected) { e.currentTarget.style.borderColor = tab.color + '88'; e.currentTarget.style.background = tab.lightBg + 'aa' } }}
+                            onMouseLeave={e => { if (!isSelected) { e.currentTarget.style.borderColor = '#eaeaea'; e.currentTarget.style.background = 'white' } }}
+                          >
+                            <div style={{ fontWeight:700, fontSize:12, color:'#1A3A5C', marginBottom:3, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{item.name}{item.is_national ? ' 🌍' : ''}</div>
+                            <div style={{ fontSize:11, color:'#888', display:'flex', gap:4, alignItems:'center', flexWrap:'wrap' }}>
+                              {(item.category || item.profession) && <span style={{ background: tab.badgeBg, color: tab.textColor, borderRadius:999, padding:'1px 6px', fontSize:10, fontWeight:700 }}>{item.category || item.profession}</span>}
+                              {item.city && <span>📍 {item.city}</span>}
+                              {item.is_online && <span style={{ color:'#0891B2' }}>🌐</span>}
+                            </div>
                           </div>
-                          <div style={{ fontSize:11, color:'#888', display:'flex', gap:4, alignItems:'center', flexWrap:'wrap' }}>
-                            {(item.category || item.profession) && (
-                              <span style={{ background: tab.badgeBg, color: tab.textColor, borderRadius:999, padding:'1px 6px', fontSize:10, fontWeight:700 }}>
-                                {item.category || item.profession}
-                              </span>
-                            )}
-                            {item.city && <span>📍 {item.city}</span>}
-                            {item.is_online && <span style={{ color:'#0891B2' }}>🌐</span>}
-                          </div>
-                        </div>
-                      )
-                    })}
-                  </div>
+                        )
+                      })}
+                    </div>
                   )}
                 </div>
               )
             })}
           </div>
-          {/* סוף drawer */}
 
         </div>
-        {/* סוף main-content */}
 
         {!isMobile && (
           <footer style={{ background:'#1A3A5C', color:'rgba(255,255,255,0.7)', textAlign:'center', padding:'10px', fontSize:12, flexShrink:0 }}>
