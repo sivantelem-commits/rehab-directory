@@ -246,8 +246,18 @@ export default function Admin() {
   // ── מיקום ──
   const saveLocation = async (lat, lng) => {
     const isTreatment = locationService._table === 'treatment'
-    const endpoint = isTreatment ? '/api/admin/treatment-services' : '/api/admin/services'
-    await fetch(endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json', adminkey: adminKey }, body: JSON.stringify({ id: locationService.id, lat, lng }) })
+    const isPractitioner = locationService._table === 'practitioner'
+
+    if (isPractitioner) {
+      await fetch('/api/admin/practitioners', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json', adminkey: adminKey },
+        body: JSON.stringify({ id: locationService.id, lat, lng }),
+      })
+    } else {
+      const endpoint = isTreatment ? '/api/admin/treatment-services' : '/api/admin/services'
+      await fetch(endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json', adminkey: adminKey }, body: JSON.stringify({ id: locationService.id, lat, lng }) })
+    }
 
     // אם זה אישור עם מיקום — גם מאשר
     if (locationService._pendingApproval && pendingApproval) {
@@ -648,6 +658,8 @@ export default function Admin() {
                     <button onClick={() => fetch('/api/admin/practitioners', { method: 'PATCH', headers: { 'Content-Type': 'application/json', adminkey: adminKey }, body: JSON.stringify({ id: p.id, status: 'approved' }) }).then(() => fetchAll(adminKey))} style={btnSm('#22c55e')}>✓ אשר</button>
                   )}
                   <button onClick={() => { setEditingPractitioner(p); setEditPForm({ ...p, treatment_types: p.treatment_types || [], specializations: p.specializations || [], health_funds: p.health_funds || [], languages: p.languages || [] }); setEditPTab('basic') }} style={btnSm('#1A3A5C', true)}>✏️ ערוך</button>
+                  <button onClick={() => setLocationService({ ...p, _table: 'practitioner' })} style={btnSm(p.lat ? '#2E7D32' : '#0F4C75', !p.lat)}>📍 {p.lat ? 'עדכן מיקום' : 'הוסף מיקום'}</button>
+                  {p.lat && <button onClick={async () => { if (!confirm('להסיר מיקום?')) return; await fetch('/api/admin/practitioners', { method: 'PATCH', headers: { 'Content-Type': 'application/json', adminkey: adminKey }, body: JSON.stringify({ id: p.id, lat: null, lng: null }) }); fetchAll(adminKey) }} style={btnSm('#ef4444', true)}>🗑 הסר מיקום</button>}
                   <button onClick={() => fetch('/api/admin/practitioners', { method: 'PATCH', headers: { 'Content-Type': 'application/json', adminkey: adminKey }, body: JSON.stringify({ id: p.id, is_verified: !p.is_verified }) }).then(() => fetchAll(adminKey))} style={btnSm(p.is_verified ? '#1d4ed8' : '#6b7280', !p.is_verified)}>{p.is_verified ? '✓ מאומת' : 'סמן כמאומת'}</button>
                   {practitionersTab === 'pending' && (
                     <button onClick={() => fetch('/api/admin/practitioners', { method: 'PATCH', headers: { 'Content-Type': 'application/json', adminkey: adminKey }, body: JSON.stringify({ id: p.id, status: 'rejected' }) }).then(() => fetchAll(adminKey))} style={btnSm('#ef4444', true)}>✕ דחה</button>
